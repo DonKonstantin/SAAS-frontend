@@ -1,0 +1,196 @@
+.list-items-table-pagination {
+  @media screen and (max-width: 1279px) {
+    .MuiToolbar-root {
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
+
+      .MuiTablePagination-spacer {
+        display: none;
+      }
+    }
+  }
+}
+
+.filter-grid-item {
+  z-index: 1000;
+}
+
+.entity-list-table {
+  th, td {
+    transition: padding 200ms ease-in-out;
+  }
+}
+
+.list-filter-date-input {
+  .MuiOutlinedInput-root.MuiOutlinedInput-adornedEnd {
+    padding-right: 0;
+  }
+}
+
+.MuiFormControl-root.variants-selector-grid {
+  border-radius: 4px;
+  border: 1px solid #c4c4c4;
+  padding: 8px;
+  position: relative;
+
+  .MuiFormGroup-root {
+    padding: 0 8px;
+    box-sizing: border-box;
+  }
+
+  .variants-selector-grid-caption {
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1;
+    background: #ffffff;
+    letter-spacing: 0.00938em;
+    transform: translate(0, -52%) scale(0.75);
+    transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    padding: 6px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+}
+
+$entityListTableBorderWidth: 1px;
+$entityListTableBorderColor: rgb(189, 189, 189);
+
+.entity-list-table-body {
+  > .entity-list-table-row {
+    > td, > th {
+      border: 0;
+      border-top: $entityListTableBorderWidth solid $entityListTableBorderColor;
+    }
+
+    &:first-of-type {
+      > td, > th {
+        border: 0;
+      }
+    }
+  }
+}
+
+.tree-item-arrow {
+  $arrowWidth: $entityListTableBorderWidth;
+  $arrowColor: $entityListTableBorderColor;
+
+  position: relative;
+
+  > .tree-item-vertical {
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 50%;
+    width: $arrowWidth;
+    background: $arrowColor;
+    margin-left: 1px;
+
+    &.is-full {
+      height: 100%;
+    }
+
+    &.disabled {
+      display: none;
+    }
+  }
+
+  > .tree-item-horizontal {
+    display: block;
+    position: absolute;
+    margin-left: 1px;
+    width: 10px;
+    top: calc(50% - 1px);
+    height: $arrowWidth;
+    background: $arrowColor;
+
+    &.disabled {
+      display: none;
+    }
+  }
+}
+
+.paper-wrap-block {
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.main-list-grid {
+  flex-wrap: nowrap!important;
+  flex-direction: row-reverse!important;
+
+  .filter {
+    flex-basis: 0;
+    flex-shrink: 0;
+    transition: .25s flex-basis, 0s max-height .26s;
+    overflow: hidden;
+    max-height: 0;
+
+    &.visible {
+      flex-basis: 412px;
+      max-height: 500000px;
+      transition: .25s flex-basis, 0s max-height;
+    }
+
+    > div {
+      padding-left: 18px;
+      width: 412px;
+
+      @media screen and (max-width: 1156px) {
+        width: calc(100vw - 48px);
+        padding-left: 0;
+
+        .filter-root-block {
+          padding-bottom: 18px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 1156px) {
+      &.visible {
+        max-width: 100%;
+      }
+
+      width: 100%;
+    }
+  }
+
+  .list {
+    flex-grow: 1;
+    flex-shrink: 1;
+    position: relative;
+    overflow: hidden;
+    flex-basis: 0;
+  }
+
+  @media screen and (max-width: 1156px) {
+    flex-wrap: wrap!important;
+
+    .list {
+      width: 100%;
+      flex-basis: 100%;
+    }
+  }
+}
+
+.root-list-grid {
+  .breadcrumbs {
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .settings-button-grid {
+    position: relative;
+
+    .settings-button {
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate(0, -50%);
+    }
+  }
+}

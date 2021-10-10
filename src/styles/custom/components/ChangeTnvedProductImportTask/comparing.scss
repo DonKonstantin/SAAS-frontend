@@ -1,0 +1,67 @@
+.change-tnved-products-import-task__comparing {
+  display: grid;
+  grid-template-areas:
+      "title actions"
+      "data data"
+  ;
+  grid-gap: 24px;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+
+  > div:nth-of-type(1) {
+    grid-area: title;
+  }
+
+  > div:nth-of-type(2) {
+    grid-area: actions;
+  }
+
+  > div:nth-of-type(3) {
+    grid-area: data;
+  }
+
+  .updating, .creating {
+    padding: 2px 8px;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 400;
+    background: #f57c00;
+    border-radius: 4px;
+    color: #fff;
+
+    &.creating {
+      background: #388e3c;
+    }
+  }
+
+  &-tnved-code-path {
+    div {
+      @for $i from 0 through 15 {
+        &[data-position='#{$i}'] {
+          $padding: 8px * $i;
+          padding-left: $padding;
+        }
+      }
+
+      margin-bottom: 8px;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      > span {
+        font-weight: 400!important;
+      }
+
+      div {
+        font-weight: 500!important;
+        margin-top: 2px;
+      }
+
+      > span:first-of-type {
+        font-weight: 600!important;
+      }
+    }
+  }
+}

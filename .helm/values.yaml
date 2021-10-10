@@ -1,0 +1,4 @@
+# Настройка приложения
+debug: false
+environment: production
+token_refresh_timeout: 60

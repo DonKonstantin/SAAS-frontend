@@ -1,0 +1,25 @@
+.locations-grid {
+  th {
+    background-color: rgba(#fff, .5);
+  }
+
+  .location-task-item {
+    background-color: rgba(#fff, .5);
+
+    &.--success {
+      background-color: rgba(#388e3c, .15);
+
+      td {
+        border-color: rgba(#388e3c, .3);
+      }
+    }
+
+    &.--error {
+      background-color: rgba(#d32f2f, .4);
+
+      td {
+        border-color: rgba(#d32f2f, .2);
+      }
+    }
+  }
+}

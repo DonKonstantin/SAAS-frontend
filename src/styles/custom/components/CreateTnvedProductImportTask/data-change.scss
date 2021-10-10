@@ -1,0 +1,44 @@
+.create-tnved-import-task__data-change {
+  display: grid;
+  grid-gap: 24px;
+  align-items: flex-end;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1.5fr;
+  grid-template-areas:
+    "list sku name tnved catCode catName create"
+    "grid grid grid grid grid grid grid"
+  ;
+
+  > div {
+    &:nth-of-type(1) {
+      grid-area: list;
+    }
+
+    &:nth-of-type(2) {
+      grid-area: sku;
+    }
+
+    &:nth-of-type(3) {
+      grid-area: name;
+    }
+
+    &:nth-of-type(4) {
+      grid-area: tnved;
+    }
+
+    &:nth-of-type(5) {
+      grid-area: catCode;
+    }
+
+    &:nth-of-type(6) {
+      grid-area: catName;
+    }
+
+    &:nth-of-type(7) {
+      grid-area: create;
+    }
+
+    &:nth-of-type(8) {
+      grid-area: grid;
+    }
+  }
+}

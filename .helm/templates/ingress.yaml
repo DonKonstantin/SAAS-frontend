@@ -1,0 +1,60 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Chart.Name }}-limits
+  namespace: {{ .Release.Namespace }}
+spec:
+  buffering:
+    maxRequestBodyBytes: 100000000
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ .Chart.Name }}-headers-middleware
+  namespace: {{ .Release.Namespace }}
+spec:
+  headers:
+    sslRedirect: true
+    accessControlMaxAge: 12
+    addVaryHeader: true
+    accessControlAllowCredentials: true
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "PATCH"
+      - "POST"
+      - "DELETE"
+    accessControlAllowHeaders:
+      - "*"
+    accessControlAllowOriginList:
+      - "*"
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-ingress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/issuer: "{{ .Chart.Name }}-letsencrypt"
+    traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Chart.Name }}-limits@kubernetescrd, {{ .Release.Namespace }}-{{ .Chart.Name }}-headers-middleware@kubernetescrd
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.env.DOMAIN }}
+      secretName: {{ .Chart.Name }}-ingress-tls
+  rules:
+      - host: {{ .Values.env.DOMAIN }}
+        http:
+          paths:
+            - path: /
+              backend:
+                serviceName: {{ .Chart.Name }}-service
+                servicePort: 3000

@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/dockercfg
+metadata:
+  name: registrysecret
+data:
+  .dockercfg: {{ printf "{\"%s\": {\"auth\": \"%s\"}}" .Values.imageCredentials.registry (printf "%s:%s" .Values.imageCredentials.username .Values.imageCredentials.password | b64enc) | b64enc }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+      annotations:
+    spec:
+      imagePullSecrets:
+        - name: registrysecret
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Chart.Name }}
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: {{ .Chart.Name }}
+{{ werf_container_image . | indent 8 }}
+        resources:
+          limits:
+            memory: 500Mi
+          requests:
+            memory: 300Mi
+        ports:
+          - name: web
+            containerPort: 3000
+            protocol: TCP
+        env:
+          - name: GRAPHQL_SERVER
+            value: "{{ .Values.env.GRAPHQL_SERVER }}"
+          - name: SSR_GRAPHQL_SERVER
+            value: "{{ .Values.env.SSR_GRAPHQL_SERVER }}"
+          - name: DEBUG
+            value: "{{ .Values.debug }}"
+          - name: ENVIRONMENT
+            value: "{{ .Values.environment }}"
+          - name: TOKEN_REFRESH_TIMEOUT
+            value: "{{ .Values.token_refresh_timeout }}"
+          - name: TRANSLATION_MAX_QUERIES_PER_TIME
+            value: "{{ .Values.env.TRANSLATION_MAX_QUERIES_PER_TIME }}"
+          - name: GRAPHQL_WS_SERVER
+            value: "{{ .Values.env.GRAPHQL_WS_SERVER }}"
+          - name: SSR_GRAPHQL_WS_SERVER
+            value: "{{ .Values.env.SSR_GRAPHQL_WS_SERVER }}"
+          - name: FILE_CONVERTATION_CSV_ENDPOINT
+            value: "{{ .Values.env.FILE_CONVERTATION_CSV_ENDPOINT }}"
+          - name: FILE_CONVERTATION_XLSX_ENDPOINT
+            value: "{{ .Values.env.FILE_CONVERTATION_XLSX_ENDPOINT }}"
+          - name: FILE_UPLOADING_ENDPOINT
+            value: "{{ .Values.env.FILE_UPLOADING_ENDPOINT }}"
+          - name: FILE_VIEW_ENDPOINT
+            value: "{{ .Values.env.FILE_VIEW_ENDPOINT }}"
+          - name: EXCEL_FILE_WS_ENDPOINT
+            value: "{{ .Values.env.EXCEL_FILE_WS_ENDPOINT }}"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}-service
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      name: web
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+
+---

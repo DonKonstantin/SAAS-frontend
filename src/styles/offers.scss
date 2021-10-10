@@ -1,0 +1,11 @@
+.list-of-offers-position-block {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  > div {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+}

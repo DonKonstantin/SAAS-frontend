@@ -1,0 +1,26 @@
+.shoulder-transport-type {
+  &.sea {
+    background: url("/static/ship-finance_01.jpg") 50%;
+    background-size: cover;
+  }
+
+  &.rail {
+    background: url("/static/maxresdefault.jpg") 50%;
+    background-size: cover;
+  }
+
+  &.air {
+    background: url("/static/120805.663420.4914.jpg") 50%;
+    background-size: cover;
+  }
+
+  &.auto {
+    background: url("/static/5595ce2a74c8447dabbef870645989db.jpg") 50%;
+    background-size: cover;
+  }
+
+  &.multi {
+    background: url("/static/multimodalnaya-perevozka-gruza.jpeg") 50%;
+    background-size: cover;
+  }
+}

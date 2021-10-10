@@ -1,0 +1,36 @@
+$opacity: .3;
+
+.import-data-grid {
+  &--table-container {
+    max-height: 780px;
+  }
+
+  &--cell {
+    padding: 0!important;
+
+    &--data {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-content: center;
+      justify-content: flex-start;
+      align-items: center;
+      text-overflow: ellipsis;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+  }
+
+  &--head &--cell {
+    background-color: rgba(#fff, $opacity);
+
+    &--data {
+      justify-content: center;
+    }
+  }
+
+  &--toolbar {
+    padding: 0 16px 0 6px!important;
+  }
+}

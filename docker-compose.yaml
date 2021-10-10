@@ -1,0 +1,25 @@
+version: '3.5'
+
+services:
+
+  admin-next:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ./
+    container_name: admin-next
+    environment:
+      GRAPHQL_SERVER: "https://graphql-gateway.service.onlogsystem.com/"
+      SSR_GRAPHQL_SERVER: "https://graphql-gateway.service.onlogsystem.com/"
+    ports:
+      - "3000:3000"
+    networks:
+      primary:
+        ipv4_address: "10.100.0.6"
+
+networks:
+  primary:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.0.0/24

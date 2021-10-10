@@ -1,0 +1,20 @@
+.import-status-cell {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-start;
+
+  > div {
+    margin-right: 16px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  .progress-bar {
+    flex: 1 1 200px;
+  }
+}
