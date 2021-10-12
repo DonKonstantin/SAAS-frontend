@@ -1,1 +1,0 @@
-export const HARDCODE_COMPANY_ID = 1;

@@ -1,11 +1,10 @@
 import React, {ReactNode} from "react";
 import withMaterialUI from "./withMaterialUI";
-import withRedux from "./withRedux";
 import withUILayer from "./withUILayer";
 import withAuthorization from "./withAuthorization";
 import {NextPage} from "next";
-import WithSnackbar from "./withSnackbar";
-import withMuiPickers from "./withMuiPickers";
+import withSnackbar from "./withSnackbar";
+import withLocalization from "./withLocalization";
 
 /**
  * Подключает основный коннекторы к странице
@@ -13,7 +12,7 @@ import withMuiPickers from "./withMuiPickers";
  * @param Application
  */
 export default function withCoreConnections<T>(Application: NextPage<T>): React.ComponentClass<T> {
-    class Connector extends React.Component<T>{
+    class Connector extends React.Component<T> {
         /**
          * Проброс базовых свойств компонента
          *
@@ -37,5 +36,5 @@ export default function withCoreConnections<T>(Application: NextPage<T>): React.
     }
 
     // @ts-ignore
-    return withRedux(withMaterialUI(withAuthorization(withUILayer(withMuiPickers(WithSnackbar(Connector))))))
+    return withLocalization(withMaterialUI(withSnackbar(withAuthorization(withUILayer(Connector)))))
 }

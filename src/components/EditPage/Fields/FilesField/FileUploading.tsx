@@ -1,7 +1,7 @@
 import React from "react";
-import LinearProgressWithLabel from "../../../../custom/components/ProgressBar";
 import convertSizeToUserFriendlyType from "../../../../services/helpers/GetUserFriendlyFileSize";
 import {FileIcon, defaultStyles} from 'react-file-icon';
+import LinearProgressWithLabel from "../../../ProgressBar";
 
 // Свойства компонента
 export interface FileUploadingProps {

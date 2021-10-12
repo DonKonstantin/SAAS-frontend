@@ -1,37 +1,60 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import NextLink from 'next/link';
-import MuiLink from '@material-ui/core/Link';
-import {LinkProps} from "next/dist/client/link";
+import NextLink, { LinkProps as NextLinkProps } from 'next/link';
+import MuiLink, { LinkProps as MuiLinkProps } from '@mui/material/Link';
+import { styled } from '@mui/material/styles';
 
-const NextComposed = React.forwardRef(function NextComposed(props, ref) {
-    // @ts-ignore
-    const { as, href, ...other } = props;
+// Add support for the sx prop for consistency with the other branches.
+const Anchor = styled('a')({});
 
+interface NextLinkComposedProps
+    extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>,
+        Omit<NextLinkProps, 'href' | 'as'> {
+    to: NextLinkProps['href'];
+    linkAs?: NextLinkProps['as'];
+    href?: NextLinkProps['href'];
+}
 
-    // @ts-ignore
-    return (<NextLink href={href} as={as}><a ref={ref} {...other} /></NextLink>);
-});
+export const NextLinkComposed = React.forwardRef<HTMLAnchorElement, NextLinkComposedProps>(
+    function NextLinkComposed(props, ref) {
+        const { to, linkAs, href, replace, scroll, shallow, prefetch, locale, ...other } = props;
 
-NextComposed.propTypes = {
-    // @ts-ignore
-    as: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    prefetch: PropTypes.bool,
-};
+        return (
+            <NextLink
+                href={to}
+                prefetch={prefetch}
+                as={linkAs}
+                replace={replace}
+                scroll={scroll}
+                shallow={shallow}
+                passHref
+                locale={locale}
+            >
+                <Anchor ref={ref} {...other} />
+            </NextLink>
+        );
+    },
+);
+
+export type LinkProps = {
+    activeClassName?: string;
+    as?: NextLinkProps['as'];
+    href: NextLinkProps['href'];
+    noLinkStyle?: boolean;
+} & Omit<NextLinkComposedProps, 'to' | 'linkAs' | 'href'> &
+    Omit<MuiLinkProps, 'href'>;
 
 // A styled version of the Next.js Link component:
 // https://nextjs.org/docs/#with-link
-// @ts-ignore
-function LinkBase(props) {
+const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Link(props, ref) {
     const {
-        href,
         activeClassName = 'active',
+        as: linkAs,
         className: classNameProps,
-        innerRef,
-        naked,
+        href,
+        noLinkStyle,
+        role, // Link don't have roles.
         ...other
     } = props;
 
@@ -41,41 +64,31 @@ function LinkBase(props) {
         [activeClassName]: router.pathname === pathname && activeClassName,
     });
 
-    if (naked) {
-        return <NextComposed className={className} ref={innerRef} href={href} {...other} />;
+    const isExternal =
+        typeof href === 'string' && (href.indexOf('http') === 0 || href.indexOf('mailto:') === 0);
+
+    if (isExternal) {
+        if (noLinkStyle) {
+            return <Anchor className={className} href={href} ref={ref} {...other} />;
+        }
+
+        return <MuiLink className={className} href={href} ref={ref} {...other} />;
+    }
+
+    if (noLinkStyle) {
+        return <NextLinkComposed className={className} ref={ref} to={href} {...other} />;
     }
 
     return (
-        <MuiLink component={NextComposed} className={className} ref={innerRef} href={href} {...other} />
+        <MuiLink
+            component={NextLinkComposed}
+            linkAs={linkAs}
+            className={className}
+            ref={ref}
+            to={href}
+            {...other}
+        />
     );
-}
+});
 
-LinkBase.propTypes = {
-    activeClassName: PropTypes.string,
-    as: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    className: PropTypes.string,
-    href: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-    naked: PropTypes.bool,
-    onClick: PropTypes.func,
-    prefetch: PropTypes.bool,
-};
-
-const LinkWrapped = React.forwardRef((props, ref) => <LinkBase {...props} innerRef={ref} />);
-
-/**
- * Свойства ссылки
- */
-interface Props extends LinkProps {
-    className?: string
-}
-
-/**
- * Итоговая обертка над ссылками, для разрешения проблем типизации
- */
-export default class Link extends React.Component<Props> {
-    render() {
-        // @ts-ignore
-        return (<LinkWrapped {...this.props} />);
-    }
-}
+export default Link;

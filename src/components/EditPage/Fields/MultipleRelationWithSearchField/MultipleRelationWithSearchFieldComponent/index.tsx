@@ -1,26 +1,22 @@
 import React from "react";
 import {
+    Autocomplete,
     Chip,
     CircularProgress,
-    createStyles,
     IconButton,
     InputAdornment,
     TextField,
     Tooltip,
-    withStyles
-} from "@material-ui/core";
-import {Autocomplete} from "@material-ui/lab";
+} from "@mui/material";
 import {EditFieldProperties, EditValueType} from "../../../../../settings/pages/system/edit";
 import {Schemas} from "../../../../../settings/schema";
 import {ResetDefaultValueForField} from "../../../../../services/helpers/ResetDefaultValueForField";
 import {v4} from "uuid";
 import {relationSearchService} from "../../../../../services/relationSearchService";
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import RestoreOutlinedIcon from '@material-ui/icons/RestoreOutlined';
 import {listSchemaConfiguration} from "../../../../../settings/pages";
 import {ListPageConfiguration} from "../../../../../settings/pages/system/list";
 import {Collection} from "../../../../../services/types";
-import {SearchUntypedLoaderItem} from "../../../../../services/searchUntypedLoader/interfaces";
+import {createStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = createStyles({

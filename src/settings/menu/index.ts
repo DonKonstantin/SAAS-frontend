@@ -1,117 +1,143 @@
-import {MenuGroup, MenuItem} from "./system";
-import SecurityIcon from '@material-ui/icons/Security';
-import TranslateIcon from '@material-ui/icons/Translate';
-import EuroIcon from '@material-ui/icons/Euro';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
-import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
-import CommuteIcon from '@material-ui/icons/Commute';
-import LocalShippingIcon from '@material-ui/icons/LocalShipping';
-import BuildIcon from '@material-ui/icons/Build';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import CommentIcon from '@material-ui/icons/Comment';
+import {MenuItem} from "./system";
+import PhonelinkLockIcon from '@mui/icons-material/PhonelinkLock';
+import ListIcon from '@mui/icons-material/List';
+import PersonIcon from '@mui/icons-material/Person';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import DvrIcon from '@mui/icons-material/Dvr';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import {setDomain, setProject} from "../../context/AuthorizationContext";
 
-/**
- * Параметры пунктов меню
- */
-export const menuSettings = (): MenuGroup[] => ([
-    new MenuGroup(
-        "Заказы",
-        ShoppingCartIcon,
-        [
-            new MenuItem({href: "/order"}, "Заказы", "READ_ORDERS"),
-            new MenuItem({href: "/pre-order"}, "Предзаказы", "READ_ORDERS"),
+// Список пунктов меню уровня Реалм
+export const RealmMenuItems = (): MenuItem[] => ([
+    {
+        link: {href: "/1"},
+        title: "UI.menu.left-menu.items.domain",
+        icon: ListIcon,
+    },
+    {
+        link: {href: "/2"},
+        title: "UI.menu.left-menu.items.user",
+        permission: "READ_USERS",
+        level: "project",
+        icon: PersonIcon,
+    },
+    {
+        link: {href: "/3"},
+        title: "UI.menu.left-menu.items.roles",
+        permission: "CHANGE_ROLES",
+        level: "project",
+        icon: CheckCircleIcon,
+    },
+    {
+        title: "UI.menu.left-menu.items.permissions.index",
+        permission: "CHANGE_PERMISSIONS",
+        level: "realm",
+        icon: PhonelinkLockIcon,
+        subItems: [
+            {
+                link: {href: "/21"},
+                title: "UI.menu.left-menu.items.permissions.permissions",
+                permission: "CHANGE_PERMISSIONS",
+                level: "realm",
+            },
+            {
+                link: {href: "/22"},
+                title: "UI.menu.left-menu.items.permissions.categories",
+                permission: "CHANGE_PERMISSIONS",
+                level: "realm",
+            }
+        ]
+    },
+    {
+        title: "UI.menu.left-menu.items.media-library.index",
+        icon: VolumeUpIcon,
+        subItems: [
+            {
+                link: {href: "/11"},
+                title: "UI.menu.left-menu.items.media-library.check",
+            },
+            {
+                link: {href: "/12"},
+                title: "UI.menu.left-menu.items.media-library.uploading",
+            },
+            {
+                link: {href: "/13"},
+                title: "UI.menu.left-menu.items.media-library.storage",
+            },
+            {
+                link: {href: "/14"},
+                title: "UI.menu.left-menu.items.media-library.categories",
+            },
         ],
-    ),
-    new MenuGroup(
-        "ТНВЭД",
-        CommentIcon,
-        [
-            new MenuItem({href: "/tnved/company-categories"}, "Категории", "READ_TNVED_CATEGORIES"),
-            new MenuItem({href: "/tnved/company-products"}, "Товары", "READ_TNVED_PRODUCTS"),
-            new MenuItem({href: "/tnved/company-specifications"}, "Спецификации", "READ_TNVED_SPECIFICATIONS"),
-            new MenuItem({href: "/tnved/code"}, "Коды ТНВЭД", "EDIT_TNVED_CODES"),
-        ],
-    ),
-    new MenuGroup(
-        "Транспорт",
-        CommuteIcon,
-        [
-            new MenuItem({href: "/transport/shoulder"}, "Плечи", "READ_TRANSPORT_SHOULDERS"),
-            new MenuItem({href: "/transport/terminal"}, "Терминалы", "READ_TRANSPORT_TERMINALS"),
-            new MenuItem({href: "/transport/allowance"}, "Надбавки", "READ_TRANSPORT_ALLOWANCE"),
-            new MenuItem({href: "/transport/unit"}, "Единицы измерения", "READ_TRANSPORT_UNITS"),
-            new MenuItem({href: "/transport/containers"}, "Контейнеры", "READ_TRANSPORT_CONTAINERS"),
-            new MenuItem({href: "/transport/loading-conditions"}, "Условия погрузки", "READ_TRANSPORT_LOADING_CONDITIONS"),
-            new MenuItem({href: "/transport/unloading-conditions"}, "Условия разгрузки", "READ_TRANSPORT_UNLOADING_CONDITIONS"),
-            new MenuItem({href: "/transport/start-transporting-conditions"}, "Условия начала перевозки", "READ_TRANSPORT_START_TRANSPORTING_CONDITIONS"),
-            new MenuItem({href: "/transport/stop-transporting-conditions"}, "Условия окончания перевозки", "READ_TRANSPORT_STOP_TRANSPORTING_CONDITIONS"),
-            new MenuItem({href: "/transport/cargo-type"}, "Типы груза", "READ_TRANSPORT_CARGO_TYPES"),
-            new MenuItem({href: "/transport/container-types"}, "Типы контейнеров", "READ_TRANSPORT_CONTAINER_TYPES"),
-            new MenuItem({href: "/transport/container-affiliation"}, "Принадлежность контейнеров", "READ_TRANSPORT_CONTAINER_AFFILIATION"),
-            new MenuItem({href: "/transport/unit-group"}, "Группы единиц измерения", "READ_TRANSPORT_UNIT_GROUPS"),
-            new MenuItem({href: "/transport/cargo-type-group"}, "Группы типов груза", "READ_TRANSPORT_CARGO_TYPE_GROUPS"),
-            new MenuItem({href: "/transport/allowance-group"}, "Группы надбавок", "READ_TRANSPORT_ALLOWANCE_GROUPS"),
-            new MenuItem({href: "/transport/delivery-modes"}, "Режимы перевозки", "READ_TRANSPORT_DELIVERY_MODES"),
-            new MenuItem({href: "/transport/types"}, "Типы транспорта", "READ_TRANSPORT_TYPES"),
-            new MenuItem({href: "/transport/shoulder-types"}, "Типы плеч", "READ_TRANSPORT_LEG_TYPES"),
-        ],
-    ),
-    new MenuGroup(
-        "Инструменты",
-        BuildIcon,
-        [
-            new MenuItem({href: "/transport/routes-calculator"}, "Расчет маршрутов", "CALCULATE_ROUTES"),
-            new MenuItem({href: "/tools/locations-import"}, "Импорт гео-объектов", "IMPORT_GEO_OBJECTS"),
-            new MenuItem({href: "/tools/shoulders-import"}, "Импорт ставок", "IMPORT_SHOULDERS"),
-            new MenuItem({href: "/tools/tnved-products-import"}, "Импорт товаров ТНВЭД", "IMPORT_TNVED_PRODUCTS"),
-        ],
-    ),
-    new MenuGroup(
-        "Использование контейнера",
-        LocalShippingIcon,
-        [
-            new MenuItem({href: "/transport/pickon"}, "PickOn", "READ_TRANSPORT_PICKON"),
-            new MenuItem({href: "/transport/dropoff"}, "DropOff", "READ_TRANSPORT_DROPOFF"),
-            new MenuItem({href: "/transport/container-rent"}, "Аренда контейнера", "READ_TRANSPORT_CONTAINER_RENT"),
-        ],
-    ),
-    new MenuGroup(
-        "Подрядчики",
-        SupervisedUserCircleIcon,
-        [
-            new MenuItem({href: "/contractor"}, "Подрядчики", "READ_CONTRACTORS"),
-            new MenuItem({href: "/transport/carrier"}, "Перевозчики", "READ_CARRIERS"),
-        ],
-    ),
-    new MenuGroup(
-        "Гео-объекты",
-        LocationCityIcon,
-        [
-            new MenuItem({href: "/locations"}, "Гео-объекты", "READ_LOCATIONS"),
-        ],
-    ),
-    new MenuGroup(
-        "Валюты",
-        EuroIcon,
-        [
-            new MenuItem({href: "/currency"}, "Валюты", "READ_CURRENCIES"),
-            new MenuItem({href: "/tax"}, "Налоги", "CHANGE_TAXES"),
-        ],
-    ),
-    new MenuGroup(
-        "Локализация",
-        TranslateIcon,
-        [
-            new MenuItem({href: "/language"}, "Языки", "READ_LANGUAGES"),
-        ],
-    ),
-    new MenuGroup(
-        "Безопасность",
-        SecurityIcon,
-        [
-            new MenuItem({href: "/user"}, "Пользователи", "READ_USERS"),
-            new MenuItem({href: "/role"}, "Роли", "READ_ROLES"),
-            new MenuItem({href: "/permission"}, "Разрешения", "READ_PERMISSIONS"),
-        ],
-    ),
+    },
+    {
+        link: {href: "/4"},
+        title: "UI.menu.left-menu.items.logs",
+        icon: DvrIcon,
+    },
+]);
+
+// Список пунктов меню уровня Домен
+export const DomainMenuItems = (): MenuItem[] => ([
+    {
+        link: {href: "/1"},
+        title: "UI.menu.left-menu.items.domain-list",
+        icon: ArrowBackIosIcon,
+        onClick: () => {
+            setDomain("")
+        }
+    },
+    {
+        link: {href: "/2"},
+        title: "UI.menu.left-menu.items.projects",
+    },
+    {
+        link: {href: "/3"},
+        title: "UI.menu.left-menu.items.user",
+        permission: "READ_USERS",
+        level: "project",
+    },
+    {
+        link: {href: "/4"},
+        title: "UI.menu.left-menu.items.roles",
+        permission: "CHANGE_ROLES",
+        level: "project",
+    },
+    {
+        link: {href: "/5"},
+        title: "UI.menu.left-menu.items.logs",
+    },
+]);
+
+// Список пунктов меню уровня Проект
+export const ProjectMenuItems = (): MenuItem[] => ([
+    {
+        link: {href: "/1"},
+        title: "UI.menu.left-menu.items.projects-list",
+        icon: ArrowBackIosIcon,
+        onClick: () => {
+            setProject("")
+        }
+    },
+    {
+        link: {href: "/2"},
+        title: "UI.menu.left-menu.items.playlists",
+    },
+    {
+        link: {href: "/3"},
+        title: "UI.menu.left-menu.items.user",
+        permission: "READ_USERS",
+        level: "project",
+    },
+    {
+        link: {href: "/4"},
+        title: "UI.menu.left-menu.items.roles",
+        permission: "CHANGE_ROLES",
+        level: "project",
+    },
+    {
+        link: {href: "/5"},
+        title: "UI.menu.left-menu.items.logs",
+    },
 ]);

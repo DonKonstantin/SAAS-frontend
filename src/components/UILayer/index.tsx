@@ -1,53 +1,46 @@
-import React from "react";
-import {createStyles, withStyles} from "@material-ui/core";
-import {SnackbarProvider, SnackbarProviderProps} from 'notistack';
-import SnackCloseButton from "./Snackbar/SnackCloseButton";
-
-// Основный стили компонента UI
-const styles = createStyles({
-    root: {
-        display: 'flex',
-    },
-});
+import React, {FC} from "react";
+import {Box} from "@mui/material";
+import LeftPanel from "./LeftPanel";
+import {useTranslation} from "react-i18next";
+import Head from "next/head";
 
 // Свойства компонента
-interface UILayerProps {
-    classes: {
-        root: string
-    }
+export type UILayerProps = {
+    title: string
     children: React.ReactNode
+    isNeedUI?: boolean
 }
 
-/**
- * Компонент вывода основной обертки UI
- */
-class UILayer extends React.Component<UILayerProps> {
-    render() {
-        // Создаем ссылку для связывания компонентов
-        const ref = React.createRef<SnackbarProviderProps>()
+// Компонент вывода основной обертки UI
+const UILayer: FC<UILayerProps> = props => {
+    const {children, title, isNeedUI = true} = props
 
-        // Кнопка закрытия сообщения
-        const snackCloseAction = (key: any) => {
-            return (
-                <SnackCloseButton key={key} ref={ref}/>
-            )
-        };
+    const {t} = useTranslation()
+    const titleContent = `${t(`UI.meta.title.prefix`)}${t(title)}${t(`UI.meta.title.suffix`)}`
 
-        return (
-            <div className={this.props.classes.root}>
-                <SnackbarProvider
-                    ref={ref}
-                    maxSnack={5}
-                    anchorOrigin={{vertical: `bottom`, horizontal: `left`}}
-                    hideIconVariant={false}
-                    action={snackCloseAction}
-                >
-                    {this.props.children}
-                </SnackbarProvider>
-            </div>
-        );
+    if (!isNeedUI) {
+        return <>
+            <Head>
+                <title>{titleContent}</title>
+                <meta property="og:title" content={titleContent} key="title"/>
+            </Head>
+            {children}
+        </>;
     }
+
+    return <>
+        <Head>
+            <title>{titleContent}</title>
+            <meta property="og:title" content={titleContent} key="title"/>
+        </Head>
+        <Box sx={{display: 'flex'}}>
+            <LeftPanel/>
+            <Box component="main" sx={{flexGrow: 1, p: 3}}>
+                {children}
+            </Box>
+        </Box>
+    </>;
 }
 
 // Подключаем стили к компоненту и экспортируем его
-export default withStyles(styles)(UILayer)
+export default UILayer

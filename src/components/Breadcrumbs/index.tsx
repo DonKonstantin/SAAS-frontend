@@ -1,9 +1,9 @@
 import React from "react";
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import {Chip, emphasize, Theme, withStyles} from "@material-ui/core";
 import {WithRouterProps} from "next/dist/client/with-router";
 import {withRouter} from "next/router";
 import {Icons, IconsCollection} from "./icons";
+import {withStyles} from "@mui/styles";
+import {Breadcrumbs, Chip, emphasize, Theme} from "@mui/material";
 
 // Стилизованный компонент хлебной крошки
 const StyledBreadcrumb = withStyles((theme: Theme) => ({

@@ -1,37 +1,19 @@
 import {GraphQLClient} from "./GraphQLClient";
 import {Client} from "./Client";
 import getConfig from 'next/config';
-import {authorizationSelector} from "../../reduxStore/selectors/AuthorizationSelectors";
-import {store} from "../../reduxStore/system";
 import {loggerFactory} from "../logger";
 import {clientServerDetector} from "../clientServerDetector";
-import {
-    ApolloLink,
-    ApolloClient,
-    createHttpLink,
-    NormalizedCacheObject,
-    InMemoryCache,
-    split,
-} from "@apollo/client";
+import {ApolloClient, ApolloLink, createHttpLink, InMemoryCache, NormalizedCacheObject, split,} from "@apollo/client";
 import * as ws from 'ws';
-import { WebSocketLink } from '@apollo/client/link/ws';
+import {WebSocketLink} from '@apollo/client/link/ws';
 import {getMainDefinition} from "@apollo/client/utilities";
 import {MainClient} from "./MainClient";
 import {SubscriptionClient} from "subscriptions-transport-ws";
-import {ReduxStore} from "../../reduxStore/ReduxStore";
+import {getAuthorizationToken} from "../../context/AuthorizationContext";
 
-// Получение токена авторизации
-export const getToken: {(token?:string): string} = token => {
-    let headersToken: string = authorizationSelector(store()?.getState() || {} as ReduxStore).token;
-    if (token) {
-        headersToken = token
-    }
-
-    return headersToken
-};
 
 // Генерация ссылки для клиента GraphQL
-const getLink: {(): ApolloLink} = () => {
+const getLink: { (): ApolloLink } = () => {
     const {publicRuntimeConfig, serverRuntimeConfig} = getConfig();
     const graphQlUrl = clientServerDetector().isServer() ? serverRuntimeConfig.env.SSR_GRAPHQL_SERVER : publicRuntimeConfig.graphQlEndpoint;
 
@@ -42,7 +24,7 @@ const getLink: {(): ApolloLink} = () => {
 };
 
 // Генерация ссылки для WS для клиента GraphQL
-const getWsLink: {(token?: string): ApolloLink} = (token?: string) => {
+const getWsLink: { (token?: string): ApolloLink } = () => {
     const {publicRuntimeConfig, serverRuntimeConfig} = getConfig();
     const wsGraphQlUrl = clientServerDetector().isServer() ? serverRuntimeConfig.env.SSR_GRAPHQL_WS_SERVER : publicRuntimeConfig.wsGraphQlEndpoint;
 
@@ -52,7 +34,7 @@ const getWsLink: {(token?: string): ApolloLink} = (token?: string) => {
             reconnect: true,
             lazy: true,
             connectionParams: {
-                authToken: getToken(token),
+                authToken: getAuthorizationToken(),
             },
         },
         webSocketImpl: clientServerDetector().isServer() ? ws : undefined,
@@ -60,9 +42,9 @@ const getWsLink: {(token?: string): ApolloLink} = (token?: string) => {
 };
 
 // Фабрика клиента
-export const graphQLClient: {(token?: string): GraphQLClient} = (token?: string) => {
+export const graphQLClient: { (): GraphQLClient } = () => {
     const mainLink = getLink();
-    const wsLink = getWsLink(token);
+    const wsLink = getWsLink();
 
     return new MainClient(
         new Client(
@@ -70,7 +52,7 @@ export const graphQLClient: {(token?: string): GraphQLClient} = (token?: string)
             () => ({
                 client: new ApolloClient<NormalizedCacheObject>({
                     link: split(
-                        ({ query }) => {
+                        ({query}) => {
                             const definition = getMainDefinition(query);
                             return (
                                 definition.kind === 'OperationDefinition' &&
@@ -104,6 +86,6 @@ export const graphQLClient: {(token?: string): GraphQLClient} = (token?: string)
                 }
             }),
         ),
-        getToken(token),
+        getAuthorizationToken(),
     )
 };

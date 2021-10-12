@@ -1,19 +1,16 @@
 import React, {ReactNode} from "react";
-import {ReduxStore} from "../reduxStore/ReduxStore";
-import {authService} from "../services/authService";
-import {Action, Dispatch} from "redux";
-import {dispatcher} from "../reduxStore/actions";
-import {AuthServiceInterface} from "../services/authService/interfaces";
-import {connect} from "react-redux";
-import {ClientServerDetector} from "../services/clientServerDetector/ClientServerDetector";
-import {clientServerDetector} from "../services/clientServerDetector";
-import getConfig from "next/config";
-import LoginPage from "../containers/LoginPage";
 import {NextPage} from "next";
+import LoginPage from "../components/LoginPage";
+import cookies from "next-cookies";
+import {
+    AuthorizationContext,
+    getCurrentState,
+    initializeContextData,
+    setCurrentState
+} from "../context/AuthorizationContext";
 
 /**
  * Подключает обязательную авторизацию к странице
- *
  * @param Application
  */
 export default function withAuthorization<T>(Application: NextPage<T>): React.ComponentClass<T> {
@@ -22,24 +19,20 @@ export default function withAuthorization<T>(Application: NextPage<T>): React.Co
      */
     type AuthorizationProps<T> = T & {
         token: string
-        onResetAuthorization: () => void
-        onUpdateToken: (token: string) => void
-        authService: () => AuthServiceInterface
-        clientServerDetector: () => ClientServerDetector
-    }
-
-    /**
-     * State компонента
-     */
-    interface AuthorizationState {
-        interval: NodeJS.Timeout | undefined
+        loadedAuthorizationContextState?: AuthorizationContext
+        pageProps?: {
+            changePasswordToken?: string
+            isNeedShowChangePassword?: boolean
+            isPrivate?: boolean
+        }
     }
 
     /**
      * Обертка, проверяющая авторизацию пользователя в системе. Если пользователь не авторизован, редиректит на
      * страницу авторизации
      */
-    class WithAuthorizationConnector extends React.Component<AuthorizationProps<T>, AuthorizationState>{
+    class WithAuthorizationConnector extends React.Component<AuthorizationProps<T>> {
+
         /**
          * Проброс базовых свойств компонента
          *
@@ -51,115 +44,64 @@ export default function withAuthorization<T>(Application: NextPage<T>): React.Co
                 appProps = await Application.getInitialProps(context);
             }
 
-            return {...appProps}
-        }
-
-        /**
-         * Мапит текущий Redux state в свойства компонента
-         *
-         * @param store
-         * @param globalProperties
-         */
-        static mapStoreToProperties(
-            store: ReduxStore,
-            globalProperties: Partial<AuthorizationProps<T>>
-        ): Partial<AuthorizationProps<T>> {
-            return {
-                ...globalProperties,
-                token: store.Authorization.token,
-                authService: authService,
-                clientServerDetector: clientServerDetector
-            }
-        }
-
-        /**
-         * Подключение обработчиков событий к Redux store
-         *
-         * @param _dispatch
-         */
-        static mapActionsToStore(_dispatch: Dispatch<Action>): AuthorizationProps<any> {
-            return {
-                onResetAuthorization: () => {
-                    dispatcher().dispatch<"AUTHORIZATION_RESET">("AUTHORIZATION_RESET", undefined)
-                },
-                onUpdateToken: (token: string): void => {
-                    dispatcher().dispatch<"AUTHORIZATION_LOGGED_IN">("AUTHORIZATION_LOGGED_IN", token)
+            let token = "";
+            if (context.ctx) {
+                const cookie = cookies(context.ctx);
+                if (typeof cookie.token === "string") {
+                    token = cookie.token
                 }
             }
-        }
 
-        /**
-         * Пытаемся обновить токен пользователя, если не удается получить - разлогиниваем пользователя
-         */
-        componentDidMount() {
-            this.refreshToken()
-
-            const {publicRuntimeConfig} = getConfig();
-            this.setState({
-                interval: setInterval(() => {
-                    this.refreshToken()
-                }, publicRuntimeConfig.tokenRefreshTimeout * 1000)
-            })
-        }
-
-        /**
-         * Отключаем обновление токена при размонтировании компонента
-         */
-        componentWillUnmount() {
-            if (undefined === this.state.interval) {
-                return
+            let data: AuthorizationContext | undefined = undefined;
+            if (0 !== token.length) {
+                await initializeContextData(token)
+                data = getCurrentState()
             }
 
-            clearInterval(this.state.interval)
-            this.setState({
-                interval: undefined
-            })
+            return {
+                ...appProps,
+                token: token,
+                loadedAuthorizationContextState: data,
+            }
         }
 
         /**
-         * Конструктор компонента
+         * Подписываем приложение на контекст авторизации при создании компонента
          * @param props
          */
-        constructor(props: AuthorizationProps<T>) {
+        constructor(props) {
             super(props);
-            this.state = {
-                interval: undefined
-            }
-        }
 
-        /**
-         * Обновление токена пользователя
-         */
-        private refreshToken() {
-            if (this.props.clientServerDetector().isServer() || 0 === this.props.token.length) {
-                return
+            if (props.loadedAuthorizationContextState) {
+                setCurrentState(props.loadedAuthorizationContextState)
             }
-
-            this.props.authService().RefreshToken()
-                .then((data) => {
-                    if (undefined === data) {
-                        this.props.onResetAuthorization()
-                    } else {
-                        this.props.onUpdateToken(data)
-                    }
-                })
-                .catch(() => {
-                    this.props.onResetAuthorization()
-                })
         }
 
         /**
          * Рендеринг компонента
          */
         render(): ReactNode {
-            if (0 === this.props.token.length) {
-                return (<LoginPage {...this.props}/>)
-            }
+            const {
+                pageProps = {}
+            } = this.props;
 
-            return (<Application {...this.props}/>)
+            const {
+                isPrivate,
+                changePasswordToken,
+                isNeedShowChangePassword
+            } = pageProps
+
+            return (
+                <LoginPage
+                    isPrivate={isPrivate}
+                    changePasswordToken={changePasswordToken}
+                    isNeedShowChangePassword={isNeedShowChangePassword}
+                >
+                    <Application {...this.props}/>
+                </LoginPage>
+            )
         }
     }
 
-    // @ts-ignore
-    return connect(WithAuthorizationConnector.mapStoreToProperties, WithAuthorizationConnector.mapActionsToStore)(WithAuthorizationConnector);
+    return WithAuthorizationConnector;
 }

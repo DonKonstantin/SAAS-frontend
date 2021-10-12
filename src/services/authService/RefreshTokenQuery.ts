@@ -5,7 +5,7 @@ import {GraphQLQuery} from "../graphQLClient/GraphQLClient";
  * Результат запроса обновления токена пользователя
  */
 export interface RefreshTokenResult {
-    refresh_token: {
+    refreshToken: {
         token: string
     }
 }
@@ -20,7 +20,7 @@ export class RefreshTokenQuery implements GraphQLQuery<never> {
     constructor() {
         this.query = gql`
             query RefreshToken {
-                refresh_token {
+                refreshToken {
                     token
                 }
             }

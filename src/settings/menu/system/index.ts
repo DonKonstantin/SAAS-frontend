@@ -1,49 +1,20 @@
-import {OverridableComponent} from "@material-ui/core/OverridableComponent";
-import {SvgIconTypeMap} from "@material-ui/core/SvgIcon/SvgIcon";
+import {OverridableComponent} from "@mui/types";
+import {SvgIconTypeMap} from "@mui/material";
 
 /**
  * Пункт меню
  */
-export class MenuItem {
-    link: {
+export type MenuItem = {
+    link?: {
         href: string,
         as?: string,
     }
+    onClick?: {(): void}
     title: string
-    permission: string
+    permission?: string
+    level?: "realm" | "domain" | "project"
 
-    /**
-     * Конструктор пункта меню
-     *
-     * @param link
-     * @param title
-     * @param permission
-     */
-    constructor(link: {href: string, as?: string}, title: string, permission: string) {
-        this.link = link
-        this.title = title
-        this.permission = permission;
-    }
-}
+    icon?: OverridableComponent<SvgIconTypeMap>
 
-/**
- * Группа пунктов меню
- */
-export class MenuGroup {
-    title: string
-    icon: OverridableComponent<SvgIconTypeMap>
-    items: MenuItem[]
-
-    /**
-     * Конструктор группы пунктов меню
-     *
-     * @param title
-     * @param icon
-     * @param items
-     */
-    constructor(title: string, icon: OverridableComponent<SvgIconTypeMap>, items: MenuItem[]) {
-        this.title = title
-        this.icon = icon
-        this.items = items
-    }
+    subItems?: MenuItem[]
 }

@@ -1,0 +1,20 @@
+.left-menu-item {
+  &.is-active {
+    &.can-activate {
+      background: rgba(111, 147, 61, 0.2);
+      color: #6F933D;
+
+      svg {
+        color: #6F933D;
+      }
+    }
+
+    .arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  .arrow {
+    transition: .25s transform;
+  }
+}

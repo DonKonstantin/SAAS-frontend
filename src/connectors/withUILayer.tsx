@@ -1,12 +1,11 @@
 import React, {ReactNode} from "react";
 import UILayer from "../components/UILayer";
-import UIContent from "../components/UILayer/Content";
-import UITopPanel from "../components/UILayer/TopPanel";
-import UILeftDrawer from "../components/UILayer/LeftDrawer";
 import {NextPage} from "next";
 import {PageWithMetaTags} from "../containers/UILayer/PageWithMetaTags";
-import Head from "next/head";
+import {withRouter} from "next/router";
+import {WithRouterProps} from "next/dist/client/with-router";
 
+// Свойства страницы
 type AppWithPageProps<T extends object> = T & {
     pageProps: PageWithMetaTags<{}>
 }
@@ -27,7 +26,7 @@ export default function withUILayer<T extends object>(Application: NextPage<AppW
     /**
      * Компонент основного слоя UI
      */
-    return class WithUIConnector extends React.Component<AppWithPageProps<T>, WithUIConnectorState>{
+    class WithUIConnector extends React.Component<WithRouterProps & AppWithPageProps<T>, WithUIConnectorState> {
         /**
          * Проброс базовых свойств компонента
          *
@@ -46,7 +45,7 @@ export default function withUILayer<T extends object>(Application: NextPage<AppW
          * Конструктор компонента
          * @param props
          */
-        constructor(props: AppWithPageProps<T>) {
+        constructor(props: WithRouterProps & AppWithPageProps<T>) {
             super(props);
             this.state = {
                 isMenuOpen: false
@@ -54,40 +53,31 @@ export default function withUILayer<T extends object>(Application: NextPage<AppW
         }
 
         /**
-         * Переключение состояния левого меню
-         */
-        private toggleMenuState() {
-            this.setState({
-                ...this.state,
-                isMenuOpen: !this.state.isMenuOpen,
-            })
-        }
-
-        /**
          * Рендеринг компонента
          */
         render(): ReactNode {
-            let header = ""
-            let title = ""
+            let {title = "", isNeedUI} = this.props?.pageProps || {}
 
-            if (this.props.pageProps) {
-                header = this.props.pageProps.header
-                title = this.props.pageProps.title
+            // Обарботка ошибки 404
+            if (this.props.router.pathname === "/404") {
+                title = "UI.pages.error.404"
+                isNeedUI = false
+            }
+
+            // Обарботка ошибки 500
+            if (this.props.router.pathname === "/500") {
+                title = "UI.pages.error.500"
+                isNeedUI = false
             }
 
             return (
-                <UILayer>
-                    <Head>
-                        <title>{`OnlogSystem :: ${title}`}</title>
-                        <meta property="og:title" content={`OnlogSystem :: ${title}`} key="title" />
-                    </Head>
-                    <UITopPanel isMenuVisible={this.state.isMenuOpen} header={header} onChangeMenuState={() => this.toggleMenuState()} />
-                    <UILeftDrawer isMenuVisible={this.state.isMenuOpen} onChangeMenuState={() => this.toggleMenuState()} />
-                    <UIContent classes={{content: "main-container"}}>
-                        <Application {...this.props}/>
-                    </UIContent>
+                <UILayer title={title} isNeedUI={isNeedUI}>
+                    <Application {...this.props}/>
                 </UILayer>
             )
         }
     }
+
+    // @ts-ignore
+    return withRouter(WithUIConnector)
 }

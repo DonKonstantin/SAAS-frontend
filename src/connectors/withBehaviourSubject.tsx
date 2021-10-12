@@ -1,6 +1,5 @@
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, OperatorFunction} from "rxjs";
 import React, {useEffect, useState} from "react";
-import {auditTime} from "rxjs/operators";
 
 /**
  * HOC компонент, реализующий функционал синхронизации свойств переданного компонента
@@ -20,10 +19,12 @@ import {auditTime} from "rxjs/operators";
  *
  * @param context$
  * @param actions
+ * @param pipeModifications
  */
 const withBehaviourSubject = <Props, State, Actions extends { [T in string]: { (...args: any[]): any } }>(
     context$: BehaviorSubject<State>,
     actions: Actions,
+    ...pipeModifications: OperatorFunction<any, State>[]
 ): (Component: React.ComponentType<Props & State & Actions>) => React.ComponentType<Props> => {
     return Component => (props: Props) => {
         const [state, setState] = useState<State>(context$.getValue());
@@ -31,7 +32,8 @@ const withBehaviourSubject = <Props, State, Actions extends { [T in string]: { (
         // Подписываемся на изменения
         useEffect(() => {
             // Через pipe замедляем шину. Пробрасываем только конечное сотояние
-            const subscription = context$.pipe(auditTime(100)).subscribe({
+            // @ts-ignore
+            const subscription = context$.pipe(...pipeModifications).subscribe({
                 next: value => setState(value),
             });
 

@@ -1,33 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap');
-@import '~handsontable/dist/handsontable.full.css';
-
+@import "mixins";
 @import "loadingBlocker";
 @import "listItems";
 @import "editPage";
 @import "search";
 @import "icons";
-@import "offers";
 @import "loadingUnloadingBlock";
-@import "priceConditionsConstructor/styles";
-@import "shoulderSteps";
-@import "custom";
 @import "components";
-
-.main-container {
-  box-sizing: border-box;
-  position: relative;
-}
-
-body {
-  td, th, div, b, span {
-    user-select: none;
-  }
-}
+@import "pages";
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
-input:-webkit-autofill:active  {
+input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 

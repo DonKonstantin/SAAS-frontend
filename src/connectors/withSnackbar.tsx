@@ -1,14 +1,14 @@
 import React, {ReactNode} from "react";
-import {withSnackbar, WithSnackbarProps} from "notistack";
-import {registerEnqueueSnackbar} from "../services/notifications";
+import {WithSnackbarProps} from "notistack";
 import {NextPage} from "next";
+import SnackbarLayer from "../components/SnackbarLayer";
 
 /**
  * Сохраняет очередь уведомлений SnackbarProvider в
  *
  * @param Application
  */
-export default function WithSnackbar<T>(Application: NextPage<T>): React.ComponentClass<T> {
+export default function withSnackbar<T>(Application: NextPage<T>): React.ComponentClass<T> {
     type Properties = T & WithSnackbarProps;
 
     class WithSnackbar extends React.Component<Properties> {
@@ -30,11 +30,13 @@ export default function WithSnackbar<T>(Application: NextPage<T>): React.Compone
          * Рендеринг компонента
          */
         render(): ReactNode {
-            registerEnqueueSnackbar(this.props.enqueueSnackbar);
-            return (<Application {...this.props}/>)
+            return (
+                <SnackbarLayer>
+                    <Application {...this.props}/>
+                </SnackbarLayer>
+            )
         }
     }
 
-    // @ts-ignore
-    return withSnackbar<Properties>(WithSnackbar)
+    return WithSnackbar
 }

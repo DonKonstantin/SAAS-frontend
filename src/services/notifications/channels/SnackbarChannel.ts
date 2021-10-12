@@ -34,7 +34,7 @@ export class SnackbarChannel implements DispatcherChannel {
         this.enqueueSnackbar(notification.message, {
             variant: notification.type,
             preventDuplicate: false,
-            autoHideDuration: 1500,
+            autoHideDuration: 3000,
         })
     }
 
