@@ -5,10 +5,10 @@ import {graphQLClient} from "../../../graphQLClient";
 import {loggerFactory} from "../../../logger";
 
 // Фабрика загрузчика базовых данных
-export const filterBaseValuesLoader: {(token?: string): FilterBaseValuesLoaderInterface} = (token?: string) => (
+export const filterBaseValuesLoader: {(token?: string): FilterBaseValuesLoaderInterface} = () => (
     new FilterBaseValuesLoader(
         baseLoadProcessors(),
-        graphQLClient(token),
+        graphQLClient(),
         loggerFactory(),
     )
 )

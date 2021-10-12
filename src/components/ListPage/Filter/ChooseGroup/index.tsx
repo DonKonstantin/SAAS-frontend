@@ -1,14 +1,14 @@
 import React from "react";
 import {FilterFieldProperties} from "../../../../services/listDataLoader/filterLoader/types";
 import {
-    createStyles, FormControl,
+    FormControl,
     FormControlLabel, FormLabel,
     Radio,
     RadioGroup,
     Theme,
     Tooltip,
-    withStyles
-} from "@material-ui/core";
+} from "@mui/material";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({

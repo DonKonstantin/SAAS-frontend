@@ -2,7 +2,6 @@ import {Schemas} from "../../schema";
 import React from "react";
 import {PageUrl} from "../../../components/Breadcrumbs";
 import {ListPageConfiguration} from "./list";
-import {Language} from "../../../reduxStore/stores/Languages";
 import {AdditionEditParams} from "../../../containers/EntityEdit";
 
 // Тип, описывающий размеры группы
@@ -44,7 +43,6 @@ export interface EditFieldProperties<T extends keyof Schemas, F extends keyof Sc
     onAdditionDataChange: {(additionData: any): void}   // Обработчик изменения дополнительных данных, загруженных загрузчиком
     mainLangId: string                                  // ID основного языка
     secondaryLangId: string                             // ID дополнительного языка
-    languages: Language[]                               // Все загруженные языки системы
 }
 
 // Свойства поля формы редактирования
@@ -103,7 +101,6 @@ export interface CustomComponentProps<T extends keyof Schemas> {
     customComponentData: any                // Кастомные данные, загруженные для дополнительного компонента
     mainLangId: string                      // ID основного языка
     secondaryLangId: string                 // ID дополнительного языка
-    languages: Language[]                   // Все загруженные языки системы
     onChange: {(values: EntityValues<T>): void}                         // Обработка изменения значений формы
     onAdditionDataChange: {(additionData: (any | null)[][]): void}      // Обработка изменения дополнительных данных
 }
@@ -118,7 +115,6 @@ export interface EditFormGroupProperties<T extends keyof Schemas> {
     validationResults: ValidationResult[]   // Результаты валидации группы
     mainLangId: string                      // ID основного языка
     secondaryLangId: string                 // ID дополнительного языка
-    languages: Language[]                   // Все загруженные языки системы
     onChangeValidationResults: {(results: ValidationResult[]): void}    // Обработка изменения результатов валидации
     onChange: {(values: EntityValues<T>): void}                         // Обработка изменения значений формы
     onAdditionDataChange: {(additionData: (any | null)[]): void}        // Обработка изменения дополнительных данных

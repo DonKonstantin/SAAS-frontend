@@ -1,22 +1,14 @@
 import React from "react";
 import {ListFieldProperties} from "../../../../../../services/listDataLoader/listLoader/types";
 import {RelationValue} from "../../../../../../services/listDataLoader/listLoader/listValues/RelationValue";
-import TableCell from "@material-ui/core/TableCell";
+import TableCell from "@mui/material/TableCell";
 
 /**
  * Компонент вывода локализованного поля
  */
 export class LocalizedFieldCell extends React.Component<ListFieldProperties<RelationValue[]>> {
     render() {
-        const secondaryLang = this.props.languages.find(lang => lang.id === this.props.secondaryLangId)
-        if (!secondaryLang) {
-            return null
-        }
-
         let direction: 'inherit' | 'left' | 'center' | 'right' | 'justify' = "left"
-        if (secondaryLang.is_right_text_align) {
-            direction = "right"
-        }
 
         const secondaryMessage = this.props.value.find(val => val.relationFieldValues.lang_id === this.props.secondaryLangId)
         const primaryMessage = this.props.value.find(val => val.relationFieldValues.lang_id === this.props.mainLangId)
@@ -36,18 +28,14 @@ export class LocalizedFieldCell extends React.Component<ListFieldProperties<Rela
                 const primary = `${primaryMessage?.relationFieldValues.message}`
                 const secondary = `${secondaryMessage?.relationFieldValues.message}`
 
-                if (direction === "right") {
-                    drawMessage = `(${primary}) ${secondary}`
-                } else {
-                    drawMessage = `${secondary} (${primary})`
-                }
+                drawMessage = `${secondary} (${primary})`
                 break;
         }
 
         direction = this.props.configuration.align ? this.props.configuration.align : direction
         const styles = this.props.configuration.width ? {width: this.props.configuration.width} : {}
         return (
-            <TableCell padding={this.props.configuration.padding} style={styles} align={direction}>
+            <TableCell style={styles} align={direction}>
                 {drawMessage}
             </TableCell>
         )

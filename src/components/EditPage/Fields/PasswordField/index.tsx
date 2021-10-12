@@ -3,19 +3,18 @@ import {EditFieldProperties, EditValueType} from "../../../../settings/pages/sys
 import {Schemas} from "../../../../settings/schema";
 import {TFieldsFactory} from "../interfaces";
 import {
-    createStyles,
     FormControl, FormHelperText,
     IconButton,
     InputAdornment,
     InputLabel,
     OutlinedInput,
     Theme,
-    Tooltip, withStyles
-} from "@material-ui/core";
+    Tooltip,
+} from "@mui/material";
 import clsx from "clsx";
-import {Visibility, VisibilityOff} from "@material-ui/icons";
-import RestoreOutlinedIcon from "@material-ui/icons/RestoreOutlined";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 import {ResetDefaultValueForField} from "../../../../services/helpers/ResetDefaultValueForField";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Настройки поля
 export interface Params {
@@ -125,7 +124,7 @@ export const PasswordField: TFieldsFactory<Params> = (params: Params = {}) => {
                                         color={!!this.props.error ? `secondary` : `primary`}
                                         edge="end"
                                     >
-                                        {!this.state.isVisibleValue ? <Visibility /> : <VisibilityOff />}
+                                        {/*{!this.state.isVisibleValue ? <Visibility /> : <VisibilityOff />}*/}
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={`Восстановить значение по умолчанию`}>

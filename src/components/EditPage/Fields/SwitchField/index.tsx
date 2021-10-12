@@ -2,7 +2,7 @@ import React from "react";
 import {TFieldsFactory} from "../interfaces";
 import {EditFieldProperties, EditValueType} from "../../../../settings/pages/system/edit";
 import {Schemas} from "../../../../settings/schema";
-import {FormControlLabel, Switch, Tooltip} from "@material-ui/core";
+import {FormControlLabel, Switch, Tooltip} from "@mui/material";
 
 // Настройки поля
 export interface Params {

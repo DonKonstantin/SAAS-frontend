@@ -1,5 +1,5 @@
 import React from "react";
-import {CircularProgress, LinearProgress} from "@material-ui/core";
+import {CircularProgress, LinearProgress} from "@mui/material";
 import clsx from 'clsx';
 
 // Свойства компонента загрузчика

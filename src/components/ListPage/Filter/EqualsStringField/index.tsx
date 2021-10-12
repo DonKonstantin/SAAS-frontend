@@ -1,6 +1,6 @@
 import React from "react";
 import {FilterFieldProperties} from "../../../../services/listDataLoader/filterLoader/types";
-import {TextField, Tooltip} from "@material-ui/core";
+import {TextField, Tooltip} from "@mui/material";
 
 // State компонента
 interface FieldState {

@@ -7,7 +7,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle, FormControlLabel, Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 
 // Свойства диалогового окна удаления сущностей
 export interface DeleteDialogProps {

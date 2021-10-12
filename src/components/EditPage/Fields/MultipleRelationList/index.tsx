@@ -3,8 +3,8 @@ import React from "react";
 import {TFieldsFactory} from "../interfaces";
 import {EditFieldProperties, EntityValues} from "../../../../settings/pages/system/edit";
 import {relationVariantsDataLoader} from "../../../../services/relationVariantsDataLoader";
-import {Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, Tooltip} from "@material-ui/core";
-import RestoreOutlinedIcon from "@material-ui/icons/RestoreOutlined";
+import {Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, Tooltip} from "@mui/material";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 import {ResetDefaultValueForField} from "../../../../services/helpers/ResetDefaultValueForField";
 
 // Настройки поля

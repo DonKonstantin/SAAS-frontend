@@ -5,7 +5,7 @@ import {
     ValidationResult
 } from "../../../settings/pages/system/edit";
 import {Schemas} from "../../../settings/schema";
-import {Grid} from "@material-ui/core";
+import {Grid} from "@mui/material";
 import {GroupProps} from "../DefaultGroup";
 
 // Компонент вывода группы полей формы без оформления
@@ -95,7 +95,6 @@ class ClearGroup extends React.Component<GroupProps> {
                                     onAdditionDataChange={data => this.handleChangeAdditionData(i, data)}
                                     mainLangId={this.props.mainLangId}
                                     secondaryLangId={this.props.secondaryLangId}
-                                    languages={this.props.languages}
                                 />
                             </Grid>
                         )

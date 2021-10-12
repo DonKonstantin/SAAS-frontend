@@ -18,10 +18,9 @@ export class RelationVariantsDataLoader implements RelationVariantsDataLoaderInt
 
     /**
      * Конструктор сервиса
-     * @param token
      */
-    constructor(token?: string) {
-        this.client = graphQLClient(token)
+    constructor() {
+        this.client = graphQLClient()
     }
 
     /**

@@ -1,35 +1,31 @@
-import App, {AppContext} from 'next/app'
+import {AppProps} from 'next/app'
 import React from 'react'
-import withCoreConnections from "../connectors/withCoreConnections";
-
 import '../styles/styles.scss'
+import LoginPage from "../components/LoginPage";
+import UILayout from "../layouts/UILayout";
+import SnackbarLayer from "../components/SnackbarLayer";
+import MaterialUILayout from "../layouts/MaterialUILayout";
+import LocalizationLayer from "../layouts/LocalizationLayer";
+import DataLoadingLayer from "../layouts/DataLoadingLayer";
 
-/**
- * Основная обертка приложения
- */
-class AdminApplication extends App {
-    /**
-     * Предварительная загрузка данных страницы
-     * @param _
-     */
-    static async getInitialProps({Component, ctx}: AppContext): Promise<any> {
-        let pageProps = {};
-        if (Component.getInitialProps !== undefined) {
-            pageProps = await Component.getInitialProps(ctx);
-        }
-
-        return {pageProps: {...pageProps}}
-    }
-
-    /**
-     * Рендеринг страницы
-     */
-    render() {
-        const { Component, pageProps } = this.props
-        return <Component {...pageProps} />
-    }
+// Основной шаблон приложения
+function CrmApp({Component, pageProps}: AppProps) {
+    return (
+        <LocalizationLayer>
+            <MaterialUILayout>
+                <DataLoadingLayer>
+                    <SnackbarLayer>
+                        <LoginPage {...pageProps}>
+                            <UILayout {...pageProps}>
+                                <Component {...pageProps} />
+                            </UILayout>
+                        </LoginPage>
+                    </SnackbarLayer>
+                </DataLoadingLayer>
+            </MaterialUILayout>
+        </LocalizationLayer>
+    )
 }
 
-// Экспортируем приложение
-// @ts-ignore
-export default withCoreConnections(AdminApplication)
+// Экспортируем компонент
+export default CrmApp

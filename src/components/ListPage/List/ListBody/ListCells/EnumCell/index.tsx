@@ -1,7 +1,7 @@
 import React from "react";
 import {ListFieldProperties} from "../../../../../../services/listDataLoader/listLoader/types";
 import columnDirection from "../../../helpers/columnDirection";
-import TableCell from "@material-ui/core/TableCell";
+import TableCell from "@mui/material/TableCell";
 import {EnumValue} from "../../../../../../services/listDataLoader/listLoader/listValues/EnumValue";
 
 /**
@@ -19,7 +19,7 @@ export class EnumCell extends React.Component<ListFieldProperties<EnumValue>> {
             : `-`
 
         return (
-            <TableCell padding={this.props.configuration.padding} style={styles} align={direction}>
+            <TableCell style={styles} align={direction}>
                 {currentValue}
             </TableCell>
         )

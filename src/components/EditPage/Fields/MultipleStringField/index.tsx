@@ -2,9 +2,9 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {EditFieldProperties} from "../../../../settings/pages/system/edit";
 import {Schemas} from "../../../../settings/schema";
 import {TFieldsFactory} from "../interfaces";
-import {Button, Grid, Tooltip} from "@material-ui/core";
+import {Button, Grid, Tooltip} from "@mui/material";
 import SingleStringRowComponent from "./SingleStringRowComponent";
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 
 // Настройки поля
 export interface Params {
@@ -80,7 +80,7 @@ export const MultipleStringField: TFieldsFactory<Params> = (params: Params = {})
                 }, []);
 
                 return (
-                    <Grid container spacing={1} justify={"center"}>
+                    <Grid container spacing={1}>
                         {stateValue.map((val, i) => (
                             <Grid item xs={12} key={`container-${i}`}>
                                 <SingleStringRowComponent

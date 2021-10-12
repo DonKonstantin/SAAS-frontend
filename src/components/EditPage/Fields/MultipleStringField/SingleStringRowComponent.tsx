@@ -1,21 +1,20 @@
 import {
-    createStyles,
     FormControl,
     FormHelperText,
     Grid,
     IconButton,
     InputAdornment,
     InputLabel,
-    makeStyles,
     OutlinedInput,
     Theme,
     Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import React, {useCallback} from "react";
 import clsx from "clsx";
 import {EditFieldProperties} from "../../../../settings/pages/system/edit";
 import {Schemas} from "../../../../settings/schema";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
+import {createStyles, makeStyles} from "@mui/styles";
 
 // Стили компонента
 const useStyles = makeStyles((theme: Theme) => createStyles({

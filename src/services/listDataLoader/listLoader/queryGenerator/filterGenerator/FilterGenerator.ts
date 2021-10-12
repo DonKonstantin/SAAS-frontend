@@ -48,8 +48,8 @@ export class FilterGenerator implements FilterGeneratorInterface {
 
                 // @ts-ignore
                 const query: string = this.processors[currentValue.configuration.filterType].GenerateFilter({
-                    currentValue: currentValue,
-                    originalValue: originValue,
+                    // currentValue: currentValue,
+                    // originalValue: originValue,
                 });
 
                 if (0 !== query.length) {

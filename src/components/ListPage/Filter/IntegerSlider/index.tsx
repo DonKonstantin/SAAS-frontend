@@ -1,6 +1,7 @@
 import React from "react";
 import {FilterFieldProperties} from "../../../../services/listDataLoader/filterLoader/types";
-import {createStyles, Slider, Theme, Tooltip, Typography, withStyles} from "@material-ui/core";
+import {Slider, Theme, Tooltip, Typography} from "@mui/material";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({

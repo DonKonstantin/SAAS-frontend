@@ -6,7 +6,8 @@ import {
     ValidationResult
 } from "../../../settings/pages/system/edit";
 import {Schemas} from "../../../settings/schema";
-import {createStyles, Grid, Paper, Theme, withStyles} from "@material-ui/core";
+import {Grid, Paper, Theme} from "@mui/material";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({
@@ -114,7 +115,6 @@ class DefaultGroup extends React.Component<GroupProps> {
                                         onAdditionDataChange={data => this.handleChangeAdditionData(i, data)}
                                         mainLangId={this.props.mainLangId}
                                         secondaryLangId={this.props.secondaryLangId}
-                                        languages={this.props.languages}
                                     />
                                 </Grid>
                             )

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, createStyles, Grid, Paper, Theme, Tooltip, Typography, withStyles} from "@material-ui/core";
+import {Button, Grid, Paper, Theme, Tooltip, Typography} from "@mui/material";
 import {ListResponse} from "../../../services/listDataLoader/listLoader/types";
 import {Schemas} from "../../../settings/schema";
 import {listSchemaConfiguration} from "../../../settings/pages";
@@ -12,8 +12,9 @@ import {
 } from "../../../services/listDataLoader/filterLoader/types";
 import {LoadedFilterData} from "../../../services/listDataLoader/filterLoader/interfaces";
 import {filterFieldComponents} from "./components";
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import {clientServerDetector} from "../../../services/clientServerDetector";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({

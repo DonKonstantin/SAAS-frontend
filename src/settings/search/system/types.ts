@@ -1,6 +1,6 @@
 import {Schemas} from "../../schema";
 import React from "react";
-import {IconProps} from "@material-ui/core";
+import {IconProps} from "@mui/material";
 
 // Свойства компонента вывода информации по найденной сущности
 export class SearchResultStringProps<T, K, F> {

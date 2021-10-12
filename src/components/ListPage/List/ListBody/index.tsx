@@ -1,11 +1,10 @@
 import React from "react";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
 import {ListResponse} from "../../../../services/listDataLoader/listLoader/types";
 import {Schemas} from "../../../../settings/schema";
 import ListRow, {FirstCellProps} from "./ListRow";
-import {Language} from "../../../../reduxStore/stores/Languages";
 import {ListPageConfiguration} from "../../../../settings/pages/system/list";
 
 // Свойства тела таблицы
@@ -17,7 +16,6 @@ export interface ListBodyProps {
     dense: boolean
     mainLangId: string
     secondaryLangId: string
-    languages: Language[]
     checkedItems: any[]
     onCheckItem: {(item: any): void}
     onUncheckItem: {(item: any): void}
@@ -70,7 +68,6 @@ export class ListBody extends React.Component<ListBodyProps> {
                             onDeleteItems={this.props.onDeleteItems}
                             mainLangId={this.props.mainLangId}
                             secondaryLangId={this.props.secondaryLangId}
-                            languages={this.props.languages}
                             onChangeResponse={this.props.onChangeResponse}
                         />
                     )

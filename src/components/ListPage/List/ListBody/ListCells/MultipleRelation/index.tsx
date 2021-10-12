@@ -1,7 +1,7 @@
 import React from "react";
 import {ListFieldProperties} from "../../../../../../services/listDataLoader/listLoader/types";
 import columnDirection from "../../../helpers/columnDirection";
-import TableCell from "@material-ui/core/TableCell";
+import TableCell from "@mui/material/TableCell";
 import {RelationValue} from "../../../../../../services/listDataLoader/listLoader/listValues/RelationValue";
 
 /**
@@ -14,7 +14,7 @@ export class MultipleRelationCell extends React.Component<ListFieldProperties<Re
 
         if (!this.props.value) {
             return (
-                <TableCell padding={this.props.configuration.padding} align={direction}>
+                <TableCell align={direction}>
                     -
                 </TableCell>
             )
@@ -22,7 +22,7 @@ export class MultipleRelationCell extends React.Component<ListFieldProperties<Re
 
         const styles = this.props.configuration.width ? {width: this.props.configuration.width} : {}
         return (
-            <TableCell padding={this.props.configuration.padding} style={styles} align={direction}>
+            <TableCell style={styles} align={direction}>
                 {this.props.value.map((val, i) => (
                     <React.Fragment key={`cell-val-${i}`}>
                         {i !== 0 && (<br/>)}

@@ -7,10 +7,10 @@ import {SimpleFieldParsers} from "./SimpleFieldParsers";
 import {schemaValueConverter} from "../../../../schemaValueConverter";
 import {EnumFieldsParser} from "./EnumFieldsParser";
 
-export type FieldParsers = {[P in keyof ListFieldValueTypes]: FieldParsersInterface<P>}
-export const fieldParsers: {(token?: string): FieldParsers} = (token?: string): FieldParsers => {
+export type FieldParsers = { [P in keyof ListFieldValueTypes]: FieldParsersInterface<P> }
+export const fieldParsers: { (token?: string): FieldParsers } = (): FieldParsers => {
     const logger = loggerFactory();
-    const client = graphQLClient(token);
+    const client = graphQLClient();
 
     return {
         MultipleRelation: new RelationFieldsParser<"MultipleRelation">(logger, client),

@@ -1,17 +1,17 @@
 import React from "react";
 import {Schemas} from "../../../../settings/schema";
 import {OrderParameter} from "../../../../services/listDataLoader/listLoader/interfaces";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
 import columnDirection from "../helpers/columnDirection";
-import {withStyles} from "@material-ui/styles";
-import {createStyles, Theme} from "@material-ui/core/styles";
-import TableCell from "@material-ui/core/TableCell";
+import {Theme} from "@mui/material/styles";
+import TableCell from "@mui/material/TableCell";
 import {ListFieldConfiguration, ListResponse} from "../../../../services/listDataLoader/listLoader/types";
-import {Checkbox, CheckboxProps, Tooltip} from "@material-ui/core";
-import {blue} from "@material-ui/core/colors";
+import {Checkbox, CheckboxProps, Tooltip} from "@mui/material";
+import {blue} from "@mui/material/colors";
 import {ListPageConfiguration} from "../../../../settings/pages/system/list";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = createStyles({
@@ -293,7 +293,6 @@ class ListHeader extends React.Component<ListHeaderProps, ListHeaderState> {
                             return (
                                 <StyledTableCell
                                     key={`table-column-${i}`}
-                                    padding={field.padding}
                                     align={direction}
                                     style={styles}
                                     sortDirection={this.state.orders[field.field] ? this.state.orders[field.field] : false}

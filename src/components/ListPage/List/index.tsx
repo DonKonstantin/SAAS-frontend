@@ -1,19 +1,17 @@
 import React from 'react';
-import {createStyles} from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableContainer from '@material-ui/core/TableContainer';
-import Paper from '@material-ui/core/Paper';
+import Table from '@mui/material/Table';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 import ListHeader from "./ListHeader";
 import {ListResponse} from "../../../services/listDataLoader/listLoader/types";
 import {Schemas} from "../../../settings/schema";
 import {OrderParameter} from "../../../services/listDataLoader/listLoader/interfaces";
 import {ListBody} from "./ListBody";
 import {ListFooter} from "./ListFooter";
-import {withStyles} from "@material-ui/styles";
 import LoadingBlocker from "../../LoadingBlocker";
 import clsx from "clsx";
-import {Language} from "../../../reduxStore/stores/Languages";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = createStyles({
@@ -34,7 +32,6 @@ export interface ListProps {
     hasEditAccess: boolean
     mainLangId: string
     secondaryLangId: string
-    languages: Language[]
     dense: boolean
     checkedItems: any[]
     classes: {
@@ -82,7 +79,6 @@ class ListComponent extends React.Component<ListProps> {
                             onDeleteItems={this.props.onDeleteItems}
                             mainLangId={this.props.mainLangId}
                             secondaryLangId={this.props.secondaryLangId}
-                            languages={this.props.languages}
                             dense={this.props.dense}
                             onChangeResponse={this.props.onChangeResponse}
                         />

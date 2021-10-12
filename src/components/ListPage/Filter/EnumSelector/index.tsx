@@ -1,7 +1,6 @@
 import React from "react";
 import {FilterFieldProperties} from "../../../../services/listDataLoader/filterLoader/types";
-import {FormControl, InputLabel, MenuItem, Select, Tooltip} from "@material-ui/core";
-import {SimpleComponentValue} from "../../../../services/listDataLoader/filterLoader/fieldValues/SimpleComponentValue";
+import {FormControl, InputLabel, MenuItem, Select, Tooltip} from "@mui/material";
 import {SchemaField, Schemas} from "../../../../settings/schema";
 
 /**
@@ -20,23 +19,24 @@ export class EnumSelectorField extends React.Component<FilterFieldProperties<"En
         return (
             <Tooltip title={`Фильтрация по полному соответствию значения поля "${this.props.configuration.title}"`}>
                 <FormControl variant="outlined" fullWidth>
-                    <InputLabel id={`label-for-filter-select-${this.props.configuration.field}`}>{this.props.configuration.title}</InputLabel>
+                    <InputLabel
+                        id={`label-for-filter-select-${this.props.configuration.field}`}>{this.props.configuration.title}</InputLabel>
                     <Select
                         labelId={`label-for-filter-select-${this.props.configuration.field}`}
                         id={`filter-select-${this.props.configuration.field}`}
                         value={this.props.value.value ? this.props.value.value : "--none--"}
                         color={`primary`}
-                        onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                            let val: SimpleComponentValue<string | null> = {value: null};
-                            if (event.target.value) {
-                                val.value = event.target.value as string;
-                                if (val && val.value === "--none--") {
-                                    val.value = null
-                                }
-                            }
-
-                            this.props.onChange(val)
-                        }}
+                        // onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                        //     let val: SimpleComponentValue<string | null> = {value: null};
+                        //     if (event.target.value) {
+                        //         val.value = event.target.value as string;
+                        //         if (val && val.value === "--none--") {
+                        //             val.value = null
+                        //         }
+                        //     }
+                        //
+                        //     this.props.onChange(val)
+                        // }}
                         label={this.props.configuration.title}
                     >
                         <MenuItem value={"--none--"}>

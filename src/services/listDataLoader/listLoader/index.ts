@@ -8,7 +8,7 @@ import {loggerFactory} from "../../logger";
 export const listLoader: {(token?: string): ListLoaderInterface} = (token?: string): ListLoaderInterface => (
     new ListLoader(
         queryGenerator(token),
-        graphQLClient(token),
+        graphQLClient(),
         loggerFactory(),
         token,
     )

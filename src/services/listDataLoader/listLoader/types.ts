@@ -3,8 +3,6 @@ import {Schemas} from "../../../settings/schema";
 import {SimpleValues} from "./listValues/SimpleValues";
 import {RelationValue} from "./listValues/RelationValue";
 import {ListLoadingParameters} from "./interfaces";
-import {Language} from "../../../reduxStore/stores/Languages";
-import {Padding} from "@material-ui/core/Table";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
 import {FirstCellProps} from "../../../components/ListPage/List/ListBody/ListRow";
 import {EnumValue} from "./listValues/EnumValue";
@@ -14,7 +12,6 @@ export interface ListFieldProperties<T> {
     align: AlignRow                                     // Выравнивание ячейки
     mainLangId: string                                  // Основной язык админки
     secondaryLangId: string                             // Дополнительный язык админки
-    languages: Language[]                               // Список загруженных системных языков
     schema: keyof Schemas                               // Схема, к которой относится ячейка
     value: T                                            // Текущее значение поля
     rowValues: ListFieldRowColumnValues<keyof Schemas>  // Значение полей текущей строки
@@ -23,7 +20,8 @@ export interface ListFieldProperties<T> {
 }
 
 // Доступные системные типы полей
-export type ListFieldTypes = {[P in keyof ListFieldValueTypes]: React.ComponentType<ListFieldProperties<ListFieldValueTypes[P]>>}
+export type ListFieldTypes = { [P in keyof ListFieldValueTypes]: React.ComponentType<ListFieldProperties<ListFieldValueTypes[P]>> }
+
 export class ListFieldValueTypes {
     Simple: SimpleValues;
     Relation: RelationValue;
@@ -38,8 +36,9 @@ export type RelationConfig<T extends keyof Schemas> = {
 }
 
 // Конфигурация поля
-type ListFieldTypesConfig = {[P in keyof ListFieldValueTypes]: any}
+type ListFieldTypesConfig = { [P in keyof ListFieldValueTypes]: any }
 export type FieldOfSchema<T extends keyof Schemas> = keyof Schemas[T]['fields']
+
 export class DefinedListFieldTypesConfig<T extends keyof Schemas> implements ListFieldTypesConfig {
     MultipleRelation: RelationConfig<T>;
     Relation: RelationConfig<T>;
@@ -58,13 +57,12 @@ export interface AdditionProps<T, K> {
     hasEditAccess: boolean              // Флаг наличия прав редактирования
     mainLangId: string                  // Основной язык системы
     secondaryLangId: string             // Дополнительный язык системы
-    languages: Language[]               // Системные языки
     isLastRow: boolean                  // Является последней строкой
     firstCell?: React.ComponentType<FirstCellProps>      // Компонент отображения дополнительной первой ячейки (Для древовидных листингов)
     configuration: ListPageConfiguration<keyof Schemas>  // Набор конфигурации для листингов
-    onEditItem: {(item: any): void}                      // Обработчик кнопки редактирования
-    onDeleteItems: {(items: any[]): void}                // Обработчик кнопки удаления
-    onChangeAdditionData: {(additionData: any): void}    // Обработчик изменения дополнительных загруженных данных
+    onEditItem: { (item: any): void }                      // Обработчик кнопки редактирования
+    onDeleteItems: { (items: any[]): void }                // Обработчик кнопки удаления
+    onChangeAdditionData: { (additionData: any): void }    // Обработчик изменения дополнительных загруженных данных
 }
 
 // Интерфейс конфигурации стандартного поля
@@ -76,10 +74,10 @@ export interface FieldType<K extends keyof ListFieldValueTypes> {
 
 // Конфигурация поля листинга сущностей
 export type AlignRow = 'inherit' | 'left' | 'center' | 'right' | 'justify';
+
 export interface ListFieldConfiguration<T extends keyof Schemas, K extends keyof Schemas[T]["fields"]> {
     field: K            // Отображаемое поле
     width?: number      // Фиксированная ширина колонки
-    padding?: Padding;  // Измененные паддинги для колонки
     align?: AlignRow;   // Выравнивание ячеек (кастомное)
     title: string       // Заголовок поля
     isEnabled: boolean  // Флаг отображения поля
@@ -105,7 +103,8 @@ export type ListResponse<T extends keyof Schemas> = {
 }
 
 // Параметры конфигурации листинга элементов
-export type FieldsList<T extends keyof Schemas> = {[P in keyof Schemas[T]['fields']]: ListFieldConfiguration<T, any>}
+export type FieldsList<T extends keyof Schemas> = { [P in keyof Schemas[T]['fields']]: ListFieldConfiguration<T, any> }
+
 export interface ListFieldsConfiguration<T extends keyof Schemas> {
     fields: FieldsList<T>                                             // Параметры отображения базовых полей сущности
     actions?: React.ComponentType<AdditionProps<ListFieldRow<T>, any>>    // Дополнительные действия, которые должны отображаться помимо основных

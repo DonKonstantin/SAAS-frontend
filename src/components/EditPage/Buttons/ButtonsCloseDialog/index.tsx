@@ -6,7 +6,7 @@ import {
     DialogContentText,
     DialogTitle,
     Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import {clientServerDetector} from "../../../../services/clientServerDetector";
 
 interface ButtonsCloseDialogProps {

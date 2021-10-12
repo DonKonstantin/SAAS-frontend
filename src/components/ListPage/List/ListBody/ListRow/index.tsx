@@ -1,5 +1,5 @@
 import React from "react";
-import TableRow from "@material-ui/core/TableRow";
+import TableRow from "@mui/material/TableRow";
 import {
     AdditionProps, FieldType,
     ListFieldProperties, ListFieldRow,
@@ -9,13 +9,13 @@ import {
 import {Schemas} from "../../../../../settings/schema";
 import columnDirection from "../../helpers/columnDirection";
 import {listCells} from "../ListCells";
-import EditIcon from '@material-ui/icons/Edit';
-import TableCell from "@material-ui/core/TableCell";
-import {Checkbox, createStyles, IconButton, Tooltip, withStyles} from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import TableCell from "@mui/material/TableCell";
+import {Checkbox, IconButton, Tooltip} from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 import {ListPageConfiguration} from "../../../../../settings/pages/system/list";
-import {Language} from "../../../../../reduxStore/stores/Languages";
 import clsx from "clsx";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = createStyles({
@@ -46,7 +46,6 @@ export interface ListRowProps {
     configuration: ListPageConfiguration<keyof Schemas>
     mainLangId: string
     secondaryLangId: string
-    languages: Language[]
     dense: boolean
     isLastRow: boolean
     firstCell?: React.ComponentType<FirstCellProps>
@@ -218,7 +217,6 @@ class ListRow extends React.Component<ListRowProps, any> {
                             configuration={field}
                             mainLangId={this.props.mainLangId}
                             secondaryLangId={this.props.secondaryLangId}
-                            languages={this.props.languages}
                             rowValues={this.props.row.columnValues}
                         >{`${value}`}</Component>
                     )
@@ -275,7 +273,6 @@ class ListRow extends React.Component<ListRowProps, any> {
         const isChangeable = this.props.hasEditAccess && schema.isChangeable;
         const additionProps: AdditionProps<any, any> = {
             configuration: this.props.configuration,
-            languages: this.props.languages,
             mainLangId: this.props.mainLangId,
             secondaryLangId: this.props.secondaryLangId,
             item: this.props.row,

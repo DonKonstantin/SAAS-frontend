@@ -9,8 +9,8 @@ import {
     InputLabel,
     OutlinedInput,
     Tooltip,
-} from "@material-ui/core";
-import RestoreOutlinedIcon from "@material-ui/icons/RestoreOutlined";
+} from "@mui/material";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 import {ResetDefaultValueForField} from "../../../../services/helpers/ResetDefaultValueForField";
 
 // Настройки поля
@@ -57,7 +57,6 @@ export const TextareaField: TFieldsFactory<Params> = (params: Params = {}) => {
             }
 
             const rows = params.rows ? params.rows : 8;
-            const rowsMax = params.rowsMax ? params.rowsMax : rows;
 
             return (
                 <FormControl variant="outlined" fullWidth>
@@ -72,7 +71,6 @@ export const TextareaField: TFieldsFactory<Params> = (params: Params = {}) => {
                         fullWidth
                         multiline
                         rows={rows}
-                        rowsMax={rowsMax}
                         startAdornment={startAdornment}
                         endAdornment={
                             <InputAdornment position="end">

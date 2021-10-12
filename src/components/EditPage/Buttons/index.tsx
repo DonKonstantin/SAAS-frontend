@@ -1,14 +1,15 @@
 import {Schemas} from "../../../settings/schema";
 import {EntityData} from "../../../services/entityGetterService/interface";
 import React from "react";
-import {createStyles, Grid, Theme, Tooltip, withStyles} from "@material-ui/core";
-import Fab from '@material-ui/core/Fab';
-import CloseIcon from '@material-ui/icons/Close';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import SaveIcon from '@material-ui/icons/Save';
-import {SignOutIcon} from "../../CustomIcon/icons";
+import {Grid, Theme, Tooltip} from "@mui/material";
+import Fab from '@mui/material/Fab';
+import CloseIcon from '@mui/icons-material/Close';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SaveIcon from '@mui/icons-material/Save';
 import {clientServerDetector} from "../../../services/clientServerDetector";
 import ButtonsCloseDialog from "./ButtonsCloseDialog";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({
@@ -36,10 +37,10 @@ export interface ButtonsProps {
     primaryKey: any
     isChangeInProgress: boolean
     entityData: EntityData<keyof Schemas>
-    onSave: {(): void}
-    onSaveAsNew: {(): void}
-    onSaveAndClose: {(): void}
-    onClose: {(): void}
+    onSave: { (): void }
+    onSaveAsNew: { (): void }
+    onSaveAndClose: { (): void }
+    onClose: { (): void }
 
     classes: {
         main: string
@@ -56,7 +57,7 @@ interface ButtonsComponentState {
 
 // Компонент вывода кнопок управления для формы редактирования
 class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentState> {
-    private handleButtonPressEventWithBind: {(event: KeyboardEvent): void};
+    private handleButtonPressEventWithBind: { (event: KeyboardEvent): void };
 
     /**
      * Конструктор компонента
@@ -174,17 +175,17 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
 
         return (
             <React.Fragment>
-                <Grid container spacing={2} justify={`center`} alignItems={`center`}>
+                <Grid container spacing={2}>
                     {isSaveEnabled && (
                         <Grid item xs={`auto`}>
                             <Tooltip
                                 title={(
-                                     <React.Fragment>
-                                         Сохранить изменения.
-                                         <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}} />
-                                         <i>Комбинация клавиш: <b>CTRL + S</b></i>
-                                     </React.Fragment>
-                                 )}
+                                    <React.Fragment>
+                                        Сохранить изменения.
+                                        <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}}/>
+                                        <i>Комбинация клавиш: <b>CTRL + S</b></i>
+                                    </React.Fragment>
+                                )}
                             >
                                 <div>
                                     <Fab
@@ -193,7 +194,7 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                                         disabled={this.props.isChangeInProgress}
                                         onClick={() => this.props.onSave()}
                                     >
-                                        <SaveIcon fontSize={`small`} />
+                                        <SaveIcon fontSize={`small`}/>
                                     </Fab>
                                 </div>
                             </Tooltip>
@@ -202,14 +203,15 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                     {isSaveAsNewEnabled && (
                         <Grid item xs={`auto`}>
                             <Tooltip
-                                     classes={{tooltip: this.props.classes.tooltipCopy}}
-                                     title={(
-                                         <React.Fragment>
-                                             Сохранить изменения в качестве новой сущности. Изменений в текущей сущности не происходит.
-                                             <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}} />
-                                             <i>Комбинация клавиш: <b>CTRL + SHIFT + C</b></i>
-                                         </React.Fragment>
-                                     )}
+                                classes={{tooltip: this.props.classes.tooltipCopy}}
+                                title={(
+                                    <React.Fragment>
+                                        Сохранить изменения в качестве новой сущности. Изменений в текущей сущности не
+                                        происходит.
+                                        <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}}/>
+                                        <i>Комбинация клавиш: <b>CTRL + SHIFT + C</b></i>
+                                    </React.Fragment>
+                                )}
                             >
                                 <div>
                                     <Fab
@@ -218,7 +220,7 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                                         disabled={this.props.isChangeInProgress}
                                         onClick={() => this.props.onSaveAsNew()}
                                     >
-                                        <FileCopyIcon fontSize={`small`} />
+                                        <FileCopyIcon fontSize={`small`}/>
                                     </Fab>
                                 </div>
                             </Tooltip>
@@ -227,14 +229,14 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                     {isSaveAndCloseEnabled && (
                         <Grid item xs={`auto`}>
                             <Tooltip
-                                     classes={{tooltip: this.props.classes.tooltipSaveAndClose}}
-                                     title={(
-                                         <React.Fragment>
-                                             Сохранить изменения, после чего закрыть страницу редактирования.
-                                             <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}} />
-                                             <i>Комбинация клавиш: <b>CTRL + SHIFT + S</b></i>
-                                         </React.Fragment>
-                                     )}
+                                classes={{tooltip: this.props.classes.tooltipSaveAndClose}}
+                                title={(
+                                    <React.Fragment>
+                                        Сохранить изменения, после чего закрыть страницу редактирования.
+                                        <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}}/>
+                                        <i>Комбинация клавиш: <b>CTRL + SHIFT + S</b></i>
+                                    </React.Fragment>
+                                )}
                             >
                                 <div>
                                     <Fab
@@ -243,7 +245,7 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                                         disabled={this.props.isChangeInProgress}
                                         onClick={() => this.props.onSaveAndClose()}
                                     >
-                                        <SignOutIcon fontSize={`small`} />
+                                        <ExitToAppIcon fontSize={`small`}/>
                                     </Fab>
                                 </div>
                             </Tooltip>
@@ -251,15 +253,15 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                     )}
                     <Grid item xs={`auto`}>
                         <Tooltip
-                                 classes={{tooltip: this.props.classes.tooltipClose}}
-                                 title={(
-                                     <React.Fragment>
-                                         Закрыть страницу редактирования.<br/>
-                                         Изменения сохранены не будут.
-                                         <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}} />
-                                         <i>Быстрая клавиша: <b>Esc</b></i>
-                                     </React.Fragment>
-                                 )}
+                            classes={{tooltip: this.props.classes.tooltipClose}}
+                            title={(
+                                <React.Fragment>
+                                    Закрыть страницу редактирования.<br/>
+                                    Изменения сохранены не будут.
+                                    <hr style={{opacity: 0.15, marginBottom: 2, marginTop: 6}}/>
+                                    <i>Быстрая клавиша: <b>Esc</b></i>
+                                </React.Fragment>
+                            )}
                         >
                             <div>
                                 <Fab
@@ -268,7 +270,7 @@ class ButtonsComponent extends React.Component<ButtonsProps, ButtonsComponentSta
                                     disabled={this.props.isChangeInProgress}
                                     onClick={() => this.handleChangeCloseDialogState(true)}
                                 >
-                                    <CloseIcon />
+                                    <CloseIcon/>
                                 </Fab>
                             </div>
                         </Tooltip>

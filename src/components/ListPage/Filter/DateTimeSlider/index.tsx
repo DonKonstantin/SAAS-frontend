@@ -1,7 +1,7 @@
 import React from "react";
 import {FilterFieldProperties} from "../../../../services/listDataLoader/filterLoader/types";
-import {createStyles, Grid, Slider, Theme, Tooltip, Typography, withStyles} from "@material-ui/core";
-import {KeyboardDatePicker} from "@material-ui/pickers";
+import {Grid, Slider, Theme, Tooltip, Typography} from "@mui/material";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({
@@ -130,58 +130,58 @@ class DateTimeSlider extends React.Component<FieldProps, FieldState> {
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
-                            <KeyboardDatePicker
-                                inputVariant="outlined"
-                                className={`list-filter-date-input`}
-                                margin="normal"
-                                label="С"
-                                size={"small"}
-                                format="dd.MM.yyyy"
-                                value={this.state.currentMin}
-                                minDate={this.state.min}
-                                maxDate={this.state.max}
-                                cancelLabel={`Отмена`}
-                                onChange={date => {
-                                    this.setState({
-                                        ...this.state,
-                                        currentMin: new Date(date ? date.getTime() : this.state.currentMin),
-                                    });
+                            {/*<KeyboardDatePicker*/}
+                            {/*    inputVariant="outlined"*/}
+                            {/*    className={`list-filter-date-input`}*/}
+                            {/*    margin="normal"*/}
+                            {/*    label="С"*/}
+                            {/*    size={"small"}*/}
+                            {/*    format="dd.MM.yyyy"*/}
+                            {/*    value={this.state.currentMin}*/}
+                            {/*    minDate={this.state.min}*/}
+                            {/*    maxDate={this.state.max}*/}
+                            {/*    cancelLabel={`Отмена`}*/}
+                            {/*    onChange={date => {*/}
+                            {/*        this.setState({*/}
+                            {/*            ...this.state,*/}
+                            {/*            currentMin: new Date(date ? date.getTime() : this.state.currentMin),*/}
+                            {/*        });*/}
 
-                                    this.props.onChange({
-                                        min: this.state.min,
-                                        max: this.state.max,
-                                        currentMin: new Date(date ? date.getTime() : this.state.currentMin),
-                                        currentMax: this.state.currentMax
-                                    })
-                                }}
-                            />
+                            {/*        this.props.onChange({*/}
+                            {/*            min: this.state.min,*/}
+                            {/*            max: this.state.max,*/}
+                            {/*            currentMin: new Date(date ? date.getTime() : this.state.currentMin),*/}
+                            {/*            currentMax: this.state.currentMax*/}
+                            {/*        })*/}
+                            {/*    }}*/}
+                            {/*/>*/}
                         </Grid>
                         <Grid item xs={6}>
-                            <KeyboardDatePicker
-                                inputVariant="outlined"
-                                className={`list-filter-date-input`}
-                                margin="normal"
-                                label="По"
-                                size={"small"}
-                                format="dd.MM.yyyy"
-                                value={this.state.currentMax}
-                                minDate={this.state.min}
-                                maxDate={this.state.max}
-                                cancelLabel={`Отмена`}
-                                onChange={date => {
-                                    this.setState({
-                                        ...this.state,
-                                        currentMax: new Date(date ? date.getTime() : this.state.currentMax),
-                                    });
+                            {/*<KeyboardDatePicker*/}
+                            {/*    inputVariant="outlined"*/}
+                            {/*    className={`list-filter-date-input`}*/}
+                            {/*    margin="normal"*/}
+                            {/*    label="По"*/}
+                            {/*    size={"small"}*/}
+                            {/*    format="dd.MM.yyyy"*/}
+                            {/*    value={this.state.currentMax}*/}
+                            {/*    minDate={this.state.min}*/}
+                            {/*    maxDate={this.state.max}*/}
+                            {/*    cancelLabel={`Отмена`}*/}
+                            {/*    onChange={date => {*/}
+                            {/*        this.setState({*/}
+                            {/*            ...this.state,*/}
+                            {/*            currentMax: new Date(date ? date.getTime() : this.state.currentMax),*/}
+                            {/*        });*/}
 
-                                    this.props.onChange({
-                                        min: this.state.min,
-                                        max: this.state.max,
-                                        currentMin: this.state.currentMin,
-                                        currentMax: new Date(date ? date.getTime() : this.state.currentMax)
-                                    })
-                                }}
-                            />
+                            {/*        this.props.onChange({*/}
+                            {/*            min: this.state.min,*/}
+                            {/*            max: this.state.max,*/}
+                            {/*            currentMin: this.state.currentMin,*/}
+                            {/*            currentMax: new Date(date ? date.getTime() : this.state.currentMax)*/}
+                            {/*        })*/}
+                            {/*    }}*/}
+                            {/*/>*/}
                         </Grid>
                     </Grid>
                 </Grid>

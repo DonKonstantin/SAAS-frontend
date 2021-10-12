@@ -1,12 +1,8 @@
 @import "mixins";
-@import "loadingBlocker";
-@import "listItems";
-@import "editPage";
-@import "search";
-@import "icons";
-@import "loadingUnloadingBlock";
 @import "components";
 @import "pages";
+
+@import "loadingBlocker";
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

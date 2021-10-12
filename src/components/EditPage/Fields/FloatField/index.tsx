@@ -3,7 +3,6 @@ import {EditFieldProperties, EditValueType} from "../../../../settings/pages/sys
 import {Schemas} from "../../../../settings/schema";
 import {TFieldsFactory} from "../interfaces";
 import {
-    createStyles,
     FormControl,
     FormHelperText,
     IconButton,
@@ -12,11 +11,11 @@ import {
     OutlinedInput,
     Theme,
     Tooltip,
-    withStyles
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
-import RestoreOutlinedIcon from "@material-ui/icons/RestoreOutlined";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 import {ResetDefaultValueForField} from "../../../../services/helpers/ResetDefaultValueForField";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Настройки поля
 export interface Params {

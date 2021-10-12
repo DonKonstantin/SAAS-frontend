@@ -4,18 +4,18 @@ import {Schemas} from "../../../settings/schema";
 import {
     Button,
     ButtonGroup,
-    createStyles,
     FormControlLabel,
     Grid,
     Paper,
     Switch,
     Theme,
-    Tooltip, withStyles
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import AddLocationIcon from '@material-ui/icons/AddLocation';
+    Tooltip,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import AddLocationIcon from '@mui/icons-material/AddLocation';
 import {clientServerDetector} from "../../../services/clientServerDetector";
+import {createStyles, withStyles} from "@mui/styles";
 
 // Стили компонента
 const styles = (theme: Theme) => createStyles({

@@ -5,6 +5,11 @@ import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import MuiLink, { LinkProps as MuiLinkProps } from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
 
+/**
+ * Код взят с сайта Material UI без каких либо изменений.
+ * По сути имплементирует привязку Link к роутеру Next.js
+ */
+
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});
 

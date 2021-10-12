@@ -4,12 +4,11 @@ import React from "react";
 import {editSchemaConfiguration} from "../../settings/pages";
 import BreadcrumbsComponent, {Breadcrumb} from "../Breadcrumbs";
 import {EditPageConfiguration, EntityValues, ValidationResult} from "../../settings/pages/system/edit";
-import {Grid, Grow, Typography} from "@material-ui/core";
+import {Grid, Grow, Typography} from "@mui/material";
 import LoadingBlocker from "../LoadingBlocker";
 import ButtonsComponent from "./Buttons";
 import DefaultGroup from "./DefaultGroup";
 import IsGroupVisible from "../../services/helpers/IsGroupVisible";
-import {Language} from "../../reduxStore/stores/Languages";
 import {AdditionEditParams} from "../../containers/EntityEdit";
 
 // Свойства страницы редактирования сущности
@@ -19,7 +18,6 @@ export interface EditPageProps {
     entityData: EntityData<keyof Schemas>
     mainLangId: string
     secondaryLangId: string
-    languages: Language[]
     isLoading: boolean
     isChangeInProgress: boolean
     hasAccess: boolean
@@ -260,7 +258,6 @@ export class EditPageComponent extends React.Component<EditPageProps, EditPageSt
                                                 onAdditionDataChange={additionData => this.handleChangeAdditionData(i, additionData)}
                                                 mainLangId={this.props.mainLangId}
                                                 secondaryLangId={this.props.secondaryLangId}
-                                                languages={this.props.languages}
                                             />
                                         )
                                     })}
@@ -277,7 +274,6 @@ export class EditPageComponent extends React.Component<EditPageProps, EditPageSt
                                         onAdditionDataChange={additionData => this.handleChangeAllAdditionData(additionData)}
                                         mainLangId={this.props.mainLangId}
                                         secondaryLangId={this.props.secondaryLangId}
-                                        languages={this.props.languages}
                                     />
                                 </Grid>
                             )}

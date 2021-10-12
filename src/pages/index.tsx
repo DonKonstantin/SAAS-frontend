@@ -1,33 +1,28 @@
-import React from 'react';
-import {PageWithMetaTags} from "../containers/UILayer/PageWithMetaTags";
+import React, {FC} from 'react';
+import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
+import {GetStaticProps} from "next";
 
 // Свойства страницы
 type Props = PageWithMetaTags<{}>
 
-/**
- * Класс индексной страницы
- */
-class IndexPage extends React.Component<Props> {
-    /**
-     * Получение токена восстановления пароля из URL
-     */
-    static async getInitialProps(): Promise<Props> {
-        return {
+// Компонент главной страницы проекта
+const IndexPage: FC<Props> = () => {
+    return (
+        <div>
+            <p>Раздел находится в разработке</p>
+        </div>
+    )
+}
+
+// Экспортируем основные параметры страницы
+export const getStaticProps: GetStaticProps = async () => {
+    return {
+        props: {
             title: "pages.main.title",
             header: "pages.main.header",
         }
     }
-
-    /**
-     * Рендеринг страницы
-     */
-    render() {
-        return (
-            <div>
-                <p>Раздел находится в разработке</p>
-            </div>
-        )
-    }
 }
 
+// Экспортируем компонент
 export default IndexPage

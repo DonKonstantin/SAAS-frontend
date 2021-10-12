@@ -1,9 +1,8 @@
 import React from "react";
 import {Schemas} from "../../../../settings/schema";
-import TablePagination from "@material-ui/core/TablePagination";
 import {ListResponse} from "../../../../services/listDataLoader/listLoader/types";
-import {Button, Grid} from "@material-ui/core";
-import DeleteIcon from '@material-ui/icons/Delete';
+import {Button, Grid} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import {clientServerDetector} from "../../../../services/clientServerDetector";
 
 // Свойства подвала таблицы
@@ -12,9 +11,9 @@ export interface ListFooterProps {
     hasEditAccess: boolean
     checkedItems: any[]
     response: ListResponse<keyof Schemas>
-    onChangeOffset: {(offset: number): void}
-    onChangeLimit: {(limit: number): void}
-    onDeleteItems: {(items: any[]): void}
+    onChangeOffset: { (offset: number): void }
+    onChangeLimit: { (limit: number): void }
+    onDeleteItems: { (items: any[]): void }
 }
 
 // Компонент вывода подвала таблицы
@@ -110,7 +109,7 @@ export class ListFooter extends React.Component<ListFooterProps> {
     render() {
         const schema = (new Schemas())[this.props.response.parameters.schema];
         const isDeletable = this.props.hasEditAccess && schema.isDeletable;
-        const page = Math.ceil(this.props.response.parameters.offset / this.props.response.parameters.limit);
+        // const page = Math.ceil(this.props.response.parameters.offset / this.props.response.parameters.limit);
 
         return (
             <Grid container alignItems={"center"}>
@@ -128,7 +127,7 @@ export class ListFooter extends React.Component<ListFooterProps> {
                                                 variant="contained"
                                                 color="secondary"
                                                 size="small"
-                                                startIcon={<DeleteIcon />}
+                                                startIcon={<DeleteIcon/>}
                                                 onClick={() => this.props.onDeleteItems(this.props.checkedItems)}
                                             >
                                                 Удалить ({this.props.checkedItems.length})
@@ -140,22 +139,22 @@ export class ListFooter extends React.Component<ListFooterProps> {
                         </Grid>
                     )}
                 </Grid>
-                <Grid item xl={6} lg={7} xs={12}>
-                    <TablePagination
-                        rowsPerPageOptions={[10, 20, 30, 50]}
-                        component="div"
-                        count={this.props.response.count || 0}
-                        rowsPerPage={this.props.response.parameters.limit}
-                        nextIconButtonText={`Следующая страница [shift + 🠚]`}
-                        backIconButtonText={`Предыдущая страница [shift + 🠘]`}
-                        labelRowsPerPage={"Элементов:"}
-                        className={`list-items-table-pagination`}
-                        labelDisplayedRows={paginationInfo => `${paginationInfo.from} - ${paginationInfo.to} из ${paginationInfo.count}`}
-                        page={page}
-                        onChangePage={(_, p) => this.handleChangePage(p)}
-                        onChangeRowsPerPage={(event: React.ChangeEvent<HTMLInputElement>) => this.handleChangeLimit(parseInt(event.target.value, 10))}
-                    />
-                </Grid>
+                {/*<Grid item xl={6} lg={7} xs={12}>*/}
+                {/*    <TablePagination*/}
+                {/*        rowsPerPageOptions={[10, 20, 30, 50]}*/}
+                {/*        component="div"*/}
+                {/*        count={this.props.response.count || 0}*/}
+                {/*        rowsPerPage={this.props.response.parameters.limit}*/}
+                {/*        nextIconButtonText={`Следующая страница [shift + 🠚]`}*/}
+                {/*        backIconButtonText={`Предыдущая страница [shift + 🠘]`}*/}
+                {/*        labelRowsPerPage={"Элементов:"}*/}
+                {/*        className={`list-items-table-pagination`}*/}
+                {/*        labelDisplayedRows={paginationInfo => `${paginationInfo.from} - ${paginationInfo.to} из ${paginationInfo.count}`}*/}
+                {/*        page={page}*/}
+                {/*        onChangePage={(_, p) => this.handleChangePage(p)}*/}
+                {/*        onChangeRowsPerPage={(event: React.ChangeEvent<HTMLInputElement>) => this.handleChangeLimit(parseInt(event.target.value, 10))}*/}
+                {/*    />*/}
+                {/*</Grid>*/}
             </Grid>
         )
     }

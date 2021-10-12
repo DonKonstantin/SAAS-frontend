@@ -1,36 +1,11 @@
 import React from 'react';
-import Document, {DocumentContext, Head, Html, Main, NextScript} from 'next/document'
+import Document, {Head, Html, Main, NextScript} from 'next/document'
 import theme from "../components/UILayer/theme";
-import {ServerStyleSheets} from '@mui/styles';
 
 /**
  * Класс шаблона документа страницы
  */
 export default class RootDocument extends Document {
-    /**
-     * Генерация основных свойств страницы
-     *
-     * @param ctx
-     */
-    static async getInitialProps(ctx: DocumentContext) {
-        // Render app and page and get the context of the page with collected side effects.
-        const sheets = new ServerStyleSheets();
-        const originalRenderPage = ctx.renderPage;
-
-        ctx.renderPage = () =>
-            originalRenderPage({
-                enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
-            });
-
-        const initialProps = await Document.getInitialProps(ctx);
-
-        return {
-            ...initialProps,
-            // Styles fragment is rendered after the app and page rendering finish.
-            styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
-        };
-    }
-
     /**
      * Основной шаблон документа
      */
@@ -52,7 +27,7 @@ export default class RootDocument extends Document {
                     />
                     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
                 </Head>
-                <body className="custom_class">
+                <body>
                 <Main/>
                 <NextScript/>
                 </body>

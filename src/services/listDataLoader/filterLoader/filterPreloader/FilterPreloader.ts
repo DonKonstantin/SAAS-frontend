@@ -36,15 +36,15 @@ export class FilterPreloader implements FilterPreloaderInterface {
                 config: BaseFilterFieldConfiguration<T, keyof Schemas[T]['fields'], AvailableFilterField>
             ): Promise<AdditionDataResponse<T>> => {
                 try {
-                    const data = params.baseData[config.field];
+                    // const data = params.baseData[config.field];
                     const processor = this.processors[config.filterType];
 
                     return {
                         field: config.field,
                         // @ts-ignore
                         preloaded: await processor.loadFilterData({
-                            configuration: config,
-                            baseValues: data,
+                            // configuration: config,
+                            // baseValues: data,
                         })
                     }
                 } catch (e) {

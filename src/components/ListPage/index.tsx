@@ -5,7 +5,7 @@ import LoadingBlocker from "../LoadingBlocker";
 import ListComponent from "./List";
 import {OrderParameter} from "../../services/listDataLoader/listLoader/interfaces";
 import {ListPageConfiguration, PageUrl} from "../../settings/pages/system/list";
-import {Fab, Grid, Grow, Slide, Tooltip, Typography} from "@material-ui/core";
+import {Fab, Grid, Grow, Slide, Tooltip, Typography} from "@mui/material";
 import {DeleteDialog} from "./DeleteDialog";
 import SettingsBlock from "./SettingsBlock";
 import {listSchemaConfiguration} from "../../settings/pages";
@@ -16,9 +16,8 @@ import clsx from "clsx";
 import {LoadedFilterData} from "../../services/listDataLoader/filterLoader/interfaces";
 import {FilterFieldComponents} from "../../services/listDataLoader/filterLoader/types";
 import BreadcrumbsComponent, {Breadcrumb} from "../Breadcrumbs";
-import {Language} from "../../reduxStore/stores/Languages";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {ListFieldRow, ListResponse} from "../../services/listDataLoader/listLoader/types";
 import SubscriptionComponent from "./Subscription";
 
@@ -30,7 +29,6 @@ export interface ListPageProps extends WithRouterProps {
     configuration: ListPageConfiguration<keyof Schemas>
     mainLangId: string
     secondaryLangId: string
-    languages: Language[]
     isLoading: boolean
     isListReloading: boolean
     isChangeInProgress: boolean
@@ -514,7 +512,6 @@ class ListPageComponent extends React.Component<ListPageProps, ListPageState> {
                                         onDeleteItems={items => this.handleSetDeleteItems(items)}
                                         mainLangId={this.props.mainLangId}
                                         secondaryLangId={this.props.secondaryLangId}
-                                        languages={this.props.languages}
                                         onChangeResponse={response => this.handleChangeResponse(response)}
                                     />
                                 </div>
