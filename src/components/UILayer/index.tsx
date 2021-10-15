@@ -35,7 +35,7 @@ const UILayer: FC<UILayerProps> = props => {
         </Head>
         <Box sx={{display: 'flex'}}>
             <LeftPanel/>
-            <Box component="main" sx={{flexGrow: 1, p: 3}}>
+            <Box component="main" sx={{flexGrow: 1, p: 3, minHeight: "100vh", position: "relative"}}>
                 {children}
             </Box>
         </Box>

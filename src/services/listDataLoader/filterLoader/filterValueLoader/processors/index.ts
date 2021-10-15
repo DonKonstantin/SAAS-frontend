@@ -9,7 +9,6 @@ export type ValueLoadProcessors = {[F in AvailableFilterField]: FilterValueLoade
 export const valueLoadProcessors: {(): ValueLoadProcessors} = (): ValueLoadProcessors => {
     return new class implements ValueLoadProcessors {
         Checkbox: FilterValueLoaderProcessor<"Checkbox"> = new SimpleValueProcessor<"Checkbox">();
-        DateTimeSlider: FilterValueLoaderProcessor<"DateTimeSlider"> = new SliderProcessor<"DateTimeSlider">();
         EqualsFloat: FilterValueLoaderProcessor<"EqualsFloat"> = new SimpleValueProcessor<"EqualsFloat">();
         EqualsInt: FilterValueLoaderProcessor<"EqualsInt"> = new SimpleValueProcessor<"EqualsInt">();
         EqualsString: FilterValueLoaderProcessor<"EqualsString"> = new SimpleValueProcessor<"EqualsString">();
@@ -23,6 +22,5 @@ export const valueLoadProcessors: {(): ValueLoadProcessors} = (): ValueLoadProce
         VariantsSelectorString: FilterValueLoaderProcessor<"VariantsSelectorString"> = new VariantsProcessor<"VariantsSelectorString">();
         EnumSelector: FilterValueLoaderProcessor<"EnumSelector"> = new SimpleValueProcessor<"EnumSelector">();
         RelationAutocompleteSelector: FilterValueLoaderProcessor<"RelationAutocompleteSelector"> = new VariantsProcessor<"RelationAutocompleteSelector">();
-        RelationAutocompleteSearch: FilterValueLoaderProcessor<"RelationAutocompleteSearch"> = new VariantsProcessor<"RelationAutocompleteSearch">();
     }
 }

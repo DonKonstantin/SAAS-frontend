@@ -1,10 +1,10 @@
 import {EntityListStoreLoaderInterfaces} from "./interfaces";
 import {Schemas} from "../../settings/schema";
 import {ListPageConfiguration} from "../../settings/pages/system/list";
-import {ListOfSchema} from "../../reduxStore/stores/EntityList";
 import {ListLoadingParameters, OrderParameter} from "../listDataLoader/listLoader/interfaces";
 import {ListSchemaConfiguration} from "../../settings/pages";
 import {BaseData, ListDataLoaderInterfaces} from "../listDataLoader/interfaces";
+import {ListOfSchema} from "../../context/EntityListContext";
 
 /**
  * Загрузчик конфигурации Store

@@ -1,7 +1,6 @@
 import {Schemas} from "../../schema";
 import React from "react";
-import {PageUrl} from "../../../components/Breadcrumbs";
-import {ListPageConfiguration} from "./list";
+import {ListPageConfiguration, PageUrl} from "./list";
 import {AdditionEditParams} from "../../../containers/EntityEdit";
 
 // Тип, описывающий размеры группы

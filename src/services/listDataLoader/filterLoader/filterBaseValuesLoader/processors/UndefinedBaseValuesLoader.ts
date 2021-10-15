@@ -5,7 +5,7 @@ import {RegisteredFilterFieldBaseComponentValues} from "../../types";
  * Пропуск загрузки для полей, для которых загрузка не требуется
  */
 export class UndefinedBaseValuesLoader<
-    G extends "Like" | "Checkbox" | "Switch" | "EqualsFloat" | "EqualsInt" | "EqualsString" | "EnumSelector" | "RelationAutocompleteSearch"
+    G extends "Like" | "Checkbox" | "Switch" | "EqualsFloat" | "EqualsInt" | "EqualsString" | "EnumSelector"
 > implements FilterBaseValuesLoaderProcessor<G> {
     /**
      * Набор базовых операций агрегации для получения базовых данных

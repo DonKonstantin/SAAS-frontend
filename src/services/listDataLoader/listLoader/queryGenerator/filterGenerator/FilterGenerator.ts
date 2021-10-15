@@ -7,6 +7,7 @@ import {LoadedFilterData} from "../../../filterLoader/interfaces";
 import {FilterFieldComponents} from "../../../filterLoader/types";
 import {ListPageConfiguration} from "../../../../../settings/pages/system/list";
 import {listSchemaConfiguration} from "../../../../../settings/pages";
+import {FilterGeneratorProcessorParams} from "./processors/interfaces";
 
 /**
  * Генератор подзапроса фильтрации
@@ -48,9 +49,9 @@ export class FilterGenerator implements FilterGeneratorInterface {
 
                 // @ts-ignore
                 const query: string = this.processors[currentValue.configuration.filterType].GenerateFilter({
-                    // currentValue: currentValue,
-                    // originalValue: originValue,
-                });
+                    currentValue: currentValue,
+                    originalValue: originValue,
+                } as FilterGeneratorProcessorParams<any, T, F>);
 
                 if (0 !== query.length) {
                     queries.push(query)

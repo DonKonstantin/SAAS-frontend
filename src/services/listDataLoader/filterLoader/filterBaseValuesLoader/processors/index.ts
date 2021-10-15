@@ -11,7 +11,6 @@ export const baseLoadProcessors: { (): BaseLoadProcessors } = (): BaseLoadProces
     const valueConverter = schemaValueConverter();
     return new class implements BaseLoadProcessors {
         Checkbox: FilterBaseValuesLoaderProcessor<"Checkbox"> = new UndefinedBaseValuesLoader();
-        DateTimeSlider: FilterBaseValuesLoaderProcessor<"DateTimeSlider"> = new SliderBaseValuesLoader(valueConverter);
         EqualsFloat: FilterBaseValuesLoaderProcessor<"EqualsFloat"> = new UndefinedBaseValuesLoader();
         EqualsInt: FilterBaseValuesLoaderProcessor<"EqualsInt"> = new UndefinedBaseValuesLoader();
         EqualsString: FilterBaseValuesLoaderProcessor<"EqualsString"> = new UndefinedBaseValuesLoader();
@@ -25,6 +24,5 @@ export const baseLoadProcessors: { (): BaseLoadProcessors } = (): BaseLoadProces
         VariantsSelectorString: FilterBaseValuesLoaderProcessor<"VariantsSelectorString"> = new VariantsBaseValuesLoader(valueConverter);
         EnumSelector: FilterBaseValuesLoaderProcessor<"EnumSelector"> = new UndefinedBaseValuesLoader();
         RelationAutocompleteSelector: FilterBaseValuesLoaderProcessor<"RelationAutocompleteSelector"> = new VariantsBaseValuesLoader(valueConverter);
-        RelationAutocompleteSearch: FilterBaseValuesLoaderProcessor<"RelationAutocompleteSearch"> = new UndefinedBaseValuesLoader();
     }
 };

@@ -5,7 +5,6 @@ import {SliderBaseValues} from "./fieldBaseData/SliderBaseValues";
 import {VariantsBaseValues} from "./fieldBaseData/VariantsBaseValues";
 import React from "react";
 import {VariantsComponentValue} from "./fieldValues/VariantsComponentValue";
-import {DataComponentValue} from "./fieldValues/DataComponentValue";
 
 // Конфигурация фильтра для таблицы
 export type FilterFieldsConfiguration<T extends keyof Schemas> = {
@@ -13,13 +12,8 @@ export type FilterFieldsConfiguration<T extends keyof Schemas> = {
 }
 
 // Свойства поля фильтрации
-export class FilterFieldProperties<C extends keyof FilterFieldComponents,
-    T extends keyof Schemas,
-    F extends keyof Schemas[T]['fields']> {
-    value: RegisteredFilterFieldComponentValues[C];
-    onChange: (value: RegisteredFilterFieldComponentValues[C]) => void;
-    configuration: RegisteredFilterFieldConfiguration<T, F>[C];
-    preloaded: DeclaredFilterFieldPreloadedData[C]
+export class FilterFieldProperties<T extends keyof Schemas = keyof Schemas, F extends keyof Schemas[T]['fields'] = keyof Schemas[T]['fields']> {
+    fieldCode: F
 }
 
 // Базовая конфигурация поля фильтрации
@@ -30,7 +24,7 @@ export interface BaseFilterFieldConfiguration<T extends keyof Schemas,
     field: F
     title: string
     filterType: C
-    customComponent?: React.ComponentType<FilterFieldProperties<C, any, any>>
+    customComponent?: React.ComponentType<FilterFieldProperties>
 }
 
 // Тип, описывающий конфигурацию поля отношения
@@ -54,7 +48,7 @@ export interface SearchFilterFieldConfiguration<T extends keyof Schemas, F exten
 
 // Доступные системные типы фильтра
 export type AvailableFilterField = keyof FilterFieldComponents
-export type FilterField = React.ComponentType<FilterFieldProperties<keyof FilterFieldComponents, any, any>>
+export type FilterField = React.ComponentType<FilterFieldProperties>
 
 export interface FilterFieldComponents {
     EqualsInt: FilterField
@@ -63,13 +57,11 @@ export interface FilterFieldComponents {
     Like: FilterField
     IntegerSlider: FilterField
     FloatSlider: FilterField
-    DateTimeSlider: FilterField
     VariantsSelectorInt: FilterField
     VariantsSelectorFloat: FilterField
     VariantsSelectorString: FilterField
     RelationVariantsSelector: FilterField
     RelationAutocompleteSelector: FilterField
-    RelationAutocompleteSearch: FilterField
     Checkbox: FilterField
     Switch: FilterField
     EnumSelector: FilterField
@@ -79,13 +71,11 @@ export interface FilterFieldComponents {
 export type FilterFieldConfiguration<T extends keyof Schemas, F extends keyof Schemas[T]['fields']> = { [P in AvailableFilterField]: BaseFilterFieldConfiguration<T, F, P> }
 
 export class RegisteredFilterFieldConfiguration<T extends keyof Schemas, F extends keyof Schemas[T]['fields']> implements FilterFieldConfiguration<T, F> {
-    DateTimeSlider: BaseFilterFieldConfiguration<T, F, "DateTimeSlider">;
     FloatSlider: BaseFilterFieldConfiguration<T, F, "FloatSlider">;
     IntegerSlider: BaseFilterFieldConfiguration<T, F, "IntegerSlider">;
     Like: BaseFilterFieldConfiguration<T, F, "Like">;
     RelationVariantsSelector: RelationFilterFieldConfiguration<T, F, "RelationVariantsSelector">;
     RelationAutocompleteSelector: RelationFilterFieldConfiguration<T, F, "RelationAutocompleteSelector">;
-    RelationAutocompleteSearch: SearchFilterFieldConfiguration<T, F, "RelationAutocompleteSearch">;
     Checkbox: BaseFilterFieldConfiguration<T, F, "Checkbox">;
     Switch: BaseFilterFieldConfiguration<T, F, "Switch">;
     EqualsFloat: BaseFilterFieldConfiguration<T, F, "EqualsFloat">;
@@ -101,13 +91,11 @@ export class RegisteredFilterFieldConfiguration<T extends keyof Schemas, F exten
 export type FilterFieldComponentValues = { [P in AvailableFilterField]: any }
 
 export class RegisteredFilterFieldComponentValues implements FilterFieldComponentValues {
-    DateTimeSlider: SliderComponentValues<Date>;
     FloatSlider: SliderComponentValues<number>;
     IntegerSlider: SliderComponentValues<number>;
     Like: SimpleComponentValue<string | null>;
     RelationVariantsSelector: VariantsComponentValue<(string | number)[]>;
     RelationAutocompleteSelector: VariantsComponentValue<(string | number)[]>;
-    RelationAutocompleteSearch: DataComponentValue<(string | number)[]>;
     Checkbox: SimpleComponentValue<boolean | null>;
     Switch: SimpleComponentValue<boolean | null>;
     EqualsFloat: SimpleComponentValue<number | null>;
@@ -123,7 +111,6 @@ export class RegisteredFilterFieldComponentValues implements FilterFieldComponen
 export type FilterFieldComponentBaseValues = { [P in AvailableFilterField]: any }
 
 export class RegisteredFilterFieldBaseComponentValues implements FilterFieldComponentBaseValues {
-    DateTimeSlider: SliderBaseValues<Date>;
     FloatSlider: SliderBaseValues<number>;
     IntegerSlider: SliderBaseValues<number>;
     Like: undefined;
@@ -138,7 +125,6 @@ export class RegisteredFilterFieldBaseComponentValues implements FilterFieldComp
     VariantsSelectorString: VariantsBaseValues<string>;
     EnumSelector: undefined;
     RelationAutocompleteSelector: VariantsBaseValues<string>;
-    RelationAutocompleteSearch: undefined;
 }
 
 // Предзагружаемые данные для полей фильтрации
@@ -146,7 +132,6 @@ export type FilterFieldPreloadedData = { [P in AvailableFilterField]: any }
 
 export class DeclaredFilterFieldPreloadedData implements FilterFieldPreloadedData {
     Checkbox: undefined;
-    DateTimeSlider: undefined;
     EqualsFloat: undefined;
     EqualsInt: undefined;
     EqualsString: undefined;
@@ -155,7 +140,6 @@ export class DeclaredFilterFieldPreloadedData implements FilterFieldPreloadedDat
     Like: undefined;
     RelationVariantsSelector: RelationVariantsSelectorPreloadData;
     RelationAutocompleteSelector: RelationVariantsSelectorPreloadData;
-    RelationAutocompleteSearch: RelationVariantsSelectorPreloadData;
     Switch: undefined;
     VariantsSelectorFloat: undefined;
     VariantsSelectorInt: undefined;
@@ -181,9 +165,7 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "Switch",
         "Checkbox",
     ];
-    "DateTime!": AvailableFilterField[] = [
-        "DateTimeSlider"
-    ];
+    "DateTime!": AvailableFilterField[] = [];
     "Float!": AvailableFilterField[] = [
         "EqualsFloat",
         "FloatSlider",
@@ -193,7 +175,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "EqualsString",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     "Int!": AvailableFilterField[] = [
         "EqualsInt",
@@ -201,7 +182,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorInt",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     "String!": AvailableFilterField[] = [
         "EqualsString",
@@ -209,15 +189,12 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorString",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     Boolean: AvailableFilterField[] = [
         "Switch",
         "Checkbox",
     ];
-    DateTime: AvailableFilterField[] = [
-        "DateTimeSlider"
-    ];
+    DateTime: AvailableFilterField[] = [];
     Float: AvailableFilterField[] = [
         "EqualsFloat",
         "FloatSlider",
@@ -227,7 +204,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "EqualsString",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     Int: AvailableFilterField[] = [
         "EqualsInt",
@@ -235,7 +211,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorInt",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     String: AvailableFilterField[] = [
         "EqualsString",
@@ -243,7 +218,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorString",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
-        "RelationAutocompleteSearch",
     ];
     "Enum": AvailableFilterField[] = [
         "EnumSelector"

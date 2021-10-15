@@ -6,7 +6,6 @@ import {FilterPreloaderProcessorInterface} from "./interfaces";
  */
 export class SkipPreloader<
     C extends "Checkbox" |
-        "DateTimeSlider" |
         "EqualsFloat" |
         "EqualsInt" |
         "EqualsString" |

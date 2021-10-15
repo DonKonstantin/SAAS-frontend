@@ -10,7 +10,7 @@ import {VariantsComponentValue} from "../../fieldValues/VariantsComponentValue";
 /**
  * Процессор полей вариантов выбора
  */
-export class VariantsProcessor<F extends "RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector" | "RelationAutocompleteSearch"> implements FilterValueLoaderProcessor<F> {
+export class VariantsProcessor<F extends "RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector"> implements FilterValueLoaderProcessor<F> {
     /**
      * Парсинг базовых значений
      * @param _

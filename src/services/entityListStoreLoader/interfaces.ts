@@ -1,6 +1,6 @@
 import {ListPageConfiguration} from "../../settings/pages/system/list";
 import {Schemas} from "../../settings/schema";
-import {ListOfSchema} from "../../reduxStore/stores/EntityList";
+import {ListOfSchema} from "../../context/EntityListContext";
 
 /**
  * Загрузчик конфигурации Store

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import {useTranslation} from "react-i18next";
+import LoadingAnimation from "../LoadingAnimation";
 
 // Компонент вывода страницы загрузки данных
 const LoadingPage = () => {
@@ -14,11 +15,7 @@ const LoadingPage = () => {
                 <meta property="og:title" content={title} key="title"/>
             </Head>
             <div className={"loading-page"}>
-                <div className="spinner">
-                    <div className="spinner-item"/>
-                    <div className="spinner-item"/>
-                    <div className="spinner-item"/>
-                </div>
+                <LoadingAnimation />
             </div>
         </>
     )

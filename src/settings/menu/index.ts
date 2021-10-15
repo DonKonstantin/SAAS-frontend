@@ -16,14 +16,14 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: ListIcon,
     },
     {
-        link: {href: "/2"},
+        link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",
         icon: PersonIcon,
     },
     {
-        link: {href: "/3"},
+        link: {href: "/2"},
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",
@@ -93,7 +93,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.projects",
     },
     {
-        link: {href: "/3"},
+        link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",
@@ -125,7 +125,7 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.playlists",
     },
     {
-        link: {href: "/3"},
+        link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",

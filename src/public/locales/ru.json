@@ -96,12 +96,116 @@
       "loading": {
         "title": "Загрузка CRM"
       }
+    },
+    "layouts": {
+      "permissions": {
+        "message": "У вас нет доступа в этот раздел. <1>Вернуться на главную?</1>"
+      }
     }
   },
   "pages": {
     "main": {
       "title": "Главная",
-      "header": "Главная"
+      "header": "Главная",
+      "breadcrumb": "Главная"
+    },
+    "users": {
+      "list": {
+        "title": "Все пользователи",
+        "header": "Все пользователи",
+        "breadcrumb": "Пользователи",
+        "fields": {
+          "email": "Логин",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "active": "Статус",
+          "active-status": {
+            "active": "Активен",
+            "inactive": "Не активен"
+          }
+        }
+      }
+    }
+  },
+  "entity-list": {
+    "components": {
+      "delete-dialog": {
+        "title": "Удалить элементы",
+        "description": "Вы точно хотите удалить элементы ({{count}} шт)? Это действие нельзя отменить!",
+        "cancel": "Отменить",
+        "cancel-tooltip": "Отменить удаление элементов",
+        "submit": "Удалить ({{count}} шт)",
+        "submit-tooltip": "Подтвердить удаление элементов"
+      },
+      "table-caption": {
+        "delete-tooltip": "Удалить выбранные элементы"
+      },
+      "actions": {
+        "add": "Создать",
+        "add-tooltip": "Создать новый элемент",
+        "edit-tooltip": "Редактировать элемент",
+        "delete-tooltip": "Удалить элемент"
+      },
+      "pagination": {
+        "rows-per-page": "Строк на странице:",
+        "items-quantity": "{{from}} - {{to}} из {{count}}"
+      },
+      "filter": {
+        "show-button": {
+          "tooltip": {
+            "show": "Показать фильтр",
+            "hide": "Скрыть фильтр"
+          }
+        },
+        "reset-button": {
+          "caption": "Сброс фильтра",
+          "tooltip": "Сбросить выбранные значения в фильтре"
+        },
+        "hide-button": {
+          "show": "Развернуть фильтр",
+          "hide": "Свернуть фильтр"
+        },
+        "fields": {
+          "choose-group": {
+            "all": "Оба варианта",
+            "yes": "Да",
+            "no": "Нет"
+          },
+          "enum-selector": {
+            "all-variants": "Все варианты"
+          },
+          "input": {
+            "placeholder": "Введите значение"
+          },
+          "autocomplete": {
+            "noOptionsText": "Нет найденных значений",
+            "closeText": "Закрыть",
+            "clearText": "Очистить",
+            "openText": "Открыть"
+          }
+        }
+      },
+      "list": {
+        "checkbox": {
+          "checked": "Снять выделение",
+          "not-checked": "Выбрать элемент"
+        },
+        "checkbox-header": {
+          "checked": "Снять выделение",
+          "not-checked": "Выбрать все элементы"
+        },
+        "header": {
+          "order-tooltip": {
+            "asc": "Сортировка по убыванию",
+            "desc": "Отключить сортировку",
+            "default": "Сортировка по возрастанию"
+          },
+          "order": {
+            "asc": "сортировка по возрастанию",
+            "desc": "сортировка по убыванию"
+          }
+        }
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import {BehaviorSubject, OperatorFunction, Subject, throttleTime} from "rxjs";
+import {BehaviorSubject, distinctUntilChanged, OperatorFunction, Subject, throttleTime} from "rxjs";
 import {UserInfoData} from "../services/authService/UserInfoQuery";
 import withBehaviourSubject from "../connectors/withBehaviourSubject";
 import {authService} from "../services/authService";
@@ -6,7 +6,7 @@ import {loggerFactory} from "../services/logger";
 import {notificationsDispatcher} from "../services/notifications";
 import getConfig from "next/config";
 import {clientServerDetector} from "../services/clientServerDetector";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import i18n from "i18next";
 
 // Контекст шагов импорта
@@ -148,7 +148,7 @@ const initializeContextBus = () => {
     const {publicRuntimeConfig} = getConfig();
 
     const log = loggerFactory().make(`Authorization`)
-    const tokenUpd = tokenContext$.pipe(throttleTime(1000)).subscribe({
+    const tokenUpd = tokenContext$.pipe(throttleTime(1000), distinctUntilChanged()).subscribe({
         next: async token => {
             if (0 === token.length) {
                 context$.next({
@@ -332,7 +332,7 @@ const onAuthorize = async (email: string, password: string): Promise<boolean> =>
 };
 
 // Экспортируем результирующий тип, описывающий текущий контекст
-export type WithAuthorization<T> =
+export type WithAuthorization<T = {}> =
     T
     & AuthorizationContext
     & AuthorizationActions;
@@ -340,22 +340,52 @@ export type WithAuthorization<T> =
 // Тип, описывающий текущий HOC компонент
 type HocType = { <T>(Component: React.ComponentType<WithAuthorization<T>>): React.ComponentType<T> };
 
+// Все доступные действия. Собираются для последующего экспорта
+const actions: AuthorizationActions = {
+    getAuthorizationToken,
+    onAuthorize,
+    onLogout,
+    onResetPassword,
+    onChangePasswordByResetToken,
+    getCurrentState,
+    setCurrentState,
+    initializeContextBus,
+    initializeContextData,
+    setDomain,
+    setProject,
+}
+
+/**
+ * Хук для использования данных авторизации там, где нет возможности использовать
+ * HOC или из соображений качества кода лучше использовать хук
+ */
+export const useAuthorization = (...pipeModifications: OperatorFunction<any, AuthorizationContext>[]): WithAuthorization => {
+    const [contextValue, setContextValue] = useState(context$.getValue())
+    useEffect(() => {
+        const subscription = context$
+            // @ts-ignore
+            .pipe(...pipeModifications)
+            .subscribe({
+                next: data => setContextValue(data)
+            })
+
+        return () => {
+            try {
+                subscription.unsubscribe()
+            } catch (e) {}
+        }
+    })
+
+    return {
+        ...contextValue,
+        ...actions
+    }
+}
+
 // HOC для работы с авторизацией
 const AuthorizationHoc = (...pipeModifications: OperatorFunction<any, AuthorizationContext>[]) => withBehaviourSubject(
     context$,
-    {
-        getAuthorizationToken,
-        onAuthorize,
-        onLogout,
-        onResetPassword,
-        onChangePasswordByResetToken,
-        getCurrentState,
-        setCurrentState,
-        initializeContextBus,
-        initializeContextData,
-        setDomain,
-        setProject,
-    },
+    {...actions},
     ...pipeModifications
 ) as HocType;
 

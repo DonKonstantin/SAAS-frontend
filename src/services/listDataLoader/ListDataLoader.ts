@@ -73,9 +73,9 @@ export class ListDataLoader implements ListDataLoaderInterfaces {
             result[item.key] = item.data
         });
 
-        result.list.parameters.originalFilterValues = JSON.parse(JSON.stringify(result.filter));
-        result.list.parameters.currentFilterValues = JSON.parse(JSON.stringify(result.filter));
-        result.list.parameters.prevFilterValues = JSON.parse(JSON.stringify(result.filter));
+        result.list.parameters.originalFilterValues = {...result.filter};
+        result.list.parameters.currentFilterValues = {...result.filter};
+        result.list.parameters.prevFilterValues = {...result.filter};
 
         return result;
     }

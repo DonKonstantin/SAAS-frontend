@@ -7,7 +7,7 @@ import {SchemaValueConverterInterface} from "../../../../schemaValueConverter/in
 /**
  * Загрузка базовых значений для слайдеров
  */
-export class SliderBaseValuesLoader<G extends "DateTimeSlider" | "FloatSlider" | "IntegerSlider"> implements FilterBaseValuesLoaderProcessor<G> {
+export class SliderBaseValuesLoader<G extends "FloatSlider" | "IntegerSlider"> implements FilterBaseValuesLoaderProcessor<G> {
     private readonly valueConverter: SchemaValueConverterInterface
 
     /**
@@ -29,20 +29,20 @@ export class SliderBaseValuesLoader<G extends "DateTimeSlider" | "FloatSlider" |
      * Парсинг значений базового запроса
      * @param _
      * @param fieldCode
-     * @param filterFieldType
+     * @param __
      * @param data
      */
     parseBaseQueryResult<T extends keyof Schemas>(
         _: T,
         fieldCode: keyof Schemas[T]["fields"],
-        filterFieldType: G,
+        __: G,
         data: any
     ): RegisteredFilterFieldBaseComponentValues[G] {
         let result = new SliderBaseValues<any>()
         const baseMin = data['min'][fieldCode] ? data['min'][fieldCode] : null
         const baseMax = data['max'][fieldCode] ? data['max'][fieldCode] : null
 
-        const fieldType: FieldType = filterFieldType === "DateTimeSlider" ? "DateTime!" : "Float!"
+        const fieldType: FieldType = "Float!"
 
         result.min = this.valueConverter.convertValueFromGraphQL(fieldType, baseMin)
         result.max = this.valueConverter.convertValueFromGraphQL(fieldType, baseMax)

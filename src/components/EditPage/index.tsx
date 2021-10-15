@@ -2,7 +2,6 @@ import {Schemas} from "../../settings/schema";
 import {EntityData} from "../../services/entityGetterService/interface";
 import React from "react";
 import {editSchemaConfiguration} from "../../settings/pages";
-import BreadcrumbsComponent, {Breadcrumb} from "../Breadcrumbs";
 import {EditPageConfiguration, EntityValues, ValidationResult} from "../../settings/pages/system/edit";
 import {Grid, Grow, Typography} from "@mui/material";
 import LoadingBlocker from "../LoadingBlocker";
@@ -10,6 +9,7 @@ import ButtonsComponent from "./Buttons";
 import DefaultGroup from "./DefaultGroup";
 import IsGroupVisible from "../../services/helpers/IsGroupVisible";
 import {AdditionEditParams} from "../../containers/EntityEdit";
+import Breadcrumbs from "../Breadcrumbs";
 
 // Свойства страницы редактирования сущности
 export interface EditPageProps {
@@ -23,13 +23,13 @@ export interface EditPageProps {
     hasAccess: boolean
     validationResults: ValidationResult[][]
     additionEditParams: AdditionEditParams
-    onSave: {(entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void}
-    onSaveAsNew: {(entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void}
-    onSaveAndClose: {(entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void}
-    onClose: {(): void}
-    onChangeEditData: {(data: EntityData<keyof Schemas>): void}
-    onChangeValidation: {(validation: ValidationResult[][]): void}
-    onChangeSchemaOrPrimaryKey: {(schema: keyof Schemas, primaryKey: any, additionEditParams: AdditionEditParams): void}
+    onSave: { (entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void }
+    onSaveAsNew: { (entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void }
+    onSaveAndClose: { (entityData: EntityData<keyof Schemas>, additionEditParams: AdditionEditParams): void }
+    onClose: { (): void }
+    onChangeEditData: { (data: EntityData<keyof Schemas>): void }
+    onChangeValidation: { (validation: ValidationResult[][]): void }
+    onChangeSchemaOrPrimaryKey: { (schema: keyof Schemas, primaryKey: any, additionEditParams: AdditionEditParams): void }
 }
 
 // State компонента
@@ -174,29 +174,11 @@ export class EditPageComponent extends React.Component<EditPageProps, EditPageSt
      * Рендеринг страницы
      */
     render() {
-        // @ts-ignore
-        const schema: EditPageConfiguration<any> = this.configuration[this.props.schema];
-        let breadcrumbs: Breadcrumb[] = this.props.additionEditParams.customBreadcrumbs || [
-            {
-                icon: 'home',
-                title: "Главная",
-                link: {
-                    href: "/",
-                }
-            },
-            {
-                title: schema.listPageConfig.header,
-                link: {...schema.listPageUrl}
-            },
-            {
-                title: schema.header(this.props.primaryKey)
-            }
-        ];
 
         if (!this.props.hasAccess) {
             return (
                 <React.Fragment>
-                    <BreadcrumbsComponent items={breadcrumbs} />
+                    <Breadcrumbs/>
                     <Typography variant="h4" gutterBottom>Доступ запрещен</Typography>
                     <p>У вас нет доступа к данной странице</p>
                 </React.Fragment>
@@ -210,10 +192,10 @@ export class EditPageComponent extends React.Component<EditPageProps, EditPageSt
             return (
                 <Grid container spacing={3} style={{overflow: "hidden"}}>
                     <Grid item xs={12}>
-                        <BreadcrumbsComponent items={breadcrumbs} />
+                        <Breadcrumbs/>
                     </Grid>
                     <Grid item xs={12}>
-                        <LoadingBlocker isBlockContent={false} style={"linear"} />
+                        <LoadingBlocker/>
                     </Grid>
                 </Grid>
             )
@@ -229,10 +211,10 @@ export class EditPageComponent extends React.Component<EditPageProps, EditPageSt
                   style={{overflow: "hidden", paddingBottom: 80}}
             >
                 <Grid item xs={12}>
-                    <BreadcrumbsComponent items={breadcrumbs} />
+                    <Breadcrumbs/>
                 </Grid>
                 <Grid item xs={12} style={{position: "relative"}}>
-                    <LoadingBlocker isVisible={this.props.isChangeInProgress} isBlockContent={true} style={"circle"} />
+                    <LoadingBlocker/>
                     <Grow in={this.state.visible || false} timeout={this.state.animationTime}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>

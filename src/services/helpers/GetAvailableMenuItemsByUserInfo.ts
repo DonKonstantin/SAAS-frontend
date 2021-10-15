@@ -1,12 +1,6 @@
 import {UserInfoData} from "../authService/UserInfoQuery";
 import {MenuItem} from "../../settings/menu/system";
-
-// Доступные уровни разрешений для определенного уровня
-const AvailableLevelsForLevel = {
-    realm: ["realm", "domain", "project"],
-    domain: ["domain", "project"],
-    project: ["project"],
-}
+import CheckPermission from "./CheckPermission";
 
 /**
  * Функция проверяет доступность переданного пункта меню на основе профиля пользователя.
@@ -23,9 +17,7 @@ const isMenuItemAvailable = (userInfo: UserInfoData, menuItem: MenuItem): boolea
         return true
     }
 
-    return !!userInfo.roles
-        .filter(r => AvailableLevelsForLevel[r.level].includes(level))
-        .find(r => r.permissions.find(p => p.code === permission))
+    return CheckPermission(userInfo, permission, level)
 }
 
 /**

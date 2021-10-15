@@ -1,11 +1,14 @@
 import {Schemas} from "../schema";
 import {ListPageConfiguration} from "./system/list";
 import {EditPageConfiguration} from "./system/edit";
+import {UserConfiguration} from "./list/user";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
 export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): ListSchemaConfiguration => {
-    return {}
+    return {
+        user: new UserConfiguration
+    }
 };
 
 // Параметры конфигурации страниц редактирования сущностей

@@ -6,7 +6,7 @@ import {SchemaField, Schemas} from "../../../../../../settings/schema";
 /**
  * Процессор генерации подзапросов фильтрации для вариантного сравнения
  */
-export class VariantsProcessor implements FilterGeneratorProcessor<"RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector" | "RelationAutocompleteSearch"> {
+export class VariantsProcessor implements FilterGeneratorProcessor<"RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector"> {
     private readonly valueConverter: SchemaValueConverterInterface;
 
     /**
@@ -21,7 +21,7 @@ export class VariantsProcessor implements FilterGeneratorProcessor<"RelationVari
      * @param params
      */
     GenerateFilter<K extends keyof Schemas, F extends keyof Schemas[K]["fields"]>(
-        params: FilterGeneratorProcessorParams<"RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector" | "RelationAutocompleteSearch", K, F>
+        params: FilterGeneratorProcessorParams<"RelationVariantsSelector" | "VariantsSelectorFloat" | "VariantsSelectorInt" | "VariantsSelectorString" | "RelationAutocompleteSelector", K, F>
     ): string {
         if (params.currentValue.value.value.length === 0
             || JSON.stringify(params.currentValue.value.value) === JSON.stringify(params.originalValue.value.value)

@@ -1,7 +1,6 @@
 import {FilterFieldComponents} from "../../../../filterLoader/types";
 import {FilterGeneratorProcessor} from "./interfaces";
 import {NumericSliderProcessor} from "./NumericSliderProcessor";
-import {DateTimeSliderProcessor} from "./DateTimeSliderProcessor";
 import {CheckboxSwitchProcessor} from "./CheckboxSwitchProcessor";
 import {EqualsProcessor} from "./EqualsProcessor";
 import {LikeProcessor} from "./LikeProcessor";
@@ -12,7 +11,6 @@ export type FilterGeneratorProcessors = { [P in keyof FilterFieldComponents]: Fi
 export const filterGeneratorProcessors: { (): FilterGeneratorProcessors } = () => {
     return new class implements FilterGeneratorProcessors {
         Checkbox: FilterGeneratorProcessor<"Checkbox"> = new CheckboxSwitchProcessor;
-        DateTimeSlider: FilterGeneratorProcessor<"DateTimeSlider"> = new DateTimeSliderProcessor;
         EqualsFloat: FilterGeneratorProcessor<"EqualsFloat"> = new EqualsProcessor;
         EqualsInt: FilterGeneratorProcessor<"EqualsInt"> = new EqualsProcessor;
         EqualsString: FilterGeneratorProcessor<"EqualsString"> = new EqualsProcessor;
@@ -26,6 +24,5 @@ export const filterGeneratorProcessors: { (): FilterGeneratorProcessors } = () =
         VariantsSelectorString: FilterGeneratorProcessor<"VariantsSelectorString"> = new VariantsProcessor;
         EnumSelector: FilterGeneratorProcessor<"EnumSelector"> = new EqualsProcessor;
         RelationAutocompleteSelector: FilterGeneratorProcessor<"RelationAutocompleteSelector"> = new VariantsProcessor;
-        RelationAutocompleteSearch: FilterGeneratorProcessor<"RelationAutocompleteSearch"> = new VariantsProcessor;
     }
 };

@@ -1,7 +1,7 @@
 import {FilterPreloaderInterface, FilterPreloaderParameters, LoadedAdditionData} from "./interfaces";
 import {Schemas} from "../../../../settings/schema";
 import {AvailableFilterField, BaseFilterFieldConfiguration, DeclaredFilterFieldPreloadedData} from "../types";
-import {FilterPreloaderProcessors} from "./processors/interfaces";
+import {FilterLoaderParams, FilterPreloaderProcessors} from "./processors/interfaces";
 import {Logger, LoggerFactory} from "../../../logger/Logger";
 
 interface AdditionDataResponse<T extends keyof Schemas> {
@@ -36,16 +36,16 @@ export class FilterPreloader implements FilterPreloaderInterface {
                 config: BaseFilterFieldConfiguration<T, keyof Schemas[T]['fields'], AvailableFilterField>
             ): Promise<AdditionDataResponse<T>> => {
                 try {
-                    // const data = params.baseData[config.field];
+                    const data = params.baseData[config.field];
                     const processor = this.processors[config.filterType];
 
                     return {
                         field: config.field,
                         // @ts-ignore
                         preloaded: await processor.loadFilterData({
-                            // configuration: config,
-                            // baseValues: data,
-                        })
+                            configuration: config,
+                            baseValues: data as any,
+                        } as FilterLoaderParams<any, T, keyof Schemas[T]['fields']>)
                     }
                 } catch (e) {
                     this.logger.Error(`Failed to load filter data for field`, config, e);
