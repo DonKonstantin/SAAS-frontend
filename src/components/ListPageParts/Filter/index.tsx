@@ -1,4 +1,4 @@
-import {FC, useRef} from "react";
+import React, {FC, useRef} from "react";
 import {useEntityList} from "../../../context/EntityListContext";
 import {distinctUntilChanged} from "rxjs";
 import {Button, Grid, Tooltip} from "@mui/material";
@@ -39,4 +39,4 @@ const Filter: FC = () => {
 }
 
 // Экспортируем компонент
-export default Filter
+export default React.memo(Filter, () => true)

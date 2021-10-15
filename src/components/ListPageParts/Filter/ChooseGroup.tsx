@@ -55,17 +55,17 @@ const ChooseGroup: FC<FilterFieldProperties> = props => {
             >
                 <FormControlLabel
                     value="all"
-                    control={<Radio size="small"/>}
+                    control={<Radio/>}
                     label={t(`${translationKey}.all`) as string}
                 />
                 <FormControlLabel
                     value="true"
-                    control={<Radio size="small"/>}
+                    control={<Radio/>}
                     label={t(`${translationKey}.yes`) as string}
                 />
                 <FormControlLabel
                     value="false"
-                    control={<Radio size="small"/>}
+                    control={<Radio/>}
                     label={t(`${translationKey}.no`) as string}
                 />
             </RadioGroup>

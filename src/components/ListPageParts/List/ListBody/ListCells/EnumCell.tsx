@@ -3,6 +3,7 @@ import {ListFieldProperties} from "../../../../../services/listDataLoader/listLo
 import {EnumValue} from "../../../../../services/listDataLoader/listLoader/listValues/EnumValue";
 import columnDirection from "../../helpers/columnDirection";
 import TableCell from "@mui/material/TableCell";
+import {useTranslation} from "react-i18next";
 
 // Компонент вывода простого поля
 const EnumCell: FC<ListFieldProperties<EnumValue>> = props => {
@@ -13,10 +14,11 @@ const EnumCell: FC<ListFieldProperties<EnumValue>> = props => {
         padding
     } = configuration
 
+    const {t} = useTranslation()
     const renderValue = value && value.value && value.variants[value.value] ? value.variants[value.value] : "-"
     return (
         <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
-            {renderValue}
+            {t(renderValue)}
         </TableCell>
     )
 }

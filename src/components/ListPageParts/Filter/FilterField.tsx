@@ -1,4 +1,4 @@
-import {FC} from "react";
+import React, {FC} from "react";
 import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoader/types";
 import {distinctUntilChanged} from "rxjs";
 import useFieldConfiguration from "./useFieldConfiguration";
@@ -66,4 +66,6 @@ const FilterField: FC<FilterFieldProperties> = props => {
 }
 
 // Экспортируем компонент поля фильтра
-export default FilterField
+export default React.memo(FilterField, (prevProps, nextProps) => {
+    return prevProps.fieldCode === nextProps.fieldCode
+})

@@ -123,6 +123,99 @@
             "active": "Активен",
             "inactive": "Не активен"
           }
+        },
+        "filters": {
+          "email": "Логин",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "active": "Активен",
+          "roles_id": "Роли"
+        }
+      }
+    },
+    "permission_category": {
+      "list": {
+        "title": "Категории разрешений",
+        "header": "Категории разрешений",
+        "breadcrumb": "Категории разрешений",
+        "fields": {
+          "level": "Уровень",
+          "level-enum": {
+            "realm": "Реалм",
+            "domain": "Домен",
+            "project": "Проект"
+          },
+          "name": "Название"
+        },
+        "filters": {
+          "level": "Уровень",
+          "name": "Название"
+        }
+      }
+    },
+    "permission": {
+      "list": {
+        "title": "Все разрешения",
+        "header": "Все разрешения",
+        "breadcrumb": "Разрешения",
+        "fields": {
+          "name": "Название",
+          "code": "Код разрешения",
+          "category_id": "Категория"
+        },
+        "filters": {
+          "name": "Название",
+          "code": "Код разрешения",
+          "category_id": "Категория"
+        }
+      }
+    },
+    "role": {
+      "list": {
+        "title": "Все роли",
+        "header": "Все роли",
+        "breadcrumb": "Роли",
+        "fields": {
+          "name": "Название роли",
+          "structure_item_id": "Имя объекта",
+          "level": "Уровень"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        }
+      }
+    },
+    "domain": {
+      "list": {
+        "title": "Список доменов",
+        "header": "Список доменов",
+        "breadcrumb": "Домены",
+        "fields": {
+          "name": "Название домена",
+          "active": "Статус"
+        },
+        "filters": {
+          "name": "Название домена",
+          "active": "Статус"
+        }
+      }
+    },
+    "project": {
+      "list": {
+        "title": "Список проектов",
+        "header": "Список проектов",
+        "breadcrumb": "Проекты",
+        "fields": {
+          "name": "Название проекта",
+          "active": "Статус",
+          "parent": "Домен"
+        },
+        "filters": {
+          "name": "Название проекта",
+          "active": "Статус",
+          "parent": "Домен"
         }
       }
     }

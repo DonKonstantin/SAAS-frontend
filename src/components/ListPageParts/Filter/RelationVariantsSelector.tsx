@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoader/types";
-import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel} from "@mui/material";
+import {Box, Checkbox, FormControl, FormControlLabel, FormLabel} from "@mui/material";
 import useFieldConfiguration from "./useFieldConfiguration";
 import {VariantsComponentValue} from "../../../services/listDataLoader/filterLoader/fieldValues/VariantsComponentValue";
 import {auditTime} from "rxjs";
@@ -23,7 +23,7 @@ const RelationVariantsSelector: FC<FilterFieldProperties> = props => {
     // Обработка изменения выбранных элементов
     const handleChangeValue = e => {
         // @ts-ignore
-        const {val} = e.target
+        const {value: val} = e.target
         if (!val) {
             return
         }
@@ -34,7 +34,7 @@ const RelationVariantsSelector: FC<FilterFieldProperties> = props => {
                 {
                     ...value,
                     value: {
-                        value: currentValue.value.filter(v => v === val),
+                        value: currentValue.value.filter(v => v !== val),
                         variants: currentValue.variants,
                     }
                 } as any
@@ -54,18 +54,23 @@ const RelationVariantsSelector: FC<FilterFieldProperties> = props => {
     }
 
     return (
-        <FormControl component="fieldset">
+        <FormControl fullWidth component="fieldset">
             <FormLabel component="legend">{t(title)}</FormLabel>
-            <FormGroup onChange={handleChangeValue} sx={{maxHeight: "250px", overflow: "auto"}}>
+            <Box onChange={handleChangeValue} className="list-page-variants-filter-group">
                 {value.preloaded.choseVariants.map(variant => (
                     <FormControlLabel
                         key={variant.key}
                         value={variant.key}
-                        control={<Checkbox/>}
+                        control={
+                            <Checkbox
+                                value={variant.key}
+                                checked={currentValue.value.includes(variant.key)}
+                            />
+                        }
                         label={variant.title}
                     />
                 ))}
-            </FormGroup>
+            </Box>
         </FormControl>
     )
 }

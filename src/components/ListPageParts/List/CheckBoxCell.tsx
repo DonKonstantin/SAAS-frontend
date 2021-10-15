@@ -1,13 +1,15 @@
 import React, {FC} from "react";
 import {Checkbox, TableCell, Tooltip} from "@mui/material";
 import {useTranslation} from "react-i18next";
+import {SwitchBaseProps} from "@mui/material/internal/SwitchBase";
 
 // Свойства компонента
 type CheckBoxCellProps = {
     isHeader?: boolean
     checked: boolean
     indeterminate?: boolean
-    onChange: {(): void}
+    onChange?: SwitchBaseProps['onChange']
+    onClick?: SwitchBaseProps['onClick']
 }
 
 // Компонент вывода колонки с чекбоксом
@@ -17,6 +19,7 @@ const CheckBoxCell: FC<CheckBoxCellProps> = props => {
         isHeader = false,
         checked,
         onChange,
+        onClick,
         indeterminate,
     } = props
 
@@ -28,6 +31,7 @@ const CheckBoxCell: FC<CheckBoxCellProps> = props => {
                     color="primary"
                     checked={checked}
                     onChange={onChange}
+                    onClick={onClick}
                     indeterminate={indeterminate}
                 />
             </Tooltip>
@@ -36,7 +40,5 @@ const CheckBoxCell: FC<CheckBoxCellProps> = props => {
 }
 
 // Экспортируем компонент
-export default React.memo(CheckBoxCell, (prevProps, nextProps) => {
-    return prevProps.checked === nextProps.checked
-})
+export default CheckBoxCell
 

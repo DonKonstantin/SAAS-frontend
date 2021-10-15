@@ -5,6 +5,7 @@ import EntityListHoc, {WithEntityListHoc} from "../../../../context/EntityListCo
 import {listSchemaConfiguration} from "../../../../settings/pages";
 import CheckBoxCell from "../CheckBoxCell";
 import ListCells from "./ListCells";
+import {SwitchBaseProps} from "@mui/material/internal/SwitchBase";
 
 // Свойства компонента
 export type ListRowProps<T extends keyof Schemas = keyof Schemas> = WithEntityListHoc<{
@@ -49,7 +50,9 @@ const ListRow: FC<ListRowProps> = props => {
     const {actions: ActionsComponent} = listFields
 
     // Переключение состояния чекбокса выбора элемента
-    const onToggleItemCheckedState = () => {
+    const onToggleItemCheckedState: SwitchBaseProps['onClick'] = event => {
+        event.stopPropagation()
+
         onChangeCheckedItems(items => {
             if (items.includes(row.primaryKeyValue)) {
                 return items.filter(i => i !== row.primaryKeyValue)
@@ -64,7 +67,7 @@ const ListRow: FC<ListRowProps> = props => {
             {!disableMultiChoose && (
                 <CheckBoxCell
                     checked={checkedItems.includes(row.primaryKeyValue)}
-                    onChange={onToggleItemCheckedState}
+                    onClick={onToggleItemCheckedState}
                 />
             )}
             {Object.values(fields).map(field => {

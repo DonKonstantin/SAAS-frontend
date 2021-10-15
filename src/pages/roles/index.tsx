@@ -14,11 +14,11 @@ const ListingPage: FC = () => {
 export const getStaticProps: GetStaticProps = async (): Promise<{props: PageWithEntityList}> => {
     return {
         props: {
-            title: "pages.users.list.title",
-            header: "pages.users.list.header",
-            entityListSchema: "user",
-            permissionCheckPermission: "READ_USERS",
-            permissionCheckLevel: "realm",
+            title: "pages.role.list.title",
+            header: "pages.role.list.header",
+            entityListSchema: "role",
+            permissionCheckPermission: "CHANGE_ROLES",
+            permissionCheckLevel: "project",
         }
     }
 }

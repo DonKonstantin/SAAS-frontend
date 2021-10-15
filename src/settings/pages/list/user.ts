@@ -4,36 +4,42 @@ import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoa
 import CustomActiveCell from "../../../components/CustomActiveCell";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 
-export class UserConfiguration implements ListPageConfiguration<"user"> {
+export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     filter: FilterFieldsConfiguration<"user"> = {
         email: {
             field: "email",
             filterType: "Like",
             schema: "user",
-            title: "E-mail"
+            title: "pages.users.list.filters.email"
         },
         first_name: {
             field: "first_name",
             filterType: "Like",
             schema: "user",
-            title: "Имя пользователя"
+            title: "pages.users.list.filters.first_name"
         },
         last_name: {
             field: "last_name",
             filterType: "Like",
             schema: "user",
-            title: "Фамилия пользователя",
+            title: "pages.users.list.filters.last_name",
         },
-        // roles_id: new class implements RelationFilterFieldConfiguration<"user", "roles_id", "RelationVariantsSelector"> {
-        //     relationConfiguration: RelationConfiguration<"role"> = {
-        //         schema: "role",
-        //         visibleFields: ["name"]
-        //     };
-        //     field: "roles_id" = "roles_id";
-        //     filterType: "RelationVariantsSelector" = "RelationVariantsSelector";
-        //     schema: "user" = "user";
-        //     title: string = "Роли пользователя";
-        // }
+        active: {
+            field: "active",
+            filterType: "Switch",
+            schema: "user",
+            title: "pages.users.list.filters.active",
+        },
+        roles_id: {
+            relationConfiguration: {
+                schema: "role",
+                visibleFields: ["name"]
+            },
+            field: "roles_id",
+            filterType: "RelationVariantsSelector",
+            schema: "user",
+            title: "pages.users.list.filters.roles_id",
+        }
     };
     listFields: ListFieldsConfiguration<"user"> = {
         fields: {

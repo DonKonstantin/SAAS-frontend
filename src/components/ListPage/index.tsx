@@ -14,12 +14,20 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {useTranslation} from "react-i18next";
 import FilterDrawer from "./FilterDrawer";
 import Filter from "../ListPageParts/Filter";
+import {distinctUntilChanged} from "rxjs";
 
 // Компонент вывода страницы листинга
 const ListPage: FC = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [selected, setSelected] = useState<any[]>([])
-    const {data} = useEntityList()
+    const {data} = useEntityList(
+        distinctUntilChanged((previous, current) => {
+            const prevVal = previous.data ? 1 : 2
+            const currentVal = current.data ? 1 : 2
+
+            return prevVal === currentVal
+        })
+    )
     const {t} = useTranslation()
 
     if (!data) {
@@ -79,4 +87,4 @@ const ListPage: FC = () => {
 }
 
 // Экспортируем компонент
-export default ListPage
+export default React.memo(ListPage, () => true)

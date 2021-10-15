@@ -11,7 +11,7 @@ import {setDomain, setProject} from "../../context/AuthorizationContext";
 // Список пунктов меню уровня Реалм
 export const RealmMenuItems = (): MenuItem[] => ([
     {
-        link: {href: "/1"},
+        link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
         icon: ListIcon,
     },
@@ -23,7 +23,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: PersonIcon,
     },
     {
-        link: {href: "/2"},
+        link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",
@@ -36,13 +36,13 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: PhonelinkLockIcon,
         subItems: [
             {
-                link: {href: "/21"},
+                link: {href: "/permission"},
                 title: "UI.menu.left-menu.items.permissions.permissions",
                 permission: "CHANGE_PERMISSIONS",
                 level: "realm",
             },
             {
-                link: {href: "/22"},
+                link: {href: "/permission-category"},
                 title: "UI.menu.left-menu.items.permissions.categories",
                 permission: "CHANGE_PERMISSIONS",
                 level: "realm",
@@ -81,7 +81,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
 // Список пунктов меню уровня Домен
 export const DomainMenuItems = (): MenuItem[] => ([
     {
-        link: {href: "/1"},
+        link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain-list",
         icon: ArrowBackIosIcon,
         onClick: () => {
@@ -89,7 +89,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
         }
     },
     {
-        link: {href: "/2"},
+        link: {href: "/project"},
         title: "UI.menu.left-menu.items.projects",
     },
     {
@@ -99,7 +99,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
         level: "project",
     },
     {
-        link: {href: "/4"},
+        link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",
@@ -113,7 +113,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
 // Список пунктов меню уровня Проект
 export const ProjectMenuItems = (): MenuItem[] => ([
     {
-        link: {href: "/1"},
+        link: {href: "/project"},
         title: "UI.menu.left-menu.items.projects-list",
         icon: ArrowBackIosIcon,
         onClick: () => {
@@ -131,7 +131,7 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         level: "project",
     },
     {
-        link: {href: "/4"},
+        link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",

@@ -51,7 +51,10 @@ const ListHeader: FC<ListHeaderProps> = props => {
 
     // Переключение состояния чекбокса выбора элемента
     const onToggleItemCheckedState = () => {
-        onChangeCheckedItems(() => isAllItemsSelected ? [] : allPrimaryKeys)
+        onChangeCheckedItems(items => allPrimaryKeys.length === items.length
+            ? []
+            : allPrimaryKeys
+        )
     }
 
     return (

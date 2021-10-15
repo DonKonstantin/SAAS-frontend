@@ -3,7 +3,7 @@ import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoad
 import useFieldConfiguration from "./useFieldConfiguration";
 import {auditTime} from "rxjs";
 import {VariantsComponentValue} from "../../../services/listDataLoader/filterLoader/fieldValues/VariantsComponentValue";
-import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel} from "@mui/material";
+import {Box, Checkbox, FormControl, FormControlLabel, FormLabel} from "@mui/material";
 
 // Компонент вариантного поля фильтрации
 const VariantsSelector: FC<FilterFieldProperties> = props => {
@@ -23,7 +23,7 @@ const VariantsSelector: FC<FilterFieldProperties> = props => {
     // Обработка изменения выбранных элементов
     const handleChangeValue = e => {
         // @ts-ignore
-        const {val} = e.target
+        const {value: val} = e.target
         if (!val) {
             return
         }
@@ -54,9 +54,9 @@ const VariantsSelector: FC<FilterFieldProperties> = props => {
     }
 
     return (
-        <FormControl component="fieldset">
+        <FormControl fullWidth component="fieldset">
             <FormLabel component="legend">{t(title)}</FormLabel>
-            <FormGroup onChange={handleChangeValue} sx={{maxHeight: "250px", overflow: "auto"}}>
+            <Box onChange={handleChangeValue} className="list-page-variants-filter-group">
                 {currentValue.variants.map(variant => (
                     <FormControlLabel
                         key={variant}
@@ -65,7 +65,7 @@ const VariantsSelector: FC<FilterFieldProperties> = props => {
                         label={variant}
                     />
                 ))}
-            </FormGroup>
+            </Box>
         </FormControl>
     )
 }

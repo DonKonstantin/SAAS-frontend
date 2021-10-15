@@ -5,8 +5,173 @@
 import {Collection} from "../../services/types";
 
 export class Schemas {
+    // Параметры схемы сущности Домен
+    domain: Schema = {
+        fields: {
+            id: {
+                type: "ID!",
+                isPrimaryKey: true,
+                isArray: false
+            },
+            name: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+            active: {
+                type: "Boolean!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+        },
+        isChangeable: true,
+        isCreatable: true,
+        isDeletable: true,
+    };
 
-    // Параметры схемы сущности пользователя
+    // Параметры схемы сущности Проект
+    project: Schema = {
+        fields: {
+            id: {
+                type: "ID!",
+                isPrimaryKey: true,
+                isArray: false
+            },
+            name: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+            active: {
+                type: "Boolean!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+            parent: {
+                type: "Int!",
+                isPrimaryKey: false,
+                isArray: false,
+                relation: <RelationConfiguration<"domain">>{
+                    schema: "domain",
+                    target: "id",
+                },
+            },
+        },
+        isChangeable: true,
+        isCreatable: true,
+        isDeletable: true,
+    };
+
+    // Параметры схемы сущности Категория Разрешений
+    permission_category: Schema = {
+        fields: {
+            id: {
+                type: "ID!",
+                isPrimaryKey: true,
+                isArray: false
+            },
+            level: {
+                type: "Enum!",
+                isPrimaryKey: false,
+                isArray: false,
+                enum: {
+                    variants: {
+                        realm: "pages.permission_category.list.fields.level-enum.realm",
+                        domain: "pages.permission_category.list.fields.level-enum.domain",
+                        project: "pages.permission_category.list.fields.level-enum.project"
+                    }
+                }
+            },
+            name: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+        },
+        isChangeable: true,
+        isCreatable: true,
+        isDeletable: true,
+    };
+
+    // Параметры схемы сущности Разрешение
+    permission: Schema = {
+        fields: {
+            id: {
+                type: "ID!",
+                isPrimaryKey: true,
+                isArray: false
+            },
+            category_id: {
+                type: "ID!",
+                isArray: false,
+                isPrimaryKey: false,
+                relation: <RelationConfiguration<"permission_category">>{
+                    schema: "permission_category",
+                    target: "id",
+                },
+            },
+            name: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+            code: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+        },
+        isChangeable: true,
+        isCreatable: true,
+        isDeletable: true,
+    };
+
+    // Параметры схемы сущности Роль
+    role: Schema = {
+        fields: {
+            id: {
+                type: "ID!",
+                isPrimaryKey: true,
+                isArray: false
+            },
+            level: {
+                type: "Enum!",
+                isPrimaryKey: false,
+                isArray: false,
+                enum: {
+                    variants: {
+                        realm: "Реалм",
+                        domain: "Домен",
+                        project: "Проект"
+                    }
+                }
+            },
+            name: {
+                type: "String!",
+                isPrimaryKey: false,
+                isArray: false
+            },
+            permissions_id: {
+                type: "ID!",
+                isArray: true,
+                isPrimaryKey: false,
+                relation: <RelationConfiguration<"permission">>{
+                    schema: "permission",
+                    target: "id",
+                },
+            },
+            structure_item_id: {
+                type: "ID!",
+                isArray: false,
+                isPrimaryKey: false,
+            },
+        },
+        isChangeable: true,
+        isCreatable: true,
+        isDeletable: true,
+    };
+
+    // Параметры схемы сущности Пользователь
     user: Schema = {
         fields: {
             id: {
@@ -33,10 +198,10 @@ export class Schemas {
                 type: "ID!",
                 isArray: true,
                 isPrimaryKey: false,
-                // relation: <RelationConfiguration<"role">>{
-                //     schema: "role",
-                //     target: "id",
-                // },
+                relation: <RelationConfiguration<"role">>{
+                    schema: "role",
+                    target: "id",
+                },
             },
             active: {
                 type: "Boolean!",

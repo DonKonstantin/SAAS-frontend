@@ -1,6 +1,6 @@
 import {useTranslation} from "react-i18next";
 import {EntityListHocContext, useEntityList} from "../../../context/EntityListContext";
-import {OperatorFunction} from "rxjs";
+import {distinctUntilChanged, OperatorFunction} from "rxjs";
 import {useRef} from "react";
 import {Schemas} from "../../../settings/schema";
 import {listSchemaConfiguration} from "../../../settings/pages";
@@ -17,7 +17,21 @@ const useFieldConfiguration = (
     ...pipeModifications: OperatorFunction<any, EntityListHocContext>[]
 ) => {
     const {t} = useTranslation()
-    const {data, onChangeFilterValues} = useEntityList(...pipeModifications)
+    const {data, onChangeFilterValues} = useEntityList(
+        distinctUntilChanged(
+            (previous, current) => {
+                if (!previous.data || !current.data) {
+                    return false
+                }
+
+                const prevFieldValue = JSON.stringify(previous.data?.currentData.parameters.currentFilterValues[fieldCode] || "")
+                const currentFieldValue = JSON.stringify(current.data?.currentData.parameters.currentFilterValues[fieldCode] || "")
+
+                return prevFieldValue === currentFieldValue
+            }
+        ),
+        ...pipeModifications
+    )
     if (!data) {
         return undefined
     }
@@ -27,7 +41,7 @@ const useFieldConfiguration = (
         return undefined
     }
 
-    const fieldSchema = useRef((new Schemas())[fieldCode])
+    const fieldSchema = useRef((new Schemas())[schema].fields[fieldCode])
     const config = useRef(listSchemaConfiguration()[schema])
     if (!config.current) {
         return undefined

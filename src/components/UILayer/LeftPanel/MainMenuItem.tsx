@@ -28,7 +28,7 @@ const SimpleMainMenuItem: FC<MainMenuItemProps> = props => {
     // Обработчик клика по пункту меню
     const onClickHandler = () => {
         if (!!onClick) {
-            return onClick()
+            onClick()
         }
 
         if (!link) {

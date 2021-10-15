@@ -12,7 +12,7 @@ const EnumSelector: FC<FilterFieldProperties> = props => {
         return null
     }
 
-    const {t, fieldConfig: {title}, fieldSchema, value, onChangeFilterValues} = fieldConfig
+    const {t, fieldConfig: {title}, fieldSchema: {enum: enumData}, value, onChangeFilterValues} = fieldConfig
     const translationKey = `entity-list.components.filter.fields.enum-selector`
 
     return (
@@ -35,9 +35,9 @@ const EnumSelector: FC<FilterFieldProperties> = props => {
                 <MenuItem value="">
                     <em>{t(`${translationKey}.all-variants`)}</em>
                 </MenuItem>
-                {!!fieldSchema.enum && Object.keys(fieldSchema.enum.variants).map(variant => (
+                {!!enumData && Object.keys(enumData.variants).map(variant => (
                     <MenuItem key={variant} value={variant}>
-                        {fieldSchema.enum.variants[variant]}
+                        {t(enumData.variants[variant])}
                     </MenuItem>
                 ))}
             </Select>
