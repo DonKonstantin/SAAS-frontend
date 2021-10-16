@@ -5,32 +5,43 @@ import HomeIcon from '@mui/icons-material/Home';
 export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
     return {
         "/": {
-            title: "pages.main.breadcrumb",
+            breadcrumb: "pages.main.breadcrumb",
             icon: HomeIcon,
             link: {href: "/"}
         },
         "/users": {
-            title: "pages.users.list.breadcrumb",
+            breadcrumb: "pages.users.list.breadcrumb",
             link: {href: "/users"}
         },
         "/permission-category": {
-            title: "pages.permission_category.list.breadcrumb",
+            breadcrumb: "pages.permission_category.list.breadcrumb",
             link: {href: "/permission-category"}
         },
+        "/permission-category/add": {
+            breadcrumb: "pages.permission_category.add.breadcrumb",
+            link: {href: "/permission-category/add"}
+        },
+        "/permission-category/edit/[entityId]": {
+            breadcrumb: "pages.permission_category.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => ({
+                href: "/permission-category/edit/[entityId]",
+                as: `/permission-category/edit/${entityEditPrimaryKey}`
+            })
+        },
         "/permission": {
-            title: "pages.permission.list.breadcrumb",
+            breadcrumb: "pages.permission.list.breadcrumb",
             link: {href: "/permission"}
         },
         "/roles": {
-            title: "pages.role.list.breadcrumb",
+            breadcrumb: "pages.role.list.breadcrumb",
             link: {href: "/roles"}
         },
         "/domain": {
-            title: "pages.domain.list.breadcrumb",
+            breadcrumb: "pages.domain.list.breadcrumb",
             link: {href: "/domain"}
         },
         "/project": {
-            title: "pages.project.list.breadcrumb",
+            breadcrumb: "pages.project.list.breadcrumb",
             link: {href: "/project"}
         },
     }

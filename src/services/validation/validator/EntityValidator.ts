@@ -1,7 +1,7 @@
-import {EntityValidatorInterface} from "./interfaces";
+import {EntityValidatorInterface, ValidationResults} from "./interfaces";
 import {Schemas} from "../../../settings/schema";
 import {EntityData} from "../../entityGetterService/interface";
-import {EditPageConfiguration, ValidationResult} from "../../../settings/pages/system/edit";
+import {ValidationResult} from "../../../settings/pages/system/edit";
 import {editSchemaConfiguration} from "../../../settings/pages";
 import IsGroupVisible from "../../helpers/IsGroupVisible";
 
@@ -20,32 +20,25 @@ export class EntityValidator implements EntityValidatorInterface {
         primaryKey: any,
         schema: keyof Schemas,
         data: EntityData<keyof Schemas>
-    ): Promise<{
-        isError: boolean;
-        validationResults: ValidationResult[][];
-    }> {
-        // @ts-ignore
-        const configuration: EditPageConfiguration<any> = editSchemaConfiguration()[schema]
-        let result: {isError: boolean; validationResults: ValidationResult[][]} = {
-            isError: false,
-            validationResults: []
+    ): Promise<ValidationResults> {
+        const configuration = editSchemaConfiguration()[schema]
+        if (!configuration) {
+            return {isError: true, validationResults: {}}
         }
 
-        await Promise.all(configuration.groups.map(async (group, i) => {
-            result.validationResults[i] = []
+        let result: ValidationResults = {
+            isError: false,
+            validationResults: {}
+        }
+
+        const {additionData} = data
+        await Promise.all(configuration.groups.map(group => {
             const isGroupVisible = IsGroupVisible(group, data.values)
 
-            const promises = group.fields.map(async (field, j) => {
-                result.validationResults[i][j] = null
-
+            return Promise.all(group.fields.map(async field => {
                 const isFieldVisible = field.isVisible ? field.isVisible(data.values) : true
                 if (!isGroupVisible || !isFieldVisible) {
                     return
-                }
-
-                let additionData: any = undefined
-                if (data.additionData[i] && data.additionData[i][j]) {
-                    additionData = data.additionData[i][j]
                 }
 
                 let validationResult: ValidationResult = null
@@ -59,16 +52,13 @@ export class EntityValidator implements EntityValidatorInterface {
                     })
 
                     if (validationResult) {
-                        result.validationResults[i][j] = validationResult
+                        result.validationResults[field.field] = validationResult
                         result.isError = true
+
                         return
                     }
                 }
-
-                result.validationResults[i][j] = validationResult
-            })
-
-            return await Promise.all(promises)
+            }))
         }))
 
         return result

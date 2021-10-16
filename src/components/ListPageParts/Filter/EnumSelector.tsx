@@ -1,7 +1,7 @@
 import {FC} from "react";
 import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoader/types";
 import useFieldConfiguration from "./useFieldConfiguration";
-import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Typography} from "@mui/material";
 import {SimpleComponentValue} from "../../../services/listDataLoader/filterLoader/fieldValues/SimpleComponentValue";
 
 // Компонент вывода поля фильтра для
@@ -33,7 +33,9 @@ const EnumSelector: FC<FilterFieldProperties> = props => {
                 label={t(title)}
             >
                 <MenuItem value="">
-                    <em>{t(`${translationKey}.all-variants`)}</em>
+                    <Typography variant="overline" sx={{p: 0}}>
+                        {t(`${translationKey}.all-variants`)}
+                    </Typography>
                 </MenuItem>
                 {!!enumData && Object.keys(enumData.variants).map(variant => (
                     <MenuItem key={variant} value={variant}>

@@ -10,6 +10,7 @@ import DataLoadingLayer from "../layouts/DataLoadingLayer";
 import ListPageProvider from "../components/ListPageParts/ListPageProvider";
 import PermissionProvider from "../layouts/PermissionProvider";
 import PagePropsProvider from "../layouts/PagePropsProvider";
+import EditPageProvider from "../components/EditPage/EditPageProvider";
 
 // Основной шаблон приложения
 function CrmApp({Component, pageProps}: AppProps) {
@@ -23,7 +24,9 @@ function CrmApp({Component, pageProps}: AppProps) {
                                 <UILayout {...pageProps}>
                                     <PermissionProvider {...pageProps}>
                                         <ListPageProvider {...pageProps}>
-                                            <Component {...pageProps} />
+                                            <EditPageProvider {...pageProps}>
+                                                <Component {...pageProps} />
+                                            </EditPageProvider>
                                         </ListPageProvider>
                                     </PermissionProvider>
                                 </UILayout>

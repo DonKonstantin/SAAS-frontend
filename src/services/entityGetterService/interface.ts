@@ -1,16 +1,13 @@
 import {Schemas} from "../../settings/schema";
-import {EditPageConfiguration, EntityValues} from "../../settings/pages/system/edit";
-import {AdditionEditParams} from "../../containers/EntityEdit";
+import {EntityValues} from "../../settings/pages/system/edit";
 
 // Загруженные данные для сущности
-export interface EntityData<T extends keyof Schemas> {
+export interface EntityData<T extends keyof Schemas = keyof Schemas> {
     primaryKey: any
     schema: T
     values: EntityValues<T>
     originalValues: EntityValues<T>
-    additionData: ((any | null)[])[]
-    customComponentData: any
-    configuration: EditPageConfiguration<T>
+    additionData: { [F in keyof Schemas[T]['fields']]?: any }
 }
 
 /**
@@ -22,7 +19,6 @@ export interface EntityGetterServiceInterface {
      *
      * @param schema
      * @param primaryKey
-     * @param additionEditParams
      */
-    GetEntity<T extends keyof Schemas>(schema: T, primaryKey: any, additionEditParams: AdditionEditParams): Promise<EntityData<T>>
+    GetEntity<T extends keyof Schemas>(schema: T, primaryKey: any): Promise<EntityData<T>>
 }

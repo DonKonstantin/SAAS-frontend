@@ -1,11 +1,15 @@
 import {Schemas} from "../../../settings/schema";
 import {EntityData} from "../../entityGetterService/interface";
-import {ValidationResult} from "../../../settings/pages/system/edit";
+
+// Результаты валидации сущности
+export type ValidationResults<T extends keyof Schemas = keyof Schemas> = {
+    isError: boolean,
+    validationResults: { [F in keyof Schemas[T]['fields']]?: string }
+}
 
 /**
  * Сервис валидации сущностей
  */
-export type ValidationResults = {isError: boolean, validationResults: ValidationResult[][]}
 export interface EntityValidatorInterface {
     /**
      * Валидация полей

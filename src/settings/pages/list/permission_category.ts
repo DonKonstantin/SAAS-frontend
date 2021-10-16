@@ -43,6 +43,9 @@ export class PermissionCategoryListingConfiguration implements ListPageConfigura
     };
     schema: "permission_category" = "permission_category";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    addPageUrl: PageUrl = {href: "/permission-category/add"};
+    editPageUrl: EditPageLinkGenerator = pk => ({
+        href: "/permission-category/edit/[entityId]",
+        as: `/permission-category/edit/${pk}`
+    });
 }

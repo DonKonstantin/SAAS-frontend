@@ -5,9 +5,9 @@ import {PageUrl} from "../pages/system/list";
 // Тип, описывающий хлебную крошку
 export type Breadcrumb = {
     icon?: OverridableComponent<SvgIconTypeMap>
-    title: string
-    link: PageUrl
+    breadcrumb: string
+    link: PageUrl | { (pageProps: any): PageUrl }
 }
 
 // Структура страниц с хлебными крошками
-export type BreadcrumbsStructure = {[T: string]: Breadcrumb}
+export type BreadcrumbsStructure = { [T: string]: Breadcrumb }

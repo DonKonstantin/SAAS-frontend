@@ -3,7 +3,7 @@ import {EntityValuesGetter} from "./EntityValuesGetter";
 import {graphQLClient} from "../../graphQLClient";
 
 // Фабрика сервиса
-export const entityValuesGetter: {(token?: string): EntityValuesGetterInterface} = () => {
+export const entityValuesGetter: {(): EntityValuesGetterInterface} = () => {
     return new EntityValuesGetter(
         graphQLClient()
     )

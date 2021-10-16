@@ -1,9 +1,10 @@
 import {useTranslation} from "react-i18next";
 import {EntityListHocContext, useEntityList} from "../../../context/EntityListContext";
 import {distinctUntilChanged, OperatorFunction} from "rxjs";
-import {useRef} from "react";
-import {Schemas} from "../../../settings/schema";
+import {useEffect, useState} from "react";
+import {SchemaField, Schemas} from "../../../settings/schema";
 import {listSchemaConfiguration} from "../../../settings/pages";
+import {ListPageConfiguration} from "../../../settings/pages/system/list";
 
 /**
  * Хук подключает все необходимые методы для работы поля фильтра
@@ -17,6 +18,8 @@ const useFieldConfiguration = (
     ...pipeModifications: OperatorFunction<any, EntityListHocContext>[]
 ) => {
     const {t} = useTranslation()
+    const [config, setConfig] = useState<ListPageConfiguration>()
+    const [fieldSchema, setFieldSchema] = useState<SchemaField>()
     const {data, onChangeFilterValues} = useEntityList(
         distinctUntilChanged(
             (previous, current) => {
@@ -32,22 +35,27 @@ const useFieldConfiguration = (
         ),
         ...pipeModifications
     )
-    if (!data) {
+
+    useEffect(() => {
+        if (!data) {
+            return
+        }
+
+        const {schema} = data
+        setConfig(listSchemaConfiguration()[schema])
+        setFieldSchema((new Schemas())[schema].fields[fieldCode])
+    }, [data?.schema])
+
+    if (!data || !config || !fieldSchema) {
         return undefined
     }
 
-    const {schema, currentData: {parameters: {currentFilterValues}}} = data
+    const {currentData: {parameters: {currentFilterValues}}} = data
     if (!currentFilterValues) {
         return undefined
     }
 
-    const fieldSchema = useRef((new Schemas())[schema].fields[fieldCode])
-    const config = useRef(listSchemaConfiguration()[schema])
-    if (!config.current) {
-        return undefined
-    }
-
-    const {filter} = config.current
+    const {filter} = config
     const fieldConfig = filter[fieldCode]
     if (!fieldConfig) {
         return undefined
@@ -61,7 +69,7 @@ const useFieldConfiguration = (
     return {
         t,
         value,
-        fieldSchema: fieldSchema.current,
+        fieldSchema: fieldSchema,
         fieldConfig,
         onChangeFilterValues
     }

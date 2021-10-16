@@ -6,13 +6,12 @@ import {Trans, useTranslation} from "react-i18next";
 
 // Компонент пагенации для таблицы
 const ListPagePagination: FC = () => {
+    const {t} = useTranslation()
     const {data, onChangeOffset, onChangeLimit} = useEntityList(auditTime(100))
     if (!data) {
         return null
     }
-
-    const {t} = useTranslation()
-
+    
     const {
         currentData: {
             count = 0,

@@ -1,4 +1,4 @@
-import {FC, useRef} from "react";
+import {FC, useEffect, useState} from "react";
 import {useEntityList} from "../../context/EntityListContext";
 import {Button, Tooltip} from "@mui/material";
 import {listSchemaConfiguration} from "../../settings/pages";
@@ -7,6 +7,7 @@ import {useTranslation} from "react-i18next";
 import {useAuthorization} from "../../context/AuthorizationContext";
 import {PageWithEntityList} from "../ListPage/types";
 import CheckPermission from "../../services/helpers/CheckPermission";
+import {ListPageConfiguration} from "../../settings/pages/system/list";
 
 // Компонент вывода кнопки создания элемента
 const ListPageCreationButton: FC<PageWithEntityList> = props => {
@@ -15,19 +16,22 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
         permissionCheckLevel = "project",
     } = props
 
-    const {data} = useEntityList()
-    if (!data) {
-        return null
-    }
-
-    const {schema} = data
-    const config = useRef(listSchemaConfiguration()[schema])
-    if (!config.current) {
-        return null
-    }
-
     const {userInfo} = useAuthorization()
-    if (!userInfo) {
+    const [config, setConfig] = useState<ListPageConfiguration>()
+    const {data} = useEntityList()
+    const router = useRouter()
+    const {t} = useTranslation()
+
+    useEffect(() => {
+        if (!data) {
+            return
+        }
+
+        const {schema} = data
+        setConfig(listSchemaConfiguration()[schema])
+    }, [data?.schema])
+
+    if (!data || !config || !userInfo) {
         return null
     }
 
@@ -35,9 +39,7 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
         return null
     }
 
-    const {addPageUrl: {href, as}} = config.current
-    const router = useRouter()
-    const {t} = useTranslation()
+    const {addPageUrl: {href, as}} = config
 
     // Обработка перехода на страницу создания элемента
     const onClick = () => {

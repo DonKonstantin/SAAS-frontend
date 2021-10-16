@@ -112,6 +112,8 @@ const onDeleteSubmit: EntityListHocActions['onDeleteSubmit'] = async () => {
             type: "success"
         })
 
+        context$.next(new DefaultContext())
+
         fullDataReloadCtx$.next({schema: data.schema, additionFilter})
     } catch (e) {
         notificationsDispatcher().dispatch({

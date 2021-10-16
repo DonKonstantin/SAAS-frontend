@@ -5,11 +5,10 @@ import {additionDataGetter} from "./additionDataGetter";
 import {entityValuesGetter} from "./entityValuesGetter";
 
 // Фабрика сервиса
-export const entityGetterService: {(token?: string): EntityGetterServiceInterface} = (token?: string) => {
+export const entityGetterService: { (): EntityGetterServiceInterface } = () => {
     return new EntityGetterService(
-        initialDataGetter(token),
-        additionDataGetter(token),
-        entityValuesGetter(token),
-        token,
+        initialDataGetter(),
+        additionDataGetter(),
+        entityValuesGetter(),
     )
 };

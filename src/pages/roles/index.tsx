@@ -3,7 +3,7 @@ import {GetStaticProps} from "next";
 import {PageWithEntityList} from "../../components/ListPage/types";
 import ListPage from "../../components/ListPage";
 
-// Компонент главной страницы проекта
+// Компонент страницы проекта
 const ListingPage: FC = () => {
     return (
         <ListPage />

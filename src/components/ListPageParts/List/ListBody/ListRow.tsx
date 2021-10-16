@@ -1,18 +1,19 @@
 import {ListFieldRow} from "../../../../services/listDataLoader/listLoader/types";
 import {Schemas} from "../../../../settings/schema";
-import {FC, useRef} from "react";
+import {FC, useEffect, useState} from "react";
 import EntityListHoc, {WithEntityListHoc} from "../../../../context/EntityListContext";
 import {listSchemaConfiguration} from "../../../../settings/pages";
 import CheckBoxCell from "../CheckBoxCell";
 import ListCells from "./ListCells";
 import {SwitchBaseProps} from "@mui/material/internal/SwitchBase";
+import {ListPageConfiguration} from "../../../../settings/pages/system/list";
 
 // Свойства компонента
 export type ListRowProps<T extends keyof Schemas = keyof Schemas> = WithEntityListHoc<{
     row: ListFieldRow<T>
 
     checkedItems: any[]
-    onChangeCheckedItems: {(callback: {(items: any[]): any[]}): void}
+    onChangeCheckedItems: { (callback: { (items: any[]): any[] }): void }
 }>
 
 // Компонент вывода строки
@@ -24,7 +25,17 @@ const ListRow: FC<ListRowProps> = props => {
         onChangeCheckedItems,
     } = props
 
-    if (!data) {
+    const [config, setConfig] = useState<ListPageConfiguration>()
+    useEffect(() => {
+        if (!data) {
+            return
+        }
+
+        const {schema} = data
+        setConfig(listSchemaConfiguration()[schema])
+    }, [data?.schema])
+
+    if (!data || !config) {
         return null
     }
 
@@ -38,15 +49,11 @@ const ListRow: FC<ListRowProps> = props => {
             }
         }
     } = data
-    const configuration = useRef(listSchemaConfiguration()[schema])
-    if (!configuration.current) {
-        return null
-    }
 
     const {
         disableMultiChoose = false,
         listFields,
-    } = configuration.current
+    } = config
     const {actions: ActionsComponent} = listFields
 
     // Переключение состояния чекбокса выбора элемента
@@ -98,7 +105,7 @@ const ListRow: FC<ListRowProps> = props => {
                 )
             })}
             {!!ActionsComponent && (
-                <ActionsComponent item={row} />
+                <ActionsComponent item={row}/>
             )}
         </>
     )

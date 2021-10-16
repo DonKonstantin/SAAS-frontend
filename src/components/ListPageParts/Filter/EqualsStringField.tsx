@@ -8,24 +8,25 @@ import {TextField} from "@mui/material";
 const EqualsStringField: FC<FilterFieldProperties> = props => {
     const {fieldCode} = props
     const fieldConfig = useFieldConfiguration(fieldCode)
-    if (!fieldConfig) {
-        return null
-    }
-
-    const {t, fieldConfig: {title}, value, onChangeFilterValues} = fieldConfig
-    const translationKey = `entity-list.components.filter.fields.input`
-
-    const currentValue = value?.value as SimpleComponentValue<string | null>
-    if (!currentValue) {
-        return null
-    }
-
-    const [fieldValue, setFieldValue] = useState(currentValue.value || "")
-    useEffect(() => {
-        setFieldValue(currentValue.value || "")
-    }, [currentValue.value])
+    const [fieldValue, setFieldValue] = useState("")
 
     useEffect(() => {
+        const valueData = fieldConfig?.value?.value as SimpleComponentValue<string | null>
+        if (!valueData || (valueData.value || "") === fieldValue) {
+            return
+        }
+
+        setFieldValue(valueData.value || "")
+    }, [fieldConfig])
+
+    useEffect(() => {
+        if (!fieldValue || !fieldConfig) {
+            return
+        }
+
+        const {value, onChangeFilterValues} = fieldConfig
+        const currentValue = value?.value as SimpleComponentValue<string | null>
+
         if ((currentValue.value || "") === fieldValue) {
             return
         }
@@ -42,6 +43,18 @@ const EqualsStringField: FC<FilterFieldProperties> = props => {
             clearTimeout(timeout)
         }
     }, [fieldValue])
+
+    if (!fieldConfig) {
+        return null
+    }
+
+    const {t, fieldConfig: {title}, value} = fieldConfig
+    const translationKey = `entity-list.components.filter.fields.input`
+
+    const currentValue = value?.value as SimpleComponentValue<string | null>
+    if (!currentValue) {
+        return null
+    }
 
     return (
         <TextField

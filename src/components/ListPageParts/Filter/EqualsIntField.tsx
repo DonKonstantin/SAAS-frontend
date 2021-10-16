@@ -8,29 +8,30 @@ import {SimpleComponentValue} from "../../../services/listDataLoader/filterLoade
 const EqualsIntField: FC<FilterFieldProperties> = props => {
     const {fieldCode} = props
     const fieldConfig = useFieldConfiguration(fieldCode)
-    if (!fieldConfig) {
-        return null
-    }
-
-    const {t, fieldConfig: {title}, value, onChangeFilterValues} = fieldConfig
-    const translationKey = `entity-list.components.filter.fields.input`
-
-    const currentValue = value?.value as SimpleComponentValue<number | null>
-    if (!currentValue) {
-        return null
-    }
+    const [fieldValue, setFieldValue] = useState("")
 
     // Конвертация числа в строку
     const convertValue = (value: number | null) => {
         return value !== null ? `${value}` : ""
     }
 
-    const [fieldValue, setFieldValue] = useState(convertValue(currentValue.value))
     useEffect(() => {
-        setFieldValue(convertValue(currentValue.value))
-    }, [currentValue.value])
+        const valueData = fieldConfig?.value?.value as SimpleComponentValue<number | null>
+        if (!valueData || (valueData.value || "") === fieldValue) {
+            return
+        }
+
+        setFieldValue(convertValue(valueData.value))
+    }, [fieldConfig])
 
     useEffect(() => {
+        if (!fieldValue || !fieldConfig) {
+            return
+        }
+
+        const {value, onChangeFilterValues} = fieldConfig
+        const currentValue = value?.value as SimpleComponentValue<number | null>
+
         if (convertValue(currentValue.value) === fieldValue) {
             return
         }
@@ -48,6 +49,18 @@ const EqualsIntField: FC<FilterFieldProperties> = props => {
             clearTimeout(timeout)
         }
     }, [fieldValue])
+
+    if (!fieldConfig) {
+        return null
+    }
+
+    const {t, fieldConfig: {title}, value} = fieldConfig
+    const translationKey = `entity-list.components.filter.fields.input`
+
+    const currentValue = value?.value as SimpleComponentValue<number | null>
+    if (!currentValue) {
+        return null
+    }
 
     return (
         <TextField

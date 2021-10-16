@@ -1,19 +1,24 @@
-import React, {FC, useRef} from "react";
+import React, {FC, useEffect, useState} from "react";
 import ListRow, {ListRowProps} from "./ListRow";
 import EntityListHoc from "../../../../context/EntityListContext";
 import {listSchemaConfiguration} from "../../../../settings/pages";
 import {TableRow} from "@mui/material";
+import {ListPageConfiguration} from "../../../../settings/pages/system/list";
 
 // Компонент вывода контекнера строки со всеми дополнительными компонентами
 const ListRowContainer: FC<ListRowProps> = props => {
     const {data, row, onChangeCheckedItems} = props
-    if (!data) {
-        return null
-    }
+    const [config, setConfig] = useState<ListPageConfiguration>()
+    useEffect(() => {
+        if (!data) {
+            return
+        }
 
-    const {schema} = data
-    const configuration = useRef(listSchemaConfiguration()[schema])
-    if (!configuration.current) {
+        const {schema} = data
+        setConfig(listSchemaConfiguration()[schema])
+    }, [data?.schema])
+
+    if (!data || !config) {
         return null
     }
 
@@ -22,7 +27,7 @@ const ListRowContainer: FC<ListRowProps> = props => {
             rowBelow: PrevRow,
             rowHigher: NextRow,
         },
-    } = configuration.current
+    } = config
 
     // Переключение состояния чекбокса выбора элемента
     const onToggleItemCheckedState = () => {

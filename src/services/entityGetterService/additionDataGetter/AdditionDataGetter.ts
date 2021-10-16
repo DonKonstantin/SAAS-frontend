@@ -7,46 +7,29 @@ import {editSchemaConfiguration} from "../../../settings/pages";
  * Сервис получения дополнительных данных полей сущности
  */
 export class AdditionDataGetter implements AdditionDataGetterInterface {
-    private readonly token?: string;
-
-    /**
-     * Конструктор сервиса
-     * @param token
-     */
-    constructor(token?: string) {
-        this.token = token
-    }
-
     /**
      * Получение дополнительных данных для полей сущности
      * @param schema
      * @param primaryKey
      * @param entityValues
      */
-    async GetAdditionData<T extends keyof Schemas>(schema: T, primaryKey: any, entityValues: EntityValues<T>): Promise<any[][]> {
-        let result: any[][] = [];
+    async GetAdditionData<T extends keyof Schemas>(schema: T, primaryKey: any, entityValues: EntityValues<T>): Promise<{ [F in keyof Schemas[T]['fields']]?: any }> {
+        let result: { [F in keyof Schemas[T]['fields']]?: any } = {};
 
         const config = editSchemaConfiguration()[schema];
         if (!config) return result;
 
-        for (let i = 0; i < config.groups.length; i++) {
-            const group = config.groups[i];
-
-            let groupValues: any[] = [];
-            for (let j = 0; j < group.fields.length; j++) {
-                const field = group.fields[j];
-
-                let data: any = null;
-                if (field.additionData) {
-                    data = await field.additionData(entityValues, primaryKey, this.token)
+        await Promise.all(config.groups.map(group => {
+            return Promise.all(group.fields.map(async field => {
+                if (typeof field.additionData !== "function") {
+                    return
                 }
 
-                groupValues[j] = data
-            }
+                // @ts-ignore
+                result[field.field] = await field.additionData(entityValues, primaryKey)
+            }))
+        }))
 
-            result[i] = [...groupValues]
-        }
-
-        return [...result]
+        return result
     }
 }

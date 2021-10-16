@@ -7,6 +7,7 @@ import {useRouter} from "next/router";
 import {useTranslation} from "react-i18next";
 import {Breadcrumbs as BreadcrumbsComp} from "@mui/material";
 import {Breadcrumb} from "../settings/breadcrumbs/type";
+import {withPageProps} from "../layouts/PagePropsProvider";
 
 // Стилизованный компонент хлебной крошки
 const StyledBreadcrumb = styled(Chip)(({theme}) => {
@@ -34,12 +35,16 @@ const BreadcrumbItem: FC<Breadcrumb> = props => {
     const router = useRouter()
     const {t} = useTranslation()
 
-    const {link, title, icon: IconComponent} = props
+    const {link, breadcrumb, icon: IconComponent} = props
+    const linkData = typeof link === "function"
+        ? link(props)
+        : link
+
     return (
         <StyledBreadcrumb
             component="a"
-            href={link?.href || "#"}
-            label={t(title) as string}
+            href={linkData?.href || "#"}
+            label={t(breadcrumb) as string}
             icon={!IconComponent ? undefined : (
                 <IconComponent fontSize={"small"}/>
             )}
@@ -47,22 +52,26 @@ const BreadcrumbItem: FC<Breadcrumb> = props => {
                 event.preventDefault()
                 event.stopPropagation()
 
-                return router.push(link.href, link.as)
+                return router.push(linkData.href, linkData.as)
             }}
         />
     )
 }
 
+// Подключаем к компоненту свойства страницы из контекста
+const BreadcrumbItemWithPageProps = withPageProps(BreadcrumbItem)
+
 // Компонент вывода хлебных крошек
 const Breadcrumbs: FC = () => {
     const breadcrumbsList = useRef(breadcrumbs())
+    const router = useRouter()
 
     const homeCrumb = breadcrumbsList.current["/"]
     if (!homeCrumb) {
         return null
     }
 
-    const pathNames = location.pathname.split('/').filter((x) => x);
+    const pathNames = router.pathname.split('/').filter((x) => x);
     return (
         <BreadcrumbsComp aria-label="breadcrumb">
             <BreadcrumbItem {...homeCrumb} />
@@ -73,7 +82,7 @@ const Breadcrumbs: FC = () => {
                     return null
                 }
 
-                return <BreadcrumbItem key={index} {...breadcrumb} />
+                return <BreadcrumbItemWithPageProps key={index} {...breadcrumb} />
             })}
         </BreadcrumbsComp>
     )

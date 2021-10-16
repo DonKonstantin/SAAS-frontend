@@ -1,9 +1,10 @@
 import EntityListHoc, {WithEntityListHoc} from "../../../../context/EntityListContext";
-import {FC, useRef} from "react";
+import {FC, useEffect, useState} from "react";
 import {listSchemaConfiguration} from "../../../../settings/pages";
 import CheckBoxCell from "../CheckBoxCell";
 import ListHeaderCell from "./ListHeaderCell";
 import {TableCell, TableHead, TableRow} from "@mui/material";
+import {ListPageConfiguration} from "../../../../settings/pages/system/list";
 
 // Свойства компонента
 type ListHeaderProps = WithEntityListHoc<{
@@ -19,7 +20,17 @@ const ListHeader: FC<ListHeaderProps> = props => {
         onChangeCheckedItems,
     } = props
 
-    if (!data) {
+    const [configuration, setConfig] = useState<ListPageConfiguration>()
+    useEffect(() => {
+        if (!data) {
+            return
+        }
+
+        const {schema} = data
+        setConfig(listSchemaConfiguration()[schema])
+    }, [data?.schema])
+
+    if (!data || !configuration) {
         return null
     }
 
@@ -35,15 +46,10 @@ const ListHeader: FC<ListHeaderProps> = props => {
         }
     } = data
 
-    const configuration = useRef(listSchemaConfiguration()[schema])
-    if (!configuration.current) {
-        return null
-    }
-
     const {
         disableMultiChoose = false,
         listFields,
-    } = configuration.current
+    } = configuration
     const {actions: ActionsComponent} = listFields
 
     const allPrimaryKeys = rows.map(r => r.primaryKeyValue)
