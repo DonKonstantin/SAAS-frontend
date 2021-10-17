@@ -14,11 +14,10 @@ const EditPageContent: FC = () => {
 export const getStaticProps: GetStaticProps = async (): Promise<{ props: PageWithEntityEdit }> => {
     return {
         props: {
-            title: "pages.permission.add.title",
-            header: "pages.permission.add.header",
-            entityEditSchema: "permission",
-            permissionCheckPermission: "CHANGE_PERMISSIONS",
-            permissionCheckLevel: "realm",
+            title: "pages.domain.add.title",
+            header: "pages.domain.add.header",
+            entityEditSchema: "domain",
+            permissionCheckPermission: "UPDATE_DOMAINS",
         }
     }
 }

@@ -19,12 +19,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
     return {
         props: {
-            title: "pages.permission.edit.title",
-            header: "pages.permission.edit.header",
-            entityEditSchema: "permission",
+            title: "pages.domain.edit.title",
+            header: "pages.domain.edit.header",
+            entityEditSchema: "domain",
             entityEditPrimaryKey: context.params?.entityId,
-            permissionCheckPermission: "CHANGE_PERMISSIONS",
-            permissionCheckLevel: "realm",
+            permissionCheckPermission: "UPDATE_DOMAINS",
         }
     }
 }

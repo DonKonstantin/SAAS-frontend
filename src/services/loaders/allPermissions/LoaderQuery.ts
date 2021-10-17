@@ -1,16 +1,19 @@
 import {GraphQLQuery} from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
+import {PermissionCategoryData} from "../allPermissionCategories/LoaderQuery";
 
-// Данные категории разрешения
-export interface PermissionCategoryData {
+// Данные разрешения
+export interface PermissionData {
     id: string
     name: string
-    level: "realm" | "domain" | "project"
+    code: string
+    category_id: string
+    category: PermissionCategoryData
 }
 
 // Результат выполнения запроса
 export interface LoaderQueryResponse {
-    categories: PermissionCategoryData[]
+    permissions: PermissionData[]
 }
 
 /**
@@ -23,11 +26,17 @@ export class LoaderQuery implements GraphQLQuery<null> {
     constructor() {
         this.variables = null;
         this.query = gql`
-            query PermissionCategories {
-              categories: permission_category_list(limit: 100000, order:[{by: name, direction: asc}]) {
+            query Permissions {
+              permissions: permission_list(limit: 100000, order:[{by: name, direction: asc}]) {
                 id
                 name
-                level
+                code
+                category_id
+                category {
+                  id
+                  name
+                  level
+                }
               }
             }
         `

@@ -51,6 +51,17 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             breadcrumb: "pages.domain.list.breadcrumb",
             link: {href: "/domain"}
         },
+        "/domain/add": {
+            breadcrumb: "pages.domain.add.breadcrumb",
+            link: {href: "/domain/add"}
+        },
+        "/domain/edit/[entityId]": {
+            breadcrumb: "pages.domain.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => ({
+                href: "/domain/edit/[entityId]",
+                as: `/domain/edit/${entityEditPrimaryKey}`
+            })
+        },
         "/project": {
             breadcrumb: "pages.project.list.breadcrumb",
             link: {href: "/project"}

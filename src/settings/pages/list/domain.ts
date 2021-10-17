@@ -49,6 +49,9 @@ export class DomainListingConfiguration implements ListPageConfiguration<"domain
     };
     schema: "domain" = "domain";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    editPageUrl: EditPageLinkGenerator = pk => ({
+        href: "/domain/edit/[entityId]",
+        as: `/domain/edit/${pk}`
+    });
+    addPageUrl: PageUrl = {href: "/domain/add"};
 }
