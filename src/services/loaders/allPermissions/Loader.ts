@@ -20,7 +20,7 @@ export class Loader {
             )
         } catch {
             return {
-                categories: [],
+                permissions: [],
             }
         }
     }

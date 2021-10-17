@@ -216,6 +216,21 @@
           "permissions_id": "Разрешения",
           "level": "Уровень"
         }
+      },
+      "add": {
+        "title": "Создать роль",
+        "header": "Создать роль",
+        "breadcrumb": "Создать роль"
+      },
+      "edit": {
+        "title": "Редактирование роли",
+        "header": "Редактирование роли",
+        "breadcrumb": "Редактирование роли",
+        "fields": {
+          "name": "Название роли",
+          "structure_item_id-error": "Необходимо выбрать одно из значений",
+          "permissions_id-error": "Необходимо выбрать хотя бы одно разрешение"
+        }
       }
     },
     "domain": {
@@ -297,6 +312,24 @@
       "domain-selector": {
         "no-value": "Домен не выбран",
         "restore-default": "Восстановить значение по умолчанию"
+      },
+      "level-check-selector": {
+        "title": "Уровень доступа",
+        "levels": {
+          "realm": "Реалм",
+          "domain": "Домен",
+          "project": "Проект"
+        },
+        "selectors": {
+          "domain": {
+            "label": "Выберите домен",
+            "no-value": "Домен не выбран"
+          },
+          "project": {
+            "label": "Выберите проект",
+            "no-value": "Проект не выбран"
+          }
+        }
       }
     },
     "actions": {

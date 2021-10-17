@@ -47,6 +47,17 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             breadcrumb: "pages.role.list.breadcrumb",
             link: {href: "/roles"}
         },
+        "/roles/add": {
+            breadcrumb: "pages.role.add.breadcrumb",
+            link: {href: "/roles/add"}
+        },
+        "/roles/edit/[entityId]": {
+            breadcrumb: "pages.role.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => ({
+                href: "/roles/edit/[entityId]",
+                as: `/roles/edit/${entityEditPrimaryKey}`
+            })
+        },
         "/domain": {
             breadcrumb: "pages.domain.list.breadcrumb",
             link: {href: "/domain"}

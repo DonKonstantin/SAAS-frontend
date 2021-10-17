@@ -70,6 +70,9 @@ export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
     };
     schema: "role" = "role";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    addPageUrl: PageUrl = {href: "/roles/add"};
+    editPageUrl: EditPageLinkGenerator = pk => ({
+        href: "/roles/edit/[entityId]",
+        as: `/roles/edit/${pk}`
+    });
 }

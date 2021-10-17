@@ -11,6 +11,7 @@ import {PermissionCategoryEditPageConfig} from "./edit/permission_category";
 import {PermissionEditPageConfig} from "./edit/permission";
 import {DomainEditPageConfig} from "./edit/domain";
 import {ProjectEditPageConfig} from "./edit/project";
+import {RoleEditPageConfig} from "./edit/role";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -33,5 +34,6 @@ export const editSchemaConfiguration: { (): EditSchemaConfiguration } = (): Edit
         permission: new PermissionEditPageConfig,
         domain: new DomainEditPageConfig,
         project: new ProjectEditPageConfig,
+        role: new RoleEditPageConfig,
     }
 };
