@@ -14,6 +14,13 @@ export class Loader implements LoaderInterface<LoaderQueryResponse> {
     }
 
     async Load(primaryKeys: any[]): Promise<LoaderQueryResponse> {
+        if (0 === primaryKeys.length) {
+            return {
+                domains: [],
+                projects: []
+            }
+        }
+
         try {
             return await this.client.Query<{ ID: any[], count: number }, LoaderQueryResponse>(
                 new LoaderQuery(primaryKeys),
