@@ -62,9 +62,9 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 as: `/domain/edit/${entityEditPrimaryKey}`
             })
         },
-        "/project": {
+        "/domain/project": {
             breadcrumb: "pages.project.list.breadcrumb",
-            link: {href: "/project"}
+            link: {href: "/domain/project"}
         },
     }
 }

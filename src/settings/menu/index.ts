@@ -6,7 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import DvrIcon from '@mui/icons-material/Dvr';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {setDomain, setProject} from "../../context/AuthorizationContext";
+import {setProject} from "../../context/AuthorizationContext";
 
 // Список пунктов меню уровня Реалм
 export const RealmMenuItems = (): MenuItem[] => ([
@@ -84,12 +84,9 @@ export const DomainMenuItems = (): MenuItem[] => ([
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain-list",
         icon: ArrowBackIosIcon,
-        onClick: () => {
-            setDomain("")
-        }
     },
     {
-        link: {href: "/project"},
+        link: {href: "/domain/project"},
         title: "UI.menu.left-menu.items.projects",
     },
     {

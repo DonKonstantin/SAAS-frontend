@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {GetStaticProps} from "next";
-import {PageWithEntityList} from "../../components/ListPage/types";
-import ListPage from "../../components/ListPage";
+import {PageWithEntityList} from "../../../components/ListPage/types";
+import ListPage from "../../../components/ListPage";
 
 // Компонент страницы проекта
 const ListingPage: FC = () => {
@@ -17,7 +17,8 @@ export const getStaticProps: GetStaticProps = async (): Promise<{props: PageWith
             title: "pages.project.list.title",
             header: "pages.project.list.header",
             entityListSchema: "project",
-            permissionCheckEditPermission: "UPDATE_PROJECTS"
+            permissionCheckEditPermission: "UPDATE_PROJECTS",
+            pageMenuType: "domain"
         }
     }
 }

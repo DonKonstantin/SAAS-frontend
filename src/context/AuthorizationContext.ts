@@ -15,6 +15,9 @@ export type AuthorizationContext = {
     userInfo: UserInfoData | undefined  // Профиль пользователя
     isRequestInProgress: boolean        // Флаг загрузки данных по запросу авторизации/восстановления пароля
 
+    // Тип отображаемого в данный момент меню
+    menuType: "realm" | "domain" | "project"
+
     domain: string  // Выбранный пользователем домен
     project: string // Выбранный пользователем проект
 };
@@ -48,6 +51,9 @@ type AuthorizationActions = {
     // Инициализация шины контекста
     initializeContextBus: { (): { (): void } }
 
+    // Изменение типа отображаемого в данный момент меню
+    onChangeMenuType: {(menuType: "realm" | "domain" | "project"): void}
+
     // Установка текущего домена пользователя
     setDomain: {(domain: string): void}
 
@@ -58,10 +64,11 @@ type AuthorizationActions = {
 // Свойства контекста по умолчанию
 class DefaultContext implements AuthorizationContext {
     authToken: string = "";
-    domain: string = "";
     isRequestInProgress: boolean = false;
-    project: string = "";
     userInfo: UserInfoData | undefined;
+    menuType: "realm" | "domain" | "project";
+    domain: string = "";
+    project: string = "";
 }
 
 // Создаем изначальный State
@@ -69,6 +76,17 @@ const context$ = new BehaviorSubject<AuthorizationContext>(new DefaultContext);
 
 // Контекст для обработки изменения токена
 const tokenContext$ = new Subject<string>();
+
+/**
+ * Изменение типа отображаемого в данный момент меню
+ * @param menuType
+ */
+const onChangeMenuType: AuthorizationActions['onChangeMenuType'] = menuType => {
+    context$.next({
+        ...context$.getValue(),
+        menuType: menuType
+    })
+}
 
 /**
  * Установка текущего домена пользователя
@@ -105,10 +123,21 @@ const loadAuthorizationData = async (token: string): Promise<AuthorizationContex
     const domain = domains.length === 1 ? domains[0].id : ""
     const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
 
+    let menuType: "realm" | "domain" | "project" = "realm"
+
+    if (domains.length === 1) {
+        menuType = "domain"
+    }
+
+    if (domains.length === 0 && projects.length === 1) {
+        menuType = "project"
+    }
+
     return {
         ...new DefaultContext(),
         authToken: token,
         userInfo: userProfile,
+        menuType: menuType,
         domain: domain,
         project: project,
     }
@@ -351,8 +380,9 @@ const actions: AuthorizationActions = {
     setCurrentState,
     initializeContextBus,
     initializeContextData,
-    setDomain,
+    onChangeMenuType,
     setProject,
+    setDomain,
 }
 
 /**

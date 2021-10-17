@@ -6,12 +6,12 @@ import ListPage from "../../components/ListPage";
 // Компонент страницы проекта
 const ListingPage: FC = () => {
     return (
-        <ListPage />
+        <ListPage/>
     )
 }
 
 // Загрузка данных CRM на стороне сервера
-export const getStaticProps: GetStaticProps = async (): Promise<{props: PageWithEntityList}> => {
+export const getStaticProps: GetStaticProps = async (): Promise<{ props: PageWithEntityList }> => {
     return {
         props: {
             title: "pages.domain.list.title",

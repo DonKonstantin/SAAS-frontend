@@ -22,6 +22,10 @@ const DataLoadingLayer: FC<DataLoadingLayerProps> = props => {
     const {children, ...other} = props
     const {data, error} = useSWR("base_data", async () => {
         return await withDataLoading(async () => ({}))(other)
+    }, {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false
     })
 
     if (error) {

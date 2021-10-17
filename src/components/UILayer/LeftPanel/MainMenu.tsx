@@ -14,8 +14,7 @@ export type MainMenuProps = WithAuthorization<{}>
 const MainMenu: FC<MainMenuProps> = props => {
     const {
         userInfo,
-        domain,
-        project,
+        menuType,
     } = props
 
     if (!userInfo) {
@@ -23,11 +22,11 @@ const MainMenu: FC<MainMenuProps> = props => {
     }
 
     let menuItems: MenuItem[]
-    switch (true) {
-        case project.length !== 0:
+    switch (menuType) {
+        case "project":
             menuItems = ProjectMenuItems()
             break
-        case domain.length !== 0:
+        case "domain":
             menuItems = DomainMenuItems()
             break
         default:
@@ -40,7 +39,7 @@ const MainMenu: FC<MainMenuProps> = props => {
     return (
         <List>
             {menuItems.map((item, i) => (
-                <MainMenuItem item={item} key={i} />
+                <MainMenuItem item={item} key={i}/>
             ))}
         </List>
     )
@@ -48,6 +47,5 @@ const MainMenu: FC<MainMenuProps> = props => {
 
 // Экспортируем компонент основного меню
 export default AuthorizationHoc(auditTime(50))(React.memo(MainMenu, (prevProps, nextProps) => {
-    return prevProps.domain === nextProps.domain
-        && prevProps.project === nextProps.project
+    return prevProps.menuType === nextProps.menuType
 }))

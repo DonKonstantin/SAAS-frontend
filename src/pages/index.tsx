@@ -3,7 +3,7 @@ import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
 import {GetStaticProps} from "next";
 
 // Свойства страницы
-type Props = PageWithMetaTags<{}>
+type Props = PageWithMetaTags
 
 // Компонент главной страницы проекта
 const IndexPage: FC<Props> = () => {
