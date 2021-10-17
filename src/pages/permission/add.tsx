@@ -14,9 +14,9 @@ const EditPageContent: FC = () => {
 export const getStaticProps: GetStaticProps = async (): Promise<{ props: PageWithEntityEdit }> => {
     return {
         props: {
-            title: "pages.permission_category.add.title",
-            header: "pages.permission_category.add.header",
-            entityEditSchema: "permission_category",
+            title: "pages.permission.add.title",
+            header: "pages.permission.add.header",
+            entityEditSchema: "permission",
             permissionCheckPermission: "CHANGE_PERMISSIONS",
             permissionCheckLevel: "realm",
         }

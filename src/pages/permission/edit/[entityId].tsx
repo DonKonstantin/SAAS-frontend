@@ -19,9 +19,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
     return {
         props: {
-            title: "pages.permission_category.edit.title",
-            header: "pages.permission_category.edit.header",
-            entityEditSchema: "permission_category",
+            title: "pages.permission.edit.title",
+            header: "pages.permission.edit.header",
+            entityEditSchema: "permission",
             entityEditPrimaryKey: context.params?.entityId,
             permissionCheckPermission: "CHANGE_PERMISSIONS",
             permissionCheckLevel: "realm",

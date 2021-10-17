@@ -64,6 +64,9 @@ export class PermissionListingConfiguration implements ListPageConfiguration<"pe
     };
     schema: "permission" = "permission";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    editPageUrl: EditPageLinkGenerator = pk => ({
+        href: "/permission/edit/[entityId]",
+        as: `/permission/edit/${pk}`
+    });
+    addPageUrl: PageUrl = {href: "/permission/add"};
 }
