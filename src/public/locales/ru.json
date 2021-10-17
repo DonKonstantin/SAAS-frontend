@@ -377,6 +377,26 @@
           "password-changed": "Пароль успешно изменен",
           "password-change-error": "Не удалось изменить пароль"
         }
+      },
+      "user-roles-group": {
+        "title": "Выбор роли",
+        "tooltips": {
+          "unassign": "Убрать выбранные роли",
+          "assign": "Добавить выбранные роли"
+        },
+        "header": {
+          "name": "Название",
+          "name-placeholder": "Введите название",
+          "object": "Имя",
+          "object-placeholder": "Введите имя",
+          "level": {
+            "caption": "Уровень",
+            "no-value": "Не выбран",
+            "realm": "Реалм",
+            "domain": "Домен",
+            "project": "Проект"
+          }
+        }
       }
     },
     "actions": {

@@ -13,6 +13,9 @@ import UserInfoGroup from "../../../components/EditPageCustomFields/UserInfoGrou
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import UserUpdatePasswordGroup from "../../../components/EditPageCustomFields/UserUpdatePasswordGroup";
+import {allRoles} from "../../../services/loaders/allRoles";
+import UserRolesGroup from "../../../components/EditPageCustomFields/UserRolesGroup";
+import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsAndProjects";
 
 export class UserEditPageConfig implements EditPageConfiguration<"user"> {
     groups: EditFormGroup<"user">[] = [
@@ -99,6 +102,7 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
         },
         {
             sizes: {xs: 12},
+            component: UserRolesGroup,
             fields: [
                 {
                     field: "roles_id",
@@ -107,7 +111,19 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
                     validation: [
                         ValueExistsValidator({errorMessage: "pages.users.edit.fields.roles_id-error"}),
                     ],
-                    component: HiddenField
+                    component: HiddenField,
+                    additionData: async () => {
+                        const [roles, domains] = await Promise.all([
+                            allRoles().Load(),
+                            allDomainsAndProjectsLoader().Load()
+                        ])
+
+                        return {
+                            roles: roles.roles,
+                            domains: domains.domains,
+                            projects: domains.projects,
+                        }
+                    }
                 },
             ]
         },

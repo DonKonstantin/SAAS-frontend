@@ -70,7 +70,7 @@ const ListHeader: FC<ListHeaderProps> = props => {
                     <CheckBoxCell
                         isHeader={true}
                         indeterminate={!isAllItemsSelected && checkedItems.length > 0}
-                        checked={isAllItemsSelected}
+                        checked={isAllItemsSelected && allPrimaryKeys.length > 0}
                         onChange={onToggleItemCheckedState}
                     />
                 )}
