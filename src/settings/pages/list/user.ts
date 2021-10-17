@@ -1,8 +1,8 @@
 import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/list";
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
-import CustomActiveCell from "../../../components/CustomActiveCell";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
+import CustomActiveCell from "../../../components/ListPageCustom/CustomActiveCell";
 
 export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     filter: FilterFieldsConfiguration<"user"> = {

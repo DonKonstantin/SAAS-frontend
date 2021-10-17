@@ -1,15 +1,15 @@
 import React, {FC, MouseEventHandler} from "react";
-import {SimpleValues} from "../services/listDataLoader/listLoader/listValues/SimpleValues";
+import {SimpleValues} from "../../services/listDataLoader/listLoader/listValues/SimpleValues";
 import {TableCell} from "@mui/material";
-import {ListFieldProperties} from "../services/listDataLoader/listLoader/types";
-import columnDirection from "./ListPageParts/List/helpers/columnDirection";
-import convertSimpleValueToString from "./ListPageParts/List/helpers/convertSimpleValueToString";
-import Link from "./Link";
-import {useAuthorization} from "../context/AuthorizationContext";
+import {ListFieldProperties} from "../../services/listDataLoader/listLoader/types";
+import columnDirection from "../ListPageParts/List/helpers/columnDirection";
+import convertSimpleValueToString from "../ListPageParts/List/helpers/convertSimpleValueToString";
+import Link from "../Link";
+import {useAuthorization} from "../../context/AuthorizationContext";
 import {useRouter} from "next/router";
 
 // Компонент вывода простой ячейки
-const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
+const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
     const {schema, configuration, value} = props;
     const {
         align = columnDirection(schema, configuration),
@@ -18,14 +18,14 @@ const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
     } = configuration
 
     const router = useRouter()
-    const {setDomain} = useAuthorization()
+    const {setProject} = useAuthorization()
     const handleDomainClick: MouseEventHandler<HTMLAnchorElement> = event => {
         event.preventDefault()
         event.stopPropagation()
 
-        setDomain(value.value)
+        setProject(value.value)
 
-        return router.push("/domain/project")
+        return router.push("/domain/project/media")
     }
 
     return (
@@ -38,4 +38,4 @@ const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
 }
 
 // Экспортируем компонент
-export default DomainSelectCell
+export default ProjectSelectCell

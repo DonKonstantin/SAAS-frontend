@@ -1,10 +1,10 @@
 import React, {FC} from "react";
-import {SimpleValues} from "../services/listDataLoader/listLoader/listValues/SimpleValues";
+import {SimpleValues} from "../../services/listDataLoader/listLoader/listValues/SimpleValues";
 import {TableCell} from "@mui/material";
-import {ListFieldProperties} from "../services/listDataLoader/listLoader/types";
-import columnDirection from "./ListPageParts/List/helpers/columnDirection";
-import {useEntityList} from "../context/EntityListContext";
-import {DomainData, ProjectData} from "../services/loaders/domainsAndProjects/LoaderQuery";
+import {ListFieldProperties} from "../../services/listDataLoader/listLoader/types";
+import columnDirection from "../ListPageParts/List/helpers/columnDirection";
+import {useEntityList} from "../../context/EntityListContext";
+import {DomainData, ProjectData} from "../../services/loaders/domainsAndProjects/LoaderQuery";
 
 // Компонент вывода простой ячейки
 const StructureCell: FC<ListFieldProperties<SimpleValues>> = props => {

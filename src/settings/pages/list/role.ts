@@ -3,7 +3,7 @@ import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filte
 import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import {domainsAndProjectsLoader} from "../../../services/loaders/domainsAndProjects";
-import StructureCell from "../../../components/StructureCell";
+import StructureCell from "../../../components/ListPageCustom/StructureCell";
 
 export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
     filter: FilterFieldsConfiguration<"role"> = {

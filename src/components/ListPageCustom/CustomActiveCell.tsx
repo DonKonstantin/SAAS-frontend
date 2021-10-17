@@ -1,10 +1,10 @@
 import React, {FC} from "react";
-import {SimpleValues} from "../services/listDataLoader/listLoader/listValues/SimpleValues";
+import {SimpleValues} from "../../services/listDataLoader/listLoader/listValues/SimpleValues";
 import {TableCell} from "@mui/material";
-import {ListFieldProperties} from "../services/listDataLoader/listLoader/types";
+import {ListFieldProperties} from "../../services/listDataLoader/listLoader/types";
 import clsx from "clsx";
 import {useTranslation} from "react-i18next";
-import columnDirection from "./ListPageParts/List/helpers/columnDirection";
+import columnDirection from "../ListPageParts/List/helpers/columnDirection";
 
 // Компонент вывода простой ячейки
 const CustomActiveCell: FC<ListFieldProperties<SimpleValues>> = props => {

@@ -6,7 +6,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import DvrIcon from '@mui/icons-material/Dvr';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import {setProject} from "../../context/AuthorizationContext";
 
 // Список пунктов меню уровня Реалм
 export const RealmMenuItems = (): MenuItem[] => ([
@@ -72,7 +71,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
         ],
     },
     {
-        link: {href: "/4"},
+        link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
         icon: DvrIcon,
     },
@@ -83,7 +82,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
     {
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain-list",
-        icon: ArrowBackIosIcon,
+        icon: ArrowBackIosIcon
     },
     {
         link: {href: "/domain/project"},
@@ -102,7 +101,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
         level: "project",
     },
     {
-        link: {href: "/5"},
+        link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
     },
 ]);
@@ -110,15 +109,12 @@ export const DomainMenuItems = (): MenuItem[] => ([
 // Список пунктов меню уровня Проект
 export const ProjectMenuItems = (): MenuItem[] => ([
     {
-        link: {href: "/project"},
+        link: {href: "/domain/project"},
         title: "UI.menu.left-menu.items.projects-list",
-        icon: ArrowBackIosIcon,
-        onClick: () => {
-            setProject("")
-        }
+        icon: ArrowBackIosIcon
     },
     {
-        link: {href: "/2"},
+        link: {href: "/domain/project/media"},
         title: "UI.menu.left-menu.items.playlists",
     },
     {
@@ -134,7 +130,7 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         level: "project",
     },
     {
-        link: {href: "/5"},
+        link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
     },
 ]);

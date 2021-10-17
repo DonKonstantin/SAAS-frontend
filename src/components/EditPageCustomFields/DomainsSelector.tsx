@@ -1,12 +1,13 @@
 import React, {FC} from "react";
-import {EditFieldProperties} from "../../../settings/pages/system/edit";
-import useEntityEditField from "./useEntityEditField";
 import {distinctUntilChanged} from "rxjs";
 import {IconButton, InputAdornment, MenuItem, TextField, Tooltip, Typography} from "@mui/material";
 import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import {EditFieldProperties} from "../../settings/pages/system/edit";
+import useEntityEditField from "../EditPage/Fields/useEntityEditField";
+import {LoaderQueryResponse} from "../../services/loaders/allDomainsAndProjects/LoaderQuery";
 
-// Компонент поля Enum
-const EnumField: FC<EditFieldProperties> = props => {
+// Компонент поля выбора домена
+const DomainsSelector: FC<EditFieldProperties> = props => {
     const {fieldCode} = props
     const fieldData = useEntityEditField(fieldCode, distinctUntilChanged(
         (previous, current) => {
@@ -22,15 +23,16 @@ const EnumField: FC<EditFieldProperties> = props => {
     const {
         t,
         value,
-        fieldSchema: {enum: enumData},
         fieldConfig: {title, isVisible = () => true},
         values,
         validation,
+        additionData,
         onChangeFieldValue,
         onResetFieldValue,
     } = fieldData
 
-    if (!isVisible(values) || !enumData) {
+    const domainsAndProjects = additionData[fieldCode] as LoaderQueryResponse
+    if (!isVisible(values) || !domainsAndProjects) {
         return null
     }
 
@@ -38,7 +40,7 @@ const EnumField: FC<EditFieldProperties> = props => {
         <TextField
             label={t(title)}
             variant="standard"
-            value={`${value}`}
+            value={value || ""}
             error={!!validation}
             helperText={validation ? t(validation) : undefined}
             fullWidth
@@ -52,7 +54,7 @@ const EnumField: FC<EditFieldProperties> = props => {
             InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">
-                        <Tooltip title={t(`entity-edit.fields.enum.restore-default`) as string}>
+                        <Tooltip title={t(`entity-edit.fields.domain-selector.restore-default`) as string}>
                             <IconButton
                                 size="small"
                                 sx={{mr: 3}}
@@ -69,17 +71,17 @@ const EnumField: FC<EditFieldProperties> = props => {
         >
             <MenuItem value="">
                 <Typography variant="overline" sx={{p: 0}}>
-                    {t(`entity-edit.fields.enum.no-value`)}
+                    {t(`entity-edit.fields.domain-selector.no-value`)}
                 </Typography>
             </MenuItem>
-            {Object.keys(enumData.variants).map(variant => (
-                <MenuItem value={variant} key={variant}>{t(enumData.variants[variant])}</MenuItem>
+            {domainsAndProjects.domains.map(domain => (
+                <MenuItem value={parseInt(domain.id)} key={domain.id}>{domain.name}</MenuItem>
             ))}
         </TextField>
     )
 }
 
 // Экспортируем компонент
-export default React.memo(EnumField, (prevProps, nextProps) => {
+export default React.memo(DomainsSelector, (prevProps, nextProps) => {
     return prevProps.fieldCode === nextProps.fieldCode
 })

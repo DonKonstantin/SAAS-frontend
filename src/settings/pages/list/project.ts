@@ -2,7 +2,8 @@ import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/l
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldsConfiguration, RelationConfig,} from "../../../services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
-import CustomActiveCell from "../../../components/CustomActiveCell";
+import CustomActiveCell from "../../../components/ListPageCustom/CustomActiveCell";
+import ProjectSelectCell from "../../../components/ListPageCustom/ProjectSelectCell";
 
 export class ProjectListingConfiguration implements ListPageConfiguration<"project"> {
     filter: FilterFieldsConfiguration<"project"> = {
@@ -37,7 +38,8 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
                 isEnabled: true,
                 fieldType: {
                     config: undefined,
-                    type: "Simple"
+                    type: "Simple",
+                    customComponent: ProjectSelectCell,
                 }
             },
             parent: {
@@ -69,6 +71,9 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
     };
     schema: "project" = "project";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    addPageUrl: PageUrl = {href: "/domain/project/add"};
+    editPageUrl: EditPageLinkGenerator = pk => ({
+        href: "/domain/project/edit/[entityId]",
+        as: `/domain/project/edit/${pk}`
+    });
 }

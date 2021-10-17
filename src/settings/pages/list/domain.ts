@@ -2,8 +2,8 @@ import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/l
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
-import CustomActiveCell from "../../../components/CustomActiveCell";
-import DomainSelectCell from "../../../components/DomainSelectCell";
+import DomainSelectCell from "../../../components/ListPageCustom/DomainSelectCell";
+import CustomActiveCell from "../../../components/ListPageCustom/CustomActiveCell";
 
 export class DomainListingConfiguration implements ListPageConfiguration<"domain"> {
     filter: FilterFieldsConfiguration<"domain"> = {

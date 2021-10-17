@@ -6,7 +6,7 @@ import {EditFieldProperties} from "../../settings/pages/system/edit";
 import useEntityEditField from "../EditPage/Fields/useEntityEditField";
 import {LoaderQueryResponse} from "../../services/loaders/allPermissionCategories/LoaderQuery";
 
-// Компонент поля чекбокса
+// Компонент поля выбора категории разрешения
 const PermissionCategorySelector: FC<EditFieldProperties> = props => {
     const {fieldCode} = props
     const fieldData = useEntityEditField(fieldCode, distinctUntilChanged(
