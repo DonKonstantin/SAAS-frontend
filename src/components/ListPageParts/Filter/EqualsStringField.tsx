@@ -17,7 +17,7 @@ const EqualsStringField: FC<FilterFieldProperties> = props => {
         }
 
         setFieldValue(valueData.value || "")
-    }, [fieldConfig])
+    }, [fieldConfig?.value?.value])
 
     useEffect(() => {
         if (!fieldValue || !fieldConfig) {

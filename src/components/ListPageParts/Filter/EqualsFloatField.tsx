@@ -22,7 +22,7 @@ const EqualsFloatField: FC<FilterFieldProperties> = props => {
         }
 
         setFieldValue(convertValue(valueData.value))
-    }, [fieldConfig])
+    }, [fieldConfig?.value?.value])
 
     useEffect(() => {
         if (!fieldValue || !fieldConfig) {
