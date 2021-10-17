@@ -8,6 +8,8 @@ import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsA
 import {allPermissions} from "../../../services/loaders/allPermissions";
 import {allPermissionCategories} from "../../../services/loaders/allPermissionCategories";
 import LevelCheckSelector from "../../../components/EditPageCustomFields/LevelCheckSelector";
+import PermissionChooseSelector from "../../../components/EditPageCustomFields/PermissionChooseSelector";
+import LevelCheckSelectorGroup from "../../../components/EditPageCustomFields/LevelCheckSelectorGroup";
 
 export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
     groups: EditFormGroup<"role">[] = [
@@ -28,6 +30,7 @@ export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
         },
         {
             sizes: {xs: 12},
+            component: LevelCheckSelectorGroup,
             fields: [
                 {
                     field: "level",
@@ -64,14 +67,17 @@ export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
                     validation: [
                         ValueExistsValidator({errorMessage: "pages.role.edit.fields.permissions_id-error"}),
                     ],
-                    component: HiddenField,
+                    component: PermissionChooseSelector,
                     additionData: async () => {
                         const [permissions, categories] = await Promise.all([
                             allPermissions().Load(),
                             allPermissionCategories().Load()
                         ])
 
-                        return {permissions, categories}
+                        return {
+                            permissions: permissions.permissions,
+                            categories: categories.categories,
+                        }
                     }
                 },
             ]

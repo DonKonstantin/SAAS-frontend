@@ -1,7 +1,7 @@
 import {UserInfoData} from "../authService/UserInfoQuery";
 
 // Доступные уровни разрешений для определенного уровня
-const AvailableLevelsForLevel = {
+export const AvailableLevelsForLevel = {
     realm: ["realm", "domain", "project"],
     domain: ["domain", "project"],
     project: ["project"],

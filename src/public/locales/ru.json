@@ -330,6 +330,9 @@
             "no-value": "Проект не выбран"
           }
         }
+      },
+      "permission-choose-selector": {
+        "caption": "Назначение прав"
       }
     },
     "actions": {

@@ -45,7 +45,7 @@ const EditPage: FC = () => {
             <Box sx={{pb: 3}}>
                 <Breadcrumbs/>
             </Box>
-            <Box sx={{width: '100%', pb: 4}}>
+            <Box sx={{width: '100%', pb: 12}}>
                 <Grid container spacing={3}>
                     {config.groups.map((group, i) => (
                         <Group config={group} key={i}/>
