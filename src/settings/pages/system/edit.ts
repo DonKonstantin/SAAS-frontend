@@ -1,6 +1,8 @@
 import {Schemas} from "../../schema";
 import React from "react";
 import {PageUrl} from "./list";
+import {OverridableComponent} from "@mui/types";
+import {SvgIconTypeMap} from "@mui/material";
 
 // Тип, описывающий размеры группы
 export type Size = 'auto' | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
@@ -53,6 +55,7 @@ export interface EditField<T extends keyof Schemas, F extends keyof Schemas[T]['
     }
     validation: EditFieldValidator<T>[]                         // Валидаторы значений поля
     component: React.ComponentType<EditFieldProperties<T, F>>    // Компонент отображения поля
+    startIcon?: OverridableComponent<SvgIconTypeMap>
 
     // Handler видимости поля
     isVisible?: { (values: EntityValues<T>): boolean }

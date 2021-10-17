@@ -87,6 +87,9 @@ export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     };
     schema: "user" = "user";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/"};
-    editPageUrl: EditPageLinkGenerator = () => ({href: "/"});
+    addPageUrl: PageUrl = {href: "/users/add"};
+    editPageUrl: EditPageLinkGenerator = primaryKey => ({
+        as: `/users/edit/${primaryKey}`,
+        href: `/users/edit/[entityId]`
+    });
 }

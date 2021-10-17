@@ -8,15 +8,15 @@ import {Schemas} from "../../../../settings/schema";
 export const PasswordValidator: ValidatorFactory<{}> = () => {
     return new class implements EditFieldValidator<keyof Schemas> {
         async Validate(params: ValidationParams<keyof Schemas>): Promise<ValidationResult> {
-            if (!params.additionData.password) {
+            if (!params.additionData.id.password) {
                 return `Пароль не заполнен`
             }
 
-            if (`${params.additionData.password}`.length < 6) {
+            if (`${params.additionData.id.password}`.length < 6) {
                 return `Минимальная длина пароля - 6 символов`
             }
 
-            if (params.additionData.password !== params.additionData.confirm) {
+            if (params.additionData.id.password !== params.additionData.id.confirm) {
                 return `Пароли не совпадают`
             }
 

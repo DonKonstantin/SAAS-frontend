@@ -23,7 +23,7 @@ const EnumField: FC<EditFieldProperties> = props => {
         t,
         value,
         fieldSchema: {enum: enumData},
-        fieldConfig: {title, isVisible = () => true},
+        fieldConfig: {title, isVisible = () => true, startIcon: IconComponent, validation: validators = []},
         values,
         validation,
         onChangeFieldValue,
@@ -43,6 +43,7 @@ const EnumField: FC<EditFieldProperties> = props => {
             helperText={validation ? t(validation) : undefined}
             fullWidth
             select
+            required={validators.length > 0}
             onChange={event => {
                 event.preventDefault()
                 event.stopPropagation()
@@ -50,6 +51,11 @@ const EnumField: FC<EditFieldProperties> = props => {
                 onChangeFieldValue(() => event.target.value)
             }}
             InputProps={{
+                startAdornment: IconComponent ? (
+                    <InputAdornment position="start">
+                        <IconComponent />
+                    </InputAdornment>
+                ) : undefined,
                 endAdornment: (
                     <InputAdornment position="end">
                         <Tooltip title={t(`entity-edit.fields.enum.restore-default`) as string}>

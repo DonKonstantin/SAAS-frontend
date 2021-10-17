@@ -131,6 +131,23 @@
           "active": "Активен",
           "roles_id": "Роли"
         }
+      },
+      "add": {
+        "title": "Создать пользователя",
+        "header": "Создать пользователя",
+        "breadcrumb": "Создать пользователя"
+      },
+      "edit": {
+        "title": "Редактирование пользователя",
+        "header": "Редактирование пользователя",
+        "breadcrumb": "Редактирование пользователя",
+        "fields": {
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "email": "E-mail",
+          "active": "Активен",
+          "roles_id-error": "Необходимо выбрать хотя бы одну роль"
+        }
       }
     },
     "permission_category": {
@@ -338,6 +355,28 @@
       },
       "permission-choose-selector": {
         "caption": "Назначение прав"
+      },
+      "user-create-password": {
+        "title": "Создание пароля",
+        "password": "Пароль",
+        "password-placeholder": "Новый пароль",
+        "password-confirm": "Подтверждение",
+        "password-confirm-placeholder": "Подтвердите пароль"
+      },
+      "user-info-group": {
+        "title": "Личные данные"
+      },
+      "user-update-password": {
+        "title": "Изменение пароля",
+        "password": "Пароль",
+        "password-placeholder": "Новый пароль",
+        "password-confirm": "Подтверждение",
+        "password-confirm-placeholder": "Подтвердите пароль",
+        "set-password": "Установить пароль",
+        "messages": {
+          "password-changed": "Пароль успешно изменен",
+          "password-change-error": "Не удалось изменить пароль"
+        }
       }
     },
     "actions": {

@@ -24,7 +24,7 @@ const StringField: FC<EditFieldProperties> = props => {
         value,
         values,
         validation,
-        fieldConfig: {title, isVisible = () => true},
+        fieldConfig: {title, isVisible = () => true, startIcon: IconComponent, validation: validators = []},
         onChangeFieldValue,
         onResetFieldValue
     } = fieldData
@@ -41,6 +41,7 @@ const StringField: FC<EditFieldProperties> = props => {
             error={!!validation}
             helperText={validation ? t(validation) : undefined}
             fullWidth
+            required={validators.length > 0}
             placeholder={t(`entity-edit.fields.input.placeholder`) as string}
             onChange={event => {
                 event.preventDefault()
@@ -49,6 +50,11 @@ const StringField: FC<EditFieldProperties> = props => {
                 onChangeFieldValue(() => event.target.value)
             }}
             InputProps={{
+                startAdornment: IconComponent ? (
+                    <InputAdornment position="start">
+                        <IconComponent />
+                    </InputAdornment>
+                ) : undefined,
                 endAdornment: (
                     <InputAdornment position="end">
                         <Tooltip title={t(`entity-edit.fields.input.restore-default`) as string}>

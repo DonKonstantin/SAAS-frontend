@@ -23,7 +23,7 @@ const DomainsSelector: FC<EditFieldProperties> = props => {
     const {
         t,
         value,
-        fieldConfig: {title, isVisible = () => true},
+        fieldConfig: {title, isVisible = () => true, startIcon: IconComponent, validation: validators = []},
         values,
         validation,
         additionData,
@@ -45,6 +45,7 @@ const DomainsSelector: FC<EditFieldProperties> = props => {
             helperText={validation ? t(validation) : undefined}
             fullWidth
             select
+            required={validators.length > 0}
             onChange={event => {
                 event.preventDefault()
                 event.stopPropagation()
@@ -52,6 +53,11 @@ const DomainsSelector: FC<EditFieldProperties> = props => {
                 onChangeFieldValue(() => event.target.value)
             }}
             InputProps={{
+                startAdornment: IconComponent ? (
+                    <InputAdornment position="start">
+                        <IconComponent />
+                    </InputAdornment>
+                ) : undefined,
                 endAdornment: (
                     <InputAdornment position="end">
                         <Tooltip title={t(`entity-edit.fields.domain-selector.restore-default`) as string}>

@@ -13,6 +13,17 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             breadcrumb: "pages.users.list.breadcrumb",
             link: {href: "/users"}
         },
+        "/users/add": {
+            breadcrumb: "pages.users.add.breadcrumb",
+            link: {href: "/roles/add"}
+        },
+        "/users/edit/[entityId]": {
+            breadcrumb: "pages.users.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => ({
+                href: "/users/edit/[entityId]",
+                as: `/users/edit/${entityEditPrimaryKey}`
+            })
+        },
         "/permission-category": {
             breadcrumb: "pages.permission_category.list.breadcrumb",
             link: {href: "/permission-category"}

@@ -32,6 +32,9 @@ type EntityEditHocActions<T extends keyof Schemas = keyof Schemas> = {
 
     // Обработка сохранения сущности
     onSave: { (isNeedCopy?: boolean): Promise<string | undefined> }
+
+    // Обработка изменения дополнительных данных формы редактирования
+    onChangeAdditionData: {(callback: {(data: EntityData<T>['additionData']): EntityData<T>['additionData']}): void}
 };
 
 // Свойства контекста по умолчанию
@@ -43,6 +46,28 @@ class DefaultContext implements EntityEditHocContext {
 
 // Создаем изначальный State
 const context$ = new BehaviorSubject<EntityEditHocContext>(new DefaultContext);
+
+/**
+ * Обработка изменения дополнительных данных формы редактирования
+ * @param callback
+ */
+const onChangeAdditionData: EntityEditHocActions['onChangeAdditionData'] = callback => {
+    const {entityData, ...other} = context$.getValue()
+    if (!entityData) {
+        return
+    }
+
+    const {additionData} = entityData
+    context$.next({
+        ...other,
+        entityData: {
+            ...entityData,
+            additionData: {
+                ...callback(additionData)
+            }
+        }
+    })
+}
 
 /**
  * Валидация сущности. Возвращает валидированный объект сущности
@@ -250,6 +275,7 @@ const actions: EntityEditHocActions = {
     onChangeFieldValue,
     onResetFieldValue,
     onSave,
+    onChangeAdditionData,
 }
 
 /**
