@@ -328,6 +328,11 @@ const initializeSubscriptions = () => {
                 // Сбрасываем текущие данные листинга
                 context$.next(new DefaultContext())
 
+                // Пропускаем загрузку для заглушек схемы
+                if (0 === schema.length) {
+                    return
+                }
+
                 // Отправляем запрос полной перезагрузки данных схемы
                 fullDataReloadCtx$.next({schema, additionFilter})
             }

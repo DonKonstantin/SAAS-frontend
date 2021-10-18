@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Box} from "@mui/system";
 import {Grid, IconButton, Paper, Tooltip} from "@mui/material";
 import List from "../ListPageParts/List";
@@ -20,7 +20,7 @@ import {distinctUntilChanged} from "rxjs";
 const ListPage: FC = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [selected, setSelected] = useState<any[]>([])
-    const {data} = useEntityList(
+    const {data, setSchema} = useEntityList(
         distinctUntilChanged((previous, current) => {
             const prevVal = previous.data ? 1 : 2
             const currentVal = current.data ? 1 : 2
@@ -29,6 +29,11 @@ const ListPage: FC = () => {
         })
     )
     const {t} = useTranslation()
+
+    useEffect(() => {
+        // При размонтировании страницы очищаем загруженные данные
+        return () => setSchema("" as any)
+    }, [])
 
     if (!data) {
         return <LoadingBlocker/>

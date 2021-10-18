@@ -13,7 +13,7 @@ import ActionButtons from "./ActionButtons";
 // Компонент страницы редактирования
 const EditPage: FC = () => {
     const [config, setConfig] = useState<EditPageConfiguration>()
-    const {entityData} = useEntityEdit(distinctUntilChanged(
+    const {entityData, setSchema} = useEntityEdit(distinctUntilChanged(
         (previous, current) => {
             const prev = previous?.entityData ? 1 : 2
             const next = current?.entityData ? 1 : 2
@@ -21,6 +21,11 @@ const EditPage: FC = () => {
             return prev === next
         }
     ))
+
+    useEffect(() => {
+        // При размонтировании страницы очищаем загруженные данные
+        return () => setSchema("" as any)
+    }, [])
 
     useEffect(() => {
         if (!entityData) {

@@ -246,6 +246,11 @@ const setSchema: EntityEditHocActions['setSchema'] = async (schema, primaryKey) 
     context$.next(new DefaultContext())
 
     try {
+        // Пропускаем загрузку для заглушек схемы
+        if (0 === schema.length) {
+            return
+        }
+
         const entityData = await entityGetterService().GetEntity(schema, primaryKey)
 
         context$.next({
