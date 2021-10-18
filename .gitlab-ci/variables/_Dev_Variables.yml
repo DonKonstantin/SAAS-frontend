@@ -1,0 +1,19 @@
+# Параметры конфигурации для сборки и раскатки мастера на DEV инстанс
+variables:
+  ENVIRONMENT: "Develop"
+
+  # Переменные кластеры
+  CLUSTER_CONFIG: $DEV__KUBECONFIG
+  CLUSTER_CONTEXT: $DEV__KUBE_CONTEXT
+
+  # Расположение сервисов в кластере
+  NODE_SELECTOR: $DEV__NODE_SELECTOR
+
+  # Параметры приложения
+  GRAPHQL_SERVER: $DEV__GRAPHQL_SERVER
+  GRAPHQL_WS_SERVER: $DEV__GRAPHQL_WS_SERVER
+  SSR_GRAPHQL_SERVER: $DEV__SSR_GRAPHQL_SERVER
+  SSR_GRAPHQL_WS_SERVER: $DEV__SSR_GRAPHQL_WS_SERVER
+  DEBUG: $DEV__DEBUG
+  TOKEN_REFRESH_TIMEOUT: $DEV__TOKEN_REFRESH_TIMEOUT
+  DOMAIN: $DEV__DOMAIN

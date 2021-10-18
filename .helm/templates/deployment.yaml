@@ -50,40 +50,28 @@ spec:
 {{ werf_container_image . | indent 8 }}
         resources:
           limits:
-            memory: 500Mi
-          requests:
             memory: 300Mi
+          requests:
+            memory: 150Mi
         ports:
           - name: web
             containerPort: 3000
             protocol: TCP
         env:
           - name: GRAPHQL_SERVER
-            value: "{{ .Values.env.GRAPHQL_SERVER }}"
+            value: "{{ .Values.external.GRAPHQL_SERVER }}"
           - name: SSR_GRAPHQL_SERVER
-            value: "{{ .Values.env.SSR_GRAPHQL_SERVER }}"
+            value: "{{ .Values.external.SSR_GRAPHQL_SERVER }}"
           - name: DEBUG
-            value: "{{ .Values.debug }}"
+            value: "{{ .Values.external.DEBUG }}"
           - name: ENVIRONMENT
             value: "{{ .Values.environment }}"
           - name: TOKEN_REFRESH_TIMEOUT
             value: "{{ .Values.token_refresh_timeout }}"
-          - name: TRANSLATION_MAX_QUERIES_PER_TIME
-            value: "{{ .Values.env.TRANSLATION_MAX_QUERIES_PER_TIME }}"
           - name: GRAPHQL_WS_SERVER
-            value: "{{ .Values.env.GRAPHQL_WS_SERVER }}"
+            value: "{{ .Values.external.GRAPHQL_WS_SERVER }}"
           - name: SSR_GRAPHQL_WS_SERVER
-            value: "{{ .Values.env.SSR_GRAPHQL_WS_SERVER }}"
-          - name: FILE_CONVERTATION_CSV_ENDPOINT
-            value: "{{ .Values.env.FILE_CONVERTATION_CSV_ENDPOINT }}"
-          - name: FILE_CONVERTATION_XLSX_ENDPOINT
-            value: "{{ .Values.env.FILE_CONVERTATION_XLSX_ENDPOINT }}"
-          - name: FILE_UPLOADING_ENDPOINT
-            value: "{{ .Values.env.FILE_UPLOADING_ENDPOINT }}"
-          - name: FILE_VIEW_ENDPOINT
-            value: "{{ .Values.env.FILE_VIEW_ENDPOINT }}"
-          - name: EXCEL_FILE_WS_ENDPOINT
-            value: "{{ .Values.env.EXCEL_FILE_WS_ENDPOINT }}"
+            value: "{{ .Values.external.SSR_GRAPHQL_WS_SERVER }}"
         livenessProbe:
           httpGet:
             path: /

@@ -1,0 +1,91 @@
+stages:
+  - deploy
+  - deploy_notify
+
+# Инициализация Werf
+.werf_init: &werf_init
+  image: docker:20.10.8
+  services:
+    - docker:20.10.8-dind
+  variables:
+    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: tcp://docker:2375/
+  before_script:
+    - echo $CI_PIPELINE_SOURCE
+    - echo $IS_BUILD_ALLOWED
+    - docker info
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
+    - apk update
+    - apk add curl git
+    - export PATH=$PATH:$HOME/bin
+    - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+    - mkdir -p ~/bin
+    - cd ~/bin
+    - curl -L https://raw.githubusercontent.com/werf/multiwerf/master/get.sh | sh
+    - type multiwerf && . $(multiwerf use 1.1 stable --as-file)
+    - type werf && source $(werf ci-env gitlab --as-file)
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mv ./kubectl /usr/local/bin/kubectl
+    - kubectl version --client
+    - cd $CI_PROJECT_DIR
+
+### Базовый скрипт деплоя на площадку
+.base_deploy: &base_deploy
+  stage: deploy
+  extends: .werf_init
+  script:
+    - cat $REGISTRY_CREDENTIALS >> .helm/values.yaml && printf "\n" >> .helm/values.yaml
+    - printf "%s\n" "$SERVERS_CONFIG" >> .helm/values.yaml
+    - printf "%s\n" "$NODE_SELECTOR" >> .helm/values.yaml
+    - printf "%s" "$CLUSTER_CONFIG" > /tmp/.kube.config-$CI_JOB_ID
+    - .gitlab-ci/scripts/envToYaml >> .helm/values.yaml
+    - kubectl config --kubeconfig=/tmp/.kube.config-$CI_JOB_ID use-context $CLUSTER_CONTEXT
+    - werf deploy
+      --kube-config=/tmp/.kube.config-$CI_JOB_ID
+      --kube-context="$CLUSTER_CONTEXT"
+
+# Базовый скрипт отправки уведомления о деплое
+.deploy_notify: &deploy_notify
+  stage: deploy_notify
+  script:
+    - apk update
+    - apk add curl git
+    - sh .gitlab-ci/scripts/DeployNotify.sh $TYPE $TEXT
+
+# Скрипт отправки нотификации об успешном деплое
+.deploy_success: &deploy_success
+  <<: *deploy_notify
+  variables:
+    TYPE: "✅"
+    TEXT: "Success"
+
+# Скрипт отправки нотификации об упавшем деплое
+.deploy_failed: &deploy_failed
+  <<: *deploy_notify
+  variables:
+    TYPE: "❌"
+    TEXT: "Failed"
+
+# Deploy приложения
+Deploy:
+  extends: .base_deploy
+  stage: deploy
+  environment:
+    name: $ENVIRONMENT
+
+
+# Уведомление об успешном деплое
+Deploy notify success:
+  <<: *deploy_success
+  environment:
+    name: $ENVIRONMENT
+  when: on_success
+
+# Уведомление об отвале деплоя
+Deploy notify failed:
+  <<: *deploy_failed
+  environment:
+    name: $ENVIRONMENT
+  when: on_failure
