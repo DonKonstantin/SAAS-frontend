@@ -41,7 +41,7 @@ const UserRolesTable: FC<UserRolesTableProps> = props => {
 
 
     return (
-        <TableContainer>
+        <TableContainer sx={{maxHeight: 278}}>
             <Table stickyHeader sx={{tableLayout: "fixed"}}>
                 <TableHead>
                     <UserRoleHeader
