@@ -4,6 +4,7 @@ import CheckPermission from "../services/helpers/CheckPermission";
 import {Box} from "@mui/material";
 import Link from "../components/Link";
 import {Trans} from "react-i18next";
+import {useRouter} from "next/router";
 
 // Свойства страницы с проверкой разрешений
 export type PageWithPermissionCheck = Partial<{
@@ -25,6 +26,11 @@ const PermissionProvider: FC<PermissionProviderProps> = props => {
         userInfo,
         children,
     } = props
+    const router = useRouter()
+
+    if (["/404", "/500"].includes(router.pathname)) {
+        return <>{children}</>
+    }
 
     if (!userInfo) {
         return null
