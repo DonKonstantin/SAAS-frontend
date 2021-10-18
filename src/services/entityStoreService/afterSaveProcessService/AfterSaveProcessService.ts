@@ -24,12 +24,12 @@ export class AfterSaveProcessService implements AfterSaveProcessServiceInterface
         const passedData: EntityData<keyof Schemas> = JSON.parse(JSON.stringify(data));
 
         let result: boolean = true;
-        await Promise.all(configuration.groups.map(async (group, i) => {
+        await Promise.all(configuration.groups.map(async group => {
             if (!IsGroupVisible(group, passedData.values)) {
                 return undefined;
             }
 
-            return await Promise.all(group.fields.map(async (field, j) => {
+            return await Promise.all(group.fields.map(async field => {
                 const isFieldVisible = field.isVisible ? field.isVisible(data.values) : true;
 
                 if (!field.onAfterSave || !isFieldVisible) {
@@ -37,8 +37,7 @@ export class AfterSaveProcessService implements AfterSaveProcessServiceInterface
                 }
 
                 try {
-                    // @ts-ignore
-                    await field.onAfterSave(passedData.values[field.field], passedData.values, passedData.additionData[i][j], primaryKey)
+                    await field.onAfterSave(passedData.values[field.field as any], passedData.values, passedData.additionData, primaryKey)
                 } catch (e) {
                     this.logger.Error(`Some error occurred on field in group`, field, group, e);
                     result = false

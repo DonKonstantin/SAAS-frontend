@@ -31,8 +31,7 @@ export class CopyPreprocessService implements CopyPreprocessServiceInterface {
                     return
                 }
 
-                // @ts-ignore
-                const result = await field.onCopyValue(passedData.primaryKey, passedData.values[field.field], passedData.originalValues[field.field], passedData.additionData[i][j]);
+                const result = await field.onCopyValue(passedData.primaryKey, passedData.values[field.field as any], passedData.originalValues[field.field as any], passedData.additionData);
 
                 // @ts-ignore
                 newData.values[field.field] = result.value;

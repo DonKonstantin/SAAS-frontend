@@ -38,8 +38,7 @@ export class BeforeSavePreprocessService implements BeforeSavePreprocessServiceI
                 }
 
                 try {
-                    // @ts-ignore
-                    const beforeProcessResult = await field.onBeforeSave(passedData.values[field.field], passedData.values, passedData.additionData[i][j])
+                    const beforeProcessResult = await field.onBeforeSave(passedData.values[field.field as any], passedData.values, passedData.additionData)
                     passedData.values = {...JSON.parse(JSON.stringify(beforeProcessResult))}
                 } catch (e) {
                     this.logger.Error(`Some error occurred on field in group`, field, group, e)
