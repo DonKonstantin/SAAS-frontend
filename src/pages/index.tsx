@@ -1,12 +1,12 @@
-import React, {FC} from 'react';
+import React from 'react';
 import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
-import {GetStaticProps} from "next";
+import {NextPage} from "next";
 
 // Свойства страницы
 type Props = PageWithMetaTags
 
 // Компонент главной страницы проекта
-const IndexPage: FC<Props> = () => {
+const IndexPage: NextPage<Props> = () => {
     return (
         <div>
             <p>Раздел находится в разработке</p>
@@ -15,14 +15,10 @@ const IndexPage: FC<Props> = () => {
 }
 
 // Экспортируем основные параметры страницы
-export const getStaticProps: GetStaticProps = async () => {
-    return {
-        props: {
-            title: "pages.main.title",
-            header: "pages.main.header",
-        }
-    }
-}
+IndexPage.getInitialProps = async () => ({
+    title: "pages.main.title",
+    header: "pages.main.header",
+})
 
 // Экспортируем компонент
 export default IndexPage

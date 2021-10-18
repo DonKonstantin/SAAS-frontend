@@ -1,5 +1,5 @@
-import React, {FC} from 'react';
-import {GetStaticProps} from "next";
+import React from 'react';
+import {NextPage} from "next";
 import {PageWithMetaTags} from "../../../components/UILayer/PageWithMetaTags";
 import {PageWithChangeableMenu} from "../../../layouts/MenuChangeLayout";
 
@@ -7,7 +7,7 @@ import {PageWithChangeableMenu} from "../../../layouts/MenuChangeLayout";
 type Props = PageWithMetaTags & PageWithChangeableMenu
 
 // Компонент страницы проекта
-const Page: FC<Props> = () => {
+const Page: NextPage<Props> = () => {
     return (
         <div>
             <p>Раздел находится в разработке</p>
@@ -16,15 +16,11 @@ const Page: FC<Props> = () => {
 }
 
 // Экспортируем основные параметры страницы
-export const getStaticProps: GetStaticProps = async () => {
-    return {
-        props: {
-            title: "Плейлисты",
-            header: "Плейлисты",
-            pageMenuType: "project",
-        }
-    }
-}
+Page.getInitialProps = async () => ({
+    title: "Плейлисты",
+    header: "Плейлисты",
+    pageMenuType: "project",
+})
 
 // Экспортируем компонент
 export default Page

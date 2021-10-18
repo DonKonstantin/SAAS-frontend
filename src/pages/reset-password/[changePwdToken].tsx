@@ -1,6 +1,6 @@
-import {FC, useEffect} from 'react';
+import {useEffect} from 'react';
 import {useRouter} from "next/router";
-import {GetServerSideProps} from "next";
+import {NextPage} from "next";
 import {PageWithMetaTags} from "../../components/UILayer/PageWithMetaTags";
 
 // Свойства страницы
@@ -11,7 +11,7 @@ type Props = PageWithMetaTags<{
 
 // Компонент страницы восстановления пароля.
 // Редиректит на главную, если пользователь смог войти в CRM
-const ChangePasswordPage: FC<Props> = () => {
+const ChangePasswordPage: NextPage<Props> = () => {
     const router = useRouter()
     useEffect(() => {
         router.replace("/")
@@ -22,14 +22,10 @@ const ChangePasswordPage: FC<Props> = () => {
 
 // Получение токена восстановления пароля и проброс флага, отображающего
 // форму изменения пароля
-export const getServerSideProps: GetServerSideProps = async context => {
-    return {
-        props: {
-            changePasswordToken: context.params?.changePwdToken,
-            isNeedShowChangePassword: true,
-        }
-    }
-}
+ChangePasswordPage.getInitialProps = async ({query}) => ({
+    changePasswordToken: query?.changePwdToken as string,
+    isNeedShowChangePassword: true,
+})
 
 // Экспортируем компонент
 export default ChangePasswordPage

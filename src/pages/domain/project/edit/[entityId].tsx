@@ -1,33 +1,23 @@
-import React, {FC} from 'react';
-import {GetServerSideProps} from "next";
+import React from 'react';
+import {NextPage} from "next";
 import EditPage from "../../../../components/EditPage";
 
 // Компонент страницы редактирования
-const EditPageContent: FC = () => {
+const EditPageContent: NextPage = () => {
     return (
         <EditPage/>
     )
 }
 
-// Загрузка данных CRM на стороне сервера
-export const getServerSideProps: GetServerSideProps = async context => {
-    if (!context.params?.entityId) {
-        return {
-            notFound: true
-        }
-    }
-
-    return {
-        props: {
-            title: "pages.project.edit.title",
-            header: "pages.project.edit.header",
-            entityEditSchema: "project",
-            entityEditPrimaryKey: context.params?.entityId,
-            permissionCheckPermission: "UPDATE_PROJECTS",
-            pageMenuType: "domain",
-        }
-    }
-}
+// Экспортируем основные параметры страницы
+EditPageContent.getInitialProps = async ({query}) => ({
+    title: "pages.project.edit.title",
+    header: "pages.project.edit.header",
+    entityEditSchema: "project",
+    entityEditPrimaryKey: query?.entityId as string,
+    permissionCheckPermission: "UPDATE_PROJECTS",
+    pageMenuType: "domain",
+})
 
 // Экспортируем компонент
 export default EditPageContent
