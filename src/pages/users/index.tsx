@@ -15,7 +15,8 @@ ListingPage.getInitialProps = async () => ({
     header: "pages.users.list.header",
     entityListSchema: "user",
     permissionCheckPermission: "READ_USERS",
-    permissionCheckLevel: "realm",
+    permissionCheckEditPermission: "CHANGE_USERS",
+    permissionCheckLevel: "project",
 })
 
 // Экспортируем компонент

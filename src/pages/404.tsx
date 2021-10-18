@@ -17,7 +17,7 @@ const NotFoundPage: FC<PageProps> = () => {
                 <ErrorPageHuman />
                 <div className="error-code">404</div>
                 <div className="return-link">
-                    <Link href="/" className="link">
+                    <Link href="#" onClick={() => window.location.href = "/"} className="link">
                         <div><ArrowForwardIcon color="inherit"/></div>
                         <div>{t(`UI.pages.error.back-to-main-page`)}</div>
                     </Link>
