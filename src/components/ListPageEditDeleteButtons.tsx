@@ -22,6 +22,7 @@ const ListPageEditDeleteButtons: FC<ListPageEditDeleteButtonsProps> = props => {
         item,
         permissionCheckEditPermission,
         permissionCheckLevel = "project",
+        permissionCheckEditLevel = permissionCheckLevel,
     } = props
 
     const {t} = useTranslation()
@@ -44,7 +45,7 @@ const ListPageEditDeleteButtons: FC<ListPageEditDeleteButtonsProps> = props => {
         return <TableCell className="list-table-cell"/>
     }
 
-    if (permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckLevel)) {
+    if (permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckEditLevel)) {
         return <TableCell className="list-table-cell"/>
     }
 

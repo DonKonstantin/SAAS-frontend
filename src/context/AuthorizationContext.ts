@@ -14,6 +14,7 @@ export type AuthorizationContext = {
     authToken: string                   // Токен авторизации в системе
     userInfo: UserInfoData | undefined  // Профиль пользователя
     isRequestInProgress: boolean        // Флаг загрузки данных по запросу авторизации/восстановления пароля
+    isNeedRedirectAfterAuth: boolean    // Необходимость выполнить редирект на основную сраницу для пользователя
 
     // Тип отображаемого в данный момент меню
     menuType: "realm" | "domain" | "project"
@@ -59,6 +60,9 @@ type AuthorizationActions = {
 
     // Установка текущего проекта пользователя
     setProject: {(project: string): void}
+
+    // Обработка перехода на какие-то страницы при наличии флага редиректа
+    onRedirectToUserPage: {(callback: {(): void}): void}
 };
 
 // Свойства контекста по умолчанию
@@ -69,6 +73,7 @@ class DefaultContext implements AuthorizationContext {
     menuType: "realm" | "domain" | "project";
     domain: string = "";
     project: string = "";
+    isNeedRedirectAfterAuth: boolean = false;
 }
 
 // Создаем изначальный State
@@ -76,6 +81,24 @@ const context$ = new BehaviorSubject<AuthorizationContext>(new DefaultContext);
 
 // Контекст для обработки изменения токена
 const tokenContext$ = new Subject<string>();
+
+/**
+ * Обработка перехода на какие-то страницы при наличии флага редиректа
+ * @param callback
+ */
+const onRedirectToUserPage: AuthorizationActions['onRedirectToUserPage'] = callback => {
+    const {isNeedRedirectAfterAuth} = context$.getValue()
+    if (!isNeedRedirectAfterAuth) {
+        return
+    }
+
+    context$.next({
+        ...context$.getValue(),
+        isNeedRedirectAfterAuth: false,
+    })
+
+    return callback()
+}
 
 /**
  * Изменение типа отображаемого в данный момент меню
@@ -123,21 +146,10 @@ const loadAuthorizationData = async (token: string): Promise<AuthorizationContex
     const domain = domains.length === 1 ? domains[0].id : ""
     const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
 
-    let menuType: "realm" | "domain" | "project" = "realm"
-
-    if (domains.length === 1) {
-        menuType = "domain"
-    }
-
-    if (domains.length === 0 && projects.length === 1) {
-        menuType = "project"
-    }
-
     return {
         ...new DefaultContext(),
         authToken: token,
         userInfo: userProfile,
-        menuType: menuType,
         domain: domain,
         project: project,
     }
@@ -347,6 +359,7 @@ const onAuthorize = async (email: string, password: string): Promise<boolean> =>
         context$.next({
             ...context$.getValue(),
             isRequestInProgress: false,
+            isNeedRedirectAfterAuth: true,
         })
 
         return true
@@ -383,6 +396,7 @@ const actions: AuthorizationActions = {
     onChangeMenuType,
     setProject,
     setDomain,
+    onRedirectToUserPage,
 }
 
 /**

@@ -3,6 +3,7 @@ import AuthorizationHoc, {WithAuthorization} from "../../context/AuthorizationCo
 import LoginFormUiLayer from "./LoginFormUiLayer";
 import {auditTime} from "rxjs";
 import LoginPageFormContent from "./LoginPageFormContent";
+import {useRouter} from "next/router";
 
 // Свойства компонента страницы авторизации
 export type LoginPageFormProps = WithAuthorization<{
@@ -15,15 +16,35 @@ export type LoginPageFormProps = WithAuthorization<{
 const LoginPageForm: FC<LoginPageFormProps> = props => {
     const {
         authToken,
+        userInfo,
         changePasswordToken = "",
         isNeedShowChangePassword = false,
         initializeContextBus,
+        onRedirectToUserPage,
+        isNeedRedirectAfterAuth,
         children,
     } = props;
+    const router = useRouter()
 
     useEffect(() => {
         return initializeContextBus()
     }, [])
+
+    useEffect(() => {
+        if (!userInfo) {
+            return
+        }
+
+        onRedirectToUserPage(() => {
+            const domains = userInfo.roles.filter(r => r.level === "domain")
+
+            if (domains.length === 1) {
+                return router.push("/domain/project")
+            }
+
+            return router.push("/domain")
+        })
+    }, [userInfo, isNeedRedirectAfterAuth])
 
     if (0 === authToken.length) {
         return (

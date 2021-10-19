@@ -10,7 +10,10 @@ import {useRouter} from "next/router";
 export type PageWithPermissionCheck = Partial<{
     permissionCheckPermission: string
     permissionCheckEditPermission: string
+    permissionCheckCreatePermission: string
     permissionCheckLevel: "realm" | "domain" | "project"
+    permissionCheckEditLevel: "realm" | "domain" | "project"
+    permissionCheckCreateLevel: "realm" | "domain" | "project"
 }>
 
 // Свойства провайдера

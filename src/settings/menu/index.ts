@@ -1,18 +1,18 @@
 import {MenuItem} from "./system";
 import PhonelinkLockIcon from '@mui/icons-material/PhonelinkLock';
-import ListIcon from '@mui/icons-material/List';
 import PersonIcon from '@mui/icons-material/Person';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import DvrIcon from '@mui/icons-material/Dvr';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import StorageIcon from '@mui/icons-material/Storage';
 
 // Список пунктов меню уровня Реалм
 export const RealmMenuItems = (): MenuItem[] => ([
     {
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
-        icon: ListIcon,
+        icon: StorageIcon,
     },
     {
         link: {href: "/users"},
@@ -53,19 +53,19 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: VolumeUpIcon,
         subItems: [
             {
-                link: {href: "/11"},
+                link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.check",
             },
             {
-                link: {href: "/12"},
+                link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.uploading",
             },
             {
-                link: {href: "/13"},
+                link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.storage",
             },
             {
-                link: {href: "/14"},
+                link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.categories",
             },
         ],

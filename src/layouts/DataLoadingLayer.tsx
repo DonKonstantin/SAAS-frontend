@@ -2,8 +2,8 @@ import React, {FC} from "react";
 import useSWR from 'swr'
 import withDataLoading from "../dataLoading";
 import LoadingPage from "../components/UILayer/LoadingPage";
-import InternalError from "../components/InternalError";
 import {useRouter} from "next/router";
+import {useAuthorization} from "../context/AuthorizationContext";
 
 // Свойства слоя
 export type DataLoadingLayerProps = object & Partial<{
@@ -23,6 +23,7 @@ export type DataLoadingLayerProps = object & Partial<{
 const DataLoadingLayer: FC<DataLoadingLayerProps> = props => {
     const {children, ...other} = props
     const router = useRouter()
+    const auth = useAuthorization()
 
     const {data, error} = useSWR("base_data", async () => {
         if (["/404", "/500"].includes(router.pathname)) {
@@ -41,11 +42,13 @@ const DataLoadingLayer: FC<DataLoadingLayerProps> = props => {
     }
 
     if (error) {
-        return <InternalError />
+        auth.onLogout()
+
+        return (<>{children}</>)
     }
 
     if (!data) {
-        return <LoadingPage />
+        return <LoadingPage/>
     }
 
     return (<>{children}</>)

@@ -8,12 +8,14 @@ import {useAuthorization} from "../../context/AuthorizationContext";
 import {PageWithEntityList} from "../ListPage/types";
 import CheckPermission from "../../services/helpers/CheckPermission";
 import {ListPageConfiguration} from "../../settings/pages/system/list";
+import {withPageProps} from "../../layouts/PagePropsProvider";
 
 // Компонент вывода кнопки создания элемента
 const ListPageCreationButton: FC<PageWithEntityList> = props => {
     const {
-        permissionCheckEditPermission,
+        permissionCheckCreatePermission,
         permissionCheckLevel = "project",
+        permissionCheckCreateLevel = permissionCheckLevel
     } = props
 
     const {userInfo} = useAuthorization()
@@ -35,7 +37,7 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
         return null
     }
 
-    if (permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckLevel)) {
+    if (permissionCheckCreatePermission && !CheckPermission(userInfo, permissionCheckCreatePermission, permissionCheckCreateLevel)) {
         return null
     }
 
@@ -56,4 +58,4 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
 }
 
 // Экспортируем компонент
-export default ListPageCreationButton
+export default withPageProps(ListPageCreationButton)

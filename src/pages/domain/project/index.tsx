@@ -15,6 +15,9 @@ ListingPage.getInitialProps = async () => ({
     header: "pages.project.list.header",
     entityListSchema: "project",
     permissionCheckEditPermission: "UPDATE_PROJECTS",
+    permissionCheckEditLevel: "project",
+    permissionCheckCreatePermission: "UPDATE_PROJECTS",
+    permissionCheckCreateLevel: "domain",
     pageMenuType: "domain"
 })
 

@@ -6,7 +6,6 @@ import {editSchemaConfiguration} from "../../settings/pages";
 import {useRouter} from "next/router";
 import {Box, Fab, Grid, Tooltip} from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {useTranslation} from "react-i18next";
@@ -61,22 +60,6 @@ const useActionButtons = () => {
         return router.replace(url.href, url.as)
     }
 
-    // Обработка сохранения страницы с копированием элемента
-    const handleSaveWithCopy = async () => {
-        if (isActionInProgress) {
-            return
-        }
-
-        const newPrimaryKey = await onSave(true)
-        if (!newPrimaryKey) {
-            return
-        }
-
-        const url = editPageUrlGenerator(newPrimaryKey)
-
-        return router.replace(url.href, url.as)
-    }
-
     // Обработка закрытия страницы
     const handleClose = () => {
         if (isActionInProgress) {
@@ -92,7 +75,7 @@ const useActionButtons = () => {
             return
         }
 
-        const newPrimaryKey = await onSave(true)
+        const newPrimaryKey = await onSave()
         if (!newPrimaryKey) {
             return
         }
@@ -103,7 +86,6 @@ const useActionButtons = () => {
     return {
         isActionInProgress,
         handleSave,
-        handleSaveWithCopy,
         handleClose,
         handleSaveAndClose
     }
@@ -121,14 +103,11 @@ const ActionButtons: FC = () => {
                 return
             }
 
-            const {handleClose, handleSaveWithCopy, handleSaveAndClose, handleSave} = actionsCtx
+            const {handleClose, handleSaveAndClose, handleSave} = actionsCtx
             switch (true) {
                 case event.ctrlKey && event.shiftKey && ["x", "ч"].includes(event.key.toLowerCase()):
                     event.preventDefault()
                     return handleClose()
-                case event.ctrlKey && event.shiftKey && ["c", "с"].includes(event.key.toLowerCase()):
-                    event.preventDefault()
-                    return handleSaveWithCopy()
                 case event.ctrlKey && event.shiftKey && ["s", "ы"].includes(event.key.toLowerCase()):
                     event.preventDefault()
                     return handleSaveAndClose()
@@ -152,7 +131,6 @@ const ActionButtons: FC = () => {
     const {
         isActionInProgress,
         handleClose,
-        handleSaveWithCopy,
         handleSaveAndClose,
         handleSave,
     } = actionsCtx
@@ -170,20 +148,6 @@ const ActionButtons: FC = () => {
                                 onClick={handleSave}
                             >
                                 <SaveIcon/>
-                            </Fab>
-                        </div>
-                    </Tooltip>
-                </Grid>
-                <Grid item>
-                    <Tooltip placement="top" title={t(`entity-edit.actions.copy`) as string}>
-                        <div>
-                            <Fab
-                                size="medium"
-                                disabled={isActionInProgress}
-                                color="primary"
-                                onClick={handleSaveWithCopy}
-                            >
-                                <ContentCopyIcon/>
                             </Fab>
                         </div>
                     </Tooltip>
