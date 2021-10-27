@@ -35,7 +35,7 @@ export class StringValueProcessor implements SchemaValueConverterProcessor {
             return `"null"`
         }
 
-        return `"${value}"`;
+        return `"${`${value}`.replace(`"`, `\\"`)}"`;
     }
 
     /**

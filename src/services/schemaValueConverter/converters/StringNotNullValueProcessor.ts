@@ -39,7 +39,7 @@ export class StringNotNullValueProcessor implements SchemaValueConverterProcesso
             return ``
         }
 
-        return `"${value}"`;
+        return `"${`${value}`.replace(`"`, `\\"`)}"`;
     }
 
     /**
