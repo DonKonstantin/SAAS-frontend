@@ -2,8 +2,7 @@ import React, {FC} from "react";
 import {EditFieldProperties} from "../../../settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
 import {distinctUntilChanged} from "rxjs";
-import {IconButton, InputAdornment, MenuItem, TextField, Tooltip, Typography} from "@mui/material";
-import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import {InputAdornment, MenuItem, TextField, Typography} from "@mui/material";
 
 // Компонент поля Enum
 const EnumField: FC<EditFieldProperties> = props => {
@@ -27,7 +26,6 @@ const EnumField: FC<EditFieldProperties> = props => {
         values,
         validation,
         onChangeFieldValue,
-        onResetFieldValue,
     } = fieldData
 
     if (!isVisible(values) || !enumData) {
@@ -53,24 +51,9 @@ const EnumField: FC<EditFieldProperties> = props => {
             InputProps={{
                 startAdornment: IconComponent ? (
                     <InputAdornment position="start">
-                        <IconComponent />
+                        <IconComponent/>
                     </InputAdornment>
                 ) : undefined,
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <Tooltip title={t(`entity-edit.fields.enum.restore-default`) as string}>
-                            <IconButton
-                                size="small"
-                                sx={{mr: 3}}
-                                color={!!validation ? `error` : `warning`}
-                                onClick={onResetFieldValue}
-                                edge="end"
-                            >
-                                <RestoreOutlinedIcon fontSize="small"/>
-                            </IconButton>
-                        </Tooltip>
-                    </InputAdornment>
-                )
             }}
         >
             <MenuItem value="">

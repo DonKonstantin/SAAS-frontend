@@ -2,8 +2,7 @@ import React, {FC} from "react";
 import {EditFieldProperties} from "../../../settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
 import {distinctUntilChanged} from "rxjs";
-import {IconButton, InputAdornment, TextField, Tooltip} from "@mui/material";
-import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import {InputAdornment, TextField} from "@mui/material";
 
 // Поле ввода числового значения
 const FloatField: FC<EditFieldProperties> = props => {
@@ -26,7 +25,6 @@ const FloatField: FC<EditFieldProperties> = props => {
         validation,
         fieldConfig: {title, isVisible = () => true, startIcon: IconComponent, validation: validators = []},
         onChangeFieldValue,
-        onResetFieldValue
     } = fieldData
 
     if (!isVisible(values)) {
@@ -59,23 +57,9 @@ const FloatField: FC<EditFieldProperties> = props => {
             InputProps={{
                 startAdornment: IconComponent ? (
                     <InputAdornment position="start">
-                        <IconComponent />
+                        <IconComponent/>
                     </InputAdornment>
                 ) : undefined,
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <Tooltip title={t(`entity-edit.fields.input.restore-default`) as string}>
-                            <IconButton
-                                size="small"
-                                color={!!validation ? `error` : `warning`}
-                                onClick={onResetFieldValue}
-                                edge="end"
-                            >
-                                <RestoreOutlinedIcon fontSize="small"/>
-                            </IconButton>
-                        </Tooltip>
-                    </InputAdornment>
-                )
             }}
         />
     )

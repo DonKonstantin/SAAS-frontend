@@ -1,7 +1,6 @@
 import React, {FC} from "react";
 import {distinctUntilChanged} from "rxjs";
-import {IconButton, InputAdornment, MenuItem, TextField, Tooltip} from "@mui/material";
-import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import {InputAdornment, MenuItem, TextField} from "@mui/material";
 import {EditFieldProperties} from "../../settings/pages/system/edit";
 import useEntityEditField from "../EditPage/Fields/useEntityEditField";
 import {LoaderQueryResponse} from "../../services/loaders/allPermissionCategories/LoaderQuery";
@@ -28,7 +27,6 @@ const PermissionCategorySelector: FC<EditFieldProperties> = props => {
         validation,
         additionData,
         onChangeFieldValue,
-        onResetFieldValue,
     } = fieldData
 
     const categories = additionData[fieldCode] as LoaderQueryResponse
@@ -55,24 +53,9 @@ const PermissionCategorySelector: FC<EditFieldProperties> = props => {
             InputProps={{
                 startAdornment: IconComponent ? (
                     <InputAdornment position="start">
-                        <IconComponent />
+                        <IconComponent/>
                     </InputAdornment>
                 ) : undefined,
-                endAdornment: (
-                    <InputAdornment position="end">
-                        <Tooltip title={t(`entity-edit.fields.permission-category-selector.restore-default`) as string}>
-                            <IconButton
-                                size="small"
-                                sx={{mr: 3}}
-                                color={!!validation ? `error` : `warning`}
-                                onClick={onResetFieldValue}
-                                edge="end"
-                            >
-                                <RestoreOutlinedIcon fontSize="small"/>
-                            </IconButton>
-                        </Tooltip>
-                    </InputAdornment>
-                )
             }}
         >
             {categories.categories.map(category => (
