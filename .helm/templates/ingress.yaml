@@ -47,6 +47,8 @@ metadata:
     cert-manager.io/issue-temporary-certificate: "true"
     acme.cert-manager.io/http01-edit-in-place: "true"
     traefik.ingress.kubernetes.io/router.middlewares: {{ .Release.Namespace }}-{{ .Chart.Name }}-headers-middleware@kubernetescrd, {{ .Release.Namespace }}-{{ .Chart.Name }}-buffering-middleware@kubernetescrd
+    ingress.kubernetes.io/custom-response-headers: |
+      Cache-Control: no-cache, no-store, must-revalidate
 spec:
   tls:
     - hosts:
