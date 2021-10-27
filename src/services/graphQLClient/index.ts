@@ -11,7 +11,6 @@ import {MainClient} from "./MainClient";
 import {SubscriptionClient} from "subscriptions-transport-ws";
 import {getAuthorizationToken} from "../../context/AuthorizationContext";
 
-
 // Генерация ссылки для клиента GraphQL
 const getLink: { (): ApolloLink } = () => {
     const {publicRuntimeConfig, serverRuntimeConfig} = getConfig();
@@ -24,7 +23,7 @@ const getLink: { (): ApolloLink } = () => {
 };
 
 // Генерация ссылки для WS для клиента GraphQL
-const getWsLink: { (token?: string): ApolloLink } = () => {
+const getWsLink: { (token?: string): ApolloLink } = token => {
     const {publicRuntimeConfig, serverRuntimeConfig} = getConfig();
     const wsGraphQlUrl = clientServerDetector().isServer() ? serverRuntimeConfig.env.SSR_GRAPHQL_WS_SERVER : publicRuntimeConfig.wsGraphQlEndpoint;
 
@@ -34,7 +33,7 @@ const getWsLink: { (token?: string): ApolloLink } = () => {
             reconnect: true,
             lazy: true,
             connectionParams: {
-                authToken: getAuthorizationToken(),
+                authToken: getAuthorizationToken(token),
             },
         },
         webSocketImpl: clientServerDetector().isServer() ? ws : undefined,
@@ -42,9 +41,9 @@ const getWsLink: { (token?: string): ApolloLink } = () => {
 };
 
 // Фабрика клиента
-export const graphQLClient: { (): GraphQLClient } = () => {
+export const graphQLClient: { (token?: string): GraphQLClient } = token => {
     const mainLink = getLink();
-    const wsLink = getWsLink();
+    const wsLink = getWsLink(token);
 
     return new MainClient(
         new Client(
@@ -86,6 +85,6 @@ export const graphQLClient: { (): GraphQLClient } = () => {
                 }
             }),
         ),
-        getAuthorizationToken(),
+        getAuthorizationToken(token),
     )
 };

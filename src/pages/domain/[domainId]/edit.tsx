@@ -15,7 +15,7 @@ EditPageContent.getInitialProps = async ({query}): Promise<PageWithEntityEdit> =
     title: "pages.domain.edit.title",
     header: "pages.domain.edit.header",
     entityEditSchema: "domain",
-    entityEditPrimaryKey: query?.entityId as string,
+    entityEditPrimaryKey: query?.domainId as string,
     permissionCheckPermission: "UPDATE_DOMAINS",
     permissionCheckLevel: "domain",
 })

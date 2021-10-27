@@ -35,11 +35,15 @@ const SimpleMainMenuItem: FC<MainMenuItemProps> = props => {
             return
         }
 
-        router.push(link.href, link.as)
+        const {href, as} = typeof link === "function" ? link() : link
+
+        return router.push(href, as)
     }
 
     const routes = [router.asPath, router.pathname]
-    const isActive = link ? routes.includes(link.href) || routes.includes(link?.as || "-") : false
+    const {href = "-", as = "-"} = typeof link === "function" ? link() : (link || {})
+
+    const isActive = link ? routes.includes(href) || routes.includes(as) : false
     return (
         <ListItem button onClick={onClickHandler}
                   className={clsx("left-menu-item", "can-activate", {"is-active": isActive})}>

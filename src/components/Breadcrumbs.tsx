@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FC, useRef} from "react";
-import {emphasize, styled} from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
 import {breadcrumbs} from "../settings/breadcrumbs";
 import {useRouter} from "next/router";
@@ -8,25 +8,14 @@ import {useTranslation} from "react-i18next";
 import {Breadcrumbs as BreadcrumbsComp} from "@mui/material";
 import {Breadcrumb} from "../settings/breadcrumbs/type";
 import {withPageProps} from "../layouts/PagePropsProvider";
+import {useAuthorization} from "../context/AuthorizationContext";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 // Стилизованный компонент хлебной крошки
 const StyledBreadcrumb = styled(Chip)(({theme}) => {
-    const backgroundColor =
-        theme.palette.mode === 'light'
-            ? theme.palette.grey[100]
-            : theme.palette.grey[800];
     return {
-        backgroundColor,
         height: theme.spacing(3),
-        color: theme.palette.text.primary,
         fontWeight: theme.typography.fontWeightRegular,
-        '&:hover, &:focus': {
-            backgroundColor: emphasize(backgroundColor, 0.06),
-        },
-        '&:active': {
-            boxShadow: theme.shadows[1],
-            backgroundColor: emphasize(backgroundColor, 0.12),
-        },
     };
 }) as typeof Chip;
 
@@ -35,22 +24,28 @@ const BreadcrumbItem: FC<Breadcrumb> = props => {
     const router = useRouter()
     const {t} = useTranslation()
 
-    const {link, breadcrumb, icon: IconComponent} = props
+    const {link, breadcrumb, icon: IconComponent, color = "default"} = props
     const linkData = typeof link === "function"
         ? link(props)
         : link
 
+    const title = typeof breadcrumb === "function" ? breadcrumb() : breadcrumb
     return (
         <StyledBreadcrumb
             component="a"
             href={linkData?.href || "#"}
-            label={t(breadcrumb) as string}
+            label={t(title) as string}
             icon={!IconComponent ? undefined : (
                 <IconComponent fontSize={"small"}/>
             )}
+            color={color}
             onClick={event => {
                 event.preventDefault()
                 event.stopPropagation()
+
+                if (!linkData) {
+                    return
+                }
 
                 return router.push(linkData.href, linkData.as)
             }}
@@ -65,6 +60,7 @@ const BreadcrumbItemWithPageProps = withPageProps(BreadcrumbItem)
 const Breadcrumbs: FC = () => {
     const breadcrumbsList = useRef(breadcrumbs())
     const router = useRouter()
+    const {} = useAuthorization()
 
     const homeCrumb = breadcrumbsList.current["/"]
     if (!homeCrumb) {
@@ -73,7 +69,10 @@ const Breadcrumbs: FC = () => {
 
     const pathNames = router.pathname.split('/').filter((x) => x);
     return (
-        <BreadcrumbsComp aria-label="breadcrumb">
+        <BreadcrumbsComp
+            separator={<NavigateNextIcon fontSize="small" />}
+            aria-label="breadcrumb"
+        >
             <BreadcrumbItem {...homeCrumb} />
             {pathNames.map((_, index) => {
                 const to = `/${pathNames.slice(0, index + 1).join('/')}`

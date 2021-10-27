@@ -43,6 +43,7 @@ const useActionButtons = () => {
 
     const {primaryKey} = entityData
     const {listPageUrl, editPageUrlGenerator} = config
+    const {href, as} = typeof listPageUrl === "function" ? listPageUrl() : listPageUrl
 
     // Обработка сохранения страницы
     const handleSave = async () => {
@@ -66,7 +67,7 @@ const useActionButtons = () => {
             return
         }
 
-        return router.push(listPageUrl.href, listPageUrl.as)
+        return router.push(href, as)
     }
 
     // Обработка сохранения элемента и закрытия страницы
@@ -80,7 +81,7 @@ const useActionButtons = () => {
             return
         }
 
-        return router.push(listPageUrl.href, listPageUrl.as)
+        return router.push(href, as)
     }
 
     return {

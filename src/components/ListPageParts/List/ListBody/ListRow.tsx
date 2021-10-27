@@ -89,6 +89,7 @@ const ListRow: FC<ListRowProps> = props => {
                             value={value}
                             configuration={field}
                             rowValues={row.columnValues}
+                            primaryKeyValue={row.primaryKeyValue}
                         />
                     )
                 }
@@ -101,6 +102,7 @@ const ListRow: FC<ListRowProps> = props => {
                         fieldType={field.fieldType.type}
                         configuration={field}
                         rowValues={row.columnValues}
+                        primaryKeyValue={row.primaryKeyValue}
                     />
                 )
             })}

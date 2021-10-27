@@ -4,6 +4,7 @@ import {ListFieldsConfiguration, RelationConfig,} from "../../../services/listDa
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import CustomActiveCell from "../../../components/ListPageCustom/CustomActiveCell";
 import ProjectSelectCell from "../../../components/ListPageCustom/ProjectSelectCell";
+import {getCurrentState} from "../../../context/AuthorizationContext";
 
 export class ProjectListingConfiguration implements ListPageConfiguration<"project"> {
     filter: FilterFieldsConfiguration<"project"> = {
@@ -12,16 +13,6 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
             filterType: "Like",
             schema: "project",
             title: "pages.project.list.filters.name"
-        },
-        parent: {
-            relationConfiguration: {
-                schema: "domain",
-                visibleFields: ["name"]
-            },
-            field: "parent",
-            filterType: "RelationAutocompleteSelector",
-            schema: "project",
-            title: "pages.project.list.filters.parent",
         },
         active: {
             field: "active",
@@ -72,9 +63,18 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
     schema: "project" = "project";
     elementsPerPage: number = 25;
     disableMultiChoose: boolean = true;
-    addPageUrl: PageUrl = {href: "/domain/project/add"};
-    editPageUrl: EditPageLinkGenerator = pk => ({
-        href: "/domain/project/edit/[entityId]",
-        as: `/domain/project/edit/${pk}`
-    });
+    addPageUrl: {(): PageUrl} = () => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/project/add",
+            as: `/domain/${domain}/project/add`
+        }
+    };
+    editPageUrl: EditPageLinkGenerator = pk => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/project/[projectId]/edit",
+            as: `/domain/${domain}/project/${pk}/edit`
+        }
+    };
 }

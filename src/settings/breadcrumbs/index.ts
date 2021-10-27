@@ -1,5 +1,6 @@
 import {BreadcrumbsStructure} from "./type";
 import HomeIcon from '@mui/icons-material/Home';
+import {getCurrentState} from "../../context/AuthorizationContext";
 
 // Коллекция всех страниц хлебных крошек
 export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
@@ -77,27 +78,60 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             breadcrumb: "pages.domain.add.breadcrumb",
             link: {href: "/domain/add"}
         },
-        "/domain/edit/[entityId]": {
+        "/domain/[domainId]": {
+            breadcrumb: () => {
+                const {domain, domains} = getCurrentState()
+                const currentDomain = domains.find(d => d.id === domain)
+
+                return currentDomain?.name || "Unknown"
+            },
+            color: "success",
+        },
+        "/domain/[domainId]/edit": {
             breadcrumb: "pages.domain.edit.breadcrumb",
             link: ({entityEditPrimaryKey}) => ({
-                href: "/domain/edit/[entityId]",
-                as: `/domain/edit/${entityEditPrimaryKey}`
+                href: "/domain/[domainId]/edit",
+                as: `/domain/${entityEditPrimaryKey}/edit`
             })
         },
-        "/domain/project": {
+        "/domain/[domainId]/project": {
             breadcrumb: "pages.project.list.breadcrumb",
-            link: {href: "/domain/project"}
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project",
+                    as: `/domain/${domain}/project`,
+                }
+            }
         },
-        "/domain/project/add": {
+        "/domain/[domainId]/project/add": {
             breadcrumb: "pages.project.add.breadcrumb",
-            link: {href: "/domain/project/add"}
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/add",
+                    as: `/domain/${domain}/project/add`,
+                }
+            }
         },
-        "/domain/project/edit/[entityId]": {
+        "/domain/[domainId]/project/[projectId]": {
+            breadcrumb: () => {
+                const {project, projects} = getCurrentState()
+                const currentProject = projects.find(p => p.id === project)
+
+                return currentProject?.name || "Unknown"
+            },
+            color: "warning",
+        },
+        "/domain/[domainId]/project/[projectId]/edit": {
             breadcrumb: "pages.project.edit.breadcrumb",
-            link: ({entityEditPrimaryKey}) => ({
-                href: "/domain/project/edit/[entityId]",
-                as: `/domain/project/edit/${entityEditPrimaryKey}`
-            })
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/edit",
+                    as: `/domain/${domain}/project/${entityEditPrimaryKey}/edit`,
+                }
+            }
         },
     }
 }

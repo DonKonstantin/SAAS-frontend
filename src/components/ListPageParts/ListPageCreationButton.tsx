@@ -41,7 +41,8 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
         return null
     }
 
-    const {addPageUrl: {href, as}} = config
+    const {addPageUrl} = config
+    const {href, as} = typeof addPageUrl === "function" ? addPageUrl() : addPageUrl
 
     // Обработка перехода на страницу создания элемента
     const onClick = () => {

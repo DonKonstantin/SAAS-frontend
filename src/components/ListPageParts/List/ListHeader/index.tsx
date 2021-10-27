@@ -81,6 +81,7 @@ const ListHeader: FC<ListHeaderProps> = props => {
                             schema={schema}
                             fieldType={field.fieldType.type}
                             configuration={field}
+                            primaryKeyValue={null}
                         />
                     )
                 })}

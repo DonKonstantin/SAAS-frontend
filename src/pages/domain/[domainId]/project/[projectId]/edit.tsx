@@ -1,9 +1,8 @@
 import React from 'react';
 import {NextPage} from "next";
-import EditPage from "../../../components/EditPage";
-import {PageWithEntityEdit} from "../../../components/EditPage/type";
+import EditPage from "../../../../../components/EditPage";
 
-// Компонент страницы создания
+// Компонент страницы редактирования
 const EditPageContent: NextPage = () => {
     return (
         <EditPage/>
@@ -11,12 +10,13 @@ const EditPageContent: NextPage = () => {
 }
 
 // Экспортируем основные параметры страницы
-EditPageContent.getInitialProps = async (): Promise<PageWithEntityEdit> => ({
-    title: "pages.project.add.title",
-    header: "pages.project.add.header",
+EditPageContent.getInitialProps = async ({query}) => ({
+    title: "pages.project.edit.title",
+    header: "pages.project.edit.header",
     entityEditSchema: "project",
+    entityEditPrimaryKey: query?.projectId as string,
     permissionCheckPermission: "UPDATE_PROJECTS",
-    permissionCheckLevel: "domain",
+    permissionCheckLevel: "project",
     pageMenuType: "domain",
 })
 

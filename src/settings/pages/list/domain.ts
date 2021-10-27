@@ -51,8 +51,8 @@ export class DomainListingConfiguration implements ListPageConfiguration<"domain
     elementsPerPage: number = 25;
     disableMultiChoose: boolean = true;
     editPageUrl: EditPageLinkGenerator = pk => ({
-        href: "/domain/edit/[entityId]",
-        as: `/domain/edit/${pk}`
+        href: "/domain/[domainId]/edit",
+        as: `/domain/${pk}/edit`
     });
     addPageUrl: PageUrl = {href: "/domain/add"};
 }

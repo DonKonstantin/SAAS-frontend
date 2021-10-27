@@ -10,7 +10,7 @@ import {useRouter} from "next/router";
 
 // Компонент вывода простой ячейки
 const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
-    const {schema, configuration, value} = props;
+    const {schema, configuration, value, primaryKeyValue} = props;
     const {
         align = columnDirection(schema, configuration),
         width,
@@ -23,9 +23,12 @@ const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
         event.preventDefault()
         event.stopPropagation()
 
-        setDomain(value.value)
+        setDomain(primaryKeyValue)
 
-        return router.push("/domain/project")
+        return router.push(
+            `/domain/[domainId]/project`,
+            `/domain/${primaryKeyValue}/project`
+        )
     }
 
     return (

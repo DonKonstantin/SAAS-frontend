@@ -111,7 +111,7 @@ export interface EditPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     schema: T                                // Схема, к которой относится конфигурация
     storeSchema?: keyof Schemas              // Схема в которую необходимо записывать данные, если она не совпадает с той из которой забираем.
     groups: EditFormGroup<T>[]               // Группы полей формы редактирования
-    listPageUrl: PageUrl                     // Ссылка на страницу листинга сущностей
+    listPageUrl: PageUrl | {(): PageUrl}                     // Ссылка на страницу листинга сущностей
     editPageUrlGenerator: { (primaryKey: any): PageUrl }   // Генератор ссылки на страницу редактирования сущности
     isSaveEnabled: boolean                   // Статус кнопки сохранения
     isCopyEnabled: boolean                   // Статус кнопки копирования сущности

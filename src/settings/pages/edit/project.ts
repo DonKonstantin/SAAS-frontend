@@ -7,6 +7,8 @@ import DomainsSelector from "../../../components/EditPageCustomFields/DomainsSel
 import {ValueExistsValidator} from "../../../services/validation/validators/valueExists";
 import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsAndProjects";
 import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
+import {getCurrentState, onReloadDomainsAndProjects} from "../../../context/AuthorizationContext";
+import HiddenGroup from "../../../components/EditPageCustomFields/HiddenGroup";
 
 export class ProjectEditPageConfig implements EditPageConfiguration<"project"> {
     groups: EditFormGroup<"project">[] = [
@@ -36,30 +38,47 @@ export class ProjectEditPageConfig implements EditPageConfiguration<"project"> {
         },
         {
             sizes: {xs: 12},
+            component: HiddenGroup,
             fields: [
                 {
                     field: "parent",
                     title: "pages.project.edit.fields.parent",
                     size: {xs: 12},
-                    defaultValue: "",
+                    defaultValue: async () => {
+                        const {domain} = getCurrentState()
+                        return domain
+                    },
                     validation: [
                         ValueExistsValidator({errorMessage: "pages.project.edit.fields.parent-error"}),
                     ],
                     component: DomainsSelector,
                     additionData: async () => {
                         return await allDomainsAndProjectsLoader().Load()
+                    },
+                    onAfterSave: async () => {
+                        // После сохранения необходимо перезагрузить проекты
+                        await onReloadDomainsAndProjects()
                     }
                 },
             ]
         },
     ];
     schema: "project" = "project";
-    listPageUrl: PageUrl = {href: "/domain/project"};
+    listPageUrl: { (): PageUrl } = () => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/project",
+            as: `/domain/${domain}/project`
+        }
+    };
     isCopyEnabled: boolean = true;
     isSaveAndCloseEnabled: boolean = true;
     isSaveEnabled: boolean = true;
-    editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => ({
-        href: "/domain/project/edit/[entityId]",
-        as: `/domain/project/edit/${pk}`
-    });
+    editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/project/[projectId]/edit",
+            as: `/domain/${domain}/project/${pk}/edit`
+        }
+    };
 }

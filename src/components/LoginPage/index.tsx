@@ -8,6 +8,8 @@ export type LoginPageProps = {
     isNeedShowChangePassword?: boolean
     isPrivate?: boolean
     children: React.ReactNode
+    domainId?: string
+    projectId?: string
 }
 
 // Компонент вывода страницы авторизации/восстановления пароля
@@ -17,6 +19,8 @@ const LoginPage: FC<LoginPageProps> = props => {
         changePasswordToken,
         isNeedShowChangePassword,
         children,
+        domainId,
+        projectId,
     } = props;
     const router = useRouter()
 
@@ -26,6 +30,8 @@ const LoginPage: FC<LoginPageProps> = props => {
 
     return (
         <LoginPageForm
+            domainId={domainId}
+            projectId={projectId}
             changePasswordToken={changePasswordToken}
             isNeedShowChangePassword={isNeedShowChangePassword}
         >

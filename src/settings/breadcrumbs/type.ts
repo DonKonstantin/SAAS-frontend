@@ -5,8 +5,9 @@ import {PageUrl} from "../pages/system/list";
 // Тип, описывающий хлебную крошку
 export type Breadcrumb = {
     icon?: OverridableComponent<SvgIconTypeMap>
-    breadcrumb: string
-    link: PageUrl | { (pageProps: any): PageUrl }
+    breadcrumb: string | {(): string}
+    link?: PageUrl | { (pageProps: any): PageUrl }
+    color?: 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
 }
 
 // Структура страниц с хлебными крошками

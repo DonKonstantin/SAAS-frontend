@@ -13,6 +13,7 @@ export interface ListFieldProperties<T> {
     value: T                                            // Текущее значение поля
     rowValues: ListFieldRowColumnValues<keyof Schemas>  // Значение полей текущей строки
     configuration: ListFieldConfiguration<any, any>     // Конфигурация поля
+    primaryKeyValue: any
 }
 
 // Доступные системные типы полей

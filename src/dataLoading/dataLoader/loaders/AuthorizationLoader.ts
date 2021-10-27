@@ -1,5 +1,5 @@
 import {LoaderInterface} from "./interface";
-import {initializeContextData} from "../../../context/AuthorizationContext";
+import {initializeContextData, setDomain, setProject} from "../../../context/AuthorizationContext";
 import Cookies from "universal-cookie";
 
 // Тип, описывающий итоговые данные, загружаемые текущим загрузчиком
@@ -21,8 +21,9 @@ export class AuthorizationLoader implements LoaderInterface<WithAuthorizationLoa
      * В качестве результата возвращается стандартный результат для getServerSideProps
      *
      */
-    async LoadData(): Promise<WithAuthorizationLoadedData> {
+    async LoadData(_: any, baseParameters: any): Promise<WithAuthorizationLoadedData> {
         let token = ""
+        const {domainId, projectId} = baseParameters
 
         const cookie = new Cookies();
         if (typeof cookie.get('token') === "string") {
@@ -31,6 +32,14 @@ export class AuthorizationLoader implements LoaderInterface<WithAuthorizationLoa
 
         if (0 !== token.length) {
             await initializeContextData(token)
+
+            if (domainId) {
+                setDomain(domainId)
+            }
+
+            if (projectId) {
+                setProject(projectId)
+            }
         }
 
         return {

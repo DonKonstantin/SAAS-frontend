@@ -10,6 +10,8 @@ export type LoginPageFormProps = WithAuthorization<{
     changePasswordToken?: string
     isNeedShowChangePassword?: boolean
     children: React.ReactNode
+    domainId?: string
+    projectId?: string
 }>;
 
 // Компонент вывода формы авторизации/восстановления пароля
@@ -17,18 +19,40 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
     const {
         authToken,
         userInfo,
+        domainId,
+        projectId,
         changePasswordToken = "",
         isNeedShowChangePassword = false,
         initializeContextBus,
         onRedirectToUserPage,
         isNeedRedirectAfterAuth,
         children,
+        setDomain,
+        setProject,
     } = props;
     const router = useRouter()
 
     useEffect(() => {
         return initializeContextBus()
     }, [])
+
+    // Пробрасываем изменение домена, переданного через параметры URL
+    useEffect(() => {
+        if (!domainId) {
+            return
+        }
+
+        setDomain(domainId)
+    }, [domainId])
+
+    // Пробрасываем изменение проекта, переданного через параметры URL
+    useEffect(() => {
+        if (!projectId) {
+            return
+        }
+
+        setProject(projectId)
+    }, [projectId])
 
     useEffect(() => {
         if (!userInfo) {
@@ -39,7 +63,7 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
             const domains = userInfo.roles.filter(r => r.level === "domain")
 
             if (domains.length === 1) {
-                return router.push("/domain/project")
+                return router.push("/domain/[domainId]/project", `/domain/${domains[0].id}/project`)
             }
 
             return router.push("/domain")

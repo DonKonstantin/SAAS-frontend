@@ -4,6 +4,7 @@ import {MinimalLengthValidator} from "../../../services/validation/validators/mi
 import StringField from "../../../components/EditPage/Fields/StringField";
 import CheckboxField from "../../../components/EditPage/Fields/CheckboxField";
 import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
+import {onReloadDomainsAndProjects} from "../../../context/AuthorizationContext";
 
 export class DomainEditPageConfig implements EditPageConfiguration<"domain"> {
     groups: EditFormGroup<"domain">[] = [
@@ -19,7 +20,11 @@ export class DomainEditPageConfig implements EditPageConfiguration<"domain"> {
                         MinimalLengthValidator({minimalLength: 3}),
                         UniqueValueInColumnValidator({schema: "domain", field: "name"}),
                     ],
-                    component: StringField
+                    component: StringField,
+                    onAfterSave: async () => {
+                        // После сохранения необходимо перезагрузить домены
+                        await onReloadDomainsAndProjects()
+                    }
                 },
                 {
                     field: "active",
@@ -38,7 +43,7 @@ export class DomainEditPageConfig implements EditPageConfiguration<"domain"> {
     isSaveAndCloseEnabled: boolean = true;
     isSaveEnabled: boolean = true;
     editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => ({
-        href: "/domain/edit/[entityId]",
-        as: `/domain/edit/${pk}`
+        href: "/domain/[domainId]/edit",
+        as: `/domain/${pk}/edit`
     });
 }

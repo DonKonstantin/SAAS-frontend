@@ -6,6 +6,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import DvrIcon from '@mui/icons-material/Dvr';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import StorageIcon from '@mui/icons-material/Storage';
+import {getCurrentState} from "../../context/AuthorizationContext";
 
 // Список пунктов меню уровня Реалм
 export const RealmMenuItems = (): MenuItem[] => ([
@@ -85,7 +86,13 @@ export const DomainMenuItems = (): MenuItem[] => ([
         icon: ArrowBackIosIcon
     },
     {
-        link: {href: "/domain/project"},
+        link: () => {
+            const {domain} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project",
+                as: `/domain/${domain}/project`,
+            }
+        },
         title: "UI.menu.left-menu.items.projects",
     },
     {
@@ -109,12 +116,24 @@ export const DomainMenuItems = (): MenuItem[] => ([
 // Список пунктов меню уровня Проект
 export const ProjectMenuItems = (): MenuItem[] => ([
     {
-        link: {href: "/domain/project"},
+        link: () => {
+            const {domain} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project",
+                as: `/domain/${domain}/project`,
+            }
+        },
         title: "UI.menu.left-menu.items.projects-list",
         icon: ArrowBackIosIcon
     },
     {
-        link: {href: "/domain/project/media"},
+        link: () => {
+            const {domain, project} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project/[projectId]/media",
+                as: `/domain/${domain}/project/${project}/media`,
+            }
+        },
         title: "UI.menu.left-menu.items.playlists",
     },
     {

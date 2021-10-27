@@ -1,14 +1,12 @@
 import {OverridableComponent} from "@mui/types";
 import {SvgIconTypeMap} from "@mui/material";
+import {PageUrl} from "../../pages/system/list";
 
 /**
  * Пункт меню
  */
 export type MenuItem = {
-    link?: {
-        href: string,
-        as?: string,
-    }
+    link?: PageUrl | {(): PageUrl}
     onClick?: {(): void}
     title: string
     permission?: string

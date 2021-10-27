@@ -11,6 +11,7 @@ const ListPageInitializer: FC<ListPageInitializerProps> = props => {
     const {
         initializeSubscriptions,
         entityListSchema,
+        entityListAdditionFilter,
         setSchema,
     } = props
 
@@ -18,7 +19,7 @@ const ListPageInitializer: FC<ListPageInitializerProps> = props => {
     useEffect(() => {
         const unsubscribe = initializeSubscriptions()
         if (entityListSchema) {
-            setSchema(entityListSchema)
+            setSchema(entityListSchema, entityListAdditionFilter)
         }
 
         return unsubscribe
@@ -30,7 +31,7 @@ const ListPageInitializer: FC<ListPageInitializerProps> = props => {
             return
         }
 
-        setSchema(entityListSchema)
+        setSchema(entityListSchema, entityListAdditionFilter)
     }, [entityListSchema])
 
     return null

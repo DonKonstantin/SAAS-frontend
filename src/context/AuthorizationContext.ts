@@ -8,6 +8,8 @@ import getConfig from "next/config";
 import {clientServerDetector} from "../services/clientServerDetector";
 import React, {useEffect, useState} from "react";
 import i18n from "i18next";
+import {allDomainsAndProjectsLoader} from "../services/loaders/allDomainsAndProjects";
+import {DomainData, ProjectData} from "../services/loaders/allDomainsAndProjects/LoaderQuery";
 
 // Контекст шагов импорта
 export type AuthorizationContext = {
@@ -21,6 +23,9 @@ export type AuthorizationContext = {
 
     domain: string  // Выбранный пользователем домен
     project: string // Выбранный пользователем проект
+
+    domains: DomainData[]   // Все, доступные пользователю, домены
+    projects: ProjectData[] // Все, доступные пользователю, проекты
 };
 
 // События, происходящие с контекстом
@@ -35,7 +40,7 @@ type AuthorizationActions = {
     onChangePasswordByResetToken: { (token: string, newPassword: string): Promise<void> }
 
     // Получение токена авторизации
-    getAuthorizationToken: { (): string }
+    getAuthorizationToken: { (token?: string): string }
 
     // Обработка разлогинивания пользователя
     onLogout: { (): void }
@@ -63,6 +68,9 @@ type AuthorizationActions = {
 
     // Обработка перехода на какие-то страницы при наличии флага редиректа
     onRedirectToUserPage: {(callback: {(): void}): void}
+
+    // Обработка перезагрузки данных по доменам и проектам, доступным пользователю
+    onReloadDomainsAndProjects: {(): Promise<void>}
 };
 
 // Свойства контекста по умолчанию
@@ -74,6 +82,8 @@ class DefaultContext implements AuthorizationContext {
     domain: string = "";
     project: string = "";
     isNeedRedirectAfterAuth: boolean = false;
+    domains: DomainData[] = [];
+    projects: ProjectData[] = [];
 }
 
 // Создаем изначальный State
@@ -134,11 +144,33 @@ export const setProject = (project: string) => {
 }
 
 /**
+ * Обработка перезагрузки данных по доменам и проектам, доступным пользователю
+ */
+export const onReloadDomainsAndProjects: AuthorizationActions['onReloadDomainsAndProjects'] = async () => {
+    try {
+        const domainsAndProjects = await allDomainsAndProjectsLoader().Load()
+
+        context$.next({
+            ...context$.getValue(),
+            ...domainsAndProjects,
+        })
+    } catch (e) {
+        notificationsDispatcher().dispatch({
+            message: i18n.t(`Не удалось обновить список доменов и проектов`),
+            type: "error"
+        })
+    }
+}
+
+/**
  * Загрузка данных авторизации пользователя по переданному токену
  * @param token
  */
 const loadAuthorizationData = async (token: string): Promise<AuthorizationContext> => {
-    const userProfile = await authService().GetUserInfo(token)
+    const [userProfile, domainsAndProjects] = await Promise.all([
+        authService().GetUserInfo(token),
+        allDomainsAndProjectsLoader(token).Load(),
+    ])
 
     const domains = userProfile.roles.filter(r => r.level === "domain")
     const projects = userProfile.roles.filter(r => r.level === "project")
@@ -148,6 +180,7 @@ const loadAuthorizationData = async (token: string): Promise<AuthorizationContex
 
     return {
         ...new DefaultContext(),
+        ...domainsAndProjects,
         authToken: token,
         userInfo: userProfile,
         domain: domain,
@@ -202,10 +235,14 @@ const initializeContextBus = () => {
             }
 
             try {
-                const userProfile = await authService().GetUserInfo(token)
+                const [userProfile, domainsAndProjects] = await Promise.all([
+                    authService().GetUserInfo(token),
+                    allDomainsAndProjectsLoader(token).Load(),
+                ])
 
                 context$.next({
                     ...context$.getValue(),
+                    ...domainsAndProjects,
                     authToken: token,
                     userInfo: userProfile,
                 })
@@ -330,7 +367,11 @@ const onLogout = () => {
 /**
  * Получение токена авторизации
  */
-export const getAuthorizationToken = () => {
+export const getAuthorizationToken = (token?: string) => {
+    if (token) {
+        return token
+    }
+
     return context$.getValue().authToken
 };
 
@@ -397,6 +438,7 @@ const actions: AuthorizationActions = {
     setProject,
     setDomain,
     onRedirectToUserPage,
+    onReloadDomainsAndProjects,
 }
 
 /**
