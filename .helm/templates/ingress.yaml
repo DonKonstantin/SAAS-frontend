@@ -20,7 +20,7 @@ spec:
       - "*"
     accessControlAllowOriginList:
       - "*"
-    customResponseHeaders: |
+    customResponseHeaders:
       Cache-Control: no-cache, no-store, must-revalidate
 
 ---
