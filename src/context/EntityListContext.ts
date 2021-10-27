@@ -68,6 +68,9 @@ type EntityListHocActions<T extends keyof Schemas = keyof Schemas> = {
 
     // Подтверждение удаления элементов
     onDeleteSubmit: { (): void }
+
+    // Обработка копирования выбранных элементов
+    onCloneItems: {(items: string[]): void}
 };
 
 // Свойства контекста по умолчанию
@@ -89,6 +92,55 @@ const schemaChangeCtx$ = new Subject<{ schema: keyof Schemas, additionFilter?: {
 
 // Контекст подписки на изменения данных, требующих перезагрузки
 const dataChangeCtx$ = new Subject<ListOfSchema<keyof Schemas>>()
+
+/**
+ * Обработка копирования выбранных элементов
+ * @param items
+ */
+const onCloneItems: EntityListHocActions['onCloneItems'] = async items => {
+    const {data, additionFilter} = context$.getValue()
+    if (!data || 0 === items.length) {
+        return
+    }
+
+    const config = listSchemaConfiguration()[data.schema]
+    if (!config) {
+        return
+    }
+
+    const {onCopyRows} = config
+    if (!onCopyRows) {
+        return
+    }
+
+    context$.next({
+        ...context$.getValue(),
+        isLoading: true,
+    })
+
+    try {
+        await onCopyRows(items)
+
+        notificationsDispatcher().dispatch({
+            message: i18n.t(`Элементы успешно скопированы`),
+            type: "success"
+        })
+
+        context$.next(new DefaultContext())
+
+        fullDataReloadCtx$.next({schema: data.schema, additionFilter})
+    } catch (e) {
+        notificationsDispatcher().dispatch({
+            message: i18n.t(`Не удалось копировать выбранные элементы`),
+            type: "warning"
+        })
+    }
+
+    context$.next({
+        ...context$.getValue(),
+        isLoading: false,
+    })
+}
 
 /**
  * Подтверждение удаления элементов
@@ -121,6 +173,11 @@ const onDeleteSubmit: EntityListHocActions['onDeleteSubmit'] = async () => {
             type: "error"
         })
     }
+
+    context$.next({
+        ...context$.getValue(),
+        isLoading: false,
+    })
 }
 
 /**
@@ -344,11 +401,6 @@ const initializeSubscriptions = () => {
         .subscribe({
             next: async data => {
                 try {
-                    context$.next({
-                        ...context$.getValue(),
-                        isLoading: true,
-                    })
-
                     const loadedData = await listDataLoader().Load(data.currentData.parameters)
 
                     const {data: lastData, ...other} = context$.getValue()
@@ -366,7 +418,7 @@ const initializeSubscriptions = () => {
                             ...lastData,
                             currentData: {
                                 count: loadedData.count || currentData.count,
-                                parameters: loadedData.parameters,
+                                parameters: currentData.parameters,
                                 rows: loadedData.rows,
                                 additionData: loadedData.additionData || currentData.additionData,
                             }
@@ -424,6 +476,7 @@ const actions: EntityListHocActions = {
     onChangeAdditionData,
     onDeleteItems,
     onDeleteSubmit,
+    onCloneItems,
 }
 
 /**

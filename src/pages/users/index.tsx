@@ -1,6 +1,7 @@
 import React from 'react';
 import {NextPage} from "next";
 import ListPage from "../../components/ListPage";
+import {PageWithEntityList} from "../../components/ListPage/types";
 
 // Компонент страницы проекта
 const ListingPage: NextPage = () => {
@@ -10,11 +11,12 @@ const ListingPage: NextPage = () => {
 }
 
 // Экспортируем основные параметры страницы
-ListingPage.getInitialProps = async () => ({
+ListingPage.getInitialProps = async (): Promise<PageWithEntityList> => ({
     title: "pages.users.list.title",
     header: "pages.users.list.header",
     entityListSchema: "user",
     permissionCheckPermission: "READ_USERS",
+    permissionCheckCreatePermission: "CHANGE_USERS",
     permissionCheckEditPermission: "CHANGE_USERS",
     permissionCheckLevel: "project",
 })

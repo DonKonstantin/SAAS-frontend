@@ -49,6 +49,7 @@ export class DomainListingConfiguration implements ListPageConfiguration<"domain
     };
     schema: "domain" = "domain";
     elementsPerPage: number = 25;
+    disableMultiChoose: boolean = true;
     editPageUrl: EditPageLinkGenerator = pk => ({
         href: "/domain/edit/[entityId]",
         as: `/domain/edit/${pk}`

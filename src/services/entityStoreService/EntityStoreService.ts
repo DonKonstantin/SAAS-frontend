@@ -36,7 +36,7 @@ export class EntityStoreService implements EntityStoreServiceInterface {
         this.logger.Debug(`Before save process result`, beforeProcessResult)
 
         if (beforeProcessResult.isError) {
-            return undefined
+            throw new Error(`failed to execute beforeProcess`)
         }
 
         passedData = beforeProcessResult.data
@@ -50,14 +50,14 @@ export class EntityStoreService implements EntityStoreServiceInterface {
 
         this.logger.Debug(`Stored entity primary key`, primaryKeyResult)
         if (!primaryKeyResult) {
-            return undefined
+            throw new Error(`failed to store data`)
         }
 
         const afterSaveProcessResult = await this.afterSaveProcessor.Process(schema, primaryKeyResult, passedData)
         this.logger.Debug(`After save process result`, afterSaveProcessResult)
 
         if (!afterSaveProcessResult) {
-            return undefined
+            throw new Error(`failed to execute afterSave`)
         }
 
         return primaryKeyResult

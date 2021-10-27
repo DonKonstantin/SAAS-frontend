@@ -4,6 +4,8 @@ import Head from "next/head";
 import {Button, Grid, InputAdornment, TextField, Typography} from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import {useTranslation} from "react-i18next";
+import {PasswordValidator} from "../../services/validation/validators/passwordValidator";
+import {notificationsDispatcher} from "../../services/notifications";
 
 // Свойства компонента
 export type ChangePasswordFormProps = WithAuthorization<{
@@ -43,8 +45,21 @@ const ChangePasswordForm: FC<ChangePasswordFormProps> = props => {
             return
         }
 
-        if (passwordConfirm !== password || 0 === password.length) {
+        const validator = PasswordValidator({})
+        const validation = await validator.Validate({
+            additionData: {id: {password: password, confirm: passwordConfirm}},
+            allValues: {},
+            primaryKey: "",
+            value: ""
+        })
+
+        if (!!validation) {
             setIsValid(false)
+
+            notificationsDispatcher().dispatch({
+                message: validation,
+                type: "warning"
+            })
 
             return
         }

@@ -18,5 +18,6 @@ export interface ListPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     filter: FilterFieldsConfiguration<T>        // Параметры конфигурации фильтра
     editPageUrl: EditPageLinkGenerator          // Генератор ссылки на страницу редактирования
     addPageUrl: PageUrl     // Ссылка на страницу добавления
+    onCopyRows?: {(primaryKeys: string[]): Promise<void>} // Обработка копирования строк
     additionFilter?: string                     // Дополнительный фильтр для листинга. Вводится в формате подстроки GraphQL запроса
 }

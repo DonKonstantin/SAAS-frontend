@@ -4,6 +4,7 @@ import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoa
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import {domainsAndProjectsLoader} from "../../../services/loaders/domainsAndProjects";
 import StructureCell from "../../../components/ListPageCustom/StructureCell";
+import {rolesCloneService} from "../../../services/rolesCloneService";
 
 export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
     filter: FilterFieldsConfiguration<"role"> = {
@@ -75,4 +76,7 @@ export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
         href: "/roles/edit/[entityId]",
         as: `/roles/edit/${pk}`
     });
+    onCopyRows: { (primaryKeys: string[]): Promise<void> } = async rows => {
+        await rolesCloneService().CloneRoles(rows)
+    }
 }

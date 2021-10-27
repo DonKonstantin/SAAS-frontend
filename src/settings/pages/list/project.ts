@@ -71,6 +71,7 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
     };
     schema: "project" = "project";
     elementsPerPage: number = 25;
+    disableMultiChoose: boolean = true;
     addPageUrl: PageUrl = {href: "/domain/project/add"};
     editPageUrl: EditPageLinkGenerator = pk => ({
         href: "/domain/project/edit/[entityId]",

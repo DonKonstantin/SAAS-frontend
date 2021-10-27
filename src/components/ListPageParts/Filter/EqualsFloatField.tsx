@@ -25,7 +25,7 @@ const EqualsFloatField: FC<FilterFieldProperties> = props => {
     }, [fieldConfig?.value?.value])
 
     useEffect(() => {
-        if (!fieldValue || !fieldConfig) {
+        if (!fieldConfig) {
             return
         }
 

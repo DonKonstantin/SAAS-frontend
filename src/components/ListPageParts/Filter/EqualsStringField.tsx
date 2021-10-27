@@ -20,7 +20,7 @@ const EqualsStringField: FC<FilterFieldProperties> = props => {
     }, [fieldConfig?.value?.value])
 
     useEffect(() => {
-        if (!fieldValue || !fieldConfig) {
+        if (!fieldConfig) {
             return
         }
 
@@ -31,17 +31,11 @@ const EqualsStringField: FC<FilterFieldProperties> = props => {
             return
         }
 
-        const timeout = setTimeout(() => {
-            if (fieldValue.length === 0) {
-                return onChangeFilterValues(fieldCode, {...value, value: {value: null}} as any)
-            }
-
-            return onChangeFilterValues(fieldCode, {...value, value: {value: fieldValue}} as any)
-        }, 500)
-
-        return () => {
-            clearTimeout(timeout)
+        if (fieldValue.length === 0) {
+            return onChangeFilterValues(fieldCode, {...value, value: {value: null}} as any)
         }
+
+        return onChangeFilterValues(fieldCode, {...value, value: {value: fieldValue}} as any)
     }, [fieldValue])
 
     if (!fieldConfig) {

@@ -14,7 +14,7 @@ import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
     const {isVisible = () => true, sizes = {xs: 12}} = config
     const {t} = useTranslation()
-    const {entityData, onChangeFieldValue} = useEntityEdit(distinctUntilChanged())
+    const {entityData, validation, onChangeFieldValue} = useEntityEdit(distinctUntilChanged())
 
     const [selectedUnassignedRoles, setSelectedUnassignedRoles] = useState<string[]>([])
     const [selectedAssignedRoles, setSelectedAssignedRoles] = useState<string[]>([])
@@ -34,6 +34,7 @@ const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
 
     const assignedRoles = roles.filter(r => (values['roles_id'] as string[]).includes(r.id))
     const unassignedRoles = roles.filter(r => !(values['roles_id'] as string[]).includes(r.id))
+    const rolesValidation = validation['roles_id']
 
     // Обработка присвоения ролей пользователю
     const handleAssignRoles = () => {
@@ -51,12 +52,22 @@ const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
         setSelectedAssignedRoles([])
     }
 
+    const titleColor = !rolesValidation ? "primary" : "error"
     return (
         <Grid item {...sizes}>
             <Box sx={{width: '100%'}}>
                 <Paper sx={{width: '100%', p: 3, pt: 2}}>
                     <Box sx={{p: 1.5, pl: 2, pt: 0}}>
-                        <Typography color="primary">{t(`entity-edit.fields.user-roles-group.title`)}</Typography>
+                        <Typography color={titleColor} component="div">{t(`entity-edit.fields.user-roles-group.title`)}</Typography>
+                        {!!rolesValidation && (
+                            <Typography
+                                color={titleColor}
+                                component="div"
+                                variant="caption"
+                            >
+                                {t(rolesValidation as string)}
+                            </Typography>
+                        )}
                     </Box>
                     <Divider/>
                     <Grid container spacing={0}>

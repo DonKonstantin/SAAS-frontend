@@ -1,11 +1,11 @@
 import React from 'react';
 import {NextPage} from "next";
-import ListPage from "../../components/ListPage";
+import ListPageWithCopy from "../../components/ListPageWithCopy";
 
 // Компонент страницы проекта
 const ListingPage: NextPage = () => {
     return (
-        <ListPage/>
+        <ListPageWithCopy/>
     )
 }
 
