@@ -6,6 +6,7 @@ import CheckboxField from "../../../components/EditPage/Fields/CheckboxField";
 import DomainsSelector from "../../../components/EditPageCustomFields/DomainsSelector";
 import {ValueExistsValidator} from "../../../services/validation/validators/valueExists";
 import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsAndProjects";
+import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
 
 export class ProjectEditPageConfig implements EditPageConfiguration<"project"> {
     groups: EditFormGroup<"project">[] = [
@@ -19,6 +20,7 @@ export class ProjectEditPageConfig implements EditPageConfiguration<"project"> {
                     defaultValue: "",
                     validation: [
                         MinimalLengthValidator({minimalLength: 3}),
+                        UniqueValueInColumnValidator({schema: "project", field: "name"}),
                     ],
                     component: StringField
                 },

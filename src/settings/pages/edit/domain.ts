@@ -3,6 +3,7 @@ import {PageUrl} from "../system/list";
 import {MinimalLengthValidator} from "../../../services/validation/validators/minimalLength";
 import StringField from "../../../components/EditPage/Fields/StringField";
 import CheckboxField from "../../../components/EditPage/Fields/CheckboxField";
+import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
 
 export class DomainEditPageConfig implements EditPageConfiguration<"domain"> {
     groups: EditFormGroup<"domain">[] = [
@@ -16,6 +17,7 @@ export class DomainEditPageConfig implements EditPageConfiguration<"domain"> {
                     defaultValue: "",
                     validation: [
                         MinimalLengthValidator({minimalLength: 3}),
+                        UniqueValueInColumnValidator({schema: "domain", field: "name"}),
                     ],
                     component: StringField
                 },

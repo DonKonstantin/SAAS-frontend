@@ -10,6 +10,7 @@ import {allPermissionCategories} from "../../../services/loaders/allPermissionCa
 import LevelCheckSelector from "../../../components/EditPageCustomFields/LevelCheckSelector";
 import PermissionChooseSelector from "../../../components/EditPageCustomFields/PermissionChooseSelector";
 import LevelCheckSelectorGroup from "../../../components/EditPageCustomFields/LevelCheckSelectorGroup";
+import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
 
 export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
     groups: EditFormGroup<"role">[] = [
@@ -23,6 +24,7 @@ export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
                     defaultValue: "",
                     validation: [
                         MinimalLengthValidator({minimalLength: 3}),
+                        UniqueValueInColumnValidator({schema: "project", field: "name"}),
                     ],
                     component: StringField
                 },
