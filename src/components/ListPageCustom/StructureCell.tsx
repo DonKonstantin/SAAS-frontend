@@ -21,6 +21,10 @@ const StructureCell: FC<ListFieldProperties<SimpleValues>> = props => {
     }
 
     const {currentData: {additionData}} = data
+    if (!additionData) {
+        return null
+    }
+
     const domains = additionData.domains as DomainData[]
     const projects = additionData.projects as ProjectData[]
 

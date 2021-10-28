@@ -24,7 +24,7 @@ const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
     }
 
     const {values, additionData} = entityData
-    if (!isVisible(values)) {
+    if (!isVisible(values) || !additionData || !additionData['roles_id']) {
         return null
     }
 

@@ -63,7 +63,7 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
             const domains = userInfo.roles.filter(r => r.level === "domain")
 
             if (domains.length === 1) {
-                return router.push("/domain/[domainId]/project", `/domain/${domains[0].id}/project`)
+                return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`)
             }
 
             return router.push("/domain")

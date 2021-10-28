@@ -2,6 +2,7 @@ import React, {FC, useEffect} from "react";
 import {PageWithEntityEdit} from "./type";
 import {useEntityEdit} from "../../context/EntityEditContext";
 import {distinctUntilChanged} from "rxjs";
+import {useAuthorization} from "../../context/AuthorizationContext";
 
 // Свойства провайдера страницы редактирования сущности
 type EditPageProviderProps = PageWithEntityEdit & {
@@ -16,15 +17,19 @@ const EditPageProvider: FC<EditPageProviderProps> = props => {
         entityEditPrimaryKey,
     } = props
 
+    const {authToken} = useAuthorization(distinctUntilChanged((previous, current) => {
+        return previous.authToken === current.authToken
+    }))
+
     const {setSchema} = useEntityEdit(distinctUntilChanged(() => false))
 
     useEffect(() => {
-        if (!entityEditSchema) {
+        if (!entityEditSchema || authToken.length === 0) {
             return
         }
 
         setSchema(entityEditSchema, entityEditPrimaryKey)
-    }, [entityEditSchema, entityEditPrimaryKey])
+    }, [entityEditSchema, entityEditPrimaryKey, authToken.length !== 0])
 
     return <>{children}</>
 }
