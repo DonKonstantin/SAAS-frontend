@@ -11,9 +11,11 @@ export type PageWithPermissionCheck = Partial<{
     permissionCheckPermission: string
     permissionCheckEditPermission: string
     permissionCheckCreatePermission: string
+    permissionCheckDeletePermission: string
     permissionCheckLevel: "realm" | "domain" | "project"
     permissionCheckEditLevel: "realm" | "domain" | "project"
     permissionCheckCreateLevel: "realm" | "domain" | "project"
+    permissionCheckDeleteLevel: "realm" | "domain" | "project"
 }>
 
 // Свойства провайдера

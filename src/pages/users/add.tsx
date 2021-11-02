@@ -14,7 +14,7 @@ EditPageContent.getInitialProps = async () => ({
     title: "pages.users.add.title",
     header: "pages.users.add.header",
     entityEditSchema: "user",
-    permissionCheckPermission: "CHANGE_USERS",
+    permissionCheckPermission: "CREATE_USERS",
     permissionCheckLevel: "project",
 })
 

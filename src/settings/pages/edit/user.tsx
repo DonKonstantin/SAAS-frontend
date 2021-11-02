@@ -16,6 +16,8 @@ import UserUpdatePasswordGroup from "../../../components/EditPageCustomFields/Us
 import {allRoles} from "../../../services/loaders/allRoles";
 import UserRolesGroup from "../../../components/EditPageCustomFields/UserRolesGroup";
 import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsAndProjects";
+import {getCurrentState} from "../../../context/AuthorizationContext";
+import CheckPermission from "../../../services/helpers/CheckPermission";
 
 export class UserEditPageConfig implements EditPageConfiguration<"user"> {
     groups: EditFormGroup<"user">[] = [
@@ -79,7 +81,7 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
                     additionData: async () => ({password: "", confirm: ""}),
                     disableFieldMainStore: () => true,
                     onAfterSave: async (__, _, additionData, primaryKey) => {
-                        await setUserPasswordService().SetPassword(`${primaryKey}`, additionData.id.password)
+                        await setUserPasswordService().CreatePassword(`${primaryKey}`, additionData.id.password)
                     },
                 },
             ]
@@ -130,10 +132,22 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
     ];
     schema: "user" = "user";
     listPageUrl: PageUrl = {href: "/users"};
-    editPageUrlGenerator: { (primaryKey: any): PageUrl } = primaryKey => ({
-        as: `/users/edit/${primaryKey}`,
-        href: `/users/edit/[entityId]`
-    });
+    editPageUrlGenerator: { (primaryKey: any): PageUrl } = primaryKey => {
+        const {userInfo} = getCurrentState()
+        if (!userInfo) {
+            return {href: "/users"}
+        }
+
+        const notHasEditAccess = !CheckPermission(userInfo, "CHANGE_USERS", "project")
+        if (notHasEditAccess) {
+            return {href: "/users"}
+        }
+
+        return {
+            as: `/users/edit/${primaryKey}`,
+            href: `/users/edit/[entityId]`
+        }
+    };
     isCopyEnabled: boolean = false;
     isSaveAndCloseEnabled: boolean = true;
     isSaveEnabled: boolean = true;

@@ -20,8 +20,10 @@ const TableCaption: FC<ListHeaderProps> = props => {
         header = "",
         checkedItems,
         permissionCheckEditPermission,
+        permissionCheckDeletePermission = permissionCheckEditPermission,
         permissionCheckLevel = "project",
         permissionCheckEditLevel = permissionCheckLevel,
+        permissionCheckDeleteLevel = permissionCheckEditLevel,
     } = props
 
     const {t} = useTranslation()
@@ -39,7 +41,7 @@ const TableCaption: FC<ListHeaderProps> = props => {
         onDeleteItems(checkedItems)
     }
 
-    const hasAccess = !(permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckEditLevel))
+    const hasAccess = !(permissionCheckDeletePermission && !CheckPermission(userInfo, permissionCheckDeletePermission, permissionCheckDeleteLevel))
     return (
         <Grid container alignItems="center" spacing={1}>
             <Grid item sx={{flex: "1 1 0"}}>

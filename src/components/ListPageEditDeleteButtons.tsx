@@ -21,8 +21,10 @@ const ListPageEditDeleteButtons: FC<ListPageEditDeleteButtonsProps> = props => {
     const {
         item,
         permissionCheckEditPermission,
+        permissionCheckDeletePermission = permissionCheckEditPermission,
         permissionCheckLevel = "project",
         permissionCheckEditLevel = permissionCheckLevel,
+        permissionCheckDeleteLevel = permissionCheckEditLevel,
     } = props
 
     const {t} = useTranslation()
@@ -45,7 +47,10 @@ const ListPageEditDeleteButtons: FC<ListPageEditDeleteButtonsProps> = props => {
         return <TableCell className="list-table-cell"/>
     }
 
-    if (permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckEditLevel)) {
+    const notHasEditAccess = permissionCheckEditPermission && !CheckPermission(userInfo, permissionCheckEditPermission, permissionCheckEditLevel)
+    const notHasDeleteAccess = permissionCheckDeletePermission && !CheckPermission(userInfo, permissionCheckDeletePermission, permissionCheckDeleteLevel)
+
+    if (notHasEditAccess && notHasDeleteAccess) {
         return <TableCell className="list-table-cell"/>
     }
 
@@ -72,16 +77,20 @@ const ListPageEditDeleteButtons: FC<ListPageEditDeleteButtonsProps> = props => {
             align="right"
             sx={{pt: 0, pb: 0}}
         >
-            <Tooltip title={t(`entity-list.components.actions.edit-tooltip`) as string}>
-                <IconButton size="small" onClick={onEdit}>
-                    <EditIcon fontSize="medium"/>
-                </IconButton>
-            </Tooltip>
-            <Tooltip title={t(`entity-list.components.actions.delete-tooltip`) as string}>
-                <IconButton size="small" onClick={onDelete}>
-                    <DeleteIcon fontSize="medium"/>
-                </IconButton>
-            </Tooltip>
+            {!notHasEditAccess && (
+                <Tooltip title={t(`entity-list.components.actions.edit-tooltip`) as string}>
+                    <IconButton size="small" onClick={onEdit}>
+                        <EditIcon fontSize="medium"/>
+                    </IconButton>
+                </Tooltip>
+            )}
+            {!notHasDeleteAccess && (
+                <Tooltip title={t(`entity-list.components.actions.delete-tooltip`) as string}>
+                    <IconButton size="small" onClick={onDelete}>
+                        <DeleteIcon fontSize="medium"/>
+                    </IconButton>
+                </Tooltip>
+            )}
         </TableCell>
     )
 }

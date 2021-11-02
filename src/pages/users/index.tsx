@@ -16,8 +16,9 @@ ListingPage.getInitialProps = async (): Promise<PageWithEntityList> => ({
     header: "pages.users.list.header",
     entityListSchema: "user",
     permissionCheckPermission: "READ_USERS",
-    permissionCheckCreatePermission: "CHANGE_USERS",
+    permissionCheckCreatePermission: "CREATE_USERS",
     permissionCheckEditPermission: "CHANGE_USERS",
+    permissionCheckDeletePermission: "DELETE_USERS",
     permissionCheckLevel: "project",
 })
 
