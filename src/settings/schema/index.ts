@@ -1,9 +1,10 @@
+import {Collection} from "../../services/types";
+import notifications_template from "./NotificationsTemplate";
+
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
  * настройки типов данны
  */
-import {Collection} from "../../services/types";
-
 export class Schemas {
     // Параметры схемы сущности Домен
     domain: Schema = {
@@ -213,6 +214,8 @@ export class Schemas {
         isCreatable: true,
         isDeletable: true,
     };
+    // Шаблоны для рассылок
+    notifications_template = notifications_template
 }
 
 /**
