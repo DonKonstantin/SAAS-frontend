@@ -133,5 +133,65 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 }
             }
         },
+        "/notifications-template": {
+            breadcrumb: "pages.notifications_template.list.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notifications-template",
+                    as: `/notifications-template`,
+                }
+            }
+        },
+        "/notifications-template/add": {
+            breadcrumb: "pages.notifications_template.add.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notifications-template/add",
+                    as: `/notifications-template/add`,
+                }
+            }
+        },
+        "/notifications-template/edit/[entityId]": {
+            breadcrumb: "pages.notifications_template.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notifications-template/edit/[entityId]",
+                    as: `/notifications-template/edit/${entityEditPrimaryKey}`,
+                }
+            }
+        },
+        "/notification-rules": {
+            breadcrumb: "pages.notification_config.list.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notification-rules",
+                    as: `/notification-rules`,
+                }
+            }
+        },
+        "/notification-rules/add": {
+            breadcrumb: "pages.notification_config.add.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notification-rules/add",
+                    as: `/notification-rules/add`,
+                }
+            }
+        },
+        "/notification-rules/edit/[entityId]": {
+            breadcrumb: "pages.notification_config.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/notification-rules/edit/[entityId]",
+                    as: `/notification-rules/edit/${entityEditPrimaryKey}`,
+                }
+            }
+        }
     }
 }

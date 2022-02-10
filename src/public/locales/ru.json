@@ -318,12 +318,12 @@
       }
     },
     "notifications_template": {
-      "title": "Шаблоны рассылок",
-      "header": "Шаблоны рассылок",
+      "title": "Шаблоны оповещений",
+      "header": "Шаблоны оповещений",
       "list": {
-        "title": "Шаблоны рассылок",
-        "header": "Шаблоны рассылок",
-        "breadcrumb": "Шаблоны рассылок",
+        "title": "Шаблоны оповещений",
+        "header": "Шаблоны оповещений",
+        "breadcrumb": "Шаблоны оповещений",
         "fields": {
           "name": "Название шаблона"
         },
@@ -336,9 +336,9 @@
         }
       },
       "edit": {
-        "title": "Редактирование шаблона",
-        "header": "Редактирование шаблона",
-        "breadcrumb": "Редактирование шаблона",
+        "title": "Редактирование шаблона оповещений",
+        "header": "Редактирование шаблона оповещений",
+        "breadcrumb": "Редактирование шаблона оповещений",
         "fields": {
           "id": "#",
           "name": "Название шаблона",
@@ -350,6 +350,99 @@
           "name": "Название роли",
           "permissions_id": "Разрешения",
           "level": "Уровень"
+        }
+      },
+      "add": {
+        "title": "Создание шаблона",
+        "header": "Создание шаблона",
+        "breadcrumb": "Создание шаблона",
+        "fields": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        }
+      }
+    },
+    "notification_config": {
+      "list": {
+        "title": "Настройки оповещений",
+        "header": "Настройки оповещений",
+        "breadcrumb": "Настройка оповещений",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        },
+        "filters": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "event_type": "Триггер",
+          "channel": "Канал"
+        }
+      },
+      "edit": {
+        "title": "Редактирование оповещения",
+        "header": "Редактирование оповещения",
+        "breadcrumb": "Редактирование оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        }
+      },
+      "add": {
+        "title": "Создание оповещения",
+        "header": "Создание оповещения",
+        "breadcrumb": "Создание оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Статус",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
         }
       }
     }

@@ -1,5 +1,6 @@
 import {Collection} from "../../services/types";
 import notifications_template from "./NotificationsTemplate";
+import notification_config from "./NotificationConfig";
 
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
@@ -216,6 +217,7 @@ export class Schemas {
     };
     // Шаблоны для рассылок
     notifications_template = notifications_template
+    notification_config = notification_config
 }
 
 /**
@@ -239,7 +241,7 @@ type EnumConfiguration = {
  * Параметры отношения
  */
 type Field<T extends SchemaKey> = keyof Schemas[T]["fields"]
-type RelationConfiguration<M extends SchemaKey> = {
+export type RelationConfiguration<M extends SchemaKey> = {
     schema: M
     target: Field<M>
 }

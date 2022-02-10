@@ -82,7 +82,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
                 title: "UI.menu.left-menu.items.notifications.templates",
             },
             {
-                link: {href: "/notifications-rules"},
+                link: {href: "/notification-rules"},
                 title: "UI.menu.left-menu.items.notifications.rules",
             },
         ]
