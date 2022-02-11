@@ -11,7 +11,7 @@ const notifications_template: Schema = {
             isArray: false
         },
         body : {
-            type: "String!",
+            type: "String",
             isPrimaryKey: false,
             isArray: false
         },

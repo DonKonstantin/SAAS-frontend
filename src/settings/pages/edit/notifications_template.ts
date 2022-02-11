@@ -2,7 +2,8 @@ import {EditFormGroup, EditPageConfiguration} from "../system/edit";
 import {PageUrl} from "../system/list";
 import {MinimalLengthValidator} from "../../../services/validation/validators/minimalLength";
 import StringField from "../../../components/EditPage/Fields/StringField";
-import {ValueExistsValidator} from "../../../services/validation/validators/valueExists";
+import CCEEditorWithoutSSR from "../../../components/EditPage/Fields/CCEEditorWithoutSSR";
+import NotificationsTemplatesPreview from "../../../components/EditPageCustomParts/Notifications/NotificationsTemplatesPreview";
 
 export class NotificationsTemplateEditPageConfig implements EditPageConfiguration<"notifications_template"> {
     groups: EditFormGroup<"notifications_template">[] = [
@@ -12,7 +13,7 @@ export class NotificationsTemplateEditPageConfig implements EditPageConfiguratio
                 {
                     field: "name",
                     title: "pages.notifications_template.edit.fields.name",
-                    size: {xs: 12},
+                    size: {xs: 12, md: 6},
                     defaultValue: "",
                     validation: [
                         MinimalLengthValidator({minimalLength: 3}),
@@ -22,21 +23,49 @@ export class NotificationsTemplateEditPageConfig implements EditPageConfiguratio
                 {
                     field: "title",
                     title: "pages.notifications_template.edit.fields.title",
-                    size: {xs: 12},
+                    size: {xs: 12, md: 6},
                     defaultValue: "",
                     validation: [
-                        ValueExistsValidator({errorMessage: "pages.notifications_template.edit.fields.level-error"}),
+                        MinimalLengthValidator({minimalLength: 3}),
                     ],
                     component: StringField
                 },
+                {
+                    field: "recipient",
+                    title: "pages.notifications_template.edit.fields.recipient",
+                    size: {xs: 12},
+                    defaultValue: "",
+                    validation: [
+                        MinimalLengthValidator({minimalLength: 3}),
+                    ],
+                    component: StringField
+                },
+            ]
+        },
+        {
+            sizes: {xs: 12, lg: 6},
+            fields: [
                 {
                     field: "body",
                     title: "pages.notifications_template.edit.fields.body",
                     size: {xs: 12},
                     defaultValue: "",
-                    validation: [
-                        ValueExistsValidator({errorMessage: "pages.notifications_template.edit.fields.level-error"}),
-                    ],
+                    validation: [],
+                    component: CCEEditorWithoutSSR
+                },
+            ]
+        },
+        {
+            sizes: {xs: 12, lg: 6},
+            component: NotificationsTemplatesPreview,
+            fields: [
+                {
+                    field: "id",
+                    title: "pages.notifications_template.edit.fields.recipient",
+                    size: {xs: 12},
+                    defaultValue: "",
+                    validation: [],
+                    disableFieldMainStore: () => true,
                     component: StringField
                 },
             ]
