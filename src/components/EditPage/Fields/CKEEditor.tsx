@@ -1,14 +1,14 @@
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, useState} from "react";
 import {EditFieldProperties} from "../../../settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
 import {distinctUntilChanged} from "rxjs";
-import {Stack, Typography} from "@mui/material";
+import {FormControlLabel, Stack, Switch, TextField, Typography} from "@mui/material";
 import {CKEditor} from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 // Поле ввода числового значения
 const CKEEditor: FC<EditFieldProperties> = props => {
-    const {fieldCode} = props
+    const {fieldCode} = props;
     const fieldData = useEntityEditField(fieldCode, distinctUntilChanged(
         (previous, current) => {
             return previous?.entityData?.values[fieldCode] === current?.entityData?.values[fieldCode]
@@ -16,11 +16,7 @@ const CKEEditor: FC<EditFieldProperties> = props => {
         }
     ))
 
-    const [isLayoutReady, setIsLayoutReady] = useState(false)
-
-    useEffect(() => {
-        setIsLayoutReady(true)
-    }, [])
+    const [editorEnabled, setEditorEnable] = useState(true)
 
     if (!fieldData) {
         return null
@@ -43,28 +39,69 @@ const CKEEditor: FC<EditFieldProperties> = props => {
         onChangeFieldValue(() => value)
     }
 
+    if (!editorEnabled) {
+        return (
+            <Stack spacing={1}>
+                <Typography>{t(title)}</Typography>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            defaultChecked
+                            size="small"
+                            value={editorEnabled}
+                            onChange={event => setEditorEnable(event.target.checked)}
+                        />
+                    }
+                    label={t("entity-edit.fields.CKEEditor.switcher.label")}
+                />
+                <TextField
+                    label={t(title)}
+                    multiline
+                    minRows={6}
+                    sx={{height: 180}}
+                    value={value}
+                    onChange={e => handleChangeFromEditor(e.target.value)}
+                />
+            </Stack>
+        )
+    }
+
     return (
         <Stack spacing={1}>
             <Typography>{t(title)}</Typography>
-            <CKEditor
-                editor={ClassicEditor}
-                id="editor_box"
-                data={value}
-                config={{
-                    toolbar: {items: ["heading", "|", "bold", "italic", "link", "bulletedList", "numberedList", "imageUpload", "blockQuote", "insertTable", "undo", "redo"]}, // "mediaEmbed",
-                    config: {
-                        ui: {
-                            width: '500px',
-                            height: '300px'
-                        }
-                    }
-                }}
-                onChange={(event, editor) => {
-                    const data = editor.getData();
 
-                    handleChangeFromEditor(data as string);
-                }}
+            <FormControlLabel
+                control={
+                    <Switch
+                        defaultChecked
+                        size="small"
+                        value={editorEnabled}
+                        onChange={event => setEditorEnable(event.target.checked)}
+                    />
+                }
+                label={t("entity-edit.fields.CKEEditor.switcher.label")}
             />
+            <div>
+                <CKEditor
+                    editor={ClassicEditor}
+                    id="editor_box"
+                    data={value}
+                    config={{
+                        toolbar: {items: ["heading", "|", "bold", "italic", "link", "bulletedList", "numberedList", "imageUpload", "blockQuote", "insertTable", "undo", "redo"]}, // "mediaEmbed",
+                        config: {
+                            ui: {
+                                width: '500px',
+                                height: '300px'
+                            }
+                        }
+                    }}
+                    onChange={(event, editor) => {
+                        const data = editor.getData();
+
+                        handleChangeFromEditor(data as string);
+                    }}
+                />
+            </div>
         </Stack>
     )
 }

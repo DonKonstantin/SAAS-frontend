@@ -93,7 +93,6 @@ const renderStream$: Observable<string> = template$.pipe(
             }
         }
     ),
-    tap((data) => console.log(data)),
     debounceTime(DEBOUNCE_TIMEOUT),
     switchMap(
         async ({template, variables}) => await NotificationServiceFactory()
@@ -147,7 +146,6 @@ const sendStream$ = send$.pipe(
             variables
         }
     }),
-    tap((data) => console.log(data)),
     tap(() => sendInProgress$.next(true)),
     switchMap(
         async ({

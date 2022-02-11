@@ -12,7 +12,7 @@ import NotificationConfigTemplate
 export class NotificationConfigEditPageConfig implements EditPageConfiguration<"notification_config"> {
     groups: EditFormGroup<"notification_config">[] = [
         {
-            sizes: {xs: 12, md: 9},
+            sizes: {xs: 12, lg: 6},
             fields: [
                 {
                     field: "id",
