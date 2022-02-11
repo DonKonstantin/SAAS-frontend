@@ -58,7 +58,7 @@ const CKEEditor: FC<EditFieldProperties> = props => {
                     label={t(title)}
                     multiline
                     minRows={6}
-                    sx={{height: 180}}
+                    sx={{minHeight: 180}}
                     value={value}
                     onChange={e => handleChangeFromEditor(e.target.value)}
                 />

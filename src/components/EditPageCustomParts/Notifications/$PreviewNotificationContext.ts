@@ -16,7 +16,7 @@ import {
 import NotificationServiceFactory from "../../../services/NotificationService";
 import {FC, useEffect, useState} from "react";
 import {NotificationChannel} from "../../../services/NotificationService/interface";
-import {notificationsDispatcher, registerEnqueueSnackbar} from "../../../services/notifications";
+import {notificationsDispatcher} from "../../../services/notifications";
 import i18n from "../../../i18n";
 
 const DEBOUNCE_TIMEOUT = 3000;
@@ -108,11 +108,10 @@ const renderStream$: Observable<string> = template$.pipe(
 /**
  * Создаем наблюдателя для сбора всех обновляемых из вне данных
  */
-const previewNotificationContext$ = renderStream$.pipe(
+const previewNotificationContext$ = isUpdatePreview$.pipe(
+    distinctUntilChanged(),
     combineLatestWith(
-        isUpdatePreview$.pipe(
-            distinctUntilChanged()
-        ),
+
         templateVariables$.pipe(
             distinctUntilChanged()
         ),
@@ -121,10 +120,9 @@ const previewNotificationContext$ = renderStream$.pipe(
         )
     ),
     map(
-        ([renderResult, isUpdateRender, variables, isSendProgress]) => {
+        ([isUpdateRender, variables, isSendProgress]) => {
             defaultContext$.next({
                 ...defaultContext$.getValue(),
-                renderResult,
                 isUpdateRender,
                 variables,
                 isSendProgress
@@ -174,7 +172,14 @@ export const InitPreviewTemplateStream: ContextActions["InitPreviewTemplateStrea
     template: string, variables: {}
 ) => {
 
-    const subscriber = renderStream$.subscribe();
+    const subscriber = renderStream$.subscribe({
+        next: renderResult =>  {
+            defaultContext$.next({
+                ...defaultContext$.getValue(),
+              renderResult
+            })
+        }
+    });
 
     subscriber.add(previewNotificationContext$.subscribe());
     subscriber.add(sendStream$.subscribe());
