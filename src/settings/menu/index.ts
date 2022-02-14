@@ -6,6 +6,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import DvrIcon from '@mui/icons-material/Dvr';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import StorageIcon from '@mui/icons-material/Storage';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import {getCurrentState} from "../../context/AuthorizationContext";
 
 // Список пунктов меню уровня Реалм
@@ -70,6 +71,21 @@ export const RealmMenuItems = (): MenuItem[] => ([
                 title: "UI.menu.left-menu.items.media-library.categories",
             },
         ],
+    },
+    {
+        title: "UI.menu.left-menu.items.notifications.index",
+        icon: NotificationsIcon,
+        permission: "CHANGE_NOTIFICATIONS",
+        subItems: [
+            {
+                link: {href: "/notifications-template"},
+                title: "UI.menu.left-menu.items.notifications.templates",
+            },
+            {
+                link: {href: "/notification-rules"},
+                title: "UI.menu.left-menu.items.notifications.rules",
+            },
+        ]
     },
     {
         link: {href: "/logs"},

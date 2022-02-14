@@ -13,6 +13,10 @@ import {DomainEditPageConfig} from "./edit/domain";
 import {ProjectEditPageConfig} from "./edit/project";
 import {RoleEditPageConfig} from "./edit/role";
 import {UserEditPageConfig} from "./edit/user";
+import {NotificationsTemplateListingConfiguration} from "./list/notifications_template";
+import {NotificationsTemplateEditPageConfig} from "./edit/notifications_template";
+import {NotificationConfigListingConfiguration} from "./list/notification_config";
+import {NotificationConfigEditPageConfig} from "./edit/notification_config";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -24,6 +28,8 @@ export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): List
         role: new RoleListingConfiguration,
         domain: new DomainListingConfiguration,
         project: new ProjectListingConfiguration,
+        notifications_template: new NotificationsTemplateListingConfiguration,
+        notification_config: new NotificationConfigListingConfiguration,
     }
 };
 
@@ -37,5 +43,7 @@ export const editSchemaConfiguration: { (): EditSchemaConfiguration } = (): Edit
         project: new ProjectEditPageConfig,
         role: new RoleEditPageConfig,
         user: new UserEditPageConfig,
+        notifications_template: new NotificationsTemplateEditPageConfig,
+        notification_config: new NotificationConfigEditPageConfig,
     }
 };

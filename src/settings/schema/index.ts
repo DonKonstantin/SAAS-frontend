@@ -1,9 +1,11 @@
+import {Collection} from "../../services/types";
+import notifications_template from "./NotificationsTemplate";
+import notification_config from "./NotificationConfig";
+
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
  * настройки типов данны
  */
-import {Collection} from "../../services/types";
-
 export class Schemas {
     // Параметры схемы сущности Домен
     domain: Schema = {
@@ -213,6 +215,9 @@ export class Schemas {
         isCreatable: true,
         isDeletable: true,
     };
+    // Шаблоны для рассылок
+    notifications_template = notifications_template
+    notification_config = notification_config
 }
 
 /**
@@ -236,7 +241,7 @@ type EnumConfiguration = {
  * Параметры отношения
  */
 type Field<T extends SchemaKey> = keyof Schemas[T]["fields"]
-type RelationConfiguration<M extends SchemaKey> = {
+export type RelationConfiguration<M extends SchemaKey> = {
     schema: M
     target: Field<M>
 }

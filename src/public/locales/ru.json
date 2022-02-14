@@ -83,7 +83,12 @@
           "projects": "Проекты",
           "playlists": "Плейлисты",
           "projects-list": "Список проектов",
-          "domain-list": "Список доменов"
+          "domain-list": "Список доменов",
+          "notifications": {
+            "index": "Оповещения",
+            "templates": "Шаблоны",
+            "rules": "Настройки"
+          }
         }
       }
     },
@@ -311,6 +316,189 @@
           "parent-error": "Необходимо выбрать домен"
         }
       }
+    },
+    "notifications_template": {
+      "title": "Шаблоны оповещений",
+      "header": "Шаблоны оповещений",
+      "list": {
+        "title": "Шаблоны оповещений",
+        "header": "Шаблоны оповещений",
+        "breadcrumb": "Шаблоны оповещений",
+        "fields": {
+          "name": "Название шаблона"
+        },
+        "filters": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        }
+      },
+      "edit": {
+        "title": "Редактирование шаблона оповещений",
+        "header": "Редактирование шаблона оповещений",
+        "breadcrumb": "Редактирование шаблона оповещений",
+        "fields": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        },
+        "block": {
+          "preview": {
+            "title": "Предпросмотр"
+          }
+        },
+        "action": {
+          "preview": "Предпросмотр",
+          "testSend": "Тестовая отправка"
+        },
+        "dialog": {
+          "preview": {
+            "title": "Предпросмотр оповещения",
+            "variablesHint": "Введите тестовые значения переменных в формате JSON",
+            "variablesError": "Проверьте формат введенных значений",
+            "field": {
+              "variables":"Значения переменных"
+            },
+            "button": {
+              "start": "Сгенерировать",
+              "close": "Закрыть",
+              "refresh": "Обновить"
+            }
+          },
+          "needSave": {
+            "title": "Сохранение шаблона",
+            "bodyText": "Для тестовой отправки нужно сохранить шаблон. Сохранить?",
+            "button": {
+              "yes": "Да",
+              "no": "Нет"
+            }
+          },
+          "testSend": {
+            "title": "Выберите канал для отправки",
+            "variablesHint": "Введите тестовые значения переменных в формате JSON",
+            "variablesError": "Проверьте формат введенных значений",
+            "field": {
+              "variables":"Значения переменных",
+              "email": "email",
+              "channel": "Канал",
+              "channelVariant" : {
+                "mail": "Email"
+              }
+            },
+            "button": {
+              "start": "Отправить",
+              "close": "Закрыть",
+              "refresh": "Обновить"
+            },
+            "message": {
+              "success": "Сообщение было отправлено",
+              "error": "Сообщение не было отправлено"
+            }
+          }
+        }
+      },
+      "add": {
+        "title": "Создание шаблона",
+        "header": "Создание шаблона",
+        "breadcrumb": "Создание шаблона",
+        "fields": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        }
+      }
+    },
+    "notification_config": {
+      "list": {
+        "title": "Настройки оповещений",
+        "header": "Настройки оповещений",
+        "breadcrumb": "Настройка оповещений",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        },
+        "filters": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "event_type": "Триггер",
+          "channel": "Канал"
+        }
+      },
+      "edit": {
+        "title": "Редактирование оповещения",
+        "header": "Редактирование оповещения",
+        "breadcrumb": "Редактирование оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        }
+      },
+      "add": {
+        "title": "Создание оповещения",
+        "header": "Создание оповещения",
+        "breadcrumb": "Создание оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Статус",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        }
+      }
     }
   },
   "entity-edit": {
@@ -396,6 +584,11 @@
             "domain": "Домен",
             "project": "Проект"
           }
+        }
+      },
+      "CKEEditor": {
+        "switcher": {
+          "label": "Редактор"
         }
       }
     },
