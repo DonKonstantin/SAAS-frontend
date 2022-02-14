@@ -3,16 +3,6 @@ import {EditFieldProperties} from "../../../settings/pages/system/edit";
 import {distinctUntilChanged} from "rxjs";
 import useEntityEditField from "../../EditPage/Fields/useEntityEditField";
 import {InputAdornment, MenuItem, TextField} from "@mui/material";
-import {NotificationTemplate} from "../../../services/NotificationTemplateService/interface";
-
-
-const TemplateItems = memo(({templates}: { templates: NotificationTemplate[] }) => {
-    return (
-        <>
-            {templates.map(({id, name}) => <MenuItem value={id} key={id}>{name}</MenuItem>)}
-        </>
-    )
-});
 
 // Edit notification config ID template
 const NotificationConfigTemplate: FC<EditFieldProperties> = (props) => {
@@ -31,12 +21,12 @@ const NotificationConfigTemplate: FC<EditFieldProperties> = (props) => {
         values,
         validation,
         onChangeFieldValue,
-    } = fieldData
+    } = fieldData;
 
     const templateList = additionData?.id.availableTemplates || [];
 
-    if (!isVisible(values) || !templateList.length > 0) {
-        return null
+    if (!isVisible(values) || templateList.length === 0) {
+        return null;
     }
 
     return (

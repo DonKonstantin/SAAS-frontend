@@ -5,12 +5,6 @@ import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteBut
 
 export class NotificationConfigListingConfiguration implements ListPageConfiguration<"notification_config"> {
     filter: FilterFieldsConfiguration<"notification_config"> = {
-       /* id: {
-            field: "id",
-            filterType: "Like",
-            schema: "notification_config",
-            title: "pages.notification_config.list.filters.name"
-        },*/
         is_active: {
             field: "is_active",
             filterType: "Switch",

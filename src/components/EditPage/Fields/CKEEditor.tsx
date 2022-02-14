@@ -6,7 +6,7 @@ import {FormControlLabel, Stack, Switch, TextField, Typography} from "@mui/mater
 import {CKEditor} from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-// Поле ввода числового значения
+// Поле ввода строки с текстовым редактором
 const CKEEditor: FC<EditFieldProperties> = props => {
     const {fieldCode} = props;
     const fieldData = useEntityEditField(fieldCode, distinctUntilChanged(
@@ -16,10 +16,10 @@ const CKEEditor: FC<EditFieldProperties> = props => {
         }
     ))
 
-    const [editorEnabled, setEditorEnable] = useState(true)
+    const [editorEnabled, setEditorEnable] = useState(true);
 
     if (!fieldData) {
-        return null
+        return null;
     }
 
     const {
@@ -27,16 +27,16 @@ const CKEEditor: FC<EditFieldProperties> = props => {
         value,
         values,
         validation,
-        fieldConfig: {title, isVisible = () => true, startIcon: IconComponent, validation: validators = []},
+        fieldConfig: {title, isVisible = () => true, validation: validators = []},
         onChangeFieldValue,
-    } = fieldData
+    } = fieldData;
 
     if (!isVisible(values)) {
-        return null
+        return null;
     }
 
     const handleChangeFromEditor = (value: string) => {
-        onChangeFieldValue(() => value)
+        onChangeFieldValue(() => value);
     }
 
     if (!editorEnabled) {
@@ -61,6 +61,8 @@ const CKEEditor: FC<EditFieldProperties> = props => {
                     sx={{minHeight: 180}}
                     value={value}
                     onChange={e => handleChangeFromEditor(e.target.value)}
+                    required={validators.length > 0}
+                    helperText={validation ? t(validation) : undefined}
                 />
             </Stack>
         )
@@ -69,7 +71,6 @@ const CKEEditor: FC<EditFieldProperties> = props => {
     return (
         <Stack spacing={1}>
             <Typography>{t(title)}</Typography>
-
             <FormControlLabel
                 control={
                     <Switch
@@ -86,6 +87,8 @@ const CKEEditor: FC<EditFieldProperties> = props => {
                     editor={ClassicEditor}
                     id="editor_box"
                     data={value}
+                    required={validators.length > 0}
+                    helperText={validation ? t(validation) : undefined}
                     config={{
                         toolbar: {items: ["heading", "|", "bold", "italic", "link", "bulletedList", "numberedList", "imageUpload", "blockQuote", "insertTable", "undo", "redo"]}, // "mediaEmbed",
                         config: {
@@ -95,7 +98,7 @@ const CKEEditor: FC<EditFieldProperties> = props => {
                             }
                         }
                     }}
-                    onChange={(event, editor) => {
+                    onChange={(editor) => {
                         const data = editor.getData();
 
                         handleChangeFromEditor(data as string);

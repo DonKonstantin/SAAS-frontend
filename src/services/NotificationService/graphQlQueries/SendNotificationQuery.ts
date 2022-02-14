@@ -1,6 +1,6 @@
 import {GraphQLQuery} from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import {NotificationChannel, RenderNotificationQueryVariables, SendNotificationQueryVariables} from "../interface";
+import {NotificationChannel, SendNotificationQueryVariables} from "../interface";
 
 /**
  * Запрос на отправку сообщения

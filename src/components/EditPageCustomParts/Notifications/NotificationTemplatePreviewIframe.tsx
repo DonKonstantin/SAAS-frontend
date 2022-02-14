@@ -22,7 +22,7 @@ const NotificationTemplatePreviewIframe: FC<Props> = () => {
         }
 
         return {
-            width: iframeRef?.current?.offsetWidth - 48 || "100%",
+            width: !!iframeRef?.current ? (iframeRef?.current?.offsetWidth - 48) : "100%",
             height: 300
         }
     }, [iframeRef]);

@@ -71,7 +71,7 @@ const NotificationTemplateTestSend: FC<NotificationTemplateTestSendProps> = prop
         sendNotification(templateId, channel);
     };
 
-    const handleChannelChange = ({value}: SelectChangeEvent) => setChannel(value);
+    const handleChannelChange = ({target: {value}}: SelectChangeEvent) => setChannel(value as NotificationChannel);
 
     const channels = Object.values(NotificationChannel);
 

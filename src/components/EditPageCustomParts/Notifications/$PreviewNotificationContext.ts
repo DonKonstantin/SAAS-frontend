@@ -20,12 +20,13 @@ import {notificationsDispatcher} from "../../../services/notifications";
 import i18n from "../../../i18n";
 
 const DEBOUNCE_TIMEOUT = 3000;
-const isUpdatePreview$ = new BehaviorSubject(false);
 
+const isUpdatePreview$ = new BehaviorSubject(false);
 const template$ = new BehaviorSubject<string>("");
 const templateVariables$ = new BehaviorSubject<{}>({});
 const renderError$ = new BehaviorSubject<boolean>(false);
 
+// Параметры для тестовой отправки
 type SendParams = {
     templateId: number
     channel: NotificationChannel
@@ -35,6 +36,7 @@ const send$ = new Subject<SendParams>();
 const successSend$ = new Subject<boolean>(); // Шина для оповещения об успешной отправки сообщения
 export const sendInProgress$ = new BehaviorSubject<boolean>(false)
 
+// Хранимые данные по шаблонам
 type PreviewContext = {
     renderResult: string,
     variables: {},
@@ -47,7 +49,7 @@ const defaultContext$ = new BehaviorSubject<PreviewContext>({
     renderResult: "",
     variables: {},
     errorRender: false,
-    isUpdateRender: false,
+    isUpdateRender: true,
     isSendProgress: false,
 });
 
@@ -67,10 +69,6 @@ const sendNotification: ContextActions["sendNotification"] = (templateId: number
         }
     );
 };
-
-/**
- * TODO: Разобраться почему при первом рендеринге запрос уходит два раза
- */
 
 /**
  * Поток обработки данных и получение рендера

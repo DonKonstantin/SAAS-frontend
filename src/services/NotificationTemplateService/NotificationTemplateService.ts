@@ -26,7 +26,7 @@ export default class NotificationTemplateService implements NotificationTemplate
 
             this.logger.Debug("Loaded templates", templates);
 
-            return  templates;
+            return templates;
         } catch (e) {
             this.logger.Error(e);
 
