@@ -98,7 +98,7 @@ const CKEEditor: FC<EditFieldProperties> = props => {
                             }
                         }
                     }}
-                    onChange={(editor) => {
+                    onChange={(_, editor) => {
                         const data = editor.getData();
 
                         handleChangeFromEditor(data as string);
