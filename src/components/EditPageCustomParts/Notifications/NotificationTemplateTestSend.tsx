@@ -95,7 +95,7 @@ const NotificationTemplateTestSend: FC<NotificationTemplateTestSendProps> = prop
                         label={t("pages.notifications_template.edit.dialog.testSend.field.channel")}
                     >
                         {channels.map(channel => (
-                            <MenuItem value={channel}>
+                            <MenuItem value={channel} key={`channel--${channel}`}>
                                 {t(`pages.notifications_template.edit.dialog.testSend.field.channelVariant.${channel}`)}
                             </MenuItem>
                         ))}
