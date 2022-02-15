@@ -417,7 +417,11 @@ const initializeSubscriptions = () => {
                         data: {
                             ...lastData,
                             currentData: {
-                                count: loadedData.count || currentData.count,
+                                /** В случае, если не поменялась схема,
+                                 *  повторный запрос на количество записей не производится
+                                 *  и count = undefined
+                                 */
+                                count: loadedData.count !== undefined ? loadedData.count : currentData.count,
                                 parameters: currentData.parameters,
                                 rows: loadedData.rows,
                                 additionData: loadedData.additionData || currentData.additionData,
