@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import useSWR from 'swr'
 import withDataLoading from "../dataLoading";
 import LoadingPage from "../components/UILayer/LoadingPage";
@@ -36,6 +36,9 @@ const DataLoadingLayer: FC<DataLoadingLayerProps> = props => {
         revalidateOnFocus: false,
         revalidateOnReconnect: false
     })
+
+    // Инициализируем шины авторизации на данном уровне, тк ниже она уже используется
+    useEffect(() => auth.initializeContextBus(), [])
 
     if (["/404", "/500"].includes(router.pathname)) {
         return (<>{children}</>)

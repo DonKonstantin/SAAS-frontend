@@ -417,7 +417,7 @@ const initializeSubscriptions = () => {
                         data: {
                             ...lastData,
                             currentData: {
-                                count: loadedData.count || currentData.count,
+                                count: loadedData.count,
                                 parameters: currentData.parameters,
                                 rows: loadedData.rows,
                                 additionData: loadedData.additionData || currentData.additionData,

@@ -90,7 +90,7 @@ class DefaultContext implements AuthorizationContext {
 const context$ = new BehaviorSubject<AuthorizationContext>(new DefaultContext);
 
 // Контекст для обработки изменения токена
-const tokenContext$ = new Subject<string>();
+const tokenContext$ = new Subject<string| undefined>();
 
 /**
  * Обработка перехода на какие-то страницы при наличии флага редиректа
@@ -224,6 +224,10 @@ const initializeContextBus = () => {
     const log = loggerFactory().make(`Authorization`)
     const tokenUpd = tokenContext$.pipe(throttleTime(1000), distinctUntilChanged()).subscribe({
         next: async token => {
+            if (token === undefined) {
+                return;
+            }
+
             if (0 === token.length) {
                 context$.next({
                     ...context$.getValue(),
@@ -264,7 +268,7 @@ const initializeContextBus = () => {
                 return
             }
 
-            document.cookie = `token=${token}; path=/;`
+            document.cookie = `token=${token || ""}; path=/;`
         }
     })
 

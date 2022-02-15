@@ -23,7 +23,6 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
         projectId,
         changePasswordToken = "",
         isNeedShowChangePassword = false,
-        initializeContextBus,
         onRedirectToUserPage,
         isNeedRedirectAfterAuth,
         children,
@@ -31,10 +30,6 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
         setProject,
     } = props;
     const router = useRouter()
-
-    useEffect(() => {
-        return initializeContextBus()
-    }, [])
 
     // Пробрасываем изменение домена, переданного через параметры URL
     useEffect(() => {
