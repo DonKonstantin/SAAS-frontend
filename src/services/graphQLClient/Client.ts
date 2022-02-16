@@ -64,13 +64,25 @@ export class Client implements GraphQLClient {
             await onClear(client);
 
             if (response.errors !== undefined) {
-                this.logger.Error("Request failed", query, response.errors);
-                throw new Error("GraphQL request failed");
+                const [firstError] = response.errors ;
+                if (firstError.message.length === 0 ) {
+                    throw new Error("GraphQL request failed");
+                }
+
+                throw new Error(response.errors.map(value => value.message).join(";"));
             }
 
             return response.data;
         } catch (e) {
             this.logger.Error("Request failed", e);
+
+            /**
+             * Проверка на не корректный токен
+             */
+            if (`${e}`.indexOf(`incorrect token`) > -1) {
+                throw new Error(`${e}`);
+            }
+
             if (`${e}`.indexOf(`GraphQL`) === -1 && `${e}`.indexOf(`status code 400`) === -1 && currentTry < 5) {
                 return await this.Query(query, headers, ++currentTry)
             }
