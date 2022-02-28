@@ -186,6 +186,24 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                     as: `/notification-rules/edit/${entityEditPrimaryKey}`,
                 }
             }
+        },
+        "/media": {
+            breadcrumb: "pages.mediaLibrary.breadcumb",
+            link: ({entityEditPrimaryKey}) => {
+                return {
+                    href: "/media-rules",
+                    as: `/media-rules`,
+                }
+            }
+        },
+        "/media/upload": {
+            breadcrumb: "pages.mediaLibraryUpload.breadcumb",
+            link: ({entityEditPrimaryKey}) => {
+                return {
+                    href: "/media-rules/upload",
+                    as: `/media-rules/upload`,
+                }
+            }
         }
     }
 }

@@ -501,6 +501,48 @@
           }
         }
       }
+    },
+    "mediaLibrary": {
+      "breadcrumb": "Медиабиблиотека",
+      "field": {
+        "license_type": "Лицензия",
+        "license_type-enum": {
+          "rao_voice": "РАО/ВОИС",
+          "sparx": "SPARX",
+          "amurco": "AMURCO"
+        }
+      }
+    },
+    "mediaLibraryUpload": {
+      "breadcrumb": "Загрузка"
+    },
+    "file": {
+      "metaTagFilledStatus": {
+        "notFilled": "Отсутствуют",
+        "requiredFilled": "частично",
+        "fullFilled": "Все данные"
+      },
+      "field": {
+        "filename": "имя файла",
+        "title":  "название",
+        "artist":  "исполнитель",
+        "album":  "альбом",
+        "year":  "год создания",
+        "genre":  "жанр",
+        "bpm":  "темп трека",
+        "ISRC":  "международный стандартный номер аудио/видео записи,",
+        "lyricist":  "автор текста",
+        "composer":  "автор музыки",
+        "publisher":  "изготовитель фонограммы",
+        "language":  "язык исполнения",
+        "obscene":  "ненормативная лексика",
+        "license_type": "тип лицензии",
+        "license_type-enum": {
+          "rao_voice": "РАО/ВОИС",
+          "sparx": "SPARX",
+          "amurco": "AMURCO"
+        }
+      }
     }
   },
   "entity-edit": {

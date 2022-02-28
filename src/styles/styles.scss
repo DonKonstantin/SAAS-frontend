@@ -13,3 +13,12 @@ input:-webkit-autofill:active {
 html {
   -webkit-font-smoothing: antialiased;
 }
+
+@keyframes progress {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -70px 0;
+  }
+}

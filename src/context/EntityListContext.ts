@@ -422,7 +422,7 @@ const initializeSubscriptions = () => {
                                  *  и count = undefined
                                  */
                                 count: loadedData.count !== undefined ? loadedData.count : currentData.count,
-                                parameters: currentData.parameters,
+                                parameters: loadedData.parameters || currentData.parameters,
                                 rows: loadedData.rows,
                                 additionData: loadedData.additionData || currentData.additionData,
                             }

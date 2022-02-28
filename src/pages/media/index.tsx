@@ -1,7 +1,7 @@
 import React from 'react';
 import {NextPage} from "next";
-import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
-import {PageWithChangeableMenu} from "../layouts/MenuChangeLayout";
+import {PageWithMetaTags} from "../../components/UILayer/PageWithMetaTags";
+import {PageWithChangeableMenu} from "../../layouts/MenuChangeLayout";
 
 // Свойства страницы
 type Props = PageWithMetaTags & PageWithChangeableMenu

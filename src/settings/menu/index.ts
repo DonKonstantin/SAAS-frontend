@@ -53,18 +53,22 @@ export const RealmMenuItems = (): MenuItem[] => ([
     {
         title: "UI.menu.left-menu.items.media-library.index",
         icon: VolumeUpIcon,
+        permission: "CHANGE_FILES",
         subItems: [
             {
                 link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.check",
+                permission: "CHANGE_FILES"
             },
             {
-                link: {href: "/media"},
+                link: {href: "/media/upload"},
                 title: "UI.menu.left-menu.items.media-library.uploading",
+                permission: "CHANGE_FILES"
             },
             {
                 link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.storage",
+                permission: "CHANGE_FILES"
             },
             {
                 link: {href: "/media"},
