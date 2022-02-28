@@ -1,0 +1,5 @@
+# Данный Workflow определяет, что каждый дальнейший скрипт будет выполняться
+# в рамках Merge Request
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID

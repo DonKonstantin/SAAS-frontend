@@ -1,0 +1,8 @@
+giterminismConfigVersion: 1
+cli:
+  allowCustomTags: true
+config:
+  allowUncommitted: true
+helm:
+  allowUncommittedFiles:
+    - ".helm/values.yaml"

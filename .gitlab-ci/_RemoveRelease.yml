@@ -1,6 +1,6 @@
 stages:
-  - deploy
-  - deploy_notify
+  - remove
+  - remove_notify
 
 # Инициализация Werf
 .werf_init:
@@ -8,61 +8,58 @@ stages:
   before_script:
     - source $(werf ci-env gitlab --as-file)
 
-### Базовый скрипт деплоя на площадку
-.base_deploy:
-  stage: deploy
+# Базовый скрипт удаления раскатки из кластера
+.base_remove:
+  stage: remove
   extends: .werf_init
   script:
     - cat $REGISTRY_CREDENTIALS >> .helm/values.yaml && printf "\n" >> .helm/values.yaml
-    - printf "%s\n" "$EVENT_CONFIG" >> .helm/values.yaml
-    - printf "%s\n" "$NODE_SELECTOR" >> .helm/values.yaml
     - printf "%s" "$CLUSTER_CONFIG" > /tmp/.kube.config-$CI_JOB_ID
-    - .gitlab-ci/scripts/envToYaml >> .helm/values.yaml
-    - werf converge
-      --skip-build
+    - werf dismiss
+      --with-namespace
       --kube-config=/tmp/.kube.config-$CI_JOB_ID
       --kube-context="$CLUSTER_CONTEXT"
 
 # Базовый скрипт отправки уведомления о деплое
-.deploy_notify: &deploy_notify
-  stage: deploy_notify
+.remove_notify: &remove_notify
+  stage: remove_notify
   script:
     - apk update
     - apk add curl git
-    - sh .gitlab-ci/scripts/DeployNotify.sh $TYPE $TEXT https://$DOMAIN
+    - sh .gitlab-ci/scripts/RemoveReview.sh $TYPE $TEXT https://$DOMAIN
 
 # Скрипт отправки нотификации об успешном деплое
-.deploy_success: &deploy_success
-  <<: *deploy_notify
+.remove_success: &remove_success
+  <<: *remove_notify
   variables:
     TYPE: "✅"
     TEXT: "Success"
 
 # Скрипт отправки нотификации об упавшем деплое
-.deploy_failed: &deploy_failed
-  <<: *deploy_notify
+.remove_failed: &remove_failed
+  <<: *remove_notify
   variables:
     TYPE: "❌"
     TEXT: "Failed"
 
-# Deploy приложения
-Deploy:
-  extends: .base_deploy
-  stage: deploy
+# Удаление приложения из рабочей среды
+Remove:
+  extends: .base_remove
+  stage: remove
   environment:
     name: $ENVIRONMENT
 
-
-# Уведомление об успешном деплое
-Deploy notify success:
-  <<: *deploy_success
+# Уведомление об успешном удалении
+Success:
+  <<: *remove_success
   environment:
     name: $ENVIRONMENT
   when: on_success
 
-# Уведомление об отвале деплоя
-Deploy notify failed:
-  <<: *deploy_failed
+# Уведомление об отвале удаления
+Failed:
+  <<: *remove_failed
   environment:
     name: $ENVIRONMENT
   when: on_failure
+

@@ -2,37 +2,107 @@ stages:
   - build
   - deploy
   - cleanup
+  - review
+  - remove
 
-# Сборка веток и тегов
-Build:
-  stage: build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-      when: never
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH
-  trigger:
-    strategy: depend
-    include:
-      - local: '.gitlab-ci/variables/_Dev_Variables.yml'
-      - local: '.gitlab-ci/_BuildRelease.yml'
+#=====================================================================================================
+# Шаблоны условий запуска
+#=====================================================================================================
 
-# Деплой мастер ветки на DEV (автоматический)
-DEV Deploy:
-  stage: deploy
+# Правила выката только на ПР
+.onPr: &onPr
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - if: $CI_COMMIT_TAG
       when: never
     - if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
+      when: never
+    - if: $CI_MERGE_REQUEST_ID
+  variables:
+    CI_REF: review-$CI_COMMIT_REF_NAME
+
+# Правила выката только на мастер
+.onMaster: &onMaster
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+    - if: $CI_COMMIT_BRANCH == "master"
+  variables:
+    CI_REF: "latest"
+
+#=====================================================================================================
+# Сборки приложения
+#=====================================================================================================
+
+# Сборка ПР
+Build PR:
+  <<: *onPr
+  stage: build
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Review_Variables.yml'
+      - local: '.gitlab-ci/_ReviewWorkflow.yml'
+      - local: '.gitlab-ci/_BuildRelease.yml'
+
+# Сборка веток
+Build branch:
+  <<: *onMaster
+  stage: build
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Dev_Variables.yml'
+      - local: '.gitlab-ci/_BuildRelease.yml'
+
+# Сборка тегов
+Build tag:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+      when: never
+  variables:
+    CI_REF: $CI_COMMIT_TAG
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Dev_Variables.yml'
+      - local: '.gitlab-ci/_BuildRelease.yml'
+
+#=====================================================================================================
+# Раскатки приложения
+#=====================================================================================================
+
+# Деплой ПР на REVIEW (автоматический)
+PR Deploy:
+  stage: deploy
+  <<: *onPr
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Review_Variables.yml'
+      - local: '.gitlab-ci/_ReviewWorkflow.yml'
+      - local: '.gitlab-ci/_DeployRelease.yml'
+  needs: [ "Build PR" ]
+
+# Деплой мастер ветки на DEV (автоматический)
+DEV Deploy:
+  stage: deploy
+  <<: *onMaster
   trigger:
     strategy: depend
     include:
       - local: '.gitlab-ci/variables/_Dev_Variables.yml'
       - local: '.gitlab-ci/_DeployRelease.yml'
-  needs: ["Build"]
+  needs: [ "Build branch" ]
 
 # Деплой тега на DEV (ручной)
 DEV Release Deploy:
@@ -40,17 +110,63 @@ DEV Release Deploy:
   only:
     - tags
   when: manual
+  variables:
+    CI_REF: $CI_COMMIT_TAG
   trigger:
     strategy: depend
     include:
       - local: '.gitlab-ci/variables/_Dev_Variables.yml'
       - local: '.gitlab-ci/_DeployRelease.yml'
-  needs: ["Build"]
+  needs: [ "Build tag" ]
+
+#=====================================================================================================
+# Удаление приложения из ревью
+#=====================================================================================================
+
+# Инициализация среды для ревью
+Init PR:
+  stage: review
+  script:
+    - echo "Init environment"
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    on_stop: Remove environment
+    auto_stop_in: 3 days
+
+# Дополнительный триггер, который активируется на остановку ПР
+Remove environment:
+  stage: review
+  script:
+    - echo "Removing environment"
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+
+# Реальное удаление ПР из контура Review
+Remove PR:
+  <<: *onPr
+  stage: remove
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Review_Variables.yml'
+      - local: '.gitlab-ci/_ReviewWorkflow.yml'
+      - local: '.gitlab-ci/_RemoveRelease.yml'
+
+#=====================================================================================================
+# Прочие действия
+#=====================================================================================================
 
 # Очистка репозитория
 Cleanup:
   stage: cleanup
   trigger:
-    include: '.gitlab-ci/_Cleanup.yml'
-  only: [schedules]
-
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/_Cleanup.yml'
+  only: [ schedules ]
