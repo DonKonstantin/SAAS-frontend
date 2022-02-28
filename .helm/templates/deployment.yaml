@@ -18,7 +18,7 @@ metadata:
     app.kubernetes.io/name: {{ .Chart.Name }}
     app.kubernetes.io/part-of: {{ .Chart.Name }}
 spec:
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
@@ -46,51 +46,11 @@ spec:
                       - {{ .Chart.Name }}
               topologyKey: kubernetes.io/hostname
       containers:
-      - name: {{ .Chart.Name }}
-{{ werf_container_image . | indent 8 }}
-        resources:
-          limits:
-            memory: 300Mi
-          requests:
-            memory: 150Mi
-        ports:
-          - name: web
-            containerPort: 3000
-            protocol: TCP
-        env:
-          - name: GRAPHQL_SERVER
-            value: "{{ .Values.external.GRAPHQL_SERVER }}"
-          - name: SSR_GRAPHQL_SERVER
-            value: "{{ .Values.external.SSR_GRAPHQL_SERVER }}"
-          - name: DEBUG
-            value: "{{ .Values.external.DEBUG }}"
-          - name: ENVIRONMENT
-            value: "{{ .Values.environment }}"
-          - name: TOKEN_REFRESH_TIMEOUT
-            value: "{{ .Values.token_refresh_timeout }}"
-          - name: GRAPHQL_WS_SERVER
-            value: "{{ .Values.external.GRAPHQL_WS_SERVER }}"
-          - name: SSR_GRAPHQL_WS_SERVER
-            value: "{{ .Values.external.SSR_GRAPHQL_WS_SERVER }}"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 60
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+      {{- include "app" . | indent 6 }}
 
       restartPolicy: Always
       dnsPolicy: ClusterFirst
-{{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-{{- end }}
+      {{- include "nodeSelector" . | indent 6}}
 
 ---
 
@@ -110,5 +70,3 @@ spec:
       port: 3000
       targetPort: 3000
   type: ClusterIP
-
----
