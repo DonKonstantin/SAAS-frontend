@@ -1,6 +1,7 @@
 # Параметры конфигурации для сборки и раскатки мастера на DEV инстанс
 variables:
   ENVIRONMENT: "Review"
+  WERF_ENV: "Review-$CI_COMMIT_REF_SLUG"
 
   # Переменные кластеры
   CLUSTER_CONFIG: $REVIEW__KUBECONFIG
