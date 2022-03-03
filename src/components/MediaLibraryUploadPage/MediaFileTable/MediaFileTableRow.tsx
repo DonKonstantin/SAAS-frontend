@@ -4,6 +4,7 @@ import {Button, LinearProgress, Stack, TableCell, TableRow} from "@mui/material"
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";
 import MediaFileMetaTagStatus from "../../ListPageCustom/MediaFileMetaTagStatus";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
+import {useReplaceFileDialog} from "../SelectReplaceFileDialog/SelectReplaceFileDialogContext";
 
 type Props = {
     file: MediaFileToUpload
@@ -23,6 +24,11 @@ const MediaFileTableRow: FC<Props> = props => {
 
     const [progress, setProgress] = useState(0);
     const [doubles, setHasDoubles] = useState<MediaFile[]>([]);
+    const {openReplaceFileDialog} = useReplaceFileDialog();
+
+    const handleOpenReplaceDialog = () => {
+        openReplaceFileDialog(doubles)
+    }
 
     useEffect(() => {
         const s = uploadStatus$.subscribe({
@@ -40,7 +46,8 @@ const MediaFileTableRow: FC<Props> = props => {
         })
 
         s.add(doubleFiles$.subscribe(
-            {next: value => {
+            {
+                next: value => {
                     const thisFileStatus = value[file.mediaInfo.uuid]
 
                     if (!thisFileStatus) {
@@ -50,10 +57,11 @@ const MediaFileTableRow: FC<Props> = props => {
                     }
 
                     setHasDoubles(thisFileStatus.doubles);
-            }}
+                }
+            }
         ))
         return () => s.unsubscribe();
-    }, [])
+    }, []);
 
     return (
         <TableRow>
@@ -106,16 +114,16 @@ const MediaFileTableRow: FC<Props> = props => {
                         )
                     } {
                     doubles.length > 0 && (
-                            <Button
-                                onClick={() => onDelete ? onDelete(file) : false}
-                                variant={"outlined"}
-                                color={"error"}
-                                size={"small"}
-                            >
-                                Есть дубли
-                            </Button>
-                        )
-                    }
+                        <Button
+                            onClick={handleOpenReplaceDialog}
+                            variant={"outlined"}
+                            color={"error"}
+                            size={"small"}
+                        >
+                            Есть дубли
+                        </Button>
+                    )
+                }
                 </Stack>
             </TableCell>
         </TableRow>

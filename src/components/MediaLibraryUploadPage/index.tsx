@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from "react";
+import React, {FC, useCallback, useEffect} from "react";
 import {Grid, Paper, Stack} from "@mui/material";
 import Breadcrumbs from "../Breadcrumbs";
 import {Box} from "@mui/system";
@@ -11,16 +11,26 @@ import {useEditMediaFilesModal} from "../MediaFileEditDialog/MediaFileEditDialog
 import MediaLibraryUploadLicenseType from "./MediaLibraryUploadLicenseType";
 import MediaLibraryUploadControls from "./MediaLibraryUploadControls";
 import MediaLibraryProgressStatus from "./MediaLibraryProgressStatus";
+import SelectReplaceFileDialog from "./SelectReplaceFileDialog";
 
 const MediaLibraryUploadPage: FC = () => {
     const {
         initMediaFilesUploadContext,
-        updateMediaInfoFile
+        updateMediaInfoFile,
+        setReplacedTargetFile
     } = useMediaLibraryUpload(distinctUntilChanged(() => true))
     const {initEditFileForm} = useEditMediaFilesModal(distinctUntilChanged(() => true));
 
     useEffect(() => initMediaFilesUploadContext(), []);
     useEffect(() => initEditFileForm(), []);
+
+    const handleSelectRaplacedFile = useCallback((file, replacedFile) => {
+        if ( !replacedFile) {
+            return;
+        }
+
+        setReplacedTargetFile(file, replacedFile.id);
+    }, [setReplacedTargetFile]);
 
     return (
         <>
@@ -44,6 +54,9 @@ const MediaLibraryUploadPage: FC = () => {
             </Stack>
             <MediaFileEditDialog
                 onSave={updateMediaInfoFile}
+            />
+            <SelectReplaceFileDialog
+                onSave={handleSelectRaplacedFile}
             />
         </>
     )
