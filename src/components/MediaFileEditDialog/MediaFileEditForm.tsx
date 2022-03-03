@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {FormControl, Grid, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import {TextFieldProps} from "@mui/material/TextField/TextField";
@@ -9,13 +9,14 @@ import {v4 as uuidv4} from 'uuid';
 
 type Props = {
     file: MediaFile
-    onChange(file: MediaFile): void
+    onSave(file: MediaFile): void
+    onCancel(): void
 }
 
 type ComponentsForms =
     (props: TextFieldProps & { variants: any[] }) => JSX.Element
 
-const SelectControl: FC<SelectProps & { variant: any[] }> = props => {
+const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
     const {
         variants,
         onChange,
@@ -55,90 +56,84 @@ const formConfig: {
     }
 } = {
     title: {
-        label: "title",
+        label: "pages.file.field.title",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     artist: {
-        label: "artist",
+        label: "pages.file.field.artist",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     album: {
-        label: "album",
+        label: "pages.file.field.album",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     year: {
-        label: "year",
+        label: "pages.file.field.year",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     genre: {
-        label: "genre",
+        label: "pages.file.field.genre",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     language: {
-        label: "year",
+        label: "pages.file.field.year",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     license_type: {
-        label: "license_type",
+        label: "pages.file.field.license_type",
         rules: {
 
         },
         Component: SelectControl as unknown as ComponentsForms,
-        variants: [
+        variants: Object.values(LicenseType).map(type => (
             {
-                value: LicenseType.sparx,
-                label: LicenseType.sparx,
-
-            }, {
-                value: LicenseType.amurco,
-                label: LicenseType.amurco,
-            },
-            {
-                value: LicenseType.rao_voice,
-                label: LicenseType.rao_voice,
-            }]
+                value: type,
+                label: `pages.mediaLibrary.field.license_type-enum.${type}`,
+            }
+        ))
     },
     bpm: {
-        label: "bpm",
+        label: "pages.file.field.bpm",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     isrc: {
-        label: "isrc",
+        label: "pages.file.field.isrc",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     lyricist: {
-        label: "lyricist",
+        label: "pages.file.field.lyricist",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     composer: {
-        label: "composer",
+        label: "pages.file.field.composer",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
     publisher: {
-        label: "publisher",
+        label: "pages.file.field.publisher",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },
 }
 
 const MediaFileEditForm: FC<Props> = props => {
-    const {file, onChange} = props;
-    const {register, control, handleSubmit} = useForm<MediaFile>({
-        defaultValues: file
+    const {file, onSave, onCancel} = props;
+    const {control, handleSubmit} = useForm<MediaFile>({
+        defaultValues: file,
     });
+    const {t} = useTranslation();
 
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSave)}>
             <Grid container spacing={2} sx={{pt: 1}}>
                 {
                     Object.entries(formConfig).map(
@@ -148,18 +143,20 @@ const MediaFileEditForm: FC<Props> = props => {
                             rules = {},
                             variants
                         }]) => {
+
                             return (
                                 <Grid item md={6}>
                                     <Controller
                                         rules={rules}
+                                        // @ts-ignore
                                         name={field}
                                         control={control}
                                         render={({field: {onChange, value}}) => (
                                             <Component
                                                 fullWidth
-                                                variants={variants}
+                                                variants={variants || []}
                                                 onChange={onChange}
-                                                label={label}
+                                                label={t(label)}
                                                 value={value}
                                             />
                                         )
@@ -171,6 +168,14 @@ const MediaFileEditForm: FC<Props> = props => {
                     )
                 }
             </Grid>
+            <Stack direction={'row'} spacing={2} flexWrap={"wrap"} sx={{mt: 2}}>
+                <Button
+                    variant={"outlined"}
+                    type={"submit"}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
+                <Button
+                    variant={"outlined"}
+                    onClick={() => onCancel()}>ОТМЕНА</Button>
+            </Stack>
         </form>
     )
 }

@@ -12,6 +12,7 @@ export default (fileDTO: Partial<MediaFile>, licenseType: LicenseType): MediaFil
         bpm: fileDTO.bpm || 0,
         composer: fileDTO.composer || "",
         file_name: fileDTO.file_name || "",
+        origin_name: fileDTO.origin_name || "",
         genre: fileDTO.genre || "",
         id: fileDTO.id || "",
         isrc: fileDTO.isrc || "",
@@ -25,5 +26,6 @@ export default (fileDTO: Partial<MediaFile>, licenseType: LicenseType): MediaFil
         year: fileDTO.year || 0,
         duration: fileDTO.duration || 0,
         size: fileDTO.size || 0,
+        uuid: fileDTO.uuid || ""
     }
 }

@@ -2,12 +2,24 @@ import {MediaFileClientInterface} from "./interface";
 import {Axios, AxiosRequestConfig} from "axios";
 import {Logger} from "../logger/Logger";
 import {loggerFactory} from "../logger";
+import {MediaFile} from "../MediaLibraryService/interface";
+
+const prepareFormdata = (file: File, mediaInfo: MediaFile): FormData => {
+    const data = new FormData();
+
+    data.append('file', file);
+
+    Object.entries(mediaInfo).map(([field, value]) => {
+        data.append(field, value as string)
+    })
+
+    return data;
+}
 
 /**
  * Client for job with file on media library server
  */
 export default class MediaFileClient implements MediaFileClientInterface {
-    private readonly token: string;
     private readonly client: Axios;
     private readonly logger: Logger = loggerFactory().make("MediaFileClient");
 
@@ -16,8 +28,7 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * @param client
      * @constructor
      */
-    constructor(token: string, client: Axios) {
-        this.token = token;
+    constructor( client: Axios) {
         this.client = client;
     }
 
@@ -29,11 +40,11 @@ export default class MediaFileClient implements MediaFileClientInterface {
     async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<File> {
         try {
             this.logger.Debug("Load file from server", fileName);
-            const result = await this.client.get(
+            const {data: result} = await this.client.get<File>(
                 `/files/${fileName}`,
                 {
                     ...config,
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: {"Content-Type": "multipart/form-data"},
                 }
             );
 
@@ -49,21 +60,20 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * Replace file on server
      * @param id
      * @param file
+     * @param mediaInfo
      * @param config
      */
-    async Replace(id: string, file: File, config: AxiosRequestConfig = {}): Promise<any> {
+    async Replace(id: string, file: File, mediaInfo: MediaFile, config: AxiosRequestConfig = {}): Promise<MediaFile> {
         try {
             this.logger.Debug("Replace file on server", id, file.name);
-            const data = new FormData();
+            const data = prepareFormdata(file, mediaInfo);
 
-            data.append('file', file);
-
-            const result = await this.client.post(
+            const {data: result} = await this.client.post<MediaFile>(
                 `/files/fileId/${id}`,
                 data,
                 {
                     ...config,
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: {"Content-Type": "multipart/form-data"},
                 }
             );
 
@@ -79,22 +89,23 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * upload file on server
      * @param licenseType
      * @param file
+     * @param mediaInfo
      * @param config
      */
-    async Upload(licenseType, file: File, config: AxiosRequestConfig = {}): Promise<any> {
+    async Upload(licenseType, file: File, mediaInfo: MediaFile, config: AxiosRequestConfig = {}): Promise<MediaFile> {
         try {
             console.log(file)
+            console.log(mediaInfo)
             this.logger.Debug("Upload file on server", licenseType, file.name);
-            const data = new FormData();
+            const data = prepareFormdata(file, mediaInfo);
+            console.log(data)
 
-            data.append('file', file);
-
-            const result = await this.client.post(
+            const {data: result} = await this.client.post<MediaFile>(
                 `/files/upload/${licenseType}`,
                 data,
                 {
                     ...config,
-                    headers: { "Content-Type": "multipart/form-data" },
+                    headers: {"Content-Type": "multipart/form-data"},
                 }
             );
 

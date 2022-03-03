@@ -1,11 +1,17 @@
 import {FC} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Dialog, DialogContent, DialogTitle} from "@mui/material";
 import MediaFileEditForm from "./MediaFileEditForm";
 import {useEditMediaFilesModal} from "./MediaFileEditDialogContext";
 import {distinctUntilChanged} from "rxjs";
+import {MediaFile} from "../../services/MediaLibraryService/interface";
 
-const MediaFileEditDialog: FC = props => {
-    const {file, open, closeModal} = useEditMediaFilesModal(
+type Props = {
+    onSave: {(file: MediaFile): void}
+}
+
+const MediaFileEditDialog: FC<Props> = props => {
+    const {onSave} = props;
+    const {file, open, closeModal, saveEditFile} = useEditMediaFilesModal(
         distinctUntilChanged()
     );
 
@@ -13,16 +19,23 @@ const MediaFileEditDialog: FC = props => {
         return null;
     }
 
+    const handleSave = (newFile: MediaFile) => {
+        saveEditFile(newFile)
+        onSave(newFile);
+        closeModal();
+    }
+
     return (
         <Dialog open={open} onClose={closeModal} maxWidth={"lg"} fullWidth>
             <DialogTitle>Редактирование</DialogTitle>
             <DialogContent>
-                <MediaFileEditForm file={file}/>
+                <MediaFileEditForm
+                    file={file}
+                    onSave={handleSave}
+                    onCancel={closeModal}
+                >
+                </MediaFileEditForm>
             </DialogContent>
-            <DialogActions>
-                <Button>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
-                <Button onClick={() => closeModal()}>ОТМЕНА</Button>
-            </DialogActions>
         </Dialog>
     )
 }

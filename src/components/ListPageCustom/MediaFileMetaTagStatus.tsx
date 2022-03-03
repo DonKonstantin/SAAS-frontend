@@ -26,7 +26,7 @@ const StyledChip = styled(Chip)`
     width: 100%;
 `
 
-const validator = new MediaFileTagValidator(["title", "file_name", "artist", "license_type"])
+const validator = new MediaFileTagValidator(["title", "origin_name", "artist", "license_type"])
 
 const MediaFileMetaTagStatus: FC<Props> = props => {
     const {file} = props;

@@ -1,12 +1,13 @@
-import {BehaviorSubject, combineLatestWith, map, OperatorFunction, Subject, tap} from "rxjs";
+import {BehaviorSubject, combineLatestWith, map, OperatorFunction, startWith, Subject, tap} from "rxjs";
 import {useEffect, useState} from "react";
 import {MediaFile} from "../../services/MediaLibraryService/interface";
 
-export const editMediaFilesOpen$ = new Subject();
+export const editMediaFilesOpen$ = new Subject<boolean>();
 const file$ = new BehaviorSubject<MediaFile | undefined>(undefined);
 
 type ContextActions = {
     setEditFile(file: MediaFile): void
+    saveEditFile(file: MediaFile): void
     closeModal(): void
     initEditFileForm(): () => void
 };
@@ -17,10 +18,14 @@ type EditMediaFileContext = {
 };
 
 const setEditFile: ContextActions["setEditFile"] = file => {
-    file$.next(file);
+    file$.next(JSON.parse(JSON.stringify(file)));
 
     editMediaFilesOpen$.next(true);
 };
+
+const saveEditFile:ContextActions["saveEditFile"] = file => {
+    file$.next(JSON.parse(JSON.stringify(file)));
+}
 
 const closeModal: ContextActions["closeModal"] = () => {
     editMediaFilesOpen$.next(false);
@@ -39,12 +44,15 @@ const initEditFileForm = () => {
 
 const actions: ContextActions = {
     setEditFile,
+    saveEditFile,
     closeModal,
     initEditFileForm
 };
 
 const contextBus$ = file$.pipe(
-    combineLatestWith(editMediaFilesOpen$),
+    combineLatestWith(editMediaFilesOpen$.pipe(
+        startWith(false),
+    )),
     map(
         ([file, open]) => ({
             file,

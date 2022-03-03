@@ -1,5 +1,5 @@
 import React, {FC, useEffect} from "react";
-import {Grid, Paper} from "@mui/material";
+import {Grid, Paper, Stack} from "@mui/material";
 import Breadcrumbs from "../Breadcrumbs";
 import {Box} from "@mui/system";
 import MediaUploadArea from "./MediaUploadArea";
@@ -8,9 +8,15 @@ import {distinctUntilChanged} from "rxjs";
 import MediaFileEditDialog from "../MediaFileEditDialog";
 import MediaFileTable from "./MediaFileTable";
 import {useEditMediaFilesModal} from "../MediaFileEditDialog/MediaFileEditDialogContext";
+import MediaLibraryUploadLicenseType from "./MediaLibraryUploadLicenseType";
+import MediaLibraryUploadControls from "./MediaLibraryUploadControls";
+import MediaLibraryProgressStatus from "./MediaLibraryProgressStatus";
 
-const MediaLibraryUploadPage: FC = props => {
-    const {initMediaFilesUploadContext} = useMediaLibraryUpload(distinctUntilChanged(() => true))
+const MediaLibraryUploadPage: FC = () => {
+    const {
+        initMediaFilesUploadContext,
+        updateMediaInfoFile
+    } = useMediaLibraryUpload(distinctUntilChanged(() => true))
     const {initEditFileForm} = useEditMediaFilesModal(distinctUntilChanged(() => true));
 
     useEffect(() => initMediaFilesUploadContext(), []);
@@ -25,11 +31,20 @@ const MediaLibraryUploadPage: FC = props => {
                     </Grid>
                 </Grid>
             </Box>
-            <Paper sx={{p: "20px 40px"}}>
-                <MediaUploadArea/>
-                <MediaFileTable/>
-            </Paper>
-            <MediaFileEditDialog/>
+            <Stack spacing={2}>
+                <Paper sx={{p: "20px 40px"}}>
+                    <MediaLibraryUploadLicenseType/>
+                </Paper>
+                <Paper sx={{p: "20px 40px"}}>
+                    <MediaUploadArea/>
+                    <MediaFileTable/>
+                    <MediaLibraryProgressStatus/>
+                    <MediaLibraryUploadControls/>
+                </Paper>
+            </Stack>
+            <MediaFileEditDialog
+                onSave={updateMediaInfoFile}
+            />
         </>
     )
 }

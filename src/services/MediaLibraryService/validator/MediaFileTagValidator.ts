@@ -1,6 +1,5 @@
 import {MediaFile, MediaFileTags, MediaFileTagValidatorInterface, MediaFileValidateResult} from "../interface";
 
-
 // список основных полей мета информации
 const defaultGeneralMetaTags: MediaFileTags[] = [
     "file_name",

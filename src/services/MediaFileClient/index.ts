@@ -15,7 +15,6 @@ const mediaFileClient: { (): MediaFileClientInterface } = () => {
     const token = getAuthorizationToken();
 
     return new MediaFileClient(
-        getAuthorizationToken(),
         new Axios({
             baseURL: getMainLink(),
             headers: {

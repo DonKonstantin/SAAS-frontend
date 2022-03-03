@@ -1,8 +1,9 @@
 import {FC, memo, useEffect, useState} from "react";
-import {MediaFileToUpload, uploadStatus$} from "../MediaFilesUploadContext";
+import {doubleFiles$, MediaFileToUpload, uploadStatus$} from "../MediaFilesUploadContext";
 import {Button, LinearProgress, Stack, TableCell, TableRow} from "@mui/material";
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";
 import MediaFileMetaTagStatus from "../../ListPageCustom/MediaFileMetaTagStatus";
+import {MediaFile} from "../../../services/MediaLibraryService/interface";
 
 type Props = {
     file: MediaFileToUpload
@@ -21,14 +22,16 @@ const MediaFileTableRow: FC<Props> = props => {
     } = props;
 
     const [progress, setProgress] = useState(0);
+    const [doubles, setHasDoubles] = useState<MediaFile[]>([]);
 
     useEffect(() => {
         const s = uploadStatus$.subscribe({
             next: value => {
-                console.log(value);
                 const thisFileStatus = value[file.mediaInfo.uuid]
 
                 if (!thisFileStatus) {
+                    setProgress(0);
+
                     return;
                 }
 
@@ -36,13 +39,26 @@ const MediaFileTableRow: FC<Props> = props => {
             }
         })
 
+        s.add(doubleFiles$.subscribe(
+            {next: value => {
+                    const thisFileStatus = value[file.mediaInfo.uuid]
+
+                    if (!thisFileStatus) {
+                        setHasDoubles([]);
+
+                        return;
+                    }
+
+                    setHasDoubles(thisFileStatus.doubles);
+            }}
+        ))
         return () => s.unsubscribe();
     }, [])
 
     return (
         <TableRow>
             <TableCell>
-                {file.mediaInfo.file_name}
+                {file.mediaInfo.origin_name}
             </TableCell>
             <TableCell>
                 {humanFileSize(file.mediaInfo.size)}
@@ -53,11 +69,11 @@ const MediaFileTableRow: FC<Props> = props => {
                     variant={"determinate"}
                 />
             </TableCell>
-            <TableCell width={90}>
+            <TableCell width={130}>
                 <MediaFileMetaTagStatus file={file.mediaInfo}/>
             </TableCell>
-            <TableCell>
-                <Stack spacing={1} flexWrap={"wrap"}>
+            <TableCell width={370}>
+                <Stack spacing={1} flexWrap={"wrap"} direction={"row"} justifyContent={"end"}>
                     {
                         onEdit !== undefined && (
                             <Button onClick={() => onEdit ? onEdit(file) : false} variant={"outlined"} size={"small"}>
@@ -67,7 +83,12 @@ const MediaFileTableRow: FC<Props> = props => {
                     }
                     {
                         onUpload !== undefined && (
-                            <Button onClick={() => onUpload ? onUpload(file) : false} variant={"outlined"} size={"small"}>
+                            <Button
+                                onClick={() => onUpload ? onUpload(file) : false}
+                                variant={"outlined"}
+                                size={"small"}
+                                disabled={progress === 100}
+                            >
                                 Загрузить
                             </Button>
                         )
@@ -81,6 +102,17 @@ const MediaFileTableRow: FC<Props> = props => {
                                 size={"small"}
                             >
                                 Удалить
+                            </Button>
+                        )
+                    } {
+                    doubles.length > 0 && (
+                            <Button
+                                onClick={() => onDelete ? onDelete(file) : false}
+                                variant={"outlined"}
+                                color={"error"}
+                                size={"small"}
+                            >
+                                Есть дубли
                             </Button>
                         )
                     }

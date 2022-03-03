@@ -1,7 +1,6 @@
-import React, {FC, useCallback, useState} from "react";
-import {Paper, Typography} from "@mui/material";
+import React, {FC, useCallback} from "react";
+import {Typography} from "@mui/material";
 import DropZoneArea from "../DropZoneArea";
-import MediaFileTable from "./MediaFileTable";
 import * as mmb from "music-metadata-browser";
 import {IAudioMetadata} from "music-metadata-browser";
 import {MediaFileToUpload, useMediaLibraryUpload} from "./MediaFilesUploadContext";
@@ -35,12 +34,13 @@ const makeMediaFileInfo = async (
     return {
         replace: false,
         replaceId: "",
+        hasDoubles: false,
         file,
         mediaInfo: mediaFileFactory(
             {
                 ...metadataToMediaInfo(metadata),
                 size: file.size,
-                file_name: file.name
+                origin_name: file.name
             },
             licenseType
         )
@@ -48,13 +48,13 @@ const makeMediaFileInfo = async (
 }
 
 
-const MediaUploadArea: FC = props => {
+const MediaUploadArea: FC = () => {
     const {
         addFilesToUpload,
         licenseType
     } = useMediaLibraryUpload();
 
-    const onDrop = useCallback(async (acceptedFiles) => {
+    const onDrop = useCallback(async (acceptedFiles: File[]) => {
         // Do something with the files
         if (acceptedFiles.length === 0) {
             return
@@ -62,7 +62,7 @@ const MediaUploadArea: FC = props => {
 
         const newFiles = await Promise.all(
             acceptedFiles
-                .map(file => makeMediaFileInfo(file, licenseType))
+                .map(file => makeMediaFileInfo(file, licenseType as LicenseType))
         );
 
         addFilesToUpload(newFiles);

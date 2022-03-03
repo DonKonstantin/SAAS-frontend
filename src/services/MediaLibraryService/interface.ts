@@ -1,6 +1,4 @@
 // License type for use file
-import {SearchMediaFilesDoublesResponse} from "./query/SearchMediaFilesDoublesQuery";
-
 export enum LicenseType {
     rao_voice = "rao_voice",
     sparx = "sparx",
@@ -14,6 +12,7 @@ export type MediaFile = {
     bpm: number
     composer: string;
     file_name: string;
+    origin_name: string;
     genre: string;
     id: string
     isrc: string;
@@ -27,6 +26,7 @@ export type MediaFile = {
     year: number
     duration: number
     size: number
+    uuid: string
 }
 
 export type MediaFileTags = keyof MediaFile;
