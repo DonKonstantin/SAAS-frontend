@@ -14,8 +14,9 @@ EditPageContent.getInitialProps = async () => ({
     title: "pages.role.add.title",
     header: "pages.role.add.header",
     entityEditSchema: "role",
-    permissionCheckPermission: "CHANGE_ROLES",
     permissionCheckLevel: "project",
+    permissionCheckPermission: "EDIT_ROLES",
+    permissionCheckCreatePermission: "EDIT_ROLES",
 })
 
 // Экспортируем компонент

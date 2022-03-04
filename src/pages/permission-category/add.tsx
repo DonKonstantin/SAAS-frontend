@@ -14,7 +14,10 @@ EditPageContent.getInitialProps = async () => ({
     title: "pages.permission_category.add.title",
     header: "pages.permission_category.add.header",
     entityEditSchema: "permission_category",
-    permissionCheckPermission: "CHANGE_PERMISSIONS",
+    permissionCheckPermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckEditPermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckCreatePermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckDeletePermission: "EDIT_PERMISSION_CATEGORIES",
     permissionCheckLevel: "realm",
 })
 

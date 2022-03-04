@@ -2,7 +2,7 @@ project: saas-crm
 configVersion: 1
 ---
 
-image: ~
+image: app
 dockerfile: ./docker/Dockerfile
 context: ./
 

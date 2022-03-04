@@ -16,9 +16,10 @@ ListingPage.getInitialProps = async ({query}): Promise<PageWithEntityList> => ({
     header: "pages.project.list.header",
     entityListSchema: "project",
     entityListAdditionFilter: {parent: `{_equals: ${query.domainId}}`},
-    permissionCheckEditPermission: "UPDATE_PROJECTS",
     permissionCheckEditLevel: "project",
-    permissionCheckCreatePermission: "UPDATE_PROJECTS",
+    permissionCheckEditPermission: "EDIT_PROJECT",
+    permissionCheckCreatePermission: "CREATE_PROJECT",
+    permissionCheckDeletePermission: "DELETE_PROJECT",
     permissionCheckCreateLevel: "domain",
     pageMenuType: "domain"
 })

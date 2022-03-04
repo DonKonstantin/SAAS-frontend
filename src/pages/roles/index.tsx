@@ -14,8 +14,11 @@ ListingPage.getInitialProps = async () => ({
     title: "pages.role.list.title",
     header: "pages.role.list.header",
     entityListSchema: "role",
-    permissionCheckPermission: "CHANGE_ROLES",
     permissionCheckLevel: "project",
+    permissionCheckPermission: "READ_ROLES",
+    permissionCheckEditPermission: "EDIT_ROLES",
+    permissionCheckCreatePermission: "EDIT_ROLES",
+    permissionCheckDeletePermission: "EDIT_ROLES",
 })
 
 // Экспортируем компонент

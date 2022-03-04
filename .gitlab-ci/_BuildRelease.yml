@@ -3,33 +3,10 @@ stages:
   - build_notify
 
 # Инициализация Werf
-.werf_init: &werf_init
-  image: docker:20.10.8
-  services:
-    - docker:20.10.8-dind
-  variables:
-    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_HOST: tcp://docker:2375/
+.werf_init:
+  image: ghcr.io/werf/werf:1.2-ea
   before_script:
-    - echo $CI_PIPELINE_SOURCE
-    - echo $IS_BUILD_ALLOWED
-    - docker info
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password-stdin
-    - apk update
-    - apk add curl git
-    - export PATH=$PATH:$HOME/bin
-    - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-    - mkdir -p ~/bin
-    - cd ~/bin
-    - curl -L https://raw.githubusercontent.com/werf/multiwerf/master/get.sh | sh
-    - type multiwerf && . $(multiwerf use 1.1 stable --as-file)
-    - type werf && source $(werf ci-env gitlab --as-file)
-    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-    - chmod +x ./kubectl
-    - mv ./kubectl /usr/local/bin/kubectl
-    - kubectl version --client
-    - cd $CI_PROJECT_DIR
+    - source $(werf ci-env gitlab --as-file)
 
 # Базовый скрипт отправки уведомления о сборке
 .build_notify: &build_notify
@@ -60,9 +37,7 @@ Build:
   environment:
     name: $ENVIRONMENT
   script:
-    - echo $IS_BUILD_ALLOWED
-    - werf build-and-publish
-
+    - werf build --add-custom-tag=$CI_REF
 
 # Уведомление об успешной сборке
 Build notify success:

@@ -15,7 +15,7 @@ EditPageContent.getInitialProps = async (): Promise<PageWithEntityEdit> => ({
     title: "pages.project.add.title",
     header: "pages.project.add.header",
     entityEditSchema: "project",
-    permissionCheckPermission: "UPDATE_PROJECTS",
+    permissionCheckPermission: "CREATE_PROJECT",
     permissionCheckLevel: "domain",
     pageMenuType: "domain",
 })
