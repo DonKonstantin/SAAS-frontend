@@ -14,7 +14,10 @@ ListingPage.getInitialProps = async () => ({
     title: "pages.permission_category.list.title",
     header: "pages.permission_category.list.header",
     entityListSchema: "permission_category",
-    permissionCheckPermission: "CHANGE_PERMISSIONS",
+    permissionCheckPermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckEditPermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckCreatePermission: "EDIT_PERMISSION_CATEGORIES",
+    permissionCheckDeletePermission: "EDIT_PERMISSION_CATEGORIES",
     permissionCheckLevel: "realm",
 })
 

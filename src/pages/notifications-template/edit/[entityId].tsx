@@ -15,7 +15,10 @@ EditPageContent.getInitialProps = async ({query}) => ({
     header: "pages.notifications_template.edit.header",
     entityEditSchema: "notifications_template",
     entityEditPrimaryKey: query?.entityId as string,
-    permissionCheckPermission: "CHANGE_NOTIFICATIONS",
+    permissionCheckPermission: "READ_NOTIFICATION_CONFIG",
+    permissionCheckCreatePermission: "EDIT_NOTIFICATION_TEMPLATES",
+    permissionCheckEditPermission: "EDIT_NOTIFICATION_TEMPLATES",
+    permissionCheckDeletePermission: "EDIT_NOTIFICATION_TEMPLATES",
     permissionCheckLevel: "realm",
 })
 

@@ -14,7 +14,10 @@ EditPageContent.getInitialProps = async () => ({
     title: "pages.notification_config.add.title",
     header: "pages.notification_config.add.header",
     entityEditSchema: "notification_config",
-    permissionCheckPermission: "CHANGE_NOTIFICATIONS",
+    permissionCheckPermission: "EDIT_NOTIFICATION_CONFIG",
+    permissionCheckCreatePermission: "EDIT_NOTIFICATION_CONFIG",
+    permissionCheckEditPermission: "EDIT_NOTIFICATION_CONFIG",
+    permissionCheckDeletePermission: "EDIT_NOTIFICATION_CONFIG",
     permissionCheckLevel: "realm",
 })
 

@@ -9,6 +9,10 @@ import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {useTranslation} from "react-i18next";
+import CheckPermission from "../../services/helpers/CheckPermission";
+import {useAuthorization} from "../../context/AuthorizationContext";
+import {PageWithEntityList} from "../ListPage/types";
+import {withPageProps} from "../../layouts/PagePropsProvider";
 
 /**
  * Хук необходим для того, чтоб корректно обработать зависимости, когда их нет.
@@ -86,6 +90,7 @@ const useActionButtons = () => {
 
     return {
         isActionInProgress,
+        primaryKey,
         handleSave,
         handleClose,
         handleSaveAndClose
@@ -93,9 +98,18 @@ const useActionButtons = () => {
 }
 
 // Компонент вывода кнопок управления формой
-const ActionButtons: FC = () => {
+const ActionButtons: FC<PageWithEntityList> = (props) => {
     const {t} = useTranslation()
-    const actionsCtx = useActionButtons()
+    const actionsCtx = useActionButtons();
+    const {userInfo} = useAuthorization()
+    const {
+        permissionCheckCreatePermission,
+        permissionCheckEditPermission,
+        permissionCheckLevel = "project",
+        permissionCheckCreateLevel = permissionCheckLevel,
+        permissionCheckEditLevel = permissionCheckLevel,
+    } = props
+
 
     // Доабавляет обработку нажатия клавиш
     useEffect(() => {
@@ -134,7 +148,34 @@ const ActionButtons: FC = () => {
         handleClose,
         handleSaveAndClose,
         handleSave,
+        primaryKey
     } = actionsCtx
+
+    const permissionUpdateCheckPermission = !!primaryKey ? permissionCheckEditPermission : permissionCheckCreatePermission;
+    const permissionUpdateCheckLevel = !!primaryKey ? permissionCheckEditLevel : permissionCheckCreateLevel;
+
+    if (!!userInfo && permissionUpdateCheckPermission && !CheckPermission(userInfo, permissionUpdateCheckPermission, permissionUpdateCheckLevel)) {
+        return (
+            <Box sx={{position: "fixed", bottom: 36, right: 36}}>
+                <Grid>
+                    <Grid item>
+                        <Tooltip placement="top" title={t(`entity-edit.actions.close`) as string}>
+                            <div>
+                                <Fab
+                                    size="large"
+                                    disabled={isActionInProgress}
+                                    color="secondary"
+                                    onClick={handleClose}
+                                >
+                                    <CloseIcon/>
+                                </Fab>
+                            </div>
+                        </Tooltip>
+                    </Grid>
+                </Grid>
+            </Box>
+        )
+    }
 
     return (
         <Box sx={{position: "fixed", bottom: 36, right: 36}}>
@@ -187,4 +228,4 @@ const ActionButtons: FC = () => {
 }
 
 // Экспортируем компонент
-export default ActionButtons
+export default withPageProps(ActionButtons)
