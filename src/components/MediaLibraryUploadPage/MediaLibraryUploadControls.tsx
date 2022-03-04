@@ -12,6 +12,10 @@ const MediaLibraryUploadControls: FC = () => {
         files,
     } = useMediaLibraryUpload();
 
+    if (files.length === 0) {
+        return null;
+    }
+
     return (
         <>
             <Stack spacing={2} direction="row" flexWrap={"wrap"}>

@@ -1,10 +1,13 @@
 import {FC, memo, useEffect, useState} from "react";
 import {doubleFiles$, MediaFileToUpload, uploadStatus$} from "../MediaFilesUploadContext";
-import {Button, LinearProgress, Stack, TableCell, TableRow} from "@mui/material";
+import {Button, IconButton, LinearProgress, Stack, TableCell, TableRow, Tooltip} from "@mui/material";
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";
 import MediaFileMetaTagStatus from "../../ListPageCustom/MediaFileMetaTagStatus";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
 import {useReplaceFileDialog} from "../SelectReplaceFileDialog/SelectReplaceFileDialogContext";
+import WarningIcon from '@mui/icons-material/Warning';
+import DoneIcon from '@mui/icons-material/Done';
+import {useTranslation} from "react-i18next";
 
 type Props = {
     file: MediaFileToUpload
@@ -25,9 +28,10 @@ const MediaFileTableRow: FC<Props> = props => {
     const [progress, setProgress] = useState(0);
     const [doubles, setHasDoubles] = useState<MediaFile[]>([]);
     const {openReplaceFileDialog} = useReplaceFileDialog();
+    const {t} = useTranslation();
 
     const handleOpenReplaceDialog = () => {
-        openReplaceFileDialog(doubles)
+        openReplaceFileDialog(file.mediaInfo, doubles)
     }
 
     useEffect(() => {
@@ -69,6 +73,25 @@ const MediaFileTableRow: FC<Props> = props => {
                 {file.mediaInfo.origin_name}
             </TableCell>
             <TableCell>
+                {
+                    (doubles.length > 0) && (
+                        <Tooltip title={t(`Умеются дубли файла, кликните чтобы принять решение`) as string}>
+                            <IconButton>
+                                <WarningIcon color={'warning'}/>
+                            </IconButton>
+                        </Tooltip>
+                    )
+                }
+
+                {
+                    (progress === 100) && (
+                        <Tooltip title={t(`Файл загружен`) as string}>
+                            <DoneIcon color={"success"}/>
+                        </Tooltip>
+                    )
+                }
+            </TableCell>
+            <TableCell width={120}>
                 {humanFileSize(file.mediaInfo.size)}
             </TableCell>
             <TableCell width={120}>

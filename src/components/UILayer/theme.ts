@@ -16,6 +16,15 @@ export const themeOptions: ThemeOptions = {
             default: '#FBFDFC',
         },
     },
+    components: {
+        MuiTableCell: {
+            styleOverrides: {
+                root: {
+                    borderBottomColor: "#E5E5E5"
+                }
+            }
+        }
+    }
 };
 
 // Create a theme instance.

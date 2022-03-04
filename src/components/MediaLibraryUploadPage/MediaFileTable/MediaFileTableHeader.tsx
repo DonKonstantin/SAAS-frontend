@@ -1,14 +1,15 @@
 import {FC} from "react";
 import {TableCell, TableHead, TableRow} from "@mui/material";
 
-const MediaFileTableHeader: FC =props => {
+const MediaFileTableHeader: FC = () => {
     return (
         <TableHead>
             <TableRow>
                 <TableCell>Название файла</TableCell>
+                <TableCell>Статус</TableCell>
                 <TableCell>Размер</TableCell>
                 <TableCell>Прогресс</TableCell>
-                <TableCell width={90}>Статус</TableCell>
+                <TableCell>Мета-теги</TableCell>
                 <TableCell
                 align={'right'}
                 >Действия</TableCell>

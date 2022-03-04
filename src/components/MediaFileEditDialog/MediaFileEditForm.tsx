@@ -21,7 +21,8 @@ const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
         variants,
         onChange,
         value,
-        label
+        label,
+        disabled
     } = props;
     const {t} = useTranslation();
 
@@ -35,6 +36,7 @@ const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
                 id={id}
                 value={value}
                 label={t(label as string)}
+                disabled={disabled}
                 onChange={onChange}
             >
                 {
@@ -49,7 +51,10 @@ const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
 
 const formConfig: {
     [key in keyof MediaFile]?: {
-        Component: ComponentsForms
+        Component: ComponentsForms,
+        props?: {
+            [K: string]: any
+        },
         rules: {},
         label: string,
         variants?: any[]
@@ -87,6 +92,9 @@ const formConfig: {
     },
     license_type: {
         label: "pages.file.field.license_type",
+        props: {
+            disabled: true
+        },
         rules: {
 
         },
@@ -140,6 +148,7 @@ const MediaFileEditForm: FC<Props> = props => {
                         ([field, {
                             Component,
                             label,
+                            props,
                             rules = {},
                             variants
                         }]) => {
@@ -153,6 +162,7 @@ const MediaFileEditForm: FC<Props> = props => {
                                         control={control}
                                         render={({field: {onChange, value}}) => (
                                             <Component
+                                                {...props}
                                                 fullWidth
                                                 variants={variants || []}
                                                 onChange={onChange}

@@ -5,7 +5,6 @@ import {ProgressUploadStatusByFile, uploadStatus$, useMediaLibraryUpload} from "
 
 const MediaLibraryProgressStatus: FC = () => {
     const {t} = useTranslation();
-
     const [progress, setProgress] = useState<ProgressUploadStatusByFile>({});
     const {
         files
@@ -24,6 +23,7 @@ const MediaLibraryProgressStatus: FC = () => {
         []
     );
 
+
     const generalProgress = useMemo(
         () => {
             // считаем вес всех прикрепленных файлов
@@ -40,9 +40,13 @@ const MediaLibraryProgressStatus: FC = () => {
         [files, progress]
     );
 
+    if (files.length === 0) {
+        return null;
+    }
+
     return (
         <>
-            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12}}>
+            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12, pt: 3}}>
                 {t(`Ход очереди`)}
             </Typography>
             <LinearProgress

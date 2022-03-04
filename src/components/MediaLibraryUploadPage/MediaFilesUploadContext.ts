@@ -23,8 +23,9 @@ export type MediaFileToUpload = {
     mediaInfo: MediaFile,
     file: File,
     replace: boolean    //Флаг для перезаписи файла
-    replaceId: string,
-    hasDoubles: boolean
+    replaceId: string,  // ID
+    hasDoubles: boolean,    // Флаг налиячия дублей файла
+    forceUpload?: boolean // флаг принудительной загрузки
 }
 
 /**
@@ -310,7 +311,6 @@ const filesUploadBus$ = uploadBus$.pipe(
                         return file;
                     }
 
-                    // return file
                     newFileMedia = await mediaFileClient().Upload(
                         licenseType$.getValue(),
                         file.file,
