@@ -33,7 +33,7 @@ type CheckMediaFilesContextActions = {
     addFileRawData(filePathOrName: string): void;
     removeFileRawData(filePathOrName: string): void;
     runCheck(): void;
-    downloadPlaylist(): void;
+    downloadPlaylist(withDoubles: boolean): void;
     resetCheck(): void;
 }
 
@@ -131,10 +131,15 @@ const resetCheck: CheckMediaFilesContextActions["resetCheck"] = () => {
     })
 }
 
-const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = () => {
-    const {filePathsOrNames} = context$.getValue();
+const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles) => {
+    const {fileCheckResult} = context$.getValue();
 
-    m3uServiceFactory().createPlaylist(filePathsOrNames.map(f => f.path));
+
+    m3uServiceFactory().createPlaylist(
+        fileCheckResult
+            .filter(f => !withDoubles && f.doubles.length === 0)
+            .map(f => f.fileName)
+    );
 }
 
 

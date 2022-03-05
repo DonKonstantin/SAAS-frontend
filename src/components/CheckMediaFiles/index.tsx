@@ -1,11 +1,8 @@
 import {FC} from "react";
 import {useTranslation} from "react-i18next";
 import {Divider, Grid, Paper, Typography} from "@mui/material";
-import M3uService from "../../services/M3uService/M3uService";
 import CheckMediaFilesControls from "./CheckMediaFilesControls";
 import CheckMediaFilesList from "./CheckMediaFilesList";
-
-const m3ui = new M3uService();
 
 const CheckMediaFiles: FC = props => {
     const {t} = useTranslation();

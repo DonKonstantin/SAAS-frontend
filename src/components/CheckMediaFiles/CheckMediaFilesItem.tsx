@@ -18,12 +18,12 @@ const CheckMediaFilesItem: FC<Props> = (props) => {
             {filePath}
             {
                 doubles?.doubles.length === 0 && (
-                    <CheckIcon/>
+                    <CheckIcon color={"success"}/>
                 )
             }
             {
                 doubles?.doubles.length !== 0 && (
-                    <DoDisturbIcon/>
+                    <DoDisturbIcon color={'warning'}/>
                 )
             }
         </Typography>

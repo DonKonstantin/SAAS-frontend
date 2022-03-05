@@ -188,7 +188,7 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             }
         },
         "/media": {
-            breadcrumb: "pages.mediaLibrary.breadcumb",
+            breadcrumb: "pages.mediaLibrary.breadcrumb",
             link: ({entityEditPrimaryKey}) => {
                 return {
                     href: "/media-rules",
@@ -197,7 +197,7 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             }
         },
         "/media/upload": {
-            breadcrumb: "pages.mediaLibraryUpload.breadcumb",
+            breadcrumb: "pages.mediaLibraryUpload.breadcrumb",
             link: ({entityEditPrimaryKey}) => {
                 return {
                     href: "/media-rules/upload",
@@ -206,7 +206,7 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             }
         },
         "/media/check": {
-            breadcrumb: "pages.mediaLibraryCheck.breadcumb",
+            breadcrumb: "pages.mediaLibraryCheck.breadcrumb",
             link: ({entityEditPrimaryKey}) => {
                 return {
                     href: "/media-rules/check",
