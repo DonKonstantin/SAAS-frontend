@@ -56,7 +56,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: VolumeUpIcon,
         subItems: [
             {
-                link: {href: "/media"},
+                link: {href: "/media/check"},
                 title: "UI.menu.left-menu.items.media-library.check",
                 permission: "READ_MEDIA_FILES"
             },

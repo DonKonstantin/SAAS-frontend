@@ -1,4 +1,4 @@
-import {DoubleSearchResult, MediaFile, MediaLibraryServiceInterface} from "./interface";
+import {MediaFilesDoubles, MediaFile, MediaLibraryServiceInterface} from "./interface";
 import {
     SearchMediaFilesDoublesParams,
     SearchMediaFilesDoublesQuery,
@@ -31,7 +31,7 @@ export default  class MediaLibraryService implements MediaLibraryServiceInterfac
         return Promise.resolve([]);
     }
 
-    async findDoubles(fileNames: string[]): Promise<DoubleSearchResult[]> {
+    async findDoubles(fileNames: string[]): Promise<MediaFilesDoubles[]> {
         if (fileNames.length === 0) {
             return [];
         }

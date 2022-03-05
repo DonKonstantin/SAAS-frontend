@@ -43,7 +43,7 @@ export interface MediaFileTagValidatorInterface {
     validate(file: MediaFile): MediaFileValidateResult
 }
 
-export type DoubleSearchResult = {
+export type MediaFilesDoubles = {
     fileName: string,
     doubles: MediaFile[]
 }
@@ -74,5 +74,5 @@ export interface MediaLibraryServiceInterface {
      * Find doubles
      * @param fileNames
      */
-    findDoubles(fileNames: string[]): Promise<DoubleSearchResult[]>
+    findDoubles(fileNames: string[]): Promise<MediaFilesDoubles[]>
 }

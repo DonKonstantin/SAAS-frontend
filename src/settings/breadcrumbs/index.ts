@@ -204,6 +204,15 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                     as: `/media-rules/upload`,
                 }
             }
+        },
+        "/media/check": {
+            breadcrumb: "pages.mediaLibraryCheck.breadcumb",
+            link: ({entityEditPrimaryKey}) => {
+                return {
+                    href: "/media-rules/check",
+                    as: `/media-rules/check`,
+                }
+            }
         }
     }
 }

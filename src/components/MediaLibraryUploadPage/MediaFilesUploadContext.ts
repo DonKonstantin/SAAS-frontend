@@ -1,4 +1,4 @@
-import {DoubleSearchResult, LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
+import {MediaFilesDoubles, LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import {
     BehaviorSubject,
     combineLatestWith, concatMap,
@@ -222,7 +222,7 @@ const uploadedFiles$ = new BehaviorSubject<MediaFileToUpload[]>([]);
 
 // Содержит карту дублей для файлов
 export const doubleFiles$ = new BehaviorSubject<{
-    [key: string]: DoubleSearchResult
+    [key: string]: MediaFilesDoubles
 }>({});
 
 export const uploadStatus$ = new BehaviorSubject<ProgressUploadStatusByFile>({});

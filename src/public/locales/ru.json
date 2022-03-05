@@ -516,6 +516,9 @@
     "mediaLibraryUpload": {
       "breadcrumb": "Загрузка"
     },
+    "mediaLibraryCheck": {
+      "breadcrumb": "Проверка"
+    },
     "file": {
       "metaTagFilledStatus": {
         "notFilled": "Отсутствуют",
