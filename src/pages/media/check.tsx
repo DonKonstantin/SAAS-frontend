@@ -14,14 +14,23 @@ type Props = PageWithMetaTags & PageWithChangeableMenu
 const Page: NextPage<Props> = () => {
     return (
         <>
-            <Box sx={{pb: 3}}>
-                <Grid container alignItems="center" spacing={1}>
+            <Box
+                sx={{
+                    height: "100%",
+                    pb: "40px",
+                    display: "grid",
+                    gridGap: 28,
+                    gridTemplateRows: "auto 1fr"
+                }}
+            >
+                <Grid container alignItems="center" spacing={1} >
                     <Grid item sx={{flex: "1 1 0"}}>
                         <Breadcrumbs/>
                     </Grid>
                 </Grid>
+                <CheckMediaFiles/>
             </Box>
-            <CheckMediaFiles/>
+
         </>
     )
 }

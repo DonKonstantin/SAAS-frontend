@@ -1,22 +1,35 @@
 import {FC} from "react";
 import {useTranslation} from "react-i18next";
-import {Button, Paper, Typography} from "@mui/material";
+import {Divider, Grid, Paper, Typography} from "@mui/material";
 import M3uService from "../../services/M3uService/M3uService";
+import CheckMediaFilesControls from "./CheckMediaFilesControls";
+import CheckMediaFilesList from "./CheckMediaFilesList";
 
 const m3ui = new M3uService();
 
 const CheckMediaFiles: FC = props => {
     const {t} = useTranslation();
 
-    const click =  () => {
-        m3ui.createPlaylist(['/home/dmitry/Загрузки/Metallica - The Unforgiven (копия).mp3', "/home/dmitry/Загрузки/sample3.mp3"]);
-    }
-
     return (
-        <Paper sx={{p:2}}>
-            <Typography color={"primary"}>{t("Проверка композиций")}</Typography>
-
-            <Button onClick={click}>Export in m3u</Button>
+        <Paper sx={{
+            p: 2,
+            display: "grid",
+            gridTemplateRows: "auto 1fr auto",
+            border: "1px solid #E5E5E5"
+        }}>
+            <div>
+                <Typography color={"primary"}>{t("Проверка композиций")}</Typography>
+                <Divider sx={{mt: 2}}/>
+            </div>
+            <CheckMediaFilesList/>
+            <Grid container alignItems={"center"}>
+                <Grid item xs={12}>
+                    <Divider sx={{mt: 2, mb: 2}}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <CheckMediaFilesControls/>
+                </Grid>
+            </Grid>
         </Paper>
     )
 }
