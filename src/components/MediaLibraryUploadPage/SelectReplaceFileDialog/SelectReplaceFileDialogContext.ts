@@ -11,7 +11,7 @@ type SelectReplaceFileDialogContext = {
 const context$ = new BehaviorSubject<SelectReplaceFileDialogContext>({
     availableFiles: [],
     targetFile: undefined,
-    open: false
+    open: true
 })
 
 

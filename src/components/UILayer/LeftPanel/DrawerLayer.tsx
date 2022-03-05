@@ -5,6 +5,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import clsx from "clsx";
 import {useTranslation} from "react-i18next";
+import AudioPlayerContainer from "../../AudioPlayeContainer";
 
 // Ширина панели меню
 const drawerWidth = 275;
@@ -53,6 +54,8 @@ const DrawerContent = styled('div')(() => ({
     width: "100%",
     overflow: "hidden",
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column"
 }));
 
 // Компонент стилизованного блока меню

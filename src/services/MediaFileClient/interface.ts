@@ -39,5 +39,5 @@ export interface MediaFileClientInterface {
     Load(
         id: string,
         config?: AxiosRequestConfig
-    ): Promise<File>
+    ): Promise<string>
 }

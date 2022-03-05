@@ -14,6 +14,7 @@ import EditPageProvider from "../components/EditPage/EditPageProvider";
 import MenuChangeLayout from "../layouts/MenuChangeLayout";
 import {setDomain, setProject} from "../context/AuthorizationContext";
 import {clientServerDetector} from "../services/clientServerDetector";
+import AudioPlayerContainer from "../components/AudioPlayeContainer";
 
 // Основной шаблон приложения
 function CrmApp({Component, pageProps}: AppProps) {

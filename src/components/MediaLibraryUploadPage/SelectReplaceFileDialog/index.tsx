@@ -1,7 +1,7 @@
 import {FC, memo, useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
-import PerlacedFilesList from "./PerlacedFilesList";
+import ReplacedFilesList from "./ReplacedFilesList";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 const SelectReplaceFileDialog: FC<Props> = (props) => {
     const {open, closeReplaceFileDialog, targetFile} = useReplaceFileDialog();
-    const [file,setFile] = useState<MediaFile | undefined>(undefined);
+    const [file, setFile] = useState<MediaFile | undefined>(undefined);
     const {onSave} = props;
 
     if (!targetFile) {
@@ -21,7 +21,7 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
         <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
             <DialogTitle>Выбор заменяемого файла</DialogTitle>
             <DialogContent>
-                <PerlacedFilesList
+                <ReplacedFilesList
                     onSelect={setFile}
                     current={file}
                 />
@@ -30,11 +30,16 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
                 <Button
                     variant={"outlined"}
                     type={"submit"}
-                    onClick={() => onSave(targetFile, file)}
-                >Подтвердить</Button>
+                    onClick={() => onSave(targetFile as MediaFile, file)}
+                >
+                    Подтвердить
+                </Button>
                 <Button
                     variant={"outlined"}
-                    onClick={() => closeReplaceFileDialog()}>Закрыть</Button>
+                    onClick={() => closeReplaceFileDialog()}
+                >
+                    Закрыть
+                </Button>
             </DialogActions>
         </Dialog>
     )

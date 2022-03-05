@@ -37,20 +37,19 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * @param fileName
      * @param config
      */
-    async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<File> {
+    async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<string> {
         try {
             this.logger.Debug("Load file from server", fileName);
-            const {data: result} = await this.client.get<File>(
+            const {data: result} = await this.client.get<string>(
                 `/files/${fileName}`,
                 {
                     ...config,
-                    headers: {"Content-Type": "multipart/form-data"},
                 }
             );
 
             this.logger.Debug('file loaded', result);
 
-            return result;
+            return result as string;
         } catch (e) {
             throw e
         }
