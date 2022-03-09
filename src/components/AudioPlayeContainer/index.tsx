@@ -2,6 +2,7 @@ import {FC, useEffect, useRef, useState} from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged} from "rxjs";
+import H5AudioPlayer from "react-h5-audio-player";
 
 const AudioPlayerContainer: FC = () => {
     const [songSrc, setSongSrc] = useState<string>("");
@@ -34,10 +35,11 @@ const AudioPlayerContainer: FC = () => {
         return () => subscriber.unsubscribe();
     }, [])
 
-    const player = useRef()
+    const player = useRef<H5AudioPlayer | undefined>()
 
     return (
         <AudioPlayer
+            // @ts-ignore
             ref={player}
             layout={"stacked-reverse"}
             src={songSrc}

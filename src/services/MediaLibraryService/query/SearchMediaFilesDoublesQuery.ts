@@ -1,6 +1,6 @@
 import {GraphQLQuery} from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import {MediaFilesDoubles, MediaFile} from "../interface";
+import {MediaFilesDoubles} from "../interface";
 
 
 export type SearchMediaFilesDoublesParams = {

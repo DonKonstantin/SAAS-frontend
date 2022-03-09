@@ -81,7 +81,7 @@ type WithAudioPlayerContext<T = {}> =
     & AudioPlayerContextActions
     & T;
 
-export const useAudioPlayer = (...pipeModifications: OperatorFunction<any, {}>[]): WithAudioPlayerContext => {
+export const useAudioPlayer = (...pipeModifications: OperatorFunction<any, AudioPlayerContext>[]): WithAudioPlayerContext => {
     const [contextValue, setContextValue] = useState(context$.getValue())
     useEffect(() => {
         const subscription = context$

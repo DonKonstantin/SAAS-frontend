@@ -7,9 +7,11 @@ import mediaLibraryService from "../../services/MediaLibraryService";
 const getFileNamesAndPath = (text: string): FilePathAndName[] => {
     const paths = text.split("\n").filter(val => !!val);
 
+
     return paths.map(
         path => {
-            const fileName = path.split('\\').pop().split('/').at(-1);
+            // @ts-ignore
+            const fileName = (path as string).split('\\').pop().split('/').at(-1);
 
             return {
                 fileName: fileName as string || path,

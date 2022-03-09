@@ -13,7 +13,7 @@ type Props = {
 const CheckMediaFilesItem: FC<Props> = (props) => {
     const {fileName, doubles} = props;
 
-    const hasDoubles = doubles?.length > 0;
+    const hasDoubles = !!doubles && doubles?.length > 0;
 
     return (
         <Box sx={{display: "flex", flexWrap: "wrap"}}>

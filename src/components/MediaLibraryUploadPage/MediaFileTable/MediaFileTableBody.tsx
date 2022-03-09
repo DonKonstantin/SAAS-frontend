@@ -4,7 +4,7 @@ import {MediaFileToUpload, useMediaLibraryUpload} from "../MediaFilesUploadConte
 import MediaFileTableRow from "./MediaFileTableRow";
 import {useEditMediaFilesModal} from "../../MediaFileEditDialog/MediaFileEditDialogContext";
 
-const MediaFileTableBody: FC = props => {
+const MediaFileTableBody: FC = () => {
     const {
         files,
         removeFilesToUpload,

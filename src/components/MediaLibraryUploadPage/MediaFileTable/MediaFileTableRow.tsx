@@ -1,4 +1,4 @@
-import {FC, memo, useEffect, useMemo, useState} from "react";
+import {FC, useEffect, useMemo, useState} from "react";
 import {doubleFiles$, MediaFileToUpload, uploadStatus$} from "../MediaFilesUploadContext";
 import {Button, IconButton, LinearProgress, Stack, TableCell, TableRow, Tooltip} from "@mui/material";
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";

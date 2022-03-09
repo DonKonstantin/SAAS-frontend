@@ -40,7 +40,7 @@ const CheckMediaFilesList: FC = () => {
         >
             <Stack>
                 {fileCheckResult.map(file => (
-                    <CheckMediaFilesItem {...file} key={file.id}/>
+                    <CheckMediaFilesItem {...file} key={file.fileName}/>
                 ))}
             </Stack>
         </Box>

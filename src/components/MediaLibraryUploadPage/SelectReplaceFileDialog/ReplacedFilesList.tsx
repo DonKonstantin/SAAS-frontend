@@ -1,8 +1,7 @@
 import {FC, useCallback} from "react";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
-import {Button, Checkbox, Stack, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
+import {Table, TableBody, TableContainer} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
-import {useTranslation} from "react-i18next";
 import ReplacedItem from "./ReplacedItem";
 
 type Props = {
@@ -16,7 +15,6 @@ const ReplacedFilesList: FC<Props> = props => {
         current
     } = props;
     const {availableFiles = []} = useReplaceFileDialog();
-    const {t} = useTranslation();
 
    const onSelectHandler = useCallback((file) => {
        onSelect(file);
