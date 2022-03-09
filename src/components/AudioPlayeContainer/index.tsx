@@ -1,15 +1,16 @@
 import {FC, useEffect, useRef, useState} from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
+import {distinctUntilChanged} from "rxjs";
 
 const AudioPlayerContainer: FC = () => {
     const [songSrc, setSongSrc] = useState<string>("");
-    const {currentPlaySongId = "222", stopPlay, continuePlay} = useAudioPlayer();
+    const {currentPlaySongId, stopPlay, continuePlay} = useAudioPlayer(distinctUntilChanged(() => true));
 
     useEffect(() => {
         const subscriber = audioPlayerChangeSongBus$.subscribe({
             next: value => {
-                setSongSrc(songSrc as string)
+                setSongSrc(value as string);
             }
         });
 
@@ -39,8 +40,7 @@ const AudioPlayerContainer: FC = () => {
         <AudioPlayer
             ref={player}
             layout={"stacked-reverse"}
-            // src={songSrc}
-            src={"https://dl1.mp3party.net/download/10410354"}
+            src={songSrc}
             onPause={() => stopPlay()}
             onPlay={() => currentPlaySongId && continuePlay(currentPlaySongId)}
         />

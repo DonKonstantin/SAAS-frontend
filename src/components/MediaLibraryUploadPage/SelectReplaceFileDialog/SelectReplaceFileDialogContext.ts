@@ -24,15 +24,14 @@ const openReplaceFileDialog: SelectReplaceFileDialogActions["openReplaceFileDial
     context$.next({
         availableFiles,
         targetFile,
-        open: true
+        open: true,
     })
 }
 
 const closeReplaceFileDialog: SelectReplaceFileDialogActions["closeReplaceFileDialog"] = () => {
     context$.next({
-        availableFiles: [],
-        targetFile: undefined,
-        open: true
+        ...context$.getValue(),
+        open: false
     })
 }
 

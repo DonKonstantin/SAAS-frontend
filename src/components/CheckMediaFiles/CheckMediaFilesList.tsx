@@ -38,9 +38,9 @@ const CheckMediaFilesList: FC = () => {
         <Box
             sx={{overflowY: "auto", pt:2}}
         >
-            <Stack spacing={1}>
+            <Stack>
                 {fileCheckResult.map(file => (
-                    <CheckMediaFilesItem {...file} />
+                    <CheckMediaFilesItem {...file} key={file.id}/>
                 ))}
             </Stack>
         </Box>

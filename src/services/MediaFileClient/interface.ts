@@ -40,4 +40,10 @@ export interface MediaFileClientInterface {
         id: string,
         config?: AxiosRequestConfig
     ): Promise<string>
+
+    /**
+     * Get filepath on server
+     * @param name
+     */
+    GetFilePath(name: string): Promise<string>
 }

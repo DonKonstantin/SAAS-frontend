@@ -1,14 +1,10 @@
 import MediaFileClient from "./MediaFileClient";
 import {MediaFileClientInterface} from "./interface";
 import {getAuthorizationToken} from "../../context/AuthorizationContext";
-import getConfig from "next/config";
 import {Axios} from "axios";
+import {getMainFileApiLink} from "./helpers";
 
-const getMainLink = () => {
-    const {publicRuntimeConfig} = getConfig();
 
-    return `${publicRuntimeConfig.mediaLibraryEndPoint}api/${publicRuntimeConfig.mediaLibraryApiVersion}`
-}
 
 // Factory for job with files
 const mediaFileClient: { (): MediaFileClientInterface } = () => {
@@ -16,7 +12,7 @@ const mediaFileClient: { (): MediaFileClientInterface } = () => {
 
     return new MediaFileClient(
         new Axios({
-            baseURL: getMainLink(),
+            baseURL: getMainFileApiLink(),
             headers: {
                 "Authorization": `${token}`
             }

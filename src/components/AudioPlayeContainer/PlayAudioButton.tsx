@@ -5,19 +5,19 @@ import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFil
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
 
 type Props = {
-    fileId: string
+    fileName: string
 }
 
 const PlayAudioButton: FC<Props> = props => {
-    const {fileId} = props;
+    const {fileName} = props;
     const {playSong, currentPlaySongId} = useAudioPlayer();
 
     return (
         <IconButton
-            onClick={() => playSong(fileId)}
+            onClick={() => playSong(fileName)}
         >
             {
-                currentPlaySongId !== fileId
+                currentPlaySongId !== fileName
                     ? (<PlayCircleFilledWhiteOutlinedIcon/>)
                     : (<PauseCircleOutlineOutlinedIcon/>)
             }

@@ -2,6 +2,9 @@ import {FC} from "react";
 import {TableCell, TableHead, TableRow} from "@mui/material";
 
 const MediaFileTableHeader: FC = () => {
+    /**
+     * TODO: Добавить сортировку по полям
+     */
     return (
         <TableHead>
             <TableRow>

@@ -1,4 +1,4 @@
-import {FC, memo, useState} from "react";
+import {FC, memo, useEffect, useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
 import ReplacedFilesList from "./ReplacedFilesList";
@@ -13,9 +13,24 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
     const [file, setFile] = useState<MediaFile | undefined>(undefined);
     const {onSave} = props;
 
+    useEffect(() => {
+        setFile(undefined);
+    }, [targetFile])
+
     if (!targetFile) {
         return null;
     }
+
+    const saveHandler = () => {
+        if (!file) {
+            return;
+        }
+
+        onSave(targetFile as MediaFile, file);
+        closeReplaceFileDialog();
+    }
+
+
 
     return (
         <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
@@ -30,7 +45,7 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
                 <Button
                     variant={"outlined"}
                     type={"submit"}
-                    onClick={() => onSave(targetFile as MediaFile, file)}
+                    onClick={saveHandler}
                 >
                     Подтвердить
                 </Button>

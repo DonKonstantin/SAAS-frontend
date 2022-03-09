@@ -3,7 +3,6 @@ import {TableBody} from "@mui/material";
 import {MediaFileToUpload, useMediaLibraryUpload} from "../MediaFilesUploadContext";
 import MediaFileTableRow from "./MediaFileTableRow";
 import {useEditMediaFilesModal} from "../../MediaFileEditDialog/MediaFileEditDialogContext";
-import {MediaFile} from "../../../services/MediaLibraryService/interface";
 
 const MediaFileTableBody: FC = props => {
     const {

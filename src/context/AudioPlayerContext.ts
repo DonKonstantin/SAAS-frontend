@@ -1,10 +1,11 @@
 import {BehaviorSubject, OperatorFunction, Subject} from "rxjs";
 import mediaFileClient from "../services/MediaFileClient";
 import {useEffect, useState} from "react";
+import Cookies from "universal-cookie";
 
 type AudioPlayerContextActions = {
-    playSong(id: string): void;
-    continuePlay(id: string): void;
+    playSong(fileName: string): void;
+    continuePlay(fileName: string): void;
     stopPlay(): void
 }
 
@@ -16,21 +17,45 @@ const context$ = new BehaviorSubject<AudioPlayerContext>({
     currentPlaySongId: undefined
 });
 
-const playSong: AudioPlayerContextActions["playSong"] = async (id) => {
-    const src = await mediaFileClient().Load(id);
+const playSong: AudioPlayerContextActions["playSong"] = async (fileName) => {
+    const {
+        currentPlaySongId
+    } = context$.getValue();
 
+    if (currentPlaySongId === fileName) {
+        stopPlay();
 
+        return
+    }
+    const url = await mediaFileClient().GetFilePath(fileName);
+    let src = "";
+
+    const cookie = new Cookies();
+
+    const result = await fetch(url, {
+        headers: {
+            Authorization: cookie.get('token')
+        }
+    });
+
+    const blob = await result.blob();
+
+    if (blob) {
+        src = URL.createObjectURL(blob as Blob);
+    }
+
+    console.log(src)
     audioPlayerChangeSongBus$.next(src);
     context$.next({
         ...context$.getValue(),
-        currentPlaySongId: id,
+        currentPlaySongId: fileName,
     })
 }
 
-const continuePlay: AudioPlayerContextActions["continuePlay"] = (id) => {
+const continuePlay: AudioPlayerContextActions["continuePlay"] = (fileName) => {
     context$.next({
         ...context$.getValue(),
-        currentPlaySongId: id,
+        currentPlaySongId: fileName,
     })
 }
 
@@ -47,7 +72,6 @@ const actions: AudioPlayerContextActions = {
     stopPlay,
     continuePlay
 }
-
 
 
 export const audioPlayerChangeSongBus$ = new Subject<string>();

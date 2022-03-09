@@ -17,14 +17,15 @@ const CheckMediaFilesItem: FC<Props> = (props) => {
 
     return (
         <Box sx={{display: "flex", flexWrap: "wrap"}}>
-            <Typography>
+            <Typography sx={{mr:1}}>
                 {fileName}
             </Typography>
+
             {!hasDoubles && (
-                <CheckIcon color={"success"}/>
+                <CheckIcon fontSize={"small"} color={"success"}/>
             )}
             {hasDoubles && (
-                <DoDisturbIcon color={'warning'}/>
+                <DoDisturbIcon fontSize={"small"} color={'warning'}/>
             )}
         </Box>
 

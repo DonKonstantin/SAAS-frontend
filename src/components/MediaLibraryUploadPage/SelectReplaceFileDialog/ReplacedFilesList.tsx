@@ -1,8 +1,9 @@
-import {FC} from "react";
+import {FC, useCallback} from "react";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
 import {Button, Checkbox, Stack, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
 import {useTranslation} from "react-i18next";
+import ReplacedItem from "./ReplacedItem";
 
 type Props = {
     onSelect(file: MediaFile): void
@@ -17,8 +18,9 @@ const ReplacedFilesList: FC<Props> = props => {
     const {availableFiles = []} = useReplaceFileDialog();
     const {t} = useTranslation();
 
-    const playHandler = () => {
-    };
+   const onSelectHandler = useCallback((file) => {
+       onSelect(file);
+   }, [onSelect]);
 
     return (
         <TableContainer>
@@ -29,24 +31,12 @@ const ReplacedFilesList: FC<Props> = props => {
             >
                 <TableBody>
                     {availableFiles.map(file => (
-                        <TableRow>
-                            <TableCell>
-                                <Checkbox
-                                    onClick={() => onSelect(file)}
-                                    checked={current?.id === file.id}
-                                />
-                            </TableCell>
-                            <TableCell>
-                                {file.origin_name}
-                            </TableCell>
-                            <TableCell>
-                                <Stack direction={"row"} spacing={2}>
-                                    <Button variant={"outlined"} onClick={playHandler}>{t(`Проиграть`)}</Button>
-                                    <Button variant={"outlined"}
-                                            onClick={() => onSelect(file)}>{t(`Выбрать`)}</Button>
-                                </Stack>
-                            </TableCell>
-                        </TableRow>
+                        <ReplacedItem
+                            key={file.id}
+                            file={file}
+                            onSelect={onSelectHandler}
+                            isCurrent={current?.id === file.id}
+                        />
                     ))}
                 </TableBody>
             </Table>
