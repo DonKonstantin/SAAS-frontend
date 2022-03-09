@@ -10,7 +10,7 @@ export default class M3uService implements M3UServiceInterface {
             '#EXTM3U\n',
             ...playlistCompositions.flatMap(file => {
                 return [
-                    '#EXTINF -1, ${file}\n',
+                    `#EXTINF -1, ${file}\n`,
                     `${file}\n`
                 ]
             }),

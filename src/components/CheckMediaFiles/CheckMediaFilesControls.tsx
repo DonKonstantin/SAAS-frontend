@@ -20,9 +20,9 @@ const CheckMediaFilesControls: FC = () => {
             <Stack spacing={2} flexWrap={"wrap"} direction="row" justifyContent={"flex-end"}>
                 <FormControlLabel
                     label={"С дублями"}
-                    value={allowedDoubles}
                     control={
                         <Switch
+                            checked={allowedDoubles}
                             onChange={event => setAllowedDoubles(event.target.checked)}
                         />
 

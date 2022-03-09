@@ -131,15 +131,20 @@ const resetCheck: CheckMediaFilesContextActions["resetCheck"] = () => {
     })
 }
 
-const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles) => {
+const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles = false) => {
     const {fileCheckResult} = context$.getValue();
 
+    const fileNames = fileCheckResult.filter(
+        f => {
+            if (withDoubles) {
+                return true;
+            }
 
-    m3uServiceFactory().createPlaylist(
-        fileCheckResult
-            .filter(f => !withDoubles && f.doubles.length === 0)
-            .map(f => f.fileName)
-    );
+            return f.doubles.length === 0
+        }
+    ).map((f => f.fileName))
+
+    m3uServiceFactory().createPlaylist(fileNames);
 }
 
 

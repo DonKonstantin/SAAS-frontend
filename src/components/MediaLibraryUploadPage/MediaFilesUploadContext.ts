@@ -257,7 +257,7 @@ const filesUploadBus$ = uploadBus$.pipe(
             filter(
                 file=> metaTegsValidator.validate(file.mediaInfo).requiredPercent === 100
             ),
-            switchMap(
+            /*switchMap(
                 async () => {
                     const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.origin_name])
 
@@ -273,7 +273,7 @@ const filesUploadBus$ = uploadBus$.pipe(
 
                     return file;
                 }
-            ),
+            ),*/
             switchMap(
                 async (file) => {
                     let newFileMedia: MediaFile | undefined;
