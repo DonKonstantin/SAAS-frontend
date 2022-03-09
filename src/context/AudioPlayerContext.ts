@@ -44,7 +44,6 @@ const playSong: AudioPlayerContextActions["playSong"] = async (fileName) => {
         src = URL.createObjectURL(blob as Blob);
     }
 
-    console.log(src)
     audioPlayerChangeSongBus$.next(src);
     context$.next({
         ...context$.getValue(),
