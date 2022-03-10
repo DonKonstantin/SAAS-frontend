@@ -39,7 +39,7 @@ export interface MediaFileClientInterface {
     Load(
         id: string,
         config?: AxiosRequestConfig
-    ): Promise<string>
+    ): Promise<Blob>
 
     /**
      * Get filepath on server

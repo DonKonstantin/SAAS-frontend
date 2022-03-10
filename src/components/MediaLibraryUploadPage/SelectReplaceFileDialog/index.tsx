@@ -5,13 +5,14 @@ import ReplacedFilesList from "./ReplacedFilesList";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
 
 type Props = {
-    onSave(targetFile: MediaFile, replacedFile?: MediaFile): void
+    onSave(targetFile: MediaFile, replacedFile?: string, force?: boolean): void
+    force?: boolean
 }
 
 const SelectReplaceFileDialog: FC<Props> = (props) => {
     const {open, closeReplaceFileDialog, targetFile} = useReplaceFileDialog();
     const [file, setFile] = useState<MediaFile | undefined>(undefined);
-    const {onSave} = props;
+    const {onSave, force = false} = props;
 
     useEffect(() => {
         setFile(undefined);
@@ -21,16 +22,10 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
         return null;
     }
 
-    const saveHandler = () => {
-        if (!file) {
-            return;
-        }
-
-        onSave(targetFile as MediaFile, file);
+    const saveHandler = (force = false) => {
+        onSave(targetFile as MediaFile, file?.id || "", force);
         closeReplaceFileDialog();
     }
-
-
 
     return (
         <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
@@ -45,10 +40,20 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
                 <Button
                     variant={"outlined"}
                     type={"submit"}
-                    onClick={saveHandler}
+                    onClick={() => saveHandler()}
                 >
                     Подтвердить
                 </Button>
+                {force && (
+                    <Button
+                        variant={"outlined"}
+                        type={"submit"}
+                        onClick={() => saveHandler(true)}
+                    >
+                        Создать новый
+                    </Button>
+                )
+                }
                 <Button
                     variant={"outlined"}
                     onClick={() => closeReplaceFileDialog()}

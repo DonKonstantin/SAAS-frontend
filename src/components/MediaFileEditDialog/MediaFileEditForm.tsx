@@ -86,7 +86,7 @@ const formConfig: {
         Component: TextField as unknown as ComponentsForms
     },
     language: {
-        label: "pages.file.field.year",
+        label: "pages.file.field.language",
         rules: {},
         Component: TextField as unknown as ComponentsForms
     },

@@ -1,7 +1,6 @@
 import {BehaviorSubject, OperatorFunction, Subject} from "rxjs";
 import mediaFileClient from "../services/MediaFileClient";
 import {useEffect, useState} from "react";
-import Cookies from "universal-cookie";
 
 type AudioPlayerContextActions = {
     playSong(fileName: string): void;
@@ -28,23 +27,64 @@ const playSong: AudioPlayerContextActions["playSong"] = async (fileName) => {
         return
     }
     const url = await mediaFileClient().GetFilePath(fileName);
-    let src = "";
+    // const file = await mediaFileClient().Load(fileName);
+    // let src = "";
 
-    const cookie = new Cookies();
 
-    const result = await fetch(url, {
+    // const cookie = new Cookies();
+
+    /*const srcPathStream = await fetch(url, {
+        method: "get",
         headers: {
             Authorization: cookie.get('token')
         }
-    });
+    })
+        .then(response => {
+            const reader = response.body.getReader();
+            new ReadableStream({
+                start(controller) {
+                    return pump();
+                    function pump() {
+                        return reader.read().then(({ done, value }) => {
+                            // When no more data needs to be consumed, close the stream
+                            if (done) {
+                                controller.close();
+                                return;
+                            }
 
-    const blob = await result.blob();
+                            console.log(value)
+                            // Enqueue the next data chunk into our target stream
+                            controller.enqueue(value);
+                            return pump();
+                        });
+                    }
+                }
+            })
+        })
+        .then(stream => new Response(stream))
+        .then(response => response.blob())
+        .then(blob => URL.createObjectURL(blob))
+    ;*/
 
-    if (blob) {
-        src = URL.createObjectURL(blob as Blob);
-    }
+    // TODO: Добавить получение файла для его воспроизмедение в плеере, сейчас есть проблема с получением стрима
 
-    audioPlayerChangeSongBus$.next(src);
+
+   /* console.log(file)
+    console.log(srcPathStream)
+    const audio = new Audio()*/
+    console.log(url)
+
+    // src = srcPathStream;
+
+   /* if (file) {
+        src = URL.createObjectURL(result as Blob);
+
+        console.log(src)
+        // audio.src = src
+        // audio.load()
+    }*/
+
+    audioPlayerChangeSongBus$.next(url);
     context$.next({
         ...context$.getValue(),
         currentPlaySongId: fileName,

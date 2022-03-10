@@ -12,4 +12,5 @@ envExternalVariableCodes:
   - DEBUG
   - TOKEN_REFRESH_TIMEOUT
   - DOMAIN
+  - MAIN_DOMAIN
 
