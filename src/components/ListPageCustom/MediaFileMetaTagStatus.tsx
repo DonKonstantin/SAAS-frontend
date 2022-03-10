@@ -2,7 +2,7 @@ import {FC, memo, useMemo} from "react";
 import {MediaFile} from "../../services/MediaLibraryService/interface";
 import MediaFileTagValidator from "../../services/MediaLibraryService/validator/MediaFileTagValidator";
 import {useTranslation, } from "react-i18next";
-import {Button, Chip} from "@mui/material";
+import {Chip} from "@mui/material";
 import {styled} from "@mui/material/styles";
 
 type Props = {

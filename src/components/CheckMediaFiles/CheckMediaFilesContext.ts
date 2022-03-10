@@ -7,9 +7,11 @@ import mediaLibraryService from "../../services/MediaLibraryService";
 const getFileNamesAndPath = (text: string): FilePathAndName[] => {
     const paths = text.split("\n").filter(val => !!val);
 
+
     return paths.map(
         path => {
-            const fileName = path.split('\\').pop().split('/').at(-1);
+            // @ts-ignore
+            const fileName = (path as string).split('\\').pop().split('/').at(-1);
 
             return {
                 fileName: fileName as string || path,
@@ -131,15 +133,20 @@ const resetCheck: CheckMediaFilesContextActions["resetCheck"] = () => {
     })
 }
 
-const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles) => {
+const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles = false) => {
     const {fileCheckResult} = context$.getValue();
 
+    const fileNames = fileCheckResult.filter(
+        f => {
+            if (withDoubles) {
+                return true;
+            }
 
-    m3uServiceFactory().createPlaylist(
-        fileCheckResult
-            .filter(f => !withDoubles && f.doubles.length === 0)
-            .map(f => f.fileName)
-    );
+            return f.doubles.length === 0
+        }
+    ).map((f => f.fileName))
+
+    m3uServiceFactory().createPlaylist(fileNames);
 }
 
 

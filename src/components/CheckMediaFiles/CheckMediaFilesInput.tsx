@@ -1,4 +1,4 @@
-import {FC, useState} from "react";
+import {FC} from "react";
 import {TextField} from "@mui/material";
 import {useCheckMediaFilesContext} from "./CheckMediaFilesContext";
 import {styled} from "@mui/material/styles";
@@ -17,7 +17,7 @@ const StyledTextArea = styled(TextField)`
     }
 `;
 
-const CheckMediaFilesInput: FC = props => {
+const CheckMediaFilesInput: FC = () => {
     const {addFileRawData, rawData} = useCheckMediaFilesContext();
 
     const submitHandler = (event) => {

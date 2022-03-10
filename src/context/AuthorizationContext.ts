@@ -1,4 +1,11 @@
-import {BehaviorSubject, distinctUntilChanged, OperatorFunction, Subject, throttleTime} from "rxjs";
+import {
+    BehaviorSubject,
+    distinctUntilChanged,
+    distinctUntilKeyChanged, map,
+    OperatorFunction,
+    Subject,
+    throttleTime
+} from "rxjs";
 import {UserInfoData} from "../services/authService/UserInfoQuery";
 import withBehaviourSubject from "../connectors/withBehaviourSubject";
 import {authService} from "../services/authService";
@@ -27,6 +34,12 @@ export type AuthorizationContext = {
     domains: DomainData[]   // Все, доступные пользователю, домены
     projects: ProjectData[] // Все, доступные пользователю, проекты
 };
+
+enum levelEnum {
+    "realm" = 1,
+    "domain" = 2,
+    "project" = 3
+}
 
 // События, происходящие с контекстом
 type AuthorizationActions = {
@@ -142,6 +155,23 @@ export const setProject = (project: string) => {
         project: project,
     })
 }
+
+// Шина на обновление домена
+const updateDomain$ = context$.pipe(
+    distinctUntilKeyChanged("domain"),
+    map(value => value.domain)
+)
+// Шина на обновление проекта
+const updateProject$ = context$.pipe(
+    distinctUntilKeyChanged("project"),
+    map(value => value.project)
+)
+
+// Шина на обновление уровня меню
+const updateLevel$ = context$.pipe(
+    distinctUntilKeyChanged("menuType"),
+    map(value => value.menuType)
+)
 
 /**
  * Обработка перезагрузки данных по доменам и проектам, доступным пользователю
@@ -271,6 +301,38 @@ const initializeContextBus = () => {
             document.cookie = `token=${token || ""}; path=/;`
         }
     })
+
+    tokenCookieSet.add(
+        updateDomain$.subscribe(value => {
+            if (clientServerDetector().isServer()) {
+                return
+            }
+
+            document.cookie = `domain=${value || ""}; path=/;`
+
+
+        })
+    )
+
+    tokenCookieSet.add(
+        updateProject$.subscribe(value => {
+            if (clientServerDetector().isServer()) {
+                return
+            }
+
+            document.cookie = `project=${value || ""}; path=/;`
+        })
+    );
+
+    tokenCookieSet.add(
+        updateLevel$.subscribe(value => {
+            if (clientServerDetector().isServer()) {
+                return
+            }
+
+            document.cookie = `level=${levelEnum[value] || ""}; path=/;`
+        })
+    )
 
     // Запускаем обновление токена
     const tokenRefreshInterval = setInterval(async () => {

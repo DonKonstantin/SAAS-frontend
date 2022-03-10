@@ -4,7 +4,7 @@ import {Divider, Grid, Paper, Typography} from "@mui/material";
 import CheckMediaFilesControls from "./CheckMediaFilesControls";
 import CheckMediaFilesList from "./CheckMediaFilesList";
 
-const CheckMediaFiles: FC = props => {
+const CheckMediaFiles: FC = () => {
     const {t} = useTranslation();
 
     return (

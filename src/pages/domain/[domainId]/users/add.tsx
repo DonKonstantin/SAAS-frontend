@@ -1,6 +1,6 @@
 import React from 'react';
 import {NextPage} from "next";
-import EditPage from "../../components/EditPage";
+import EditPage from "../../../../components/EditPage";
 
 // Компонент страницы создания
 const EditPageContent: NextPage = () => {
@@ -16,6 +16,7 @@ EditPageContent.getInitialProps = async () => ({
     entityEditSchema: "user",
     permissionCheckPermission: "CREATE_USERS",
     permissionCheckLevel: "project",
+    pageMenuType: "domain"
 })
 
 // Экспортируем компонент

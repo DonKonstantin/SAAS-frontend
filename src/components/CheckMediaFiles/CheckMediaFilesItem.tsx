@@ -1,32 +1,34 @@
 import {FC, memo} from "react";
-import {MediaFilesDoubles} from "../../services/MediaLibraryService/interface";
-import {Typography} from "@mui/material";
+import {MediaFile} from "../../services/MediaLibraryService/interface";
+import {Box, Typography} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 
 type Props = {
-    filePath: string;
-    doubles?: MediaFilesDoubles;
+    fileName: string;
+    doubles?: MediaFile[];
 }
 
 // Компонент вывода результатов проверки файлов на дубли
 const CheckMediaFilesItem: FC<Props> = (props) => {
-    const {filePath, doubles} = props;
+    const {fileName, doubles} = props;
+
+    const hasDoubles = !!doubles && doubles?.length > 0;
 
     return (
-        <Typography>
-            {filePath}
-            {
-                doubles?.doubles.length === 0 && (
-                    <CheckIcon color={"success"}/>
-                )
-            }
-            {
-                doubles?.doubles.length !== 0 && (
-                    <DoDisturbIcon color={'warning'}/>
-                )
-            }
-        </Typography>
+        <Box sx={{display: "flex", flexWrap: "wrap"}}>
+            <Typography sx={{mr:1}}>
+                {fileName}
+            </Typography>
+
+            {!hasDoubles && (
+                <CheckIcon fontSize={"small"} color={"success"}/>
+            )}
+            {hasDoubles && (
+                <DoDisturbIcon fontSize={"small"} color={'warning'}/>
+            )}
+        </Box>
+
     )
 }
 

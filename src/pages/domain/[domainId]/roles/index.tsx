@@ -1,6 +1,6 @@
 import React from 'react';
 import {NextPage} from "next";
-import ListPageWithCopy from "../../components/ListPageWithCopy";
+import ListPageWithCopy from "../../../../components/ListPageWithCopy";
 
 // Компонент страницы проекта
 const ListingPage: NextPage = () => {
@@ -10,12 +10,14 @@ const ListingPage: NextPage = () => {
 }
 
 // Экспортируем основные параметры страницы
-ListingPage.getInitialProps = async () => ({
+ListingPage.getInitialProps = async ({query}) => ({
     title: "pages.role.list.title",
     header: "pages.role.list.header",
     entityListSchema: "role",
     permissionCheckPermission: "CHANGE_ROLES",
     permissionCheckLevel: "project",
+    entityListAdditionFilter: {parent: `{_equals: ${query.domainId}}`},
+    pageMenuType: "domain"
 })
 
 // Экспортируем компонент

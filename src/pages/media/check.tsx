@@ -2,7 +2,6 @@ import React from 'react';
 import {NextPage} from "next";
 import {PageWithMetaTags} from "../../components/UILayer/PageWithMetaTags";
 import {PageWithChangeableMenu} from "../../layouts/MenuChangeLayout";
-import MediaLibraryUploadPage from "../../components/MediaLibraryUploadPage";
 import CheckMediaFiles from "../../components/CheckMediaFiles";
 import {Grid} from "@mui/material";
 import Breadcrumbs from "../../components/Breadcrumbs";

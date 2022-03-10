@@ -1,7 +1,8 @@
-import {MediaFilesDoubles, LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
+import {LicenseType, MediaFile, MediaFilesDoubles} from "../../services/MediaLibraryService/interface";
 import {
     BehaviorSubject,
-    combineLatestWith, concatMap,
+    combineLatestWith,
+    concatMap,
     filter,
     map,
     mergeMap,
@@ -17,6 +18,10 @@ import {notificationsDispatcher} from "../../services/notifications";
 import mediaLibraryService from "../../services/MediaLibraryService";
 import mediaFileClient from "../../services/MediaFileClient";
 import MediaFileTagValidator from "../../services/MediaLibraryService/validator/MediaFileTagValidator";
+
+/**
+ * TODO: Сделать удаление файлов, уже загруженных, с сервера
+ */
 
 // Сущность с комплексной инфой по отравляемой инфе на сервер и сам файл
 export type MediaFileToUpload = {
@@ -61,7 +66,7 @@ type ContextActions = {
     uploadAllFiles: { (): void };
     deleteAllFiles: { (): void };
     replaceAllFiles: { (): void }
-    setReplacedTargetFile: { (file: MediaFileToUpload, targetFileId: string) }
+    setReplacedTargetFile: { (file: MediaFile, targetFileId: string) }
 };
 
 const licenseType$ = new BehaviorSubject<LicenseType>(LicenseType.amurco);
@@ -116,11 +121,10 @@ const addFilesToUpload: ContextActions["addFilesToUpload"] = files => {
 const setReplacedTargetFile: ContextActions["setReplacedTargetFile"] = (file, targetFileId) => {
     const currentFiles = mediaFilesToUpload$.getValue();
 
-
     mediaFilesToUpload$.next([
         ...currentFiles.map(
             f => {
-                if (f.mediaInfo.uuid !== file.mediaInfo.uuid) {
+                if (f.mediaInfo.uuid !== file.uuid) {
                     return f;
                 }
 
@@ -161,7 +165,12 @@ const updateMediaInfoFile: ContextActions["updateMediaInfoFile"] = mediaInfo => 
         delete oldUploadedState[mediaInfo.uuid];
 
         uploadStatus$.next(oldUploadedState);
+
+        uploadedFiles$.next(
+            uploadedFiles$.getValue().filter(f => f.mediaInfo.uuid !== mediaInfo.uuid)
+        );
     }
+
 
     mediaFilesToUpload$.next(newState);
 }
@@ -201,11 +210,20 @@ const uploadAllFiles: ContextActions["uploadAllFiles"] = () => {
 }
 
 const deleteAllFiles: ContextActions["deleteAllFiles"] = () => {
+    /**
+     * TODO Переделать вывод, сделать одну шину, которая будет запускать обновление статусов загрузок файлов
+     * т.е. - Любое изменение файла должно обнулять статус загруженного файла
+     * */
+
     mediaFilesToUpload$.next([]);
+    uploadedFiles$.next([])
     uploadStatus$.next({})
 }
 
 const replaceAllFiles: ContextActions["replaceAllFiles"] = () => {
+    uploadBus$.next(mediaFilesToUpload$.getValue().filter(
+        file => !!file.replaceId
+    ));
 }
 
 type WithMediaUploadHoc = ContextActions & MediaFileUploadContext;
@@ -238,13 +256,15 @@ export const uploadStatus$ = new BehaviorSubject<ProgressUploadStatusByFile>({})
  * 1. Заливать если установлен id заменяемого файла replaceFileId
  * 2. Проверять файл на дубли перед залитием mediaLibraryService().findDoubles(names[])
  */
-const metaTegsValidator = new MediaFileTagValidator(["title", "origin_name", "artist", "license_type"])
+const metaTagsValidator = new MediaFileTagValidator(["title", "origin_name", "artist", "license_type"])
 
-
+/**
+ * TODO: Поправить сбор информации о наличии дублей файлов в единое сообщение, а не для каждого файла раздельно
+ */
 const filesUploadBus$ = uploadBus$.pipe(
     mergeMap(file => file),
-    concatMap(file => {
-        return of(file).pipe(
+    concatMap(file =>
+        of(file as MediaFileToUpload).pipe(
             // Отменяем загрузку уже загруженных файлов
             filter(file => !uploadedFiles$.getValue()
                 .find(uploadedFile => uploadedFile.mediaInfo.uuid === file.mediaInfo.uuid)
@@ -253,12 +273,23 @@ const filesUploadBus$ = uploadBus$.pipe(
             filter(file => !stopToUploads$.getValue()
                 .find(stoppedFile => stoppedFile.mediaInfo.uuid === file.mediaInfo.uuid)
             ),
-            // Отравляем только файлы, прошедшие минимальное количество метатеов
+            // Отравляем только файлы, прошедшие минимальное количество метатегов
             filter(
-                file=> metaTegsValidator.validate(file.mediaInfo).requiredPercent === 100
+                file => metaTagsValidator.validate(file.mediaInfo).requiredPercent === 100
             ),
             switchMap(
                 async () => {
+                    if (file.replaceId) {
+                        const doubles = doubleFiles$.getValue();
+
+                        if (Object.prototype.hasOwnProperty.call(doubles, file.mediaInfo.uuid)) {
+                            delete doubles[file.mediaInfo.uuid];
+
+                            doubleFiles$.next(doubles)
+                        }
+                        return file
+                    }
+
                     const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.origin_name])
 
                     if (doubles.doubles.length > 0) {
@@ -269,20 +300,30 @@ const filesUploadBus$ = uploadBus$.pipe(
                         });
 
                         file.hasDoubles = true
+
+                        notificationsDispatcher().dispatch({
+                            message: `Файл ${file.mediaInfo.origin_name} имеет дубли`,
+                            type: "warning"
+                        })
                     }
 
-                    return file;
+                    return {
+                        ...file
+                    };
                 }
             ),
             switchMap(
                 async (file) => {
+                    /**
+                     * TODO Поправить баг с реренедером объектов когда меняется поля наличия дублей
+                     */
                     let newFileMedia: MediaFile | undefined;
 
                     if (file.hasDoubles && !file.replaceId) {
                         return;
                     }
 
-                    // TODO Найти решение получне по разделению
+                    // TODO Найти решение получше по разделению
                     if ((file.hasDoubles && !!file.replaceId) || !!file.mediaInfo.id) {
                         newFileMedia = await mediaFileClient().Replace(
                             file.replaceId || file.mediaInfo.id,
@@ -290,7 +331,6 @@ const filesUploadBus$ = uploadBus$.pipe(
                             file.mediaInfo,
                             {
                                 onUploadProgress: progressEvent => {
-                                    console.log(progressEvent)
                                     uploadStatus$.next({
                                         ...uploadStatus$.getValue(),
                                         [file.mediaInfo.uuid as string]: {
@@ -308,7 +348,9 @@ const filesUploadBus$ = uploadBus$.pipe(
                             ...newFileMedia
                         }
 
-                        return file;
+                        return {
+                            ...file
+                        };
                     }
 
                     newFileMedia = await mediaFileClient().Upload(
@@ -334,13 +376,19 @@ const filesUploadBus$ = uploadBus$.pipe(
                         ...newFileMedia
                     }
 
-                    return file;
+                    return {
+                        ...file
+                    };
                 }
             ),
             tap(file => {
                 if (!file) {
                     return;
                 }
+
+                uploadedFiles$.next(
+                    [...uploadedFiles$.getValue(), file as MediaFileToUpload]
+                )
 
                 const files = mediaFilesToUpload$.getValue();
                 let needUpdates = false;
@@ -366,148 +414,19 @@ const filesUploadBus$ = uploadBus$.pipe(
                 }
 
                 mediaFilesToUpload$.next(newState);
-            })
-        );
-
-    }),
-
-);
-/*
-const newFilesUploadBus = newFilesToUpload$.pipe(
-    switchMap(
-        async (file) => {
-            // return file
-            const newFileMedia = await mediaFileClient().Upload(
-                licenseType$.getValue(),
-                file.file,
-                file.mediaInfo,
-                {
-                    onUploadProgress: progressEvent => {
-                        console.log(progressEvent)
-                        uploadStatus$.next({
-                            ...uploadStatus$.getValue(),
-                            [file.mediaInfo.uuid as string]: {
-                                file: file,
-                                progress: Math.round((progressEvent.loaded * 100) / progressEvent.total),
-                                uploadSize: progressEvent.loaded,
-                            }
-                        })
-                    }
-                }
-            );
-
-            file.mediaInfo = {
-                ...file.mediaInfo,
-                ...newFileMedia
-            }
-
-            return file;
-        }
-    ),
-)*/
-/*
-const existsFilesToUpload$ =  uploadBus$.pipe(
-    mergeMap(file => file),
-    concatMap(file => {
-        return of(file).pipe(
-            // Отменяем загрузку уже загруженных файлов
-            filter(file => !uploadedFiles$.getValue()
-                .find(uploadedFile => uploadedFile.mediaInfo.uuid === file.mediaInfo.uuid)
-            ),
-            // Отменяем загрузку поставленных на паузу файлов
-            filter(file => !stopToUploads$.getValue()
-                .find(stoppedFile => stoppedFile.mediaInfo.uuid === file.mediaInfo.uuid)
-            ),
-            switchMap(
-                async () => {
-                    const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.file_name])
-
-                    if (doubles.doubles.length > 0) {
-                        doubleFiles$.next({
-                            ...doubleFiles$.getValue(),
-                            // @ts-ignore
-                            [file.mediaInfo.uuid as string]: doubles
-                        })
-
-                        return file;
-                    }
-
-                    throwError("it new File")
-                }
-            ),
-        );
-    }),
-)*/
-/*
-const newFilesUploadBus$ = uploadBus$.pipe(
-    mergeMap(file => file),
-    concatMap(file => {
-        return of(file).pipe(
-            // Отменяем загрузку уже загруженных файлов
-            filter(file => !uploadedFiles$.getValue()
-                .find(uploadedFile => uploadedFile.mediaInfo.uuid === file.mediaInfo.uuid)
-            ),
-            // Отменяем загрузку поставленных на паузу файлов
-            filter(file => !stopToUploads$.getValue()
-                .find(stoppedFile => stoppedFile.mediaInfo.uuid === file.mediaInfo.uuid)
-            ),
-            switchMap(
-                async () => {
-                    const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.file_name])
-
-                    if (doubles.doubles.length > 0) {
-                        doubleFiles$.next({
-                            ...doubleFiles$.getValue(),
-                            // @ts-ignore
-                            [file.mediaInfo.uuid as string]: doubles
-                        })
-
-                        throwError("has doubles")
-                    }
-
-                    return file;
-                }
-            ),
-            switchMap(
-                async (file) => {
-                    // return file
-                    const newFileMedia = await mediaFileClient().Upload(
-                        licenseType$.getValue(),
-                        file.file,
-                        file.mediaInfo,
-                        {
-                            onUploadProgress: progressEvent => {
-                                console.log(progressEvent)
-                                uploadStatus$.next({
-                                    ...uploadStatus$.getValue(),
-                                    [file.mediaInfo.uuid as string]: {
-                                        file: file,
-                                        progress: Math.round((progressEvent.loaded * 100) / progressEvent.total),
-                                        uploadSize: progressEvent.loaded,
-                                    }
-                                })
-                            }
-                        }
-                    );
-
-                    file.mediaInfo = {
-                        ...file.mediaInfo,
-                        ...newFileMedia
-                    }
-
-                    return file;
-                }
-            ),
-            tap(file => {
-
             }),
-            tap(file => uploadedFiles$.next([...uploadedFiles$.getValue(), file])),
-        );
-    }),
-    tap(console.log),
-);*/
+        )
+    ),
+);
 
 const initMediaFilesUploadContext: ContextActions["initMediaFilesUploadContext"] = () => {
+    /**
+     * TODO: переделать обновление и инициализацию
+     */
+    mediaFilesToUpload$.next([]);
+    uploadedFiles$.next([]);
+    uploadStatus$.next({});
+
     const subscriber = licenseType$.pipe(
         combineLatestWith(mediaFilesToUpload$),
         // @ts-ignore

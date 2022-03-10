@@ -50,7 +50,7 @@ const rejectStyle = {
  */
 const DropZoneArea: FC<Props> = props => {
     const {active = false, ...other} = props
-    const {getRootProps, getInputProps, isDragActive, isFocused, isDragAccept, isDragReject} = useDropzone(other);
+    const {getRootProps, getInputProps, isFocused, isDragAccept, isDragReject} = useDropzone(other);
 
     const style = useMemo(() => ({
         ...baseStyle,
@@ -66,6 +66,7 @@ const DropZoneArea: FC<Props> = props => {
     ]);
 
     return (
+        // @ts-ignore
         <div {...getRootProps({style})}>
             <input {...getInputProps()} />
             <Box

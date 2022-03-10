@@ -9,7 +9,7 @@ const CheckMediaFilesList: FC = () => {
 
     if (isCheckProgress) {
         return (
-            <Stack>
+            <Stack sx={{pt:2}}>
                 <Skeleton variant={"text"}/>
                 <Skeleton variant={"text"}/>
                 <Skeleton variant={"text"}/>
@@ -36,11 +36,13 @@ const CheckMediaFilesList: FC = () => {
 
     return (
         <Box
-            sx={{overflowY: "auto"}}
+            sx={{overflowY: "auto", pt:2}}
         >
-            {fileCheckResult.map(file => (
-                <CheckMediaFilesItem {...file} />
-            ))}
+            <Stack>
+                {fileCheckResult.map(file => (
+                    <CheckMediaFilesItem {...file} key={file.fileName}/>
+                ))}
+            </Stack>
         </Box>
     )
 }
