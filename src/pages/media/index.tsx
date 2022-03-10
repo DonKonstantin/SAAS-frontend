@@ -1,25 +1,26 @@
 import React from 'react';
 import {NextPage} from "next";
-import {PageWithMetaTags} from "../../components/UILayer/PageWithMetaTags";
-import {PageWithChangeableMenu} from "../../layouts/MenuChangeLayout";
-
-// Свойства страницы
-type Props = PageWithMetaTags & PageWithChangeableMenu
+import ListPage from "../../components/ListPage";
+import {PageWithEntityList} from "../../components/ListPage/types";
 
 // Компонент страницы проекта
-const Page: NextPage<Props> = () => {
+const ListingPage: NextPage = () => {
     return (
-        <div>
-            <p>Раздел находится в разработке</p>
-        </div>
+        <ListPage/>
     )
 }
 
 // Экспортируем основные параметры страницы
-Page.getInitialProps = async () => ({
-    title: "Медиабиблиотека",
-    header: "Медиабиблиотека",
+ListingPage.getInitialProps = async (): Promise<PageWithEntityList> => ({
+    title: "file",
+    header: "file",
+    entityListSchema: "file",
+    permissionCheckPermission: "READ_MEDIA_FILES",
+    permissionCheckEditPermission: "EDIT_MEDIA_FILES",
+    permissionCheckCreatePermission: "NOT",
+    permissionCheckDeletePermission: "DELETE_MEDIA_FILES",
+    permissionCheckLevel: "realm",
 })
 
 // Экспортируем компонент
-export default Page
+export default ListingPage

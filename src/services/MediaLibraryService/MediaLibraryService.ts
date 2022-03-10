@@ -19,19 +19,15 @@ export default  class MediaLibraryService implements MediaLibraryServiceInterfac
         this.client = client;
     }
 
-    async delete(id: string[]): Promise<MediaFile[]> {
-        console.log(id)
+    async delete(_id: string[]): Promise<MediaFile[]> {
         return Promise.resolve([]);
     }
 
-    async load(id: string[]): Promise<MediaFile[]> {
-        console.log(id)
-
+    async load(_id: string[]): Promise<MediaFile[]> {
         return Promise.resolve([]);
     }
 
-    async update(files: MediaFile[]): Promise<MediaFile[]> {
-        console.log(files)
+    async update(_files: MediaFile[]): Promise<MediaFile[]> {
         return Promise.resolve([]);
     }
 

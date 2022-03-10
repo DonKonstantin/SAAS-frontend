@@ -11,10 +11,15 @@ export type MediaFile = {
     artist: string;
     bpm: number
     composer: string;
+    creator: string;
+    creation_date: string,
     file_name: string;
     origin_name: string;
+    last_change_date: string;
+    hash_sum: string,
     genre: string;
     id: string
+    last_editor: string;
     isrc: string;
     language: string;
     license_type: LicenseType

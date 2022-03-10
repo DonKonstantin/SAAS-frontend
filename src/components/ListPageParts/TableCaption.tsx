@@ -10,7 +10,7 @@ import CheckPermission from "../../services/helpers/CheckPermission";
 import {PageWithEntityList} from "../ListPage/types";
 
 // Свойства компонента
-type ListHeaderProps = PageWithEntityList & {
+export type ListHeaderProps = PageWithEntityList & {
     checkedItems: any[]
 }
 

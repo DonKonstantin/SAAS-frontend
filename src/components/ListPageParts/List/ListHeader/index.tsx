@@ -75,6 +75,9 @@ const ListHeader: FC<ListHeaderProps> = props => {
                     />
                 )}
                 {Object.values(fields).map(field => {
+                    if (!field.isEnabled || field.fieldType.type === "Hidden") {
+                        return null;
+                    }
                     return (
                         <ListHeaderCell
                             key={`row-component-cell-${field.field}`}

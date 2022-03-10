@@ -17,6 +17,7 @@ import {NotificationsTemplateListingConfiguration} from "./list/notifications_te
 import {NotificationsTemplateEditPageConfig} from "./edit/notifications_template";
 import {NotificationConfigListingConfiguration} from "./list/notification_config";
 import {NotificationConfigEditPageConfig} from "./edit/notification_config";
+import {FileListingConfiguration} from "./list/file";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -24,6 +25,7 @@ export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): List
     return {
         user: new UserListingConfiguration,
         permission_category: new PermissionCategoryListingConfiguration,
+        file: new FileListingConfiguration,
         permission: new PermissionListingConfiguration,
         role: new RoleListingConfiguration,
         domain: new DomainListingConfiguration,
