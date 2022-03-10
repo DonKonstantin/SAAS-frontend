@@ -1,6 +1,6 @@
 import {FC, useEffect, useMemo, useState} from "react";
 import {doubleFiles$, MediaFileToUpload, uploadStatus$} from "../MediaFilesUploadContext";
-import {Button, IconButton, LinearProgress, Stack, TableCell, TableRow, Tooltip} from "@mui/material";
+import {IconButton, LinearProgress, Stack, TableCell, TableRow, Tooltip} from "@mui/material";
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";
 import MediaFileMetaTagStatus from "../../ListPageCustom/MediaFileMetaTagStatus";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
@@ -9,6 +9,10 @@ import WarningIcon from '@mui/icons-material/Warning';
 import DoneIcon from '@mui/icons-material/Done';
 import {useTranslation} from "react-i18next";
 import MediaFileTagValidator from "../../../services/MediaLibraryService/validator/MediaFileTagValidator";
+import EditIcon from '@mui/icons-material/Edit';
+import CloudDoneIcon from '@mui/icons-material/CloudDone';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Props = {
     file: MediaFileToUpload
@@ -74,7 +78,7 @@ const MediaFileTableRow: FC<Props> = props => {
 
     const mayUploaded = useMemo(() => {
         if (progress > 0) {
-            return  false
+            return false
         }
 
         if (progress === 100) {
@@ -89,6 +93,8 @@ const MediaFileTableRow: FC<Props> = props => {
         // return !(file.hasDoubles && file.replaceId.length === 0);
     }, [progress, requireFieldFill]);
 
+    const successUploaded = progress === 100;
+
     return (
         <TableRow>
             <TableCell>
@@ -99,14 +105,20 @@ const MediaFileTableRow: FC<Props> = props => {
                     <Tooltip title={t(`Имеются дубли файла. Нажмите чтобы принять решение`) as string}>
                         <IconButton onClick={() => handleOpenReplaceDialog()}>
                             <WarningIcon
-                                color={!!file.replaceId ? 'success' : 'warning'}
+                                color={
+                                    !!file.replaceId || file.forceUpload
+                                        ? 'success'
+                                        : 'warning'
+                                }
                             />
                         </IconButton>
                     </Tooltip>
                 )}
                 {(progress === 100) && (
                     <Tooltip title={t(`Файл загружен`) as string}>
-                        <DoneIcon color={"success"}/>
+                        <IconButton disabled>
+                            <DoneIcon color={"success"}/>
+                        </IconButton>
                     </Tooltip>
                 )}
             </TableCell>
@@ -126,34 +138,39 @@ const MediaFileTableRow: FC<Props> = props => {
                 <Stack spacing={1} flexWrap={"wrap"} direction={"row"} justifyContent={"end"}>
                     {
                         onEdit !== undefined && (
-                            <Button onClick={() => onEdit ? onEdit(file) : false} variant={"outlined"} size={"small"}>
-                                Редактировать
-                            </Button>
+                            <Tooltip title={t(`Редактировать`) as string}>
+                                <IconButton onClick={() => onEdit ? onEdit(file) : false}
+                                            size={"small"}>
+                                    <EditIcon/>
+                                </IconButton>
+                            </Tooltip>
                         )
                     }
                     {
                         onUpload !== undefined && (
-                            <Button
-                                onClick={() => onUpload ? onUpload(file) : false}
-                                variant={"outlined"}
-                                size={"small"}
-                                disabled={!mayUploaded}
-                            >
-                                {!!file.replaceId ? "Заменить" : "Загрузить"}
-                            </Button>
+                            <Tooltip title={t(!!file.replaceId ? "Заменить" : "Загрузить") as string}>
+                                <IconButton
+                                    onClick={() => onUpload ? onUpload(file) : false}
+                                    size={"small"}
+                                    disabled={!mayUploaded}
+                                >
+                                    {successUploaded ? <CloudDoneIcon color={"success"}/> : <CloudUploadIcon/>}
+                                </IconButton>
+                            </Tooltip>
                         )
                     }
                     {
                         onDelete !== undefined && (
-                            <Button
-                                onClick={() => onDelete ? onDelete(file) : false}
-                                variant={"outlined"}
-                                color={"error"}
-                                size={"small"}
-                                disabled={!mayUploaded}
-                            >
-                                Удалить
-                            </Button>
+                            <Tooltip title={t("удалить") as string}>
+                                <IconButton
+                                    onClick={() => onDelete ? onDelete(file) : false}
+                                    color={"error"}
+                                    size={"small"}
+                                    disabled={!mayUploaded}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </Tooltip>
                         )
                     }
                 </Stack>

@@ -2,27 +2,23 @@ import {GraphQLClient, GraphQLQuery} from "./GraphQLClient";
 import {Collection} from "../types";
 import {FetchResult} from "@apollo/client";
 import {Subject} from "rxjs";
+import {getAuthorizationToken} from "../../context/AuthorizationContext";
 
 /**
  * Реализация серверного клиента GraphQL
  */
 export class MainClient implements GraphQLClient {
-
     private readonly client: GraphQLClient;
-    private readonly token?: string;
 
     /**
      * Конструктор клиента
      *
      * @param client
-     * @param token
      */
     constructor(
         client: GraphQLClient,
-        token?: string,
     ) {
         this.client = client;
-        this.token = token;
     }
 
     async Query<V, Response>(query: GraphQLQuery<V>, headers: Collection<string>): Promise<Response> {
@@ -45,10 +41,7 @@ export class MainClient implements GraphQLClient {
      * @param baseHeaders
      */
     private async getHeaders(baseHeaders: Collection<string>): Promise<Collection<string>> {
-        let token: string = "";
-        if (this.token) {
-            token = this.token
-        }
+        let token: string = getAuthorizationToken();
 
         if (!token || 0 === token.length) {
             return {...baseHeaders}

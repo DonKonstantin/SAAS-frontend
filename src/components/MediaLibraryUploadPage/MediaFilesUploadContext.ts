@@ -66,7 +66,7 @@ type ContextActions = {
     uploadAllFiles: { (): void };
     deleteAllFiles: { (): void };
     replaceAllFiles: { (): void }
-    setReplacedTargetFile: { (file: MediaFile, targetFileId: string) }
+    setReplacedTargetFile: { (file: MediaFile, targetFileId: string, force?: boolean) }
 };
 
 const licenseType$ = new BehaviorSubject<LicenseType>(LicenseType.amurco);
@@ -117,8 +117,9 @@ const addFilesToUpload: ContextActions["addFilesToUpload"] = files => {
  * Устанавливаем таргетированный файл для замены на обновленный
  * @param file
  * @param targetFileId
+ * @param force
  */
-const setReplacedTargetFile: ContextActions["setReplacedTargetFile"] = (file, targetFileId) => {
+const setReplacedTargetFile: ContextActions["setReplacedTargetFile"] = (file, targetFileId, force) => {
     const currentFiles = mediaFilesToUpload$.getValue();
 
     mediaFilesToUpload$.next([
@@ -129,8 +130,9 @@ const setReplacedTargetFile: ContextActions["setReplacedTargetFile"] = (file, ta
                 }
 
                 f.replaceId = targetFileId;
+                f.forceUpload = force;
 
-                return f
+                return f;
             }
         )
     ]);
@@ -277,8 +279,12 @@ const filesUploadBus$ = uploadBus$.pipe(
             filter(
                 file => metaTagsValidator.validate(file.mediaInfo).requiredPercent === 100
             ),
-            switchMap(
-                async () => {
+            switchMap(async () => {
+                    // Если нужно принудительно загрузить
+                    if (file.forceUpload) {
+                        return file;
+                    }
+
                     if (file.replaceId) {
                         const doubles = doubleFiles$.getValue();
 
@@ -312,14 +318,14 @@ const filesUploadBus$ = uploadBus$.pipe(
                     };
                 }
             ),
-            switchMap(
-                async (file) => {
+            switchMap(async (file) => {
                     /**
                      * TODO Поправить баг с реренедером объектов когда меняется поля наличия дублей
                      */
                     let newFileMedia: MediaFile | undefined;
 
-                    if (file.hasDoubles && !file.replaceId) {
+                    // У файла есть дубли, не выбран какой файл и з дублей заменяем и нет принудительного обновления
+                    if (file.hasDoubles && !file.replaceId && !file.forceUpload) {
                         return;
                     }
 

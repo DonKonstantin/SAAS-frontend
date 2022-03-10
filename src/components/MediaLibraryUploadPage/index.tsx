@@ -24,12 +24,8 @@ const MediaLibraryUploadPage: FC = () => {
     useEffect(() => initMediaFilesUploadContext(), []);
     useEffect(() => initEditFileForm(), []);
 
-    const handleSelectRaplacedFile = useCallback((file, replacedFile) => {
-        if ( !replacedFile) {
-            return;
-        }
-
-        setReplacedTargetFile(file, replacedFile.id);
+    const handleSelectReplacedFile = useCallback((file, targetFileId, force) => {
+        setReplacedTargetFile(file, targetFileId, force);
     }, [setReplacedTargetFile]);
 
     return (
@@ -56,7 +52,8 @@ const MediaLibraryUploadPage: FC = () => {
                 onSave={updateMediaInfoFile}
             />
             <SelectReplaceFileDialog
-                onSave={handleSelectRaplacedFile}
+                onSave={handleSelectReplacedFile}
+                force
             />
         </>
     )

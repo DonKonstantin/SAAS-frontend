@@ -1,9 +1,10 @@
 import {MediaFileClientInterface} from "./interface";
-import {Axios, AxiosRequestConfig} from "axios";
+import {Axios, AxiosRequestConfig, AxiosRequestHeaders} from "axios";
 import {Logger} from "../logger/Logger";
 import {loggerFactory} from "../logger";
 import {MediaFile} from "../MediaLibraryService/interface";
 import {getMainFileApiLink} from "./helpers";
+import {getAuthorizationToken} from "../../context/AuthorizationContext";
 
 const prepareFormdata = (file: File, mediaInfo: MediaFile): FormData => {
     const data = new FormData();
@@ -37,19 +38,27 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * @param fileName
      * @param config
      */
-    async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<string> {
+    async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<Blob> {
         try {
             this.logger.Debug("Load file from server", fileName);
-            const {data: result} = await this.client.get<string>(
+            const headers = await this.getHeaders(config.headers || {});
+
+            const {data: result} = await this.client.get<Blob>(
                 `/file/${fileName}`,
                 {
                     ...config,
+                    responseType: "blob",
+                    headers: {
+                        ...headers
+                    },
                 }
             );
 
+            console.log(result)
+
             this.logger.Debug('file loaded', result);
 
-            return result as string;
+            return new Blob([result]);
         } catch (e) {
             throw e
         }
@@ -66,13 +75,17 @@ export default class MediaFileClient implements MediaFileClientInterface {
         try {
             this.logger.Debug("Replace file on server", id, file.name);
             const data = prepareFormdata(file, mediaInfo);
+            const headers = await this.getHeaders(config.headers || {});
 
             const {data: result} = await this.client.post<MediaFile>(
                 `/files/replace/${id}`,
                 data,
                 {
                     ...config,
-                    headers: {"Content-Type": "multipart/form-data"},
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        ...headers
+                    },
                 }
             );
 
@@ -95,13 +108,18 @@ export default class MediaFileClient implements MediaFileClientInterface {
         try {
             this.logger.Debug("Upload file on server", licenseType, file.name);
             const data = prepareFormdata(file, mediaInfo);
+            const headers = await this.getHeaders(config.headers || {});
 
             const {data: result} = await this.client.post<MediaFile>(
                 `/files/upload/${licenseType}`,
                 data,
                 {
                     ...config,
-                    headers: {"Content-Type": "multipart/form-data"},
+
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        ...headers
+                    },
                 }
             );
 
@@ -115,5 +133,23 @@ export default class MediaFileClient implements MediaFileClientInterface {
 
     async GetFilePath(name: string): Promise<string> {
         return `${getMainFileApiLink()}/file/${name}`;
+    }
+
+    /**
+     * Генерация базовых заголовков для запроса
+     *
+     * @param baseHeaders
+     */
+    private async getHeaders(baseHeaders: AxiosRequestHeaders | undefined): Promise<AxiosRequestHeaders> {
+        let token: string = getAuthorizationToken();
+
+        if (!token || 0 === token.length) {
+            return {...baseHeaders}
+        }
+
+        return {
+            ...baseHeaders,
+            Authorization: token,
+        };
     }
 }
