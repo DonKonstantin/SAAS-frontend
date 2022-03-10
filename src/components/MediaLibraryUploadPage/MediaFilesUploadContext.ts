@@ -14,7 +14,6 @@ import {
 import {useEffect, useState} from "react";
 import {v4 as uuidv4} from 'uuid';
 import {notificationsDispatcher} from "../../services/notifications";
-import mediaLibraryService from "../../services/MediaLibraryService";
 import mediaFileClient from "../../services/MediaFileClient";
 import MediaFileTagValidator from "../../services/MediaLibraryService/validator/MediaFileTagValidator";
 
@@ -257,59 +256,59 @@ const filesUploadBus$ = uploadBus$.pipe(
             filter(
                 file=> metaTegsValidator.validate(file.mediaInfo).requiredPercent === 100
             ),
-            switchMap(
-                async () => {
-                    const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.origin_name])
-
-                    if (doubles.doubles.length > 0) {
-                        doubleFiles$.next({
-                            ...doubleFiles$.getValue(),
-                            // @ts-ignore
-                            [file.mediaInfo.uuid as string]: doubles
-                        });
-
-                        file.hasDoubles = true
-                    }
-
-                    return file;
-                }
-            ),
+            // switchMap(
+            //     async () => {
+            //         const [doubles] = await mediaLibraryService().findDoubles([file.mediaInfo.origin_name])
+            //
+            //         if (doubles.doubles.length > 0) {
+            //             doubleFiles$.next({
+            //                 ...doubleFiles$.getValue(),
+            //                 // @ts-ignore
+            //                 [file.mediaInfo.uuid as string]: doubles
+            //             });
+            //
+            //             file.hasDoubles = true
+            //         }
+            //
+            //         return file;
+            //     }
+            // ),
             switchMap(
                 async (file) => {
                     let newFileMedia: MediaFile | undefined;
 
-                    if (file.hasDoubles && !file.replaceId) {
-                        return;
-                    }
-
-                    // TODO Найти решение получне по разделению
-                    if ((file.hasDoubles && !!file.replaceId) || !!file.mediaInfo.id) {
-                        newFileMedia = await mediaFileClient().Replace(
-                            file.replaceId || file.mediaInfo.id,
-                            file.file,
-                            file.mediaInfo,
-                            {
-                                onUploadProgress: progressEvent => {
-                                    console.log(progressEvent)
-                                    uploadStatus$.next({
-                                        ...uploadStatus$.getValue(),
-                                        [file.mediaInfo.uuid as string]: {
-                                            file: file,
-                                            progress: Math.round((progressEvent.loaded * 100) / progressEvent.total),
-                                            uploadSize: progressEvent.loaded,
-                                        }
-                                    })
-                                }
-                            }
-                        );
-
-                        file.mediaInfo = {
-                            ...file.mediaInfo,
-                            ...newFileMedia
-                        }
-
-                        return file;
-                    }
+                    // if (file.hasDoubles && !file.replaceId) {
+                    //     return;
+                    // }
+                    //
+                    // // TODO Найти решение получне по разделению
+                    // if ((file.hasDoubles && !!file.replaceId) || !!file.mediaInfo.id) {
+                    //     newFileMedia = await mediaFileClient().Replace(
+                    //         file.replaceId || file.mediaInfo.id,
+                    //         file.file,
+                    //         file.mediaInfo,
+                    //         {
+                    //             onUploadProgress: progressEvent => {
+                    //                 console.log(progressEvent)
+                    //                 uploadStatus$.next({
+                    //                     ...uploadStatus$.getValue(),
+                    //                     [file.mediaInfo.uuid as string]: {
+                    //                         file: file,
+                    //                         progress: Math.round((progressEvent.loaded * 100) / progressEvent.total),
+                    //                         uploadSize: progressEvent.loaded,
+                    //                     }
+                    //                 })
+                    //             }
+                    //         }
+                    //     );
+                    //
+                    //     file.mediaInfo = {
+                    //         ...file.mediaInfo,
+                    //         ...newFileMedia
+                    //     }
+                    //
+                    //     return file;
+                    // }
 
                     newFileMedia = await mediaFileClient().Upload(
                         licenseType$.getValue(),
