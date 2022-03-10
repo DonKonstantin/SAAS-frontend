@@ -15,6 +15,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
         icon: StorageIcon,
+        permission: "CREATE_DOMAIN"
     },
     {
         link: {href: "/users"},
@@ -26,26 +27,26 @@ export const RealmMenuItems = (): MenuItem[] => ([
     {
         link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
-        permission: "CHANGE_ROLES",
+        permission: "READ_ROLES",
         level: "project",
         icon: CheckCircleIcon,
     },
     {
         title: "UI.menu.left-menu.items.permissions.index",
-        permission: "CHANGE_PERMISSIONS",
+        permission: "READ_PERMISSIONS",
         level: "realm",
         icon: PhonelinkLockIcon,
         subItems: [
             {
                 link: {href: "/permission"},
                 title: "UI.menu.left-menu.items.permissions.permissions",
-                permission: "CHANGE_PERMISSIONS",
+                permission: "READ_PERMISSIONS",
                 level: "realm",
             },
             {
                 link: {href: "/permission-category"},
                 title: "UI.menu.left-menu.items.permissions.categories",
-                permission: "CHANGE_PERMISSIONS",
+                permission: "READ_PERMISSIONS",
                 level: "realm",
             }
         ]
@@ -55,35 +56,35 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: VolumeUpIcon,
         subItems: [
             {
-                link: {href: "/media"},
+                link: {href: "/media/check"},
                 title: "UI.menu.left-menu.items.media-library.check",
+                permission: "READ_MEDIA_FILES"
             },
             {
-                link: {href: "/media"},
+                link: {href: "/media/upload"},
                 title: "UI.menu.left-menu.items.media-library.uploading",
+                permission: "EDIT_MEDIA_FILES"
             },
             {
                 link: {href: "/media"},
                 title: "UI.menu.left-menu.items.media-library.storage",
-            },
-            {
-                link: {href: "/media"},
-                title: "UI.menu.left-menu.items.media-library.categories",
+                permission: "READ_MEDIA_FILES"
             },
         ],
     },
     {
         title: "UI.menu.left-menu.items.notifications.index",
         icon: NotificationsIcon,
-        permission: "CHANGE_NOTIFICATIONS",
         subItems: [
             {
                 link: {href: "/notifications-template"},
                 title: "UI.menu.left-menu.items.notifications.templates",
+                permission: "READ_NOTIFICATION_TEMPLATES"
             },
             {
                 link: {href: "/notification-rules"},
                 title: "UI.menu.left-menu.items.notifications.rules",
+                permission: "READ_NOTIFICATION_CONFIG"
             },
         ]
     },
@@ -91,6 +92,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
         link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
         icon: DvrIcon,
+        permission: "READ_LOGS"
     },
 ]);
 
@@ -112,19 +114,37 @@ export const DomainMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.projects",
     },
     {
-        link: {href: "/users"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/users",
+                as: `/domain/${domain}/users`,
+            }
+        },
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",
     },
     {
-        link: {href: "/roles"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/roles",
+                as: `/domain/${domain}/roles`,
+            }
+        },
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",
     },
     {
-        link: {href: "/logs"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/logs",
+                as: `/domain/${domain}/logs`,
+            }
+        },
         title: "UI.menu.left-menu.items.logs",
     },
 ]);

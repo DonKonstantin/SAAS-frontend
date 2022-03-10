@@ -15,10 +15,11 @@ ListingPage.getInitialProps = async (): Promise<PageWithEntityList> => ({
     title: "pages.domain.list.title",
     header: "pages.domain.list.header",
     entityListSchema: "domain",
-    permissionCheckEditPermission: "UPDATE_DOMAINS",
     permissionCheckEditLevel: "domain",
-    permissionCheckCreatePermission: "UPDATE_DOMAINS",
     permissionCheckCreateLevel: "realm",
+    permissionCheckEditPermission: "EDIT_DOMAIN",
+    permissionCheckDeletePermission:"DELETE_DOMAIN",
+    permissionCheckCreatePermission: "CREATE_DOMAIN",
 })
 
 // Экспортируем компонент

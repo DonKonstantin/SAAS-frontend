@@ -16,8 +16,9 @@ EditPageContent.getInitialProps = async ({query}): Promise<PageWithEntityEdit> =
     header: "pages.domain.edit.header",
     entityEditSchema: "domain",
     entityEditPrimaryKey: query?.domainId as string,
-    permissionCheckPermission: "UPDATE_DOMAINS",
+    permissionCheckPermission: "EDIT_DOMAIN",
     permissionCheckLevel: "domain",
+    permissionCheckEditPermission: "EDIT_DOMAIN",
 })
 
 // Экспортируем компонент

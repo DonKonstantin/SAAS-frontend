@@ -186,6 +186,33 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                     as: `/notification-rules/edit/${entityEditPrimaryKey}`,
                 }
             }
+        },
+        "/media": {
+            breadcrumb: "pages.mediaLibrary.breadcrumb",
+            link: () => {
+                return {
+                    href: "/media-rules",
+                    as: `/media-rules`,
+                }
+            }
+        },
+        "/media/upload": {
+            breadcrumb: "pages.mediaLibraryUpload.breadcrumb",
+            link: () => {
+                return {
+                    href: "/media-rules/upload",
+                    as: `/media-rules/upload`,
+                }
+            }
+        },
+        "/media/check": {
+            breadcrumb: "pages.mediaLibraryCheck.breadcrumb",
+            link: () => {
+                return {
+                    href: "/media-rules/check",
+                    as: `/media-rules/check`,
+                }
+            }
         }
     }
 }

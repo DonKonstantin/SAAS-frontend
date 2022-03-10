@@ -53,6 +53,8 @@ const DrawerContent = styled('div')(() => ({
     width: "100%",
     overflow: "hidden",
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column"
 }));
 
 // Компонент стилизованного блока меню

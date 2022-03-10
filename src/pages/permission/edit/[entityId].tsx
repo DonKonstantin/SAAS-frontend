@@ -15,7 +15,10 @@ EditPageContent.getInitialProps = async ({query}) => ({
     header: "pages.permission.edit.header",
     entityEditSchema: "permission",
     entityEditPrimaryKey: query?.entityId as string,
-    permissionCheckPermission: "CHANGE_PERMISSIONS",
+    permissionCheckPermission: "READ_ROLES",
+    permissionCheckEditPermission: "EDIT_PERMISSIONS",
+    permissionCheckCreatePermission: "EDIT_PERMISSIONS",
+    permissionCheckDeletePermission: "EDIT_PERMISSIONS",
     permissionCheckLevel: "realm",
 })
 
