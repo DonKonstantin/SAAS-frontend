@@ -32,8 +32,6 @@ const ListPageEditDeleteFilesButtons: FC<ListPageEditDeleteButtonsProps> = props
 
     const {t} = useTranslation()
 
-
-
     const {data, onDeleteItems} = useEntityList()
 
     if (!data) {

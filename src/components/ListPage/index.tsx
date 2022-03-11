@@ -38,7 +38,6 @@ const ListPage: FC = () => {
         // При размонтировании страницы очищаем загруженные данные
         return () => setSchema("" as any)
     }, [])
-    console.log('data',data)
 
     if (!data) {
         return <LoadingBlocker/>

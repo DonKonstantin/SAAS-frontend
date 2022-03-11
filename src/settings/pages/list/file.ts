@@ -92,8 +92,8 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     };
     listFields: ListFieldsConfiguration<"file"> = {
         fields: {
-            origin_name: {
-                field: "origin_name",
+            title: {
+                field: "title",
                 title: "Название файла",
                 isEnabled: true,
                 fieldType: {
@@ -284,9 +284,9 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     type: "Hidden"
                 }
             },
-            title: {
-                field: "title",
-                title: "title",
+            origin_name: {
+                field: "origin_name",
+                title: "origin_name",
                 isEnabled: true,
                 fieldType: {
                     config: undefined,

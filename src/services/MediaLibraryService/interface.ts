@@ -1,8 +1,11 @@
 // License type for use file
+import {FileUpdateSetType} from "./query/UpdateFilesByIdMutation";
+
 export enum LicenseType {
     rao_voice = "rao_voice",
     sparx = "sparx",
-    amurco = "amurco"
+    amurco = "amurco",
+    none = "none"
 }
 
 // File of Media library
@@ -71,9 +74,10 @@ export interface MediaLibraryServiceInterface {
 
     /**
      * Update file
-     * @param files
+     * @param ids
+     * @param fields
      */
-    update(files: MediaFile[]): Promise<MediaFile[]>;
+    update(ids: string[],fields:FileUpdateSetType): Promise<number>;
 
     /**
      * Find doubles
