@@ -8,6 +8,7 @@ import {
     mergeMap,
     of,
     OperatorFunction,
+    scan,
     Subject,
     switchMap,
     tap,
@@ -59,14 +60,14 @@ type MediaFileUploadContext = {
 type ContextActions = {
     addFilesToUpload: { (files: MediaFileToUpload[]): void };
     setLicenseType: { (type: LicenseType): void };
-    removeFilesToUpload: { (files: MediaFileToUpload[]): void };
     initMediaFilesUploadContext: { (): () => void };
     uploadFiles: { (files: MediaFileToUpload[]): void };
     updateMediaInfoFile: { (files: MediaFile): void };
     uploadAllFiles: { (): void };
     deleteAllFiles: { (): void };
-    replaceAllFiles: { (): void }
+    replaceAllFiles: { (): void };
     setReplacedTargetFile: { (file: MediaFile, targetFileId: string, force?: boolean) }
+    deleteFiles(ids: string[])
 };
 
 const licenseType$ = new BehaviorSubject<LicenseType>(LicenseType.amurco);
@@ -80,6 +81,7 @@ const setLicenseType: ContextActions["setLicenseType"] = type => {
  * Все файлы загруженные пользователем в браузер, и ожидающие отправки
  */
 const mediaFilesToUpload$ = new BehaviorSubject<MediaFileToUpload[]>([]);
+
 
 const addFilesToUpload: ContextActions["addFilesToUpload"] = files => {
     const currentFiles = mediaFilesToUpload$.getValue();
@@ -112,6 +114,92 @@ const addFilesToUpload: ContextActions["addFilesToUpload"] = files => {
         })
     }
 };
+
+/**
+ * Шина для удаления файлов из загружаемых (подготовленных к отправке на сервер)
+ * и удаления физических файлов, если уже загруженные
+ */
+const mediaFilesToDelete$ = new BehaviorSubject<string[]>([]);
+
+const deleteFiles: ContextActions["deleteFiles"] = ids => {
+    mediaFilesToDelete$.next(ids);
+}
+
+const deleteAllFiles: ContextActions["deleteAllFiles"] = () => {
+    mediaFilesToDelete$.next(
+        mediaFilesToUpload$.getValue().map(f => f.mediaInfo.id || f.mediaInfo.uuid)
+    )
+    /**
+     * TODO Переделать вывод, сделать одну шину, которая будет запускать обновление статусов загрузок файлов
+     * т.е. - Любое изменение файла должно обнулять статус загруженного файла
+     * */
+
+    /*   mediaFilesToUpload$.next([]);
+       uploadedFiles$.next([])
+       uploadStatus$.next({})*/
+}
+
+// формируем два массива для удаления файлов
+const deleteFilesBus$ = mediaFilesToDelete$.pipe(
+    concatMap(file => file),
+    scan((acc, idOrUuid) => {
+        const files = mediaFilesToUpload$.getValue();
+        const mediaFile = files.find((file) => file.mediaInfo.id === idOrUuid || file.mediaInfo.uuid === idOrUuid) as MediaFileToUpload;
+
+        if (mediaFile) {
+            acc.push(mediaFile);
+        }
+
+        return acc;
+    }, []),
+);
+
+const deleteFromServer$ = deleteFilesBus$.pipe(
+    filter(
+        file => !!file.mediaInfo?.id
+    ),
+    switchMap(async (files) => {
+        const deleteFromServer = files.filter(f => !!f.mediaInfo?.id).map(f => f.mediaInfo.id);
+        await mediaLibraryService().delete(deleteFromServer);
+    })
+)
+
+const deleteFromState$ = deleteFilesBus$.pipe(
+    tap(
+        files => {
+            const uuid = files.map(f => f.mediaInfo.uuid);
+            mediaFilesToUpload$.next(
+                mediaFilesToUpload$.getValue().filter(
+                    f => !uuid.includes(f.mediaInfo.uuid)
+                )
+            )
+        }
+    )
+)
+
+
+const updateStatusBus$ = deleteFilesBus$.pipe(
+    tap(
+        files => {
+            const uuids = files.map(f => f.mediaInfo.uuid);
+            uploadedFiles$.next(
+                uploadedFiles$.getValue().filter(
+                    f => !uuids.includes(f.mediaInfo.uuid)
+                )
+            )
+
+            const uploadedState = uploadStatus$.getValue();
+
+            uuids.forEach(uuid => {
+                if (Object.prototype.hasOwnProperty.call(uploadedState, uuid)) {
+                    delete uploadedState[uuid];
+                }
+            })
+
+            uploadStatus$.next(uploadedState);
+        }
+    )
+)
 
 /**
  * Устанавливаем таргетированный файл для замены на обновленный
@@ -177,30 +265,6 @@ const updateMediaInfoFile: ContextActions["updateMediaInfoFile"] = mediaInfo => 
     mediaFilesToUpload$.next(newState);
 }
 
-/**
- * Удаление файла из подготовленных к отпарвке. также сбрасывает
- * @param files
- */
-const removeFilesToUpload: ContextActions["removeFilesToUpload"] = files => {
-    const oldState = mediaFilesToUpload$.getValue();
-
-    const state = oldState.filter(file => !files.find(f => f.mediaInfo.uuid === file.mediaInfo.uuid))
-
-    const oldUploadedState = uploadStatus$.getValue();
-
-    files.forEach(file => {
-        if (Object.prototype.hasOwnProperty.call(oldUploadedState, file.mediaInfo.uuid)) {
-            delete oldUploadedState[file.mediaInfo.uuid];
-        }
-    })
-
-    uploadStatus$.next(oldUploadedState);
-
-    mediaFilesToUpload$.next([
-        ...state
-    ]);
-};
-
 const uploadBus$ = new Subject<MediaFileToUpload[]>();
 
 const uploadFiles = (files: MediaFileToUpload[]) => {
@@ -211,16 +275,6 @@ const uploadAllFiles: ContextActions["uploadAllFiles"] = () => {
     uploadBus$.next(mediaFilesToUpload$.getValue());
 }
 
-const deleteAllFiles: ContextActions["deleteAllFiles"] = () => {
-    /**
-     * TODO Переделать вывод, сделать одну шину, которая будет запускать обновление статусов загрузок файлов
-     * т.е. - Любое изменение файла должно обнулять статус загруженного файла
-     * */
-
-    mediaFilesToUpload$.next([]);
-    uploadedFiles$.next([])
-    uploadStatus$.next({})
-}
 
 const replaceAllFiles: ContextActions["replaceAllFiles"] = () => {
     uploadBus$.next(mediaFilesToUpload$.getValue().filter(
@@ -449,7 +503,9 @@ const initMediaFilesUploadContext: ContextActions["initMediaFilesUploadContext"]
     });
 
     subscriber.add(filesUploadBus$.subscribe());
-    // subscriber.add(repeatToUpload$.subscribe());
+    subscriber.add(deleteFromServer$.subscribe());
+    subscriber.add(deleteFromState$.subscribe());
+    subscriber.add(updateStatusBus$.subscribe());
 
     return () => subscriber.unsubscribe();
 };
@@ -459,13 +515,12 @@ const actions: ContextActions = {
     addFilesToUpload,
     setReplacedTargetFile,
     updateMediaInfoFile,
-    removeFilesToUpload,
     uploadFiles,
     uploadAllFiles,
     deleteAllFiles,
     replaceAllFiles,
     initMediaFilesUploadContext,
-
+    deleteFiles
 };
 
 export const useMediaLibraryUpload = (...pipeModifications: OperatorFunction<any, MediaFileUploadContext>[]): WithMediaUploadHoc => {

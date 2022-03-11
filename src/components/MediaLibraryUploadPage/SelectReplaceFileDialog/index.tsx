@@ -1,8 +1,8 @@
 import {FC, memo, useEffect, useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
-import ReplacedFilesList from "./ReplacedFilesList";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
+import DoubleFilesList from "../../DoubleFilesList";
 
 type Props = {
     onSave(targetFile: MediaFile, replacedFile?: string, force?: boolean): void
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const SelectReplaceFileDialog: FC<Props> = (props) => {
-    const {open, closeReplaceFileDialog, targetFile} = useReplaceFileDialog();
+    const {open, closeReplaceFileDialog, targetFile, availableFiles} = useReplaceFileDialog();
     const [file, setFile] = useState<MediaFile | undefined>(undefined);
     const {onSave, force = false} = props;
 
@@ -31,9 +31,10 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
         <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
             <DialogTitle>Выбор заменяемого файла</DialogTitle>
             <DialogContent>
-                <ReplacedFilesList
+                <DoubleFilesList
                     onSelect={setFile}
                     current={file}
+                    files={availableFiles}
                 />
             </DialogContent>
             <DialogActions>

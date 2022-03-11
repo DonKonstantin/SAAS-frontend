@@ -101,7 +101,7 @@ const MediaFileTableRow: FC<Props> = props => {
                 {file.mediaInfo.origin_name}
             </TableCell>
             <TableCell>
-                {(doubles.length > 0) && (
+                {(doubles.length > 0 && !file.forceUpload) && (
                     <Tooltip title={t(`Имеются дубли файла. Нажмите чтобы принять решение`) as string}>
                         <IconButton onClick={() => handleOpenReplaceDialog()}>
                             <WarningIcon
@@ -139,8 +139,10 @@ const MediaFileTableRow: FC<Props> = props => {
                     {
                         onEdit !== undefined && (
                             <Tooltip title={t(`Редактировать`) as string}>
-                                <IconButton onClick={() => onEdit ? onEdit(file) : false}
-                                            size={"small"}>
+                                <IconButton
+                                    onClick={() => onEdit ? onEdit(file) : false}
+                                            size={"small"}
+                                >
                                     <EditIcon/>
                                 </IconButton>
                             </Tooltip>
@@ -149,6 +151,7 @@ const MediaFileTableRow: FC<Props> = props => {
                     {
                         onUpload !== undefined && (
                             <Tooltip title={t(!!file.replaceId ? "Заменить" : "Загрузить") as string}>
+                                <span>
                                 <IconButton
                                     onClick={() => onUpload ? onUpload(file) : false}
                                     size={"small"}
@@ -156,6 +159,7 @@ const MediaFileTableRow: FC<Props> = props => {
                                 >
                                     {successUploaded ? <CloudDoneIcon color={"success"}/> : <CloudUploadIcon/>}
                                 </IconButton>
+                                    </span>
                             </Tooltip>
                         )
                     }
@@ -166,7 +170,6 @@ const MediaFileTableRow: FC<Props> = props => {
                                     onClick={() => onDelete ? onDelete(file) : false}
                                     color={"error"}
                                     size={"small"}
-                                    disabled={!mayUploaded}
                                 >
                                     <DeleteIcon/>
                                 </IconButton>

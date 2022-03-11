@@ -34,7 +34,7 @@ const MediaLibraryUploadLicenseType: FC = () => {
             >
                 {
                     licenseVariants.map(
-                        ({value, label}) => <MenuItem value={value}>{t(label)}</MenuItem>
+                        ({value, label}) => <MenuItem value={value} key={value}>{t(label)}</MenuItem>
                     )
                 }
             </Select>
