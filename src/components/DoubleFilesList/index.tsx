@@ -1,11 +1,11 @@
 import {MediaFile} from "../../services/MediaLibraryService/interface";
 import {FC, memo, useCallback} from "react";
-import {Table, TableBody, TableContainer, Typography} from "@mui/material";
+import {Table, TableBody, TableContainer} from "@mui/material";
 import DoublerFileListItem from "./DoublerFileListItem";
 
 type Props = {
     onSelect?(file: MediaFile): void
-    current: MediaFile | undefined
+    current?: MediaFile | undefined
     files: MediaFile[]
 }
 

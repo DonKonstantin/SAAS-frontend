@@ -223,11 +223,11 @@ const deleteFilesBus$ = idMediaFilesToDelete$.pipe(
         const mediaFile = files.find((file) => file.mediaInfo.id === idOrUuid || file.mediaInfo.uuid === idOrUuid) as MediaFileToUpload;
 
         if (mediaFile) {
-            acc.push(mediaFile);
+            acc.push(mediaFile );
         }
 
         return acc;
-    }, []),
+    }, [] as MediaFileToUpload[]),
 );
 
 /**
@@ -268,7 +268,6 @@ const updateStatusBus$ = merge(
         startWith([])
     )
 ).pipe(
-    tap(console.log),
     tap(
         uuids => {
             // const uuids = files.map(f => f.mediaInfo.uuid);
@@ -306,7 +305,7 @@ const setReplacedTargetFile: ContextActions["setReplacedTargetFile"] = (file, ta
 
                 if (force) {
                     f.forceUpload = force;
-                    delete f.replaceId
+                    f.replaceId = "";
                 }
 
                 return f;
@@ -500,7 +499,6 @@ const filesUploadBus$ = uploadBus$.pipe(
             }),
         )
     ),
-    scan(console.log)
 );
 
 const initMediaFilesUploadContext: ContextActions["initMediaFilesUploadContext"] = () => {

@@ -183,7 +183,7 @@ const MediaFileEditForm: FC<Props> = props => {
                     type={"submit"}>
                     ПРИМЕНИТЬ ИЗМЕНЕНИЯ
                 </Button>
-                <Tooltip title={t('Внесенные изменения не применятся')}>
+                <Tooltip title={t('Внесенные изменения не применятся') as string}>
                     <Button
                         variant={"outlined"}
                         color={"secondary"}

@@ -1,9 +1,7 @@
 import {FC, memo} from "react";
-import {Checkbox, IconButton, TableCell, TableRow, Tooltip} from "@mui/material";
-import {useTranslation} from "react-i18next";
+import {Checkbox, TableCell, TableRow} from "@mui/material";
 import {MediaFile} from "../../services/MediaLibraryService/interface";
 import PlayAudioButton from "../AudioPlayeContainer/PlayAudioButton";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 type Props = {
     isCurrent: boolean
@@ -13,7 +11,6 @@ type Props = {
 
 const DoublerFileListItem: FC<Props> = (props) => {
     const {onSelect, isCurrent, file} = props;
-    const {t} = useTranslation();
 
     const selectHandler = () => {
         if (!onSelect) {

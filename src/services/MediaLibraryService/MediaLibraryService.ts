@@ -26,7 +26,7 @@ export default class MediaLibraryService implements MediaLibraryServiceInterface
 
     async delete(ids: string[]): Promise<number> {
         if (ids.length === 0) {
-            return
+            return 0
         }
 
         try {

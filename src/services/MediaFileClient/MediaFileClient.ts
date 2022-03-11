@@ -1,5 +1,5 @@
 import {MediaFileClientInterface, UpdateResponse} from "./interface";
-import {Axios, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse} from "axios";
+import {Axios, AxiosRequestConfig, AxiosRequestHeaders} from "axios";
 import {Logger} from "../logger/Logger";
 import {loggerFactory} from "../logger";
 import {MediaFile} from "../MediaLibraryService/interface";
