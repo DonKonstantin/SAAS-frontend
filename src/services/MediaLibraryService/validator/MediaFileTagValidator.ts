@@ -2,7 +2,7 @@ import {MediaFile, MediaFileTags, MediaFileTagValidatorInterface, MediaFileValid
 
 // список основных полей мета информации
 const defaultGeneralMetaTags: MediaFileTags[] = [
-    "file_name",
+    "origin_name",
     "title",
     "artist",
     "album",

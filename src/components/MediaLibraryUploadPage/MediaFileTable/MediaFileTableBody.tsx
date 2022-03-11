@@ -8,15 +8,15 @@ const MediaFileTableBody: FC = () => {
     const {
         files,
         uploadFiles,
-        deleteFiles
+        deleteFilesById
     } = useMediaLibraryUpload();
     const {
         setEditFile
     } = useEditMediaFilesModal()
 
     const handleDeleteFile = useCallback(
-        (file: MediaFileToUpload) => deleteFiles([file.mediaInfo.id || file.mediaInfo.uuid]),
-        [deleteFiles]
+        (file: MediaFileToUpload) => deleteFilesById([file.mediaInfo.id || file.mediaInfo.uuid]),
+        [deleteFilesById]
     );
 
     const handleEditFile = useCallback(

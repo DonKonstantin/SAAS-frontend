@@ -15,6 +15,9 @@ const StyledTextArea = styled(TextField)`
     fieldset {
         border: none
     }
+    & textarea {
+        line-height: 36px 
+    }
 `;
 
 const CheckMediaFilesInput: FC = () => {

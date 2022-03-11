@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField} from "@mui/material";
+import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Tooltip} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import {TextFieldProps} from "@mui/material/TextField/TextField";
@@ -95,9 +95,7 @@ const formConfig: {
         props: {
             disabled: true
         },
-        rules: {
-
-        },
+        rules: {},
         Component: SelectControl as unknown as ComponentsForms,
         variants: Object.values(LicenseType).map(type => (
             {
@@ -163,6 +161,7 @@ const MediaFileEditForm: FC<Props> = props => {
                                         render={({field: {onChange, value}}) => (
                                             <Component
                                                 {...props}
+                                                key={field}
                                                 fullWidth
                                                 variants={variants || []}
                                                 onChange={onChange}
@@ -181,10 +180,17 @@ const MediaFileEditForm: FC<Props> = props => {
             <Stack direction={'row'} spacing={2} flexWrap={"wrap"} sx={{mt: 2}}>
                 <Button
                     variant={"outlined"}
-                    type={"submit"}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
-                <Button
-                    variant={"outlined"}
-                    onClick={() => onCancel()}>ОТМЕНА</Button>
+                    type={"submit"}>
+                    ПРИМЕНИТЬ ИЗМЕНЕНИЯ
+                </Button>
+                <Tooltip title={t('Внесенные изменения не применятся')}>
+                    <Button
+                        variant={"outlined"}
+                        color={"secondary"}
+                        onClick={() => onCancel()}>
+                        ОТМЕНА
+                    </Button>
+                </Tooltip>
             </Stack>
         </form>
     )

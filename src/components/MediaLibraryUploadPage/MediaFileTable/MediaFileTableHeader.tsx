@@ -9,7 +9,7 @@ const MediaFileTableHeader: FC = () => {
         <TableHead>
             <TableRow>
                 <TableCell>Название файла</TableCell>
-                <TableCell>Статус</TableCell>
+                <TableCell align={"center"}>Статус</TableCell>
                 <TableCell>Размер</TableCell>
                 <TableCell>Прогресс</TableCell>
                 <TableCell>Мета-теги</TableCell>

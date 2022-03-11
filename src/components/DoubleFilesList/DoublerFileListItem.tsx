@@ -1,8 +1,9 @@
 import {FC, memo} from "react";
-import {Button, Checkbox, TableCell, TableRow} from "@mui/material";
+import {Checkbox, IconButton, TableCell, TableRow, Tooltip} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {MediaFile} from "../../services/MediaLibraryService/interface";
 import PlayAudioButton from "../AudioPlayeContainer/PlayAudioButton";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 type Props = {
     isCurrent: boolean
@@ -25,32 +26,21 @@ const DoublerFileListItem: FC<Props> = (props) => {
     return (
         <TableRow>
             {onSelect && (
-                <TableCell width={40}>
+                <TableCell width={40} padding={"checkbox"}>
                     <Checkbox
                         onClick={selectHandler}
                         checked={isCurrent}
                     />
                 </TableCell>
             )}
-            <TableCell width={40} sx={{pr: 0, pl: 0}}>
+            <TableCell>
+                {file.origin_name}
+            </TableCell>
+            <TableCell width={40} padding={"checkbox"}>
                 <PlayAudioButton
                     fileName={file.file_name}
                 />
             </TableCell>
-            <TableCell >
-                {file.origin_name}
-            </TableCell>
-            {onSelect && (
-                <TableCell>
-                    <Button
-                        variant={"outlined"}
-                        onClick={selectHandler}
-                    >
-                        {t(`Выбрать`)}
-                    </Button>
-                </TableCell>
-            )}
-
         </TableRow>
     )
 }

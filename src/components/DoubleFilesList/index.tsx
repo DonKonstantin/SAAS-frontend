@@ -28,14 +28,11 @@ const DoubleFilesList: FC<Props> = props => {
 
     return (
         <>
-            <Typography variant={"subtitle2"} sx={{mb:2}}>
-                Возможные дубли:
-            </Typography>
+
             <TableContainer>
                 <Table
                     sx={{minWidth: 400}}
                     aria-labelledby="tableTitle"
-                    size={"small"}
                 >
                     <TableBody>
                         {files.map(file => (
