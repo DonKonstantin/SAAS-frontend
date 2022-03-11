@@ -62,7 +62,7 @@ export interface MediaLibraryServiceInterface {
      * Delete file
      * @param id
      */
-    delete(id: string[]): Promise<MediaFile[]>;
+    delete(id: string[]): Promise<number>;
 
     /**
      * Update file

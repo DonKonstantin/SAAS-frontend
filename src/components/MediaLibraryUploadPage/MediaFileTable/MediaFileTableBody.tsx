@@ -7,25 +7,25 @@ import {useEditMediaFilesModal} from "../../MediaFileEditDialog/MediaFileEditDia
 const MediaFileTableBody: FC = () => {
     const {
         files,
-        removeFilesToUpload,
-        uploadFiles
+        uploadFiles,
+        deleteFiles
     } = useMediaLibraryUpload();
     const {
         setEditFile
     } = useEditMediaFilesModal()
 
     const handleDeleteFile = useCallback(
-        (file: MediaFileToUpload) => removeFilesToUpload([file]),
-        []
+        (file: MediaFileToUpload) => deleteFiles([file.mediaInfo.id || file.mediaInfo.uuid]),
+        [deleteFiles]
     );
 
     const handleEditFile = useCallback(
         (file: MediaFileToUpload) => setEditFile(file.mediaInfo),
-        []
+        [setEditFile]
     );
     const handleUploadFile = useCallback(
         (file: MediaFileToUpload) => uploadFiles([file]),
-        []
+        [uploadFiles]
     );
 
     return (
