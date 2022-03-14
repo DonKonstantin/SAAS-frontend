@@ -1,4 +1,4 @@
-import {FC} from "react";
+import React, {FC, useState} from "react";
 import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
@@ -6,6 +6,8 @@ import {TextFieldProps} from "@mui/material/TextField/TextField";
 import {SelectProps} from "@mui/material/Select/Select";
 import {useTranslation} from "react-i18next";
 import {v4 as uuidv4} from 'uuid';
+import NotificationsNeedSaveTemplate from "../NotificationsNeedSaveTemplate";
+import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
     file: MediaFile
@@ -133,14 +135,58 @@ const formConfig: {
 
 const MediaFileEditForm: FC<Props> = props => {
     const {file, onSave, onCancel} = props;
+    const [isOpen,setIsOpen] = useState<boolean>(false)
     const {control, handleSubmit} = useForm<MediaFile>({
         defaultValues: file,
     });
     const {t} = useTranslation();
 
+    const checkValidOperation = () => {
+
+        if (!selectedFile) {
+            handleSubmit(onSave)
+        }
+
+        setIsOpen(true)
+    }
+
+    const [selectedFile, setSelectedFile] = useState<any>();
+
+    const changeHandler = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+    console.log('selectedFile', selectedFile)
     return (
-        <form onSubmit={handleSubmit(onSave)}>
-            <Grid container spacing={2} sx={{pt: 1}}>
+        <>
+
+            <Grid style={{position:"relative"}} container spacing={2} sx={{pt: 1}}>
+                {selectedFile && (
+                    <div style={{
+                        position: "absolute",
+                        transition:'400ms',
+                        inset: 0,
+                        background: '#6E933D59',
+                        display: "flex",
+                        alignItems: 'center',
+                        backdropFilter: `blur(2px)`,
+                        zIndex: 2,
+                        justifyContent: 'center'
+                    }}>
+                        <div style={{
+                            padding: 20,
+                            background: 'white',
+                            borderRadius: '7px',
+                            display:'flex',
+                            flexFlow:'column',
+                            gridGap:10
+                        }}>
+                            <div>Ожидается замена файла</div>
+                            <Button
+                                variant={"outlined"}
+                                onClick={() => setSelectedFile(undefined)}>ОТМЕНА</Button>
+                        </div>
+                    </div>
+                )}
                 {Object.entries(formConfig).map(
                     ([field, {
                         Component,
@@ -166,8 +212,7 @@ const MediaFileEditForm: FC<Props> = props => {
                                             label={t(label)}
                                             value={value}
                                         />
-                                    )
-                                    }
+                                    )}
                                 />
                             </Grid>
                         )
@@ -178,17 +223,39 @@ const MediaFileEditForm: FC<Props> = props => {
                 <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"}>
                     <Button
                         variant={"outlined"}
-                        type={"submit"}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
+                        onClick={checkValidOperation}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
                     <Button
                         variant={"outlined"}
                         onClick={() => onCancel()}>ОТМЕНА</Button>
                 </Stack>
                 <Button
                     variant={"outlined"}
-                    onClick={() => onCancel()}>Выберите новый файл</Button>
+                    component="label"
+                >
+                    {selectedFile && selectedFile.name.trim()}
+                    {selectedFile && <CloseIcon onClick={() => setSelectedFile(undefined)}/>}
+                    {!selectedFile && `Выберите новый файл`}
+                    <input
+                        accept="audio/mpeg, audio/mp3"
+                        type="file"
+                        onChange={changeHandler}
+                        hidden
+                    />
+                </Button>
+                {selectedFile && <NotificationsNeedSaveTemplate
+                    title={"Загрузка песни"}
+                    content={`Вы точно хотите заменить песню на: ${selectedFile.name}`}
+                    open={isOpen}
+                    onConfirm={() => {
+                        handleSubmit(onSave)
+                        setIsOpen(false)
+                    }}
+                    onClose={() => setIsOpen(false)}
+                />}
             </Stack>
-        </form>
+        </>
     )
 }
 
 export default MediaFileEditForm;
+
