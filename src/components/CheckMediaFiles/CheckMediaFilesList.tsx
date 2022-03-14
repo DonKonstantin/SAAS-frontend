@@ -18,12 +18,12 @@ const CheckMediaFilesList: FC = () => {
     if (isCheckProgress) {
         return (
             <Stack sx={{pt:2}}>
-                <Skeleton variant={"text"}/>
-                <Skeleton variant={"text"}/>
-                <Skeleton variant={"text"}/>
-                <Skeleton variant={"text"}/>
-                <Skeleton variant={"text"}/>
-                <Skeleton variant={"text"}/>
+                <Skeleton variant={"text"} height={36}/>
+                <Skeleton variant={"text"} height={36}/>
+                <Skeleton variant={"text"} height={36}/>
+                <Skeleton variant={"text"} height={36}/>
+                <Skeleton variant={"text"} height={36}/>
+                <Skeleton variant={"text"} height={36}/>
             </Stack>
         )
     }

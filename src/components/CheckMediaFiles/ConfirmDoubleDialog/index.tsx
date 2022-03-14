@@ -1,7 +1,6 @@
-import {FC, memo, useEffect, useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
+import {FC, memo} from "react";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@mui/material";
 import {useConfirmDoubleDialog} from "./ConfirmDoubleDialodContext";
-import {MediaFile} from "../../../services/MediaLibraryService/interface";
 import DoubleFilesList from "../../DoubleFilesList";
 
 type Props = {
@@ -23,7 +22,12 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
 
     return (
         <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
-            <DialogTitle>Файл действительно является дублем?</DialogTitle>
+            <DialogTitle>
+                Файл действительно является дублем?
+                <Typography variant={"subtitle2"} sx={{opacity: 0.56, fontSize: 12}}>
+                    Список возможных дубликатов приведен ниже
+                </Typography>
+            </DialogTitle>
             <DialogContent>
                 <DoubleFilesList
                     files={availableFiles}
@@ -39,6 +43,7 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
                 <Button
                     variant={"outlined"}
                     type={"submit"}
+                    color={"secondary"}
                     onClick={() => closeReplaceFileDialog()}
                 >
                     Да

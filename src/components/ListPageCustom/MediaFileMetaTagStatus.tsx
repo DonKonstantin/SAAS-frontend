@@ -24,6 +24,8 @@ const statusConfig = {
 const StyledChip = styled(Chip)`
     border-radius: 3px;
     width: 100%;
+    height: 28px;
+    
 `
 
 const validator = new MediaFileTagValidator(["title", "origin_name", "artist", "license_type"])

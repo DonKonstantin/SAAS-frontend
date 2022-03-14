@@ -78,13 +78,13 @@ const DropZoneArea: FC<Props> = props => {
                     justifyContent: `center`,
                     flexDirection: 'column',
                     textAlign: 'center',
-                    p: "40px 20px"
+                    p: "20px 24px 24px"
                 }}
             >
                 <div>
-                    <CloudUploadIcon color={"primary"}/>
+                    <CloudUploadIcon color={"primary"} sx={{fontSize: 100}}/>
                 </div>
-                <Typography color={"primary"}>Переместите файлы для загрузки</Typography>
+                <Typography color={"primary"}>Переместите <br/>файлы для загрузки</Typography>
             </Box>
         </div>
     )

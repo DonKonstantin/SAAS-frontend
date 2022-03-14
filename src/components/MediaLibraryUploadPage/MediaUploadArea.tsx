@@ -70,10 +70,10 @@ const MediaUploadArea: FC = () => {
 
     return (
         <>
-            <Typography color={"primary"}>
+            <Typography color={"primary"} >
                 Загрузка файлов
             </Typography>
-            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12}}>
+            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12, mb: 2}}>
                 Переместите все файлы для загрузки в контейнер
             </Typography>
             <DropZoneArea

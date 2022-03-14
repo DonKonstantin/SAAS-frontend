@@ -39,7 +39,7 @@ const CheckMediaFilesControls: FC = () => {
                     </Button>
                 </Tooltip>
                 <Tooltip title={t(`Вернуться к редактированию списка`) as string} placement={"bottom-end"}>
-                    <Button variant={"outlined"} onClick={() => resetCheck()}>{t("Сбросить")}</Button>
+                    <Button variant={"outlined"} color="warning" onClick={() => resetCheck()}>{t("Сбросить")}</Button>
                 </Tooltip>
             </Stack>
         )
