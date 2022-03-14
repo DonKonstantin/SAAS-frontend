@@ -3,7 +3,7 @@ import {SimpleValues} from "../../services/listDataLoader/listLoader/listValues/
 import {TableCell} from "@mui/material";
 import {ListFieldProperties} from "../../services/listDataLoader/listLoader/types";
 import columnDirection from "../ListPageParts/List/helpers/columnDirection";
-import {MediaFile} from "../../services/MediaLibraryService/interface";
+import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import MediaFileMetaTagStatus from "./MediaFileMetaTagStatus";
 
 export const TemplateMediaFile: MediaFile = {
@@ -22,7 +22,7 @@ export const TemplateMediaFile: MediaFile = {
     language: "",
     last_change_date: "",
     last_editor: "",
-    license_type: "none",
+    license_type: LicenseType.none,
     lyricist: "",
     mime_type: "audio/mpeg",
     obscene: false,
