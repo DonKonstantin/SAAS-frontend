@@ -12,8 +12,8 @@ const ListingPage: NextPage = () => {
 
 // Экспортируем основные параметры страницы
 ListingPage.getInitialProps = async (): Promise<PageWithEntityList> => ({
-    title: "file",
-    header: "file",
+    title: "Все файлы",
+    header: "Все файлы",
     entityListSchema: "file",
     permissionCheckPermission: "READ_MEDIA_FILES",
     permissionCheckEditPermission: "EDIT_MEDIA_FILES",

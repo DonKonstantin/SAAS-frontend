@@ -33,7 +33,7 @@ const getUpdatedFieldsForSingle = (file: MediaFile) => {
 // Обработка данных для множественной редактирования
 const getUpdatedFieldsForPlural = (file: MediaFile) => {
 
-    let fieldToUpdate:FileUpdateSetType = {}
+    let fieldToUpdate: FileUpdateSetType = {}
 
     file.artist !== '' && (fieldToUpdate['artist'] = file.artist)
     file.album !== '' && (fieldToUpdate['album'] = file.album)
@@ -90,7 +90,7 @@ const BulkEditing = (props: ListHeaderProps) => {
     return (
         <>
             <Tooltip title={'Массовое редактирование'}>
-                <Button variant={"outlined"} onClick={handleToggleBulkEditFiles}>
+                <Button disabled={checkedItems.length <= 1} variant={"outlined"} onClick={handleToggleBulkEditFiles}>
                     Массовое редактирование
                 </Button>
             </Tooltip>

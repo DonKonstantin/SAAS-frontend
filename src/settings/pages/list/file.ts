@@ -15,80 +15,87 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             field: "title",
             filterType: "Like",
             schema: "file",
-            title: "title"
+            title: "Название файла"
         },
         artist: {
             field: "artist",
             filterType: "Like",
             schema: "file",
-            title: "artist"
+            title: "Исполнитель"
         },
         album: {
             field: "album",
             filterType: "Like",
             schema: "file",
-            title: "album"
+            title: "Альбом"
         },
         genre: {
             field: "genre",
             filterType: "Like",
             schema: "file",
-            title: "genre"
+            title: "Жанр"
         },
         bpm: {
             field: "bpm",
             filterType: "EqualsInt",
             schema: "file",
-            title: "bpm"
+            title: "Темп трека"
         },
         isrc: {
             field: "isrc",
             filterType: "Like",
             schema: "file",
-            title: "isrc"
+            title: "Международный стандартный номер аудио/видео записи"
         },
         language: {
             field: "language",
             filterType: "Like",
             schema: "file",
-            title: "language"
+            title: "Язык исполнения"
         },
         lyricist: {
             field: "lyricist",
             filterType: "Like",
             schema: "file",
-            title: "lyricist"
+            title: "Автор текста"
         },
         composer: {
             field: "composer",
             filterType: "Like",
             schema: "file",
-            title: "composer"
+            title: "Автор музыки"
         },
         duration: {
             field: "duration",
             filterType: "EqualsInt",
             schema: "file",
-            title: "duration"
+            title: "Длительность трека"
         },
         creator: {
             field: "creator",
             filterType: "EqualsString",
             schema: "file",
-            title: "creator"
+            title: "Пользователь, который добавил трек"
         },
         last_editor: {
             field: "last_editor",
             filterType: "EqualsString",
             schema: "file",
-            title: "last_editor"
+            title: "Последний пользователь который изменял трек"
         },
         year: {
             field: "year",
             filterType: "EqualsInt",
             schema: "file",
-            title: "year"
+            title: "Год создания"
         },
+        // creation_date: {
+        //     field: "creation_date",
+        //     filterType: "EqualsInt",
+        //     schema: "file",
+        //     title: "Дата создания",
+        //     customComponent: DateTimeRangeField
+        // },
     };
     listFields: ListFieldsConfiguration<"file"> = {
         fields: {

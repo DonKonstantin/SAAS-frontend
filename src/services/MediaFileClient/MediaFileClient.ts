@@ -54,8 +54,6 @@ export default class MediaFileClient implements MediaFileClientInterface {
                 }
             );
 
-            console.log(result)
-
             this.logger.Debug('file loaded', result);
 
             return new Blob([result]);

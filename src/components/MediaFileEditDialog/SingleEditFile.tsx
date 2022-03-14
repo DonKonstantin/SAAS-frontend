@@ -10,6 +10,7 @@ type Props = {
 }
 
 const SingleEditFile: FC<Props> = props => {
+
     const {onSave} = props;
     const {file, open, closeModal, saveEditFile} = useEditMediaFilesModal(
         distinctUntilChanged()

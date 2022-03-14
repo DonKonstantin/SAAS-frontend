@@ -60,7 +60,7 @@ export default class MediaLibraryService implements MediaLibraryServiceInterface
 
         try {
             this.logger.Debug("update files by ids: ", ids);
-            const {file_data_update} = await this.client.Query<DeleteFilesByIdMutationParams, UpdateFilesByIdMutationResponse>(
+            const {file_data_update} = await this.client.Mutation<DeleteFilesByIdMutationParams, UpdateFilesByIdMutationResponse>(
                 new UpdateFilesByIdMutation(ids,fields),
                 {}
             );

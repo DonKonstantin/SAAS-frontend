@@ -1,8 +1,17 @@
 import {FC} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from "@mui/material";
 
 type Props = {
     open: boolean
+    isLoading: boolean
     onConfirm: () => void
     onClose: () => void
     title: string
@@ -18,6 +27,7 @@ type Props = {
 const NotificationsNeedSaveTemplate: FC<Props> = props => {
     const {
         open,
+        isLoading = false,
         onConfirm,
         onClose,
         title,
@@ -37,10 +47,11 @@ const NotificationsNeedSaveTemplate: FC<Props> = props => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>
-                    {okText}
-                </Button>
                 <Button onClick={onConfirm}>
+                    {!isLoading && okText}
+                    {isLoading && <CircularProgress color="success" size={18} />}
+                </Button>
+                <Button onClick={onClose}>
                     {cancelText}
                 </Button>
             </DialogActions>
