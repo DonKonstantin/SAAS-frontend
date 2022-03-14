@@ -1,6 +1,7 @@
 import React from 'react';
 import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
 import {NextPage} from "next";
+import LogsListPage from "../components/LogsListPage";
 
 // Свойства страницы
 type Props = PageWithMetaTags
@@ -9,7 +10,7 @@ type Props = PageWithMetaTags
 const Page: NextPage<Props> = () => {
     return (
         <div>
-            <p>Раздел находится в разработке</p>
+            <LogsListPage/>
         </div>
     )
 }
