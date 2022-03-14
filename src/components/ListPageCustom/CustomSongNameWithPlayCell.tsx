@@ -15,15 +15,16 @@ const CustomSongNameWithPlayCell: FC<ListFieldProperties<SimpleValues>> = props 
         padding
     } = configuration
 
+    if (value === undefined) {
+        return <></>
+    }
+
     return (
         <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
             <div className={'custom-song-with-play-cell'}>
-                <div>
-                    <PlayAudioButton
-                        fileName={value.value}
-                    />
-                </div>
-                <div>{value.value}</div>
+                <PlayAudioButton
+                    fileName={value.value}
+                />
             </div>
         </TableCell>
     )

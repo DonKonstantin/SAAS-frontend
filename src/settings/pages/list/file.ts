@@ -106,6 +106,15 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Simple",
+                }
+            },
+            id: {
+                field: "id",
+                title: "",
+                isEnabled: true,
+                fieldType: {
+                    config: undefined,
+                    type: "Simple",
                     customComponent: CustomSongNameWithPlayCell
                 }
             },
@@ -186,15 +195,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             hash_sum: {
                 field: "hash_sum",
                 title: "hash_sum",
-                isEnabled: true,
-                fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
-            },
-            id: {
-                field: "id",
-                title: "id",
                 isEnabled: true,
                 fieldType: {
                     config: undefined,

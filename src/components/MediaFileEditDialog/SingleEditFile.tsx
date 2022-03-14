@@ -34,8 +34,7 @@ const SingleEditFile: FC<Props> = props => {
                     file={file}
                     onSave={handleSave}
                     onCancel={closeModal}
-                >
-                </SingleEditFileForm>
+                />
             </DialogContent>
         </Dialog>
     )

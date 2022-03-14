@@ -47,11 +47,11 @@ const NotificationsNeedSaveTemplate: FC<Props> = props => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onConfirm}>
+                <Button variant={"outlined"} size={'medium'} onClick={onConfirm}>
                     {!isLoading && okText}
-                    {isLoading && <CircularProgress color="success" size={18} />}
+                    {isLoading && <CircularProgress color="success" size={18}/>}
                 </Button>
-                <Button onClick={onClose}>
+                <Button variant={"outlined"} size={'medium'} color={'secondary'} onClick={onClose}>
                     {cancelText}
                 </Button>
             </DialogActions>

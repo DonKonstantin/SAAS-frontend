@@ -7,7 +7,7 @@ import {MediaFileToUpload, useMediaLibraryUpload} from "./MediaFilesUploadContex
 import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 
-const metadataToMediaInfo = (
+export const metadataToMediaInfo = (
     metadata: IAudioMetadata,
 ): Partial<MediaFile> => {
     return {

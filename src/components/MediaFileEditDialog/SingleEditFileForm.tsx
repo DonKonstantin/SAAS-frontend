@@ -1,5 +1,17 @@
-import React, {FC, useEffect, useState} from "react";
-import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField} from "@mui/material";
+import React, {FC, useState} from "react";
+import {
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Tooltip
+} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import {Controller, useForm} from "react-hook-form";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import {TextFieldProps} from "@mui/material/TextField/TextField";
@@ -7,9 +19,11 @@ import {SelectProps} from "@mui/material/Select/Select";
 import {useTranslation} from "react-i18next";
 import {v4 as uuidv4} from 'uuid';
 import NotificationsNeedSaveTemplate from "../NotificationsNeedSaveTemplate";
-import CloseIcon from "@mui/icons-material/Close";
 import mediaFileClient from "../../services/MediaFileClient";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import * as mmb from "music-metadata-browser";
+import {metadataToMediaInfo} from "../MediaLibraryUploadPage/MediaUploadArea";
+import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
 
 type Props = {
     file: MediaFile
@@ -156,34 +170,37 @@ const MediaFileEditForm: FC<Props> = props => {
         setIsOpen(true)
     }
 
-    const changeHandler = (event) => {
-        setSelectedFile(event.target.files[0]);
+    const changeHandler = async (event) => {
+        const currentFile = event.target.files[0]
+        setSelectedFile(currentFile);
+
+        let metadata = await mmb.parseBlob(currentFile, {skipPostHeaders: true});
+        const metaDataToDisplay = mediaFileFactory(metadataToMediaInfo(metadata), file.license_type);
+
+        const title = metaDataToDisplay.title
+        setValue('title', title ? title : currentFile.name)
     };
 
     const onConfirm = async () => {
         setIsLoading(true)
-        const value = getValues();
+        let metadata = await mmb.parseBlob(selectedFile, {skipPostHeaders: true});
+        const metaDataToDisplay = mediaFileFactory(metadataToMediaInfo(metadata), file.license_type);
 
         await mediaFileClient().Replace(
             file.id,
             selectedFile,
-            value
+            metaDataToDisplay
         )
 
         setIsLoading(false)
         setIsOpen(false)
-        onSave(value)
+        onSave(metaDataToDisplay)
     }
 
-    useEffect(() => {
-        if (selectedFile) {
-            setValue('title', selectedFile.name)
-
-            return
-        }
-
+    const handleDeleteFile = () => {
+        setSelectedFile(undefined)
         setValue('title', file.title)
-    }, [selectedFile])
+    }
 
     return (
         <>
@@ -227,31 +244,38 @@ const MediaFileEditForm: FC<Props> = props => {
                         onClick={checkValidOperation}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
                     <Button
                         variant={"outlined"}
+                        color={'secondary'}
                         onClick={() => onCancel()}>ОТМЕНА</Button>
                 </Stack>
-                <Button
-                    variant={"outlined"}
-                    component="label"
-                >
+                <Stack direction={'row'} spacing={2}>
+                    <Button
+                        variant={"outlined"}
+                        component="label"
+                    >
+                        {selectedFile && (
+                            <div>{selectedFile.name.slice(0, 15)}...</div>
+                        )}
+                        {!selectedFile && (
+                            <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"}>
+                                <CloudDownloadIcon/>
+                                <div>Выберите новый файл</div>
+                            </Stack>
+                        )}
+                        <input
+                            accept="audio/mpeg, audio/mp3"
+                            type="file"
+                            onChange={changeHandler}
+                            hidden
+                        />
+                    </Button>
                     {selectedFile && (
-                        <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"}>
-                            <div>{selectedFile.name.slice(0,15)}...</div>
-                            <CloseIcon onClick={() => setSelectedFile(undefined)}/>
-                        </Stack>
+                        <Tooltip title={t("Отменить замену файла") as string}>
+                            <IconButton color={'secondary'} onClick={handleDeleteFile}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </Tooltip>
                     )}
-                    {!selectedFile && (
-                        <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"}>
-                            <CloudDownloadIcon/>
-                            <div>Выберите новый файл</div>
-                        </Stack>
-                    )}
-                    <input
-                        accept="audio/mpeg, audio/mp3"
-                        type="file"
-                        onChange={changeHandler}
-                        hidden
-                    />
-                </Button>
+                </Stack>
                 {selectedFile && (
                     <NotificationsNeedSaveTemplate
                         title={"Загрузка песни"}

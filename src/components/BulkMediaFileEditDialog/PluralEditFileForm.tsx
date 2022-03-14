@@ -113,6 +113,7 @@ const PluralEditFileForm: FC<Props> = props => {
                     type={"submit"}>ПРИМЕНИТЬ ИЗМЕНЕНИЯ</Button>
                 <Button
                     variant={"outlined"}
+                    color={'secondary'}
                     onClick={() => onCancel()}>ОТМЕНА</Button>
             </Stack>
         </form>

@@ -25,7 +25,7 @@ const BulkMediaFileEditDialog: FC<Props> = props => {
     }
 
     return (
-        <Dialog open={isOpen} onClose={closeModal} maxWidth={"lg"} fullWidth>
+        <Dialog open={isOpen} onClose={closeModal} maxWidth={"md"} fullWidth>
             <DialogTitle>Редактирование</DialogTitle>
             <DialogContent>
                 <PluralEditFileForm
