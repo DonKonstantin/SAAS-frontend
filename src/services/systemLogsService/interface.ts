@@ -31,9 +31,9 @@ export type LogItemGraphResponse = {
 
 // Logs level for logs
 export enum LogsLevel {
-    realm = "realm",
-    domain = "domain",
-    project = "project",
+    realm = 'realm',
+    domain = 'domain',
+    project = 'project',
 }
 
 export enum LogsActionType {
@@ -50,12 +50,12 @@ export enum LogsOrderBy {
 }
 
 export type LogsFilterParams = {
-    entityType: string[];
-    eventType: LogsActionType[];
-    date: Date[];
-    userId: string[];
-    userName: string;
-    entityId: string[];
+    entityType?: string[];
+    eventType?: LogsActionType[];
+    date?: Date[];
+    userId?: string[];
+    userName?: string;
+    entityId?: string[];
 }
 
 export type LoadLogsParams = {

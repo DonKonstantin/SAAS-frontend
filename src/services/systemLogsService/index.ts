@@ -7,4 +7,4 @@ const systemLogsService: {(): SystemLogsServiceInterface} = () => {
     return new SystemLogsService(graphQLClient());
 }
 
-export default systemLogsService();
+export default systemLogsService;

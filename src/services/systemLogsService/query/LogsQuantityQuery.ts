@@ -24,11 +24,11 @@ export class LogsQuantityQuery implements GraphQLQuery<LogsQuantityQueryParams> 
         this.query = gql(`
         query __LOGS_QUANTITY__(
             $filter: Log_Items_Filter,
-            $structure: ID!,
+            $structureId: ID!,
             $level: Logs_list_Levels_Enum,
         ) {
           count: logsQuantity(
-            structure: $structure,
+            structure: $structureId,
             level: $level,
             filter: $filter,
           )
