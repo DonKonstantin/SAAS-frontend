@@ -46,6 +46,8 @@ type EntityListHocActions<T extends keyof Schemas = keyof Schemas> = {
     // Обработка изменения offset
     onChangeOffset: { (offset: number): void }
 
+    reloadedListingData:{ (): void }
+
     // Обработка изменения значения фильтра
     onChangeFilterValues: {
         <F extends keyof Schemas[T]['fields']>(
@@ -70,7 +72,7 @@ type EntityListHocActions<T extends keyof Schemas = keyof Schemas> = {
     onDeleteSubmit: { (): void }
 
     // Обработка копирования выбранных элементов
-    onCloneItems: {(items: string[]): void}
+    onCloneItems: { (items: string[]): void }
 };
 
 // Свойства контекста по умолчанию
@@ -92,6 +94,30 @@ const schemaChangeCtx$ = new Subject<{ schema: keyof Schemas, additionFilter?: {
 
 // Контекст подписки на изменения данных, требующих перезагрузки
 const dataChangeCtx$ = new Subject<ListOfSchema<keyof Schemas>>()
+
+const reloadedListingData = () => {
+    const context = context$.getValue()
+
+    const {data, additionFilter} = context
+
+    if (!data) {
+        return
+    }
+
+    context$.next({
+        ...context,
+        isLoading: true,
+    })
+
+    context$.next(new DefaultContext())
+
+    fullDataReloadCtx$.next({schema:data.schema, additionFilter})
+
+    context$.next({
+        ...context,
+        isLoading: false,
+    })
+}
 
 /**
  * Обработка копирования выбранных элементов
@@ -477,6 +503,7 @@ const actions: EntityListHocActions = {
     onChangeFilterValues,
     onResetFilterValues,
     onChangeLimit,
+    reloadedListingData,
     onChangeAdditionData,
     onDeleteItems,
     onDeleteSubmit,

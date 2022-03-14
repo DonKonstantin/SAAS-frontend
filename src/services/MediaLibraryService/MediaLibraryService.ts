@@ -12,6 +12,11 @@ import {
     DeleteFilesByIdMutationParams,
     DeleteFilesByIdMutationResponse
 } from "./query/DeleteFilesByIdMutation";
+import {
+    FileUpdateSetType,
+    UpdateFilesByIdMutation,
+    UpdateFilesByIdMutationResponse
+} from "./query/UpdateFilesByIdMutation";
 
 /**
  * Сервис по работе с сущностью медиа-файла
@@ -44,15 +49,28 @@ export default class MediaLibraryService implements MediaLibraryServiceInterface
         }
     }
 
-    async load(id: string[]): Promise<MediaFile[]> {
-        console.log(id)
-
+    async load(_id: string[]): Promise<MediaFile[]> {
         return Promise.resolve([]);
     }
 
-    async update(files: MediaFile[]): Promise<MediaFile[]> {
-        console.log(files)
-        return Promise.resolve([]);
+    async update(ids: string[],fields:FileUpdateSetType): Promise<number> {
+        if (ids.length === 0) {
+            return 0
+        }
+
+        try {
+            this.logger.Debug("update files by ids: ", ids);
+            const {file_data_update} = await this.client.Mutation<DeleteFilesByIdMutationParams, UpdateFilesByIdMutationResponse>(
+                new UpdateFilesByIdMutation(ids,fields),
+                {}
+            );
+            this.logger.Debug("Count updated files: ", file_data_update.affected_rows);
+
+            return file_data_update.affected_rows;
+        } catch (e) {
+            this.logger.Error(e)
+            throw e
+        }
     }
 
     async findDoubles(fileNames: string[]): Promise<MediaFilesDoubles[]> {

@@ -23,13 +23,43 @@ const file: Schema = {
             isPrimaryKey: false,
             isArray: false
         },
+        creation_date: {
+            type: "DateTime!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        last_change_date: {
+            type: "DateTime!",
+            isPrimaryKey: false,
+            isArray: false
+        },
         file_name: {
             type: "String!",
             isPrimaryKey: false,
             isArray: false
         },
+        duration: {
+            type: "Int!",
+            isPrimaryKey: false,
+            isArray: false
+        },
         genre: {
             type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        hash_sum: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        creator: {
+            type: "ID!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        last_editor: {
+            type: "ID!",
             isPrimaryKey: false,
             isArray: false
         },
@@ -80,21 +110,25 @@ const file: Schema = {
             isPrimaryKey: false,
             isArray: false
         },
+        origin_name: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
         title: {
             type: "String!",
             isPrimaryKey: false,
             isArray: false
         },
         year: {
-            type: "ID!",
+            type: "Int!",
             isPrimaryKey: false,
             isArray: false
         },
     },
-    isChangeable: false,
+    isChangeable: true,
     isCreatable: false,
-    isDeletable: false,
-    subscriptionKey: ""
+    isDeletable: true,
 }
 
 export default file;
