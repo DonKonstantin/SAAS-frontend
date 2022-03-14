@@ -256,3 +256,26 @@
 .rhap_button-clear:focus:not(:focus-visible) {
   outline: 0;
 }
+
+.audio-player {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 100000;
+  width: 100%;
+  max-width: 350px;
+
+  visibility: hidden;
+  opacity: 0;
+
+  transition: opacity 250ms ease 0s, visibility 0s linear 250ms;
+
+
+  &.--visible {
+    visibility: visible;
+    opacity: 1;
+
+    transition: opacity 250ms ease 0s, visibility 0s linear 0ms;
+
+  }
+}

@@ -1,8 +1,8 @@
 import {FC, memo, useEffect, useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@mui/material";
 import {useReplaceFileDialog} from "./SelectReplaceFileDialogContext";
-import ReplacedFilesList from "./ReplacedFilesList";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
+import DoubleFilesList from "../../DoubleFilesList";
 
 type Props = {
     onSave(targetFile: MediaFile, replacedFile?: string, force?: boolean): void
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const SelectReplaceFileDialog: FC<Props> = (props) => {
-    const {open, closeReplaceFileDialog, targetFile} = useReplaceFileDialog();
+    const {open, closeReplaceFileDialog, targetFile, availableFiles} = useReplaceFileDialog();
     const [file, setFile] = useState<MediaFile | undefined>(undefined);
     const {onSave, force = false} = props;
 
@@ -22,40 +22,45 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
         return null;
     }
 
-    const saveHandler = (force = false) => {
-        onSave(targetFile as MediaFile, file?.id || "", force);
+    const saveHandler = (file: MediaFile) => {
+        onSave(targetFile as MediaFile, file?.id || "", false),
+        closeReplaceFileDialog();
+    }
+
+    const uploadNewHandler = () => {
+        onSave(targetFile as MediaFile, undefined, true);
         closeReplaceFileDialog();
     }
 
     return (
-        <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth>
-            <DialogTitle>Выбор заменяемого файла</DialogTitle>
+        <Dialog open={open} onClose={closeReplaceFileDialog} fullWidth maxWidth={"sm"}>
+            <DialogTitle>
+                Выбор заменяемого файла
+                <Typography variant={"subtitle2"} sx={{opacity: 0.56, fontSize: 12}}>
+                    Найдены возможные дубли. Выберите заменяемый файл или разрешите загрузку нового.
+                </Typography>
+            </DialogTitle>
             <DialogContent>
-                <ReplacedFilesList
-                    onSelect={setFile}
+                <DoubleFilesList
+                    onSelect={saveHandler}
                     current={file}
+                    files={availableFiles}
                 />
             </DialogContent>
             <DialogActions>
-                <Button
-                    variant={"outlined"}
-                    type={"submit"}
-                    onClick={() => saveHandler()}
-                >
-                    Подтвердить
-                </Button>
                 {force && (
                     <Button
                         variant={"outlined"}
                         type={"submit"}
-                        onClick={() => saveHandler(true)}
+                        color={"primary"}
+                        onClick={uploadNewHandler}
                     >
-                        Создать новый
+                        Загрузить новый
                     </Button>
-                )
-                }
+                )}
                 <Button
                     variant={"outlined"}
+                    color={"secondary"}
                     onClick={() => closeReplaceFileDialog()}
                 >
                     Закрыть

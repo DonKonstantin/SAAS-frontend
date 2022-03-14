@@ -37,6 +37,7 @@ type CheckMediaFilesContextActions = {
     runCheck(): void;
     downloadPlaylist(withDoubles: boolean): void;
     resetCheck(): void;
+    excludeFromDouble(fileName: string): void
 }
 
 type FilePathAndName = {
@@ -149,13 +150,33 @@ const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (wit
     m3uServiceFactory().createPlaylist(fileNames);
 }
 
+const excludeFromDouble: CheckMediaFilesContextActions["excludeFromDouble"] = fileName => {
+    const newState = context$.getValue().fileCheckResult.map(
+        f => {
+            if (f.fileName !== fileName) {
+                return f
+            }
+
+            f.doubles = [];
+
+            return f;
+        }
+    )
+
+    context$.next({
+        ...context$.getValue(),
+        fileCheckResult: newState
+    });
+}
+
 
 const actions: CheckMediaFilesContextActions = {
     addFileRawData,
     removeFileRawData,
     runCheck,
     downloadPlaylist,
-    resetCheck
+    resetCheck,
+    excludeFromDouble
 };
 
 export const useCheckMediaFilesContext = (...pipeModifications: OperatorFunction<any, CheckMediaFilesContext>[]): WithCheckMediaFilesContext => {
