@@ -114,6 +114,16 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 isEnabled: true,
                 fieldType: {
                     config: undefined,
+                    type: "Hidden",
+                }
+            },
+            file_name: {
+                field: "file_name",
+                title: "",
+                isEnabled: true,
+                width: 60,
+                fieldType: {
+                    config: undefined,
                     type: "Simple",
                     customComponent: CustomSongNameWithPlayCell
                 }
@@ -273,15 +283,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     type: "Hidden"
                 }
             },
-            file_name: {
-                field: "file_name",
-                title: "file_name",
-                isEnabled: true,
-                fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
-            },
+
             publisher: {
                 field: "publisher",
                 title: "publisher",
