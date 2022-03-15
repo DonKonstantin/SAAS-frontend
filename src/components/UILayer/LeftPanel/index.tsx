@@ -13,9 +13,8 @@ const LeftPanel: FC<{}> = () => {
             <Divider/>
             <MainMenu/>
             <Divider/>
-            <Box sx={{mt: "auto"}}>
-                <AudioPlayerContainer/>
-            </Box>
+            <AudioPlayerContainer/>
+            <Divider/>
         </DrawerLayer>
     )
 }

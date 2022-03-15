@@ -1,13 +1,15 @@
-import {FC, useEffect, useRef, useState} from "react";
+import React, {FC, useEffect, useRef, useState} from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged} from "rxjs";
-import {Box, Fab, Portal} from "@mui/material";
+import {Box, Fab, ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
 import Draggable from 'react-draggable';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import clsx from "clsx";
 import {clientServerDetector} from "../../services/clientServerDetector";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import {useTranslation} from "react-i18next";
 
 const eventLogger = (_, {x, y}) => {
     localStorage.setItem('audioPlayerPosition', JSON.stringify({x, y}));
@@ -34,6 +36,7 @@ const AudioPlayerContainer: FC = () => {
     const {currentPlaySongId, stopPlay, continuePlay} = useAudioPlayer(distinctUntilChanged(() => true));
 
     const [showPlayer, setShowPlayer] = useState(false);
+    const {t} = useTranslation();
 
     useEffect(() => {
         const subscriber = audioPlayerChangeSongBus$.subscribe({
@@ -70,17 +73,13 @@ const AudioPlayerContainer: FC = () => {
 
     return (
         <>
-            <Box
-                sx={{p: 1}}
-            >
-                <Fab
-                    color={"primary"}
-                    size={"small"}
-                    onClick={() => setShowPlayer(val => !val)}
-                >
+            <ListItem button onClick={() => setShowPlayer(val => !val)}
+                      className={clsx("left-menu-item", "can-activate", {"is-active": showPlayer})}>
+                <ListItemIcon color="inherit">
                     <AudiotrackIcon/>
-                </Fab>
-            </Box>
+                </ListItemIcon>
+                <ListItemText primary={t("Медиа-плеер")}/>
+            </ListItem>
             <Portal>
                 <Draggable
                     handle="#draggable-dialog-title"
