@@ -59,10 +59,10 @@ export type LogsFilterParams = {
 }
 
 export type LoadLogsParams = {
-    orderBy: LogsOrderBy,
-    direction: "asc" | "desc",
+    orderBy?: LogsOrderBy,
+    direction?: "asc" | "desc",
     filter: LogsFilterParams,
-    structure: string,
+    structureId: string,
     level: LogsLevel,
     limit: number,
     offset: number,

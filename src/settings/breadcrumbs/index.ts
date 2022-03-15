@@ -213,6 +213,15 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                     as: `/media-rules/check`,
                 }
             }
+        },
+        "/logs": {
+            breadcrumb: "pages.SystemLogs.breadcrumb",
+            link: () => {
+                return {
+                    href: "/logs",
+                    as: `/logs`,
+                }
+            }
         }
     }
 }

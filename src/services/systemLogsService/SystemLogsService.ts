@@ -39,7 +39,6 @@ export default class SystemLogsService implements SystemLogsServiceInterface {
     async LoadQuantity(structureId: string, level: LogsLevel, filter: LogsFilterParams): Promise<number> {
         this.logger.Debug("Load logs count", structureId, level, filter)
 
-        console.log(structureId, level, filter)
         try {
             const {count} = await this.client.Query<LogsQuantityQueryParams, LogsQuantityQueryResponse>(
                 new LogsQuantityQuery({

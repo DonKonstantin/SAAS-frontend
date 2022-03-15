@@ -15,6 +15,7 @@ export class LogsListQuery implements GraphQLQuery<LogsListQueryParams> {
     readonly variables: LogsListQueryParams;
 
     constructor(params: LoadLogsParams) {
+        console.log(params)
         this.variables = {
             ...params
         }
@@ -22,22 +23,22 @@ export class LogsListQuery implements GraphQLQuery<LogsListQueryParams> {
         this.query = gql(`
         query __LOGS_LIST__ (
             $orderBy: Logs_list_Order_By_Enum,
-            $orderDirection: Logs_list_Order_Direction_Enum,
+            $direction: Logs_list_Order_Direction_Enum,
             $filter: Log_Items_Filter,
-            $structure: ID!,
+            $structureId: ID!,
             $level: Logs_list_Levels_Enum,
             $limit: Int,
             $offset: Int,
         ) {
           logs: logsList(
             orderBy: $orderBy,
-            orderDirection: $orderDirection,
+            orderDirection: $direction,
             filter: $filter,
-            structure: $structure,
+            structure: $structureId,
             level: $level,
             limit: $limit,
             offset: $offset,
-          ) : {
+          ) {
                 date
                 entityId
                 entityName
@@ -45,10 +46,10 @@ export class LogsListQuery implements GraphQLQuery<LogsListQueryParams> {
                 eventType
                 eventTypeName
                 user {
-                    email
-                    firstName
+                    email 
+                    firstName: first_name
                     id
-                    lastName
+                    lastName: last_name
                 }
                 userId
             }
