@@ -3,12 +3,11 @@ import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged} from "rxjs";
-import {Box, Fab, ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
+import {ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
 import Draggable from 'react-draggable';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import clsx from "clsx";
 import {clientServerDetector} from "../../services/clientServerDetector";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import {useTranslation} from "react-i18next";
 
 const eventLogger = (_, {x, y}) => {

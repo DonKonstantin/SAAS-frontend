@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import {Box, Divider} from "@mui/material";
+import {Divider} from "@mui/material";
 import DrawerLayer from "./DrawerLayer";
 import Profile from "./Profile";
 import MainMenu from "./MainMenu";

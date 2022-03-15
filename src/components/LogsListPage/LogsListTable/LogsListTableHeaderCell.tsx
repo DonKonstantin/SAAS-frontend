@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import {TableCell, Tooltip} from "@mui/material";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import {Box, padding} from "@mui/system";
+import {Box} from "@mui/system";
 import {visuallyHidden} from "@mui/utils";
 import {useTranslation} from "react-i18next";
 import {useSystemLogsEntity} from "../SystemLogsEntityContext";
@@ -18,7 +18,6 @@ export type LogsListTableHeaderCellProps = {
 }
 
 type Props = {
-    onChangeOrder,
 } & LogsListTableHeaderCellProps
 
 const LogsListTableHeaderCell: FC<Props> = props => {

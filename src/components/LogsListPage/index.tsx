@@ -1,5 +1,4 @@
 import React, {FC, memo, useState} from "react";
-import {DataGrid, GridRowsProp} from '@mui/x-data-grid';
 import FilterDrawer from "../ListPage/FilterDrawer";
 import {Box, Grid, IconButton, Paper, Tooltip, Typography} from "@mui/material";
 import Breadcrumbs from "../Breadcrumbs";

@@ -4,7 +4,7 @@ import {LogItem, LogItemGraphResponse} from "./interface";
 // Преобразование
 export const logsDTOFactory = (logs: Partial<LogItemGraphResponse | LogItem>[]): LogItem[] => {
     return logs.map(({user, ...log}) => ({
-       date: new Date(log.date),
+       date: new Date(log.date || ""),
         entityId: log.entityId || "",
         entityName: log.entityName || "",
         entityType: log.entityType || "",

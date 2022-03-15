@@ -93,7 +93,7 @@ const loadLogsBus$ = updateDataBus$.pipe(
         }
     ),
     tap(() => systemLogsLoadingInProgress.next(true)),
-    switchMap<SystemLogsContext>(
+    switchMap(
         async ({
                    filter,
                    level,
@@ -123,7 +123,7 @@ const loadQuantityBus$ = updateDataBus$.pipe(
                 || previous.level === current.level
         }
     ),
-    switchMap<SystemLogsContext>(
+    switchMap(
         async ({
                    filter, level, structureId
                }) => await systemLogsService().LoadQuantity(structureId, level, filter)

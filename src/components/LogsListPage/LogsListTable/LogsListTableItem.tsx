@@ -1,6 +1,6 @@
 import {FC} from "react";
 import {LogItem} from "../../../services/systemLogsService/interface";
-import {Box, TableCell, TableRow, Tooltip} from "@mui/material";
+import {TableCell, TableRow, Tooltip} from "@mui/material";
 import dayjs from "dayjs";
 
 type Props = {

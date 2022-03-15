@@ -1,6 +1,6 @@
 import {GraphQLQuery} from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import {LoadLogsParams, LogItemGraphResponse, LogsFilterParams, LogsLevel} from "../interface";
+import {LogsFilterParams, LogsLevel} from "../interface";
 
 export type LogsQuantityQueryParams = {
     structureId: string;

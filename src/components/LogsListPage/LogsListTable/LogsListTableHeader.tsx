@@ -1,6 +1,5 @@
 import {FC} from "react";
 import {TableHead, TableRow} from "@mui/material";
-import {useTranslation} from "react-i18next";
 import LogsListTableHeaderCell, {LogsListTableHeaderCellProps} from "./LogsListTableHeaderCell";
 import {LogsOrderBy} from "../../../services/systemLogsService/interface";
 
@@ -38,9 +37,7 @@ const HeaderConfig: LogsListTableHeaderCellProps[] = [
     }
 ]
 
-const LogsListTableHeader: FC = props => {
-    const {t} = useTranslation();
-
+const LogsListTableHeader: FC = () => {
     return (
         <TableHead>
             <TableRow>
