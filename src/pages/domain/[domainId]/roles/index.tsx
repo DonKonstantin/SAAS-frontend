@@ -14,7 +14,7 @@ ListingPage.getInitialProps = async ({query}) => ({
     title: "pages.role.list.title",
     header: "pages.role.list.header",
     entityListSchema: "role",
-    permissionCheckPermission: "CHANGE_ROLES",
+    permissionCheckPermission: "EDIT_ROLES",
     permissionCheckLevel: "project",
     entityListAdditionFilter: {parent: `{_equals: ${query.domainId}}`},
     pageMenuType: "domain"

@@ -19,6 +19,7 @@ const getLink: { (): ApolloLink } = () => {
     return createHttpLink({
         uri: graphQlUrl,
         fetch: fetch,
+        credentials: "include",
     });
 };
 

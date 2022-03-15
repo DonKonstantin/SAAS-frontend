@@ -15,7 +15,6 @@ export const RealmMenuItems = (): MenuItem[] => ([
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
         icon: StorageIcon,
-        permission: "CREATE_DOMAIN"
     },
     {
         link: {href: "/users"},
@@ -134,7 +133,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
             }
         },
         title: "UI.menu.left-menu.items.roles",
-        permission: "CHANGE_ROLES",
+        permission: "READ_ROLES",
         level: "project",
     },
     {
@@ -146,6 +145,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
             }
         },
         title: "UI.menu.left-menu.items.logs",
+        permission: "READ_LOGS",
     },
 ]);
 
@@ -181,11 +181,12 @@ export const ProjectMenuItems = (): MenuItem[] => ([
     {
         link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
-        permission: "CHANGE_ROLES",
+        permission: "READ_ROLES",
         level: "project",
     },
     {
         link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
+        permission: "READ_LOGS",
     },
 ]);
