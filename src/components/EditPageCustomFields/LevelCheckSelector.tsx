@@ -23,7 +23,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     const domainsAndProjects = additionData[fieldCode] as LoaderQueryResponse
 
     const availableStructureIds = roles
-        .filter(r => r.permissions.map(p => p.code).includes("CHANGE_ROLES"))
+        .filter(r => r.permissions.map(p => p.code).includes("EDIT_ROLES"))
         .map(r => r.structure_item_id)
 
     const isRealmAccess = availableStructureIds.includes("1")
