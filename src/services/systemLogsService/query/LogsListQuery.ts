@@ -15,7 +15,6 @@ export class LogsListQuery implements GraphQLQuery<LogsListQueryParams> {
     readonly variables: LogsListQueryParams;
 
     constructor(params: LoadLogsParams) {
-        console.log(params)
         this.variables = {
             ...params
         }
