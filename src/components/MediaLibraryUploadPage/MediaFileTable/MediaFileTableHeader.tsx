@@ -2,11 +2,14 @@ import {FC} from "react";
 import {TableCell, TableHead, TableRow} from "@mui/material";
 
 const MediaFileTableHeader: FC = () => {
+    /**
+     * TODO: Добавить сортировку по полям
+     */
     return (
         <TableHead>
             <TableRow>
                 <TableCell>Название файла</TableCell>
-                <TableCell>Статус</TableCell>
+                <TableCell align={"center"}>Статус</TableCell>
                 <TableCell>Размер</TableCell>
                 <TableCell>Прогресс</TableCell>
                 <TableCell>Мета-теги</TableCell>

@@ -31,6 +31,9 @@ const ListRowContainer: FC<ListRowProps> = props => {
 
     // Переключение состояния чекбокса выбора элемента
     const onToggleItemCheckedState = () => {
+        if (!config.rowSelectAction) {
+            return
+        }
         onChangeCheckedItems(items => {
             if (items.includes(row.primaryKeyValue)) {
                 return items.filter(i => i !== row.primaryKeyValue)

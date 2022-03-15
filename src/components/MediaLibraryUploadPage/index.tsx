@@ -24,12 +24,8 @@ const MediaLibraryUploadPage: FC = () => {
     useEffect(() => initMediaFilesUploadContext(), []);
     useEffect(() => initEditFileForm(), []);
 
-    const handleSelectRaplacedFile = useCallback((file, replacedFile) => {
-        if ( !replacedFile) {
-            return;
-        }
-
-        setReplacedTargetFile(file, replacedFile.id);
+    const handleSelectReplacedFile = useCallback((file, targetFileId, force) => {
+        setReplacedTargetFile(file, targetFileId, force);
     }, [setReplacedTargetFile]);
 
     return (
@@ -42,11 +38,14 @@ const MediaLibraryUploadPage: FC = () => {
                 </Grid>
             </Box>
             <Stack spacing={2}>
-                <Paper sx={{p: "20px 40px"}}>
+                <Paper sx={{p: 3}}>
                     <MediaLibraryUploadLicenseType/>
                 </Paper>
-                <Paper sx={{p: "20px 40px"}}>
+                <Paper sx={{p: 3}}>
                     <MediaUploadArea/>
+                    <Box
+                        sx={{mb: 2}}
+                    />
                     <MediaFileTable/>
                     <MediaLibraryProgressStatus/>
                     <MediaLibraryUploadControls/>
@@ -56,7 +55,8 @@ const MediaLibraryUploadPage: FC = () => {
                 onSave={updateMediaInfoFile}
             />
             <SelectReplaceFileDialog
-                onSave={handleSelectRaplacedFile}
+                onSave={handleSelectReplacedFile}
+                force
             />
         </>
     )

@@ -17,7 +17,7 @@ EditPageContent.getInitialProps = async ({query}) => ({
     entityEditPrimaryKey: query?.entityId as string,
     permissionCheckLevel: "project",
     permissionCheckPermission: "READ_USERS",
-    permissionCheckEditPermission: "CHANGE_USERS",
+    permissionCheckEditPermission: "EDIT_USERS",
 })
 
 // Экспортируем компонент

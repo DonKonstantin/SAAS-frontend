@@ -43,8 +43,6 @@ const NotificationConfigTemplate: FC<EditFieldProperties> = (props) => {
                 event.preventDefault()
                 event.stopPropagation()
 
-                console.log(event.target.value)
-
                 onChangeFieldValue(() => event.target.value)
             }}
             InputProps={{

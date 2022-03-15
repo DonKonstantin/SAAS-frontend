@@ -7,9 +7,11 @@ import mediaLibraryService from "../../services/MediaLibraryService";
 const getFileNamesAndPath = (text: string): FilePathAndName[] => {
     const paths = text.split("\n").filter(val => !!val);
 
+
     return paths.map(
         path => {
-            const fileName = path.split('\\').pop().split('/').at(-1);
+            // @ts-ignore
+            const fileName = (path as string).split('\\').pop().split('/').at(-1);
 
             return {
                 fileName: fileName as string || path,
@@ -35,6 +37,7 @@ type CheckMediaFilesContextActions = {
     runCheck(): void;
     downloadPlaylist(withDoubles: boolean): void;
     resetCheck(): void;
+    excludeFromDouble(fileName: string): void
 }
 
 type FilePathAndName = {
@@ -131,15 +134,39 @@ const resetCheck: CheckMediaFilesContextActions["resetCheck"] = () => {
     })
 }
 
-const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles) => {
+const downloadPlaylist: CheckMediaFilesContextActions["downloadPlaylist"] = (withDoubles = false) => {
     const {fileCheckResult} = context$.getValue();
 
+    const fileNames = fileCheckResult.filter(
+        f => {
+            if (withDoubles) {
+                return true;
+            }
 
-    m3uServiceFactory().createPlaylist(
-        fileCheckResult
-            .filter(f => !withDoubles && f.doubles.length === 0)
-            .map(f => f.fileName)
-    );
+            return f.doubles.length === 0
+        }
+    ).map((f => f.fileName))
+
+    m3uServiceFactory().createPlaylist(fileNames);
+}
+
+const excludeFromDouble: CheckMediaFilesContextActions["excludeFromDouble"] = fileName => {
+    const newState = context$.getValue().fileCheckResult.map(
+        f => {
+            if (f.fileName !== fileName) {
+                return f
+            }
+
+            f.doubles = [];
+
+            return f;
+        }
+    )
+
+    context$.next({
+        ...context$.getValue(),
+        fileCheckResult: newState
+    });
 }
 
 
@@ -148,7 +175,8 @@ const actions: CheckMediaFilesContextActions = {
     removeFileRawData,
     runCheck,
     downloadPlaylist,
-    resetCheck
+    resetCheck,
+    excludeFromDouble
 };
 
 export const useCheckMediaFilesContext = (...pipeModifications: OperatorFunction<any, CheckMediaFilesContext>[]): WithCheckMediaFilesContext => {

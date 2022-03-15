@@ -1,32 +1,56 @@
 import {FC, memo} from "react";
-import {MediaFilesDoubles} from "../../services/MediaLibraryService/interface";
-import {Typography} from "@mui/material";
+import {MediaFile} from "../../services/MediaLibraryService/interface";
+import {Box, IconButton, Tooltip, Typography} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
-import DoDisturbIcon from '@mui/icons-material/DoDisturb';
+import WarningIcon from "@mui/icons-material/Warning";
+import {useConfirmDoubleDialog} from "./ConfirmDoubleDialog/ConfirmDoubleDialodContext";
+import {useTranslation} from "react-i18next";
 
 type Props = {
-    filePath: string;
-    doubles?: MediaFilesDoubles;
+    fileName: string;
+    doubles?: MediaFile[];
 }
 
 // Компонент вывода результатов проверки файлов на дубли
 const CheckMediaFilesItem: FC<Props> = (props) => {
-    const {filePath, doubles} = props;
+    const {fileName, doubles} = props;
+    const {openReplaceFileDialog} = useConfirmDoubleDialog();
+    const {t} = useTranslation();
+
+    const hasDoubles = !!doubles && doubles?.length > 0;
+
+    const handleOpenReplaceDialog = () => {
+        if (!doubles) {
+            return;
+        }
+
+        openReplaceFileDialog(fileName, doubles)
+    }
 
     return (
-        <Typography>
-            {filePath}
-            {
-                doubles?.doubles.length === 0 && (
-                    <CheckIcon color={"success"}/>
-                )
-            }
-            {
-                doubles?.doubles.length !== 0 && (
-                    <DoDisturbIcon color={'warning'}/>
-                )
-            }
-        </Typography>
+        <Box sx={{display: "flex", flexWrap: "wrap", alignItems: "center"}}>
+            <Typography sx={{mr: 1}}>
+                {fileName}
+            </Typography>
+
+            {!hasDoubles && (
+                <IconButton disabled>
+                    <CheckIcon fontSize={"small"} color={"success"}/>
+                </IconButton>
+            )}
+
+            {hasDoubles && (
+                <Tooltip title={t(`Имеются дубли файла. Нажмите чтобы принять решение`) as string}>
+                    <IconButton onClick={() => handleOpenReplaceDialog()}>
+                        <WarningIcon
+                            fontSize={"small"}
+                            color={"warning"}
+                        />
+                    </IconButton>
+                </Tooltip>
+            )}
+        </Box>
+
     )
 }
 

@@ -1,0 +1,10 @@
+.custom-song-with-play-cell {
+  display: grid;
+  grid-template-columns:  30px 1fr;
+  grid-gap: 20px;
+  align-items: center;
+
+  &.active {
+    background: #6F933D;
+  }
+}

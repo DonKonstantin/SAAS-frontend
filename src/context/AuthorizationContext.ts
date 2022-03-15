@@ -1,5 +1,13 @@
-import {BehaviorSubject, distinctUntilChanged, OperatorFunction, Subject, throttleTime} from "rxjs";
-import {UserInfoData} from "../services/authService/UserInfoQuery";
+import {
+    BehaviorSubject,
+    distinctUntilChanged,
+    distinctUntilKeyChanged,
+    map,
+    OperatorFunction,
+    Subject,
+    throttleTime
+} from "rxjs";
+import {RoleData, UserInfoData} from "../services/authService/UserInfoQuery";
 import withBehaviourSubject from "../connectors/withBehaviourSubject";
 import {authService} from "../services/authService";
 import {loggerFactory} from "../services/logger";
@@ -10,6 +18,7 @@ import React, {useEffect, useState} from "react";
 import i18n from "i18next";
 import {allDomainsAndProjectsLoader} from "../services/loaders/allDomainsAndProjects";
 import {DomainData, ProjectData} from "../services/loaders/allDomainsAndProjects/LoaderQuery";
+import Cookies from "universal-cookie";
 
 // Контекст шагов импорта
 export type AuthorizationContext = {
@@ -27,6 +36,41 @@ export type AuthorizationContext = {
     domains: DomainData[]   // Все, доступные пользователю, домены
     projects: ProjectData[] // Все, доступные пользователю, проекты
 };
+
+enum levelEnum {
+    "realm" = 1,
+    "domain" = 2,
+    "project" = 3
+}
+
+const {
+    publicRuntimeConfig: {
+        mainDomain
+    }
+} = getConfig();
+
+const COOKIE_CONFIG = {
+    domain: mainDomain,
+    path: "/"
+}
+
+const updateCookies = (name: string, value: string | undefined) => {
+    if (clientServerDetector().isServer()) {
+        return;
+    }
+
+    if (!value) {
+        cookie.remove(name, COOKIE_CONFIG)
+    }
+
+    cookie.set(
+        name,
+        value,
+        COOKIE_CONFIG
+    )
+}
+
+
 
 // События, происходящие с контекстом
 type AuthorizationActions = {
@@ -58,19 +102,19 @@ type AuthorizationActions = {
     initializeContextBus: { (): { (): void } }
 
     // Изменение типа отображаемого в данный момент меню
-    onChangeMenuType: {(menuType: "realm" | "domain" | "project"): void}
+    onChangeMenuType: { (menuType: "realm" | "domain" | "project"): void }
 
     // Установка текущего домена пользователя
-    setDomain: {(domain: string): void}
+    setDomain: { (domain: string): void }
 
     // Установка текущего проекта пользователя
-    setProject: {(project: string): void}
+    setProject: { (project: string): void }
 
     // Обработка перехода на какие-то страницы при наличии флага редиректа
-    onRedirectToUserPage: {(callback: {(): void}): void}
+    onRedirectToUserPage: { (callback: { (): void }): void }
 
     // Обработка перезагрузки данных по доменам и проектам, доступным пользователю
-    onReloadDomainsAndProjects: {(): Promise<void>}
+    onReloadDomainsAndProjects: { (): Promise<void> }
 };
 
 // Свойства контекста по умолчанию
@@ -90,7 +134,9 @@ class DefaultContext implements AuthorizationContext {
 const context$ = new BehaviorSubject<AuthorizationContext>(new DefaultContext);
 
 // Контекст для обработки изменения токена
-const tokenContext$ = new Subject<string| undefined>();
+const tokenContext$ = new Subject<string | undefined>();
+
+const cookie = new Cookies();
 
 /**
  * Обработка перехода на какие-то страницы при наличии флага редиректа
@@ -143,6 +189,23 @@ export const setProject = (project: string) => {
     })
 }
 
+// Шина на обновление домена
+const updateDomain$ = context$.pipe(
+    distinctUntilKeyChanged("domain"),
+    map(value => value.domain)
+)
+// Шина на обновление проекта
+const updateProject$ = context$.pipe(
+    distinctUntilKeyChanged("project"),
+    map(value => value.project)
+)
+
+// Шина на обновление уровня меню
+const updateLevel$ = context$.pipe(
+    distinctUntilKeyChanged("menuType"),
+    map(value => value.menuType)
+)
+
 /**
  * Обработка перезагрузки данных по доменам и проектам, доступным пользователю
  */
@@ -172,8 +235,13 @@ const loadAuthorizationData = async (token: string): Promise<AuthorizationContex
         allDomainsAndProjectsLoader(token).Load(),
     ])
 
-    const domains = userProfile.roles.filter(r => r.level === "domain")
-    const projects = userProfile.roles.filter(r => r.level === "project")
+    let domains: RoleData[] = [];
+    let projects: RoleData[] = [];
+
+    if ("roles" in userProfile) {
+        domains = userProfile.roles.filter(r => r.level === "domain")
+        projects = userProfile.roles.filter(r => r.level === "project")
+    }
 
     const domain = domains.length === 1 ? domains[0].id : ""
     const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
@@ -262,15 +330,21 @@ const initializeContextBus = () => {
     })
 
     // Сохраняем изменения токена в Cookie
-    const tokenCookieSet = tokenContext$.pipe(throttleTime(1000)).subscribe({
-        next: token => {
-            if (clientServerDetector().isServer()) {
-                return
-            }
+    const tokenCookieSet = tokenContext$
+        .pipe(throttleTime(1000))
+        .subscribe(updateCookies.bind(null, "token"))
 
-            document.cookie = `token=${token || ""}; path=/;`
-        }
-    })
+    tokenCookieSet.add(
+        updateDomain$.subscribe(updateCookies.bind(null, ['domain']))
+    )
+
+    tokenCookieSet.add(
+        updateProject$.subscribe(updateCookies.bind(null, ['project']))
+    );
+
+    tokenCookieSet.add(
+        updateLevel$.subscribe(value => levelEnum[value] !== undefined && updateCookies( 'level', levelEnum[value as keyof levelEnum]))
+    )
 
     // Запускаем обновление токена
     const tokenRefreshInterval = setInterval(async () => {
@@ -462,7 +536,8 @@ export const useAuthorization = (...pipeModifications: OperatorFunction<any, Aut
         return () => {
             try {
                 subscription.unsubscribe()
-            } catch (e) {}
+            } catch (e) {
+            }
         }
     })
 

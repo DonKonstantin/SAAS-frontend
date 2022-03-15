@@ -7,7 +7,7 @@ import {MediaFileToUpload, useMediaLibraryUpload} from "./MediaFilesUploadContex
 import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 
-const metadataToMediaInfo = (
+export const metadataToMediaInfo = (
     metadata: IAudioMetadata,
 ): Partial<MediaFile> => {
     return {
@@ -70,10 +70,10 @@ const MediaUploadArea: FC = () => {
 
     return (
         <>
-            <Typography color={"primary"}>
+            <Typography color={"primary"} >
                 Загрузка файлов
             </Typography>
-            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12}}>
+            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12, mb: 2}}>
                 Переместите все файлы для загрузки в контейнер
             </Typography>
             <DropZoneArea

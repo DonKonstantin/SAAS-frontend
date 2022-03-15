@@ -2,6 +2,12 @@
 import {AxiosRequestConfig} from "axios";
 import {MediaFile} from "../MediaLibraryService/interface";
 
+export type UpdateResponse = {
+    code: number
+    error: string | null
+    file: MediaFile
+}
+
 export interface MediaFileClientInterface {
     /**
      * Upload new file in library
@@ -39,5 +45,11 @@ export interface MediaFileClientInterface {
     Load(
         id: string,
         config?: AxiosRequestConfig
-    ): Promise<File>
+    ): Promise<Blob>
+
+    /**
+     * Get filepath on server
+     * @param name
+     */
+    GetFilePath(name: string): Promise<string>
 }

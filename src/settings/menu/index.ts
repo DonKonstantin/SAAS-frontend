@@ -114,19 +114,37 @@ export const DomainMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.projects",
     },
     {
-        link: {href: "/users"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/users",
+                as: `/domain/${domain}/users`,
+            }
+        },
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",
     },
     {
-        link: {href: "/roles"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/roles",
+                as: `/domain/${domain}/roles`,
+            }
+        },
         title: "UI.menu.left-menu.items.roles",
         permission: "CHANGE_ROLES",
         level: "project",
     },
     {
-        link: {href: "/logs"},
+        link: () => {
+            const {domain} = getCurrentState()
+             return {
+                href: "/domain/[domainId]/logs",
+                as: `/domain/${domain}/logs`,
+            }
+        },
         title: "UI.menu.left-menu.items.logs",
     },
 ]);

@@ -28,6 +28,7 @@ const nextConfig = {
         wsGraphQlEndpoint: process.env.GRAPHQL_WS_SERVER,
         mediaLibraryEndPoint: process.env.MEDIA_LIBRARY_SERVER,
         mediaLibraryApiVersion: process.env.MEDIA_LIBRARY_API_VERSION,
+        mainDomain: process.env.MAIN_DOMAIN,
         debug: process.env.DEBUG === "true",
         environment: process.env.ENVIRONMENT || `dev`,
         tokenRefreshTimeout: parseInt(process.env.TOKEN_REFRESH_TIMEOUT) || 1,
