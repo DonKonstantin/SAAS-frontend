@@ -3,6 +3,7 @@ import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filte
 import {ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import CustomActiveCell from "../../../components/ListPageCustom/CustomActiveCell";
+import {getCurrentState} from "../../../context/AuthorizationContext";
 
 export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     filter: FilterFieldsConfiguration<"user"> = {
@@ -87,9 +88,18 @@ export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     };
     schema: "user" = "user";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/users/add"};
-    editPageUrl: EditPageLinkGenerator = primaryKey => ({
-        as: `/users/edit/${primaryKey}`,
-        href: `/users/edit/[entityId]`
-    });
+    addPageUrl: {(): PageUrl} = () => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/users/add",
+            as: `/domain/${domain}/users/add`
+        }
+    };
+    editPageUrl: EditPageLinkGenerator = pk => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/users/edit/[entityId]",
+            as: `/domain/${domain}/users/edit/${pk}`
+        }
+    };
 }

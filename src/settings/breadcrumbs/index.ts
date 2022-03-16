@@ -94,6 +94,76 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 as: `/domain/${entityEditPrimaryKey}/edit`
             })
         },
+        "/domain/[domainId]/users": {
+            breadcrumb: "pages.users.list.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/users",
+                    as: `/domain/${domain}/users`
+                }
+            }
+        },
+        "/domain/[domainId]/users/add": {
+            breadcrumb: "pages.users.add.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/users/add",
+                    as: `/domain/${domain}/users/add`
+                }
+            }
+        },
+        "/domain/[domainId]/users/edit/[entityId]": {
+            breadcrumb: "pages.users.edit.breadcrumb",
+            link: ({entityEditPrimaryKey})=> {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/users/edit/${entityEditPrimaryKey}`
+                }
+            }
+        },
+        "/domain/[domainId]/roles": {
+            breadcrumb: "pages.role.list.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/roles",
+                    as: `/domain/${domain}/roles`
+                }
+            }
+        },
+        "/domain/[domainId]/roles/add": {
+            breadcrumb: "pages.role.add.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/roles/add",
+                    as: `/domain/${domain}/roles/add`
+                }
+            }
+        },
+        "/domain/[domainId]/logs": {
+            breadcrumb: "pages.SystemLogs.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/logs",
+                    as: `/domain/${domain}/logs`
+                }
+            }
+        },
+        "/domain/[domainId]/roles/edit/[entityId]": {
+            breadcrumb: "pages.role.edit.breadcrumb",
+            link: ({entityEditPrimaryKey})=> {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/roles/edit/${entityEditPrimaryKey}`
+                }
+            }
+        },
         "/domain/[domainId]/project": {
             breadcrumb: "pages.project.list.breadcrumb",
             link: () => {

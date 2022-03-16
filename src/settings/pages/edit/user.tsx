@@ -138,7 +138,7 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
             return {href: "/users"}
         }
 
-        const notHasEditAccess = !CheckPermission(userInfo, "CHANGE_USERS", "project")
+        const notHasEditAccess = !CheckPermission(userInfo, "EDIT_USERS", "project")
         if (notHasEditAccess) {
             return {href: "/users"}
         }

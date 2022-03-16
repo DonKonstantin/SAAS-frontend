@@ -1,5 +1,5 @@
 import {Loader} from "./Loader";
 
-export const allRoles: {(): Loader} = () => {
-    return new Loader()
+export const allRoles: {(token?: string): Loader} = token => {
+    return new Loader(token)
 }

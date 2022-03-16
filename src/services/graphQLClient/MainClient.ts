@@ -9,16 +9,20 @@ import {getAuthorizationToken} from "../../context/AuthorizationContext";
  */
 export class MainClient implements GraphQLClient {
     private readonly client: GraphQLClient;
+    private readonly token: string | undefined;
 
     /**
      * Конструктор клиента
      *
      * @param client
+     * @param token
      */
     constructor(
         client: GraphQLClient,
+        token?: string,
     ) {
         this.client = client;
+        this.token = token;
     }
 
     async Query<V, Response>(query: GraphQLQuery<V>, headers: Collection<string>): Promise<Response> {
@@ -42,6 +46,9 @@ export class MainClient implements GraphQLClient {
      */
     private async getHeaders(baseHeaders: Collection<string>): Promise<Collection<string>> {
         let token: string = getAuthorizationToken();
+        if (0 === token.length && this.token) {
+            token = this.token
+        }
 
         if (!token || 0 === token.length) {
             return {...baseHeaders}

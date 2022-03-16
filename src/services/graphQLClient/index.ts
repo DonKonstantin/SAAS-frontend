@@ -85,6 +85,7 @@ export const graphQLClient: { (token?: string): GraphQLClient } = token => {
                     wssClient.close(true);
                 }
             }),
-        )
+        ),
+        token,
     )
 };

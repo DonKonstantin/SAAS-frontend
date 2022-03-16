@@ -15,7 +15,7 @@ EditPageContent.getInitialProps = async ({query}) => ({
     header: "pages.users.edit.header",
     entityEditSchema: "user",
     entityEditPrimaryKey: query?.entityId as string,
-    permissionCheckPermission: "CHANGE_USERS",
+    permissionCheckPermission: "EDIT_USERS",
     permissionCheckLevel: "project",
     pageMenuType: "domain"
 })

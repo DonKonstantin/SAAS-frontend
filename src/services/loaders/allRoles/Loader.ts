@@ -8,8 +8,8 @@ import {LoaderQuery, LoaderQueryResponse} from "./LoaderQuery";
 export class Loader {
     private readonly client: GraphQLClient;
 
-    constructor() {
-        this.client = graphQLClient()
+    constructor(token?: string) {
+        this.client = graphQLClient(token)
     }
 
     async Load(): Promise<LoaderQueryResponse> {
