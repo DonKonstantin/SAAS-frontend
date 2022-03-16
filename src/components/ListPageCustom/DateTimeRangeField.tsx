@@ -13,7 +13,8 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import {FilterFieldProperties} from "../../services/listDataLoader/filterLoader/types";
 import useFieldConfiguration from "../ListPageParts/Filter/useFieldConfiguration";
 import {SliderComponentValues} from "services/listDataLoader/filterLoader/fieldValues/Slider";
-import DateFnsUtils from '@date-io/date-fns';
+import DateAdapter from '@mui/lab/AdapterDateFns';
+import ruLocale from 'dayjs/locale/ru'
 
 
 // Слайдер для значений типа Int
@@ -44,7 +45,7 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
     const {t, fieldConfig: {title}, onChangeFilterValues} = fieldConfig;
 
     return (
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={DateAdapter} locale={ruLocale}>
             <div className={'filter-title'}>{t(title)}</div>
             <DateRangePicker
                 startText={'from'}
