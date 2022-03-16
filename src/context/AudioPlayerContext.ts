@@ -22,11 +22,11 @@ const context$ = new BehaviorSubject<AudioPlayerContext>({
 
 const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileName) => {
     const {
-        currentPlaySongId,
-        onPause
+        onPause,
+        lastSongPlay
     } = context$.getValue();
 
-    if (currentPlaySongId === fileName) {
+    if (lastSongPlay === fileName) {
         onPause ? continuePlay() : stopPlay();
 
         return;
