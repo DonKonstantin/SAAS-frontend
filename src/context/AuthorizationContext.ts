@@ -59,8 +59,19 @@ const updateCookies = (name: string, value: string | undefined) => {
         return;
     }
 
-    if (!value) {
-        cookie.remove(name, COOKIE_CONFIG)
+    value = value ? value : ``
+    if (value.length === 0) {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() - 1);
+
+        cookie.set(
+            name,
+            ``,
+            {
+                ...COOKIE_CONFIG,
+                expires: date,
+            }
+        )
     }
 
     cookie.set(
