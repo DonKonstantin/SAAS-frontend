@@ -122,6 +122,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 field: "file_name",
                 title: "",
                 isEnabled: true,
+                width: 60,
                 fieldType: {
                     config: undefined,
                     type: "Simple",
@@ -277,15 +278,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             obscene: {
                 field: "obscene",
                 title: "obscene",
-                isEnabled: true,
-                fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
-            },
-            id: {
-                field: "id",
-                title: "id",
                 isEnabled: true,
                 fieldType: {
                     config: undefined,

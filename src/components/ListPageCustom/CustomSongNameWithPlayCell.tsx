@@ -21,11 +21,9 @@ const CustomSongNameWithPlayCell: FC<ListFieldProperties<SimpleValues>> = props 
 
     return (
         <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
-            <div className={'custom-song-with-play-cell'}>
                 <PlayAudioButton
                     fileName={value.value}
                 />
-            </div>
         </TableCell>
     )
 }
