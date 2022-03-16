@@ -1,16 +1,19 @@
 import React from 'react';
 import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
 import {NextPage} from "next";
+import LogsListPage from "../components/LogsListPage";
+import SystemLogsProvider, {WithSystemLogsProps} from "../components/LogsListPage/SystemLogsProvider";
+import {LogsLevel} from "../services/systemLogsService/interface";
 
 // Свойства страницы
-type Props = PageWithMetaTags
+type Props = PageWithMetaTags & WithSystemLogsProps;
 
 // Компонент страницы проекта
-const Page: NextPage<Props> = () => {
+const Page: NextPage<Props> = ({structureId, logLevel}) => {
     return (
-        <div>
-            <p>Раздел находится в разработке</p>
-        </div>
+        <SystemLogsProvider level={logLevel} structureId={structureId}>
+            <LogsListPage/>
+        </SystemLogsProvider>
     )
 }
 
@@ -18,6 +21,8 @@ const Page: NextPage<Props> = () => {
 Page.getInitialProps = async () => ({
     title: "Логи",
     header: "Логи",
+    logLevel: LogsLevel.realm,
+    structureId: "1"
 })
 
 // Экспортируем компонент
