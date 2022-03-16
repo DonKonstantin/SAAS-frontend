@@ -185,8 +185,14 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         level: "project",
     },
     {
-        link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
         permission: "READ_LOGS",
+        link: () => {
+            const {domain, project} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project/[projectId]/logs",
+                as: `/domain/${domain}/project/${project}/logs`,
+            }
+        },
     },
 ]);

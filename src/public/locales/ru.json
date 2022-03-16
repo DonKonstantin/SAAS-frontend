@@ -370,6 +370,9 @@
           "parent": "Домен",
           "parent-error": "Необходимо выбрать домен"
         }
+      },
+      "logs": {
+        "breadcrumb": "Логи"
       }
     },
     "notifications_template": {

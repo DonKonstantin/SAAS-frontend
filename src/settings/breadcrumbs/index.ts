@@ -203,6 +203,16 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 }
             }
         },
+        "/domain/[domainId]/project/[projectId]/logs": {
+            breadcrumb: "pages.project.logs.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/logs",
+                    as: `/domain/${domain}/project/${entityEditPrimaryKey}/logs`,
+                }
+            }
+        },
         "/notifications-template": {
             breadcrumb: "pages.notifications_template.list.breadcrumb",
             link: () => {
