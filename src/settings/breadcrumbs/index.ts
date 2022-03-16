@@ -144,6 +144,16 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 }
             }
         },
+        "/domain/[domainId]/logs": {
+            breadcrumb: "pages.SystemLogs.breadcrumb",
+            link: () => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/logs",
+                    as: `/domain/${domain}/logs`
+                }
+            }
+        },
         "/domain/[domainId]/roles/edit/[entityId]": {
             breadcrumb: "pages.role.edit.breadcrumb",
             link: ({entityEditPrimaryKey})=> {
