@@ -5,6 +5,7 @@ import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteBut
 import {domainsAndProjectsLoader} from "../../../services/loaders/domainsAndProjects";
 import StructureCell from "../../../components/ListPageCustom/StructureCell";
 import {rolesCloneService} from "../../../services/rolesCloneService";
+import {getCurrentState} from "../../../context/AuthorizationContext";
 
 export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
     filter: FilterFieldsConfiguration<"role"> = {
@@ -71,12 +72,21 @@ export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
     };
     schema: "role" = "role";
     elementsPerPage: number = 25;
-    addPageUrl: PageUrl = {href: "/roles/add"};
-    editPageUrl: EditPageLinkGenerator = pk => ({
-        href: "/roles/edit/[entityId]",
-        as: `/roles/edit/${pk}`
-    });
     onCopyRows: { (primaryKeys: string[]): Promise<void> } = async rows => {
         await rolesCloneService().CloneRoles(rows)
     }
+    addPageUrl: {(): PageUrl} = () => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/roles/add",
+            as: `/domain/${domain}/roles/add`
+        }
+    };
+    editPageUrl: EditPageLinkGenerator = pk => {
+        const {domain} = getCurrentState()
+        return {
+            href: "/domain/[domainId]/roles/edit/[entityId]",
+            as: `/domain/${domain}/roles/edit/${pk}`
+        }
+    };
 }
