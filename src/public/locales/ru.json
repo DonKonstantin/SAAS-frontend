@@ -124,6 +124,49 @@
           "entityName": "Объект",
           "date": "Дата"
         }
+      },
+      "filter": {
+        "field": {
+          "userName": {
+            "title": "Пользователь",
+            "placeholder": "Введите значение"
+          },
+          "eventType": {
+            "title": "Действие",
+            "placeholder": "Выберите значения",
+            "variants": {
+              "updated": "Редактирование",
+              "created": "Создание",
+              "deleted": "Удаление"
+            }
+          },
+          "date": {
+            "title": "Дата",
+            "placeholder": "Введите значение"
+          },
+          "entityTypeName": {
+            "title": "Объект",
+            "placeholder": "Выберите значения",
+            "variants": {
+              "NotificationConfig": "Настройка оповещение",
+              "NotificationsTemplate": "Шаблон рассылки",
+              "Files": "Медиабиблиотека",
+              "RealmStructureElement": "Реалм",
+              "ChangeUserPassword": "Изменение пароля",
+              "PermissionCategory": "Категории разрешений",
+              "Permission": "Разрешения",
+              "Role": "Роль",
+              "User": "Пользователь",
+              "none": "Не выбрано"
+            }
+          }
+        },
+        "button": {
+          "resetFilter": {
+            "text": "Сбросить фильтр",
+            "tooltip": "Сбросить выбранные параметры фильтра"
+          }
+        }
       }
     },
     "users": {

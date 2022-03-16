@@ -28,14 +28,15 @@ const getStartPosition = () => {
     }
 }
 
-const savePositions = getStartPosition()
+const savePositions = getStartPosition();
 
 const AudioPlayerContainer: FC = () => {
     const [songSrc, setSongSrc] = useState<string>("");
-    const {currentPlaySongId, stopPlay, continuePlay} = useAudioPlayer(distinctUntilChanged(() => true));
+    const {stopPlay, continuePlay} = useAudioPlayer(distinctUntilChanged(() => true));
 
     const [showPlayer, setShowPlayer] = useState(false);
     const {t} = useTranslation();
+
 
     useEffect(() => {
         const subscriber = audioPlayerChangeSongBus$.subscribe({
@@ -43,32 +44,32 @@ const AudioPlayerContainer: FC = () => {
                 setShowPlayer(true);
 
                 setSongSrc(value as string);
-
             }
         });
 
         subscriber.add(
-            audioPlayerControlBus$.subscribe({
-                // @ts-ignore
-                next: value => {
-                    if (!value) {
-                        // @ts-ignore
-                        (player.current.audio.current as HTMLMediaElement).pause();
-
-                        return;
-                    }
-
-                    setShowPlayer(true);
+            audioPlayerControlBus$
+                .subscribe({
                     // @ts-ignore
-                    (player.current.audio.current as HTMLMediaElement).play()
-                }
-            })
+                    next: value => {
+                        if (!value) {
+                            // @ts-ignore
+                            (player.current.audio.current as HTMLMediaElement).pause();
+
+                            return;
+                        }
+
+                        setShowPlayer(true);
+                        // @ts-ignore
+                        (player.current.audio.current as HTMLMediaElement).play()
+                    }
+                })
         )
 
         return () => subscriber.unsubscribe();
     }, [])
 
-    const player = useRef<H5AudioPlayer | undefined>()
+    const player = useRef<H5AudioPlayer | undefined>();
 
     return (
         <>
@@ -98,7 +99,7 @@ const AudioPlayerContainer: FC = () => {
                             layout={"stacked-reverse"}
                             src={songSrc}
                             onPause={() => stopPlay()}
-                            onPlay={() => currentPlaySongId && continuePlay(currentPlaySongId)}
+                            onPlay={() => continuePlay()}
                         />
                     </div>
                 </Draggable>

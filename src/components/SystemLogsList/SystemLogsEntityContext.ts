@@ -47,12 +47,17 @@ class SystemLogsDefaultContext implements SystemLogsContext {
     orderBy: LogsOrderBy = LogsOrderBy.date;
     structureId: string = "";
     count: number = 0;
-    isLoading: boolean = false;
+    isLoading: boolean = true;
     entityItems: LogItem[] = [];
     hasError: boolean = false
 }
 
-const filterState$ = new BehaviorSubject<LogsFilterParams>({})
+export const filterState$ = new BehaviorSubject<LogsFilterParams>({})
+
+export type SystemLogsFilterActions = {
+    setFilterField<K extends keyof LogsFilterParams>(field: K, value?: LogsFilterParams[K]): void;
+    resetFilter(): void;
+}
 
 const systemLogsContext$ = new BehaviorSubject<SystemLogsContext>(new SystemLogsDefaultContext());
 
@@ -61,25 +66,14 @@ export const systemLogsLoadingInProgress = new Subject<boolean>();
 
 const updateDataBus$ = systemLogsContext$.pipe(
     combineLatestWith(filterState$.pipe(
-            distinctUntilChanged(
-                (previous, current) => {
-                    return previous.date === current.date
-                        || previous.entityType === current.entityType
-                        || previous.entityId === current.entityId
-                        || previous.userId === current.userId
-                        || previous.eventType === current.eventType
-                        || previous.userName === current.userName
-                }
-            )
-        )
-    ),
+        auditTime(1000),
+    )),
     auditTime(400),
     map(([baseState$, filterState$]) => ({
         ...baseState$,
         filter: filterState$
-    }))
+    })),
 )
-
 
 const loadLogsBus$ = updateDataBus$.pipe(
     auditTime(400),
@@ -90,6 +84,12 @@ const loadLogsBus$ = updateDataBus$.pipe(
                 && previous.offset === current.offset
                 && previous.direction === current.direction
                 && previous.orderBy === current.orderBy
+                && previous.filter.date === current.filter.date
+                && previous.filter.entityType === current.filter.entityType
+                && previous.filter.entityId === current.filter.entityId
+                && previous.filter.userId === current.filter.userId
+                && previous.filter.eventType === current.filter.eventType
+                && previous.filter.userName === current.filter.userName
         }
     ),
     tap(() => systemLogsLoadingInProgress.next(true)),
@@ -120,7 +120,13 @@ const loadQuantityBus$ = updateDataBus$.pipe(
     distinctUntilChanged(
         (previous, current) => {
             return previous.structureId === current.structureId
-                || previous.level === current.level
+                && previous.level === current.level
+                && previous.filter.date === current.filter.date
+                && previous.filter.entityType === current.filter.entityType
+                && previous.filter.entityId === current.filter.entityId
+                && previous.filter.userId === current.filter.userId
+                && previous.filter.eventType === current.filter.eventType
+                && previous.filter.userName === current.filter.userName
         }
     ),
     switchMap(
@@ -135,10 +141,12 @@ const initEntityContext: SystemLogsContextActions["initEntityContext"] = (level,
         next: items => {
             systemLogsContext$.next({
                 ...systemLogsContext$.getValue(),
-                entityItems: items
+                entityItems: items,
+                isLoading: false
             })
         },
         error: err => {
+            systemLogsLoadingInProgress.next(false)
             systemLogsContext$.next({
                 ...systemLogsContext$.getValue(),
                 hasError: !!err
@@ -158,6 +166,7 @@ const initEntityContext: SystemLogsContextActions["initEntityContext"] = (level,
                 })
             },
             error: err => {
+                systemLogsLoadingInProgress.next(false)
                 systemLogsContext$.next({
                     ...systemLogsContext$.getValue(),
                     hasError: !!err
@@ -206,10 +215,12 @@ const setSortField: SystemLogsContextActions["setSortField"] = newOrderBy => {
 }
 
 const resetFilter: SystemLogsContextActions["resetFilter"] = () => {
+    filterState$.next({});
+
     systemLogsContext$.next({
         ...systemLogsContext$.getValue(),
-        filter: {},
-    });
+        offset: 0
+    })
 }
 
 const setFilterField: SystemLogsContextActions["setFilterField"] = (field, value) => {
@@ -219,6 +230,11 @@ const setFilterField: SystemLogsContextActions["setFilterField"] = (field, value
         ...filter,
         [field]: value,
     });
+
+    systemLogsContext$.next({
+        ...systemLogsContext$.getValue(),
+        offset: 0
+    })
 }
 
 const setLimit: SystemLogsContextActions["setLimit"] = (limit) => {
@@ -245,6 +261,11 @@ const actions: SystemLogsContextActions = {
     setFilterField,
     setLimit,
     setOffset,
+}
+
+const filterActions: SystemLogsFilterActions = {
+    resetFilter,
+    setFilterField,
 }
 
 
@@ -277,3 +298,28 @@ export const useSystemLogsEntity = (...pipeModifications: OperatorFunction<any, 
     }
 }
 
+export type WithSystemLogsFilterContext = LogsFilterParams & SystemLogsFilterActions
+
+export const useSystemLogsFilterEntity = (...pipeModifications: OperatorFunction<any, LogsFilterParams>[]): WithSystemLogsFilterContext => {
+    const [contextValue, setContextValue] = useState(filterState$.getValue())
+    useEffect(() => {
+        const subscription = filterState$
+            // @ts-ignore
+            .pipe(...pipeModifications)
+            .subscribe({
+                next: data => setContextValue(data)
+            })
+
+        return () => {
+            try {
+                subscription.unsubscribe()
+            } catch (e) {
+            }
+        }
+    })
+
+    return {
+        ...contextValue,
+        ...filterActions
+    }
+}

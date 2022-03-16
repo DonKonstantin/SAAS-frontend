@@ -1,8 +1,8 @@
 import React from 'react';
 import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
 import {NextPage} from "next";
-import LogsListPage from "../components/LogsListPage";
-import SystemLogsProvider, {WithSystemLogsProps} from "../components/LogsListPage/SystemLogsProvider";
+import SystemLogsList from "../components/SystemLogsList";
+import SystemLogsProvider, {WithSystemLogsProps} from "../components/SystemLogsList/SystemLogsProvider";
 import {LogsLevel} from "../services/systemLogsService/interface";
 
 // Свойства страницы
@@ -12,7 +12,7 @@ type Props = PageWithMetaTags & WithSystemLogsProps;
 const Page: NextPage<Props> = ({structureId, logLevel}) => {
     return (
         <SystemLogsProvider level={logLevel} structureId={structureId}>
-            <LogsListPage/>
+            <SystemLogsList/>
         </SystemLogsProvider>
     )
 }

@@ -3,55 +3,78 @@ import mediaFileClient from "../services/MediaFileClient";
 import {useEffect, useState} from "react";
 
 type AudioPlayerContextActions = {
-    playSong(fileName: string): void;
-    continuePlay(fileName: string): void;
+    toggleSongPlay(fileName: string): void;
+    continuePlay(): void;
     stopPlay(): void
 }
 
 type AudioPlayerContext = {
-    currentPlaySongId: string | undefined
+    currentPlaySongId: string | undefined;
+    lastSongPlay: string | undefined;
+    onPause: boolean;
 }
 
 const context$ = new BehaviorSubject<AudioPlayerContext>({
-    currentPlaySongId: undefined
+    currentPlaySongId: undefined,
+    lastSongPlay: undefined,
+    onPause: true
 });
 
-const playSong: AudioPlayerContextActions["playSong"] = async (fileName) => {
+const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileName) => {
     const {
-        currentPlaySongId
+        currentPlaySongId,
+        onPause
     } = context$.getValue();
 
     if (currentPlaySongId === fileName) {
-        stopPlay();
+        onPause ? continuePlay() : stopPlay();
 
-        return
+        return;
     }
+
+    startPlay(fileName)
+}
+
+const startPlay = async (fileName: string) => {
     const url = await mediaFileClient().GetFilePath(fileName);
 
     audioPlayerChangeSongBus$.next(url);
+    audioPlayerControlBus$.next(true);
+
     context$.next({
         ...context$.getValue(),
         currentPlaySongId: fileName,
+        lastSongPlay: fileName,
+        onPause: false,
     })
 }
 
-const continuePlay: AudioPlayerContextActions["continuePlay"] = (fileName) => {
+const continuePlay: AudioPlayerContextActions["continuePlay"] = () => {
+    audioPlayerControlBus$.next(true);
+    const {
+        lastSongPlay
+    } = context$.getValue();
+
     context$.next({
         ...context$.getValue(),
-        currentPlaySongId: fileName,
+        currentPlaySongId: lastSongPlay,
+        onPause: false,
     })
 }
+
 
 const stopPlay: AudioPlayerContextActions["stopPlay"] = () => {
     audioPlayerControlBus$.next(false);
+
     context$.next({
         ...context$.getValue(),
         currentPlaySongId: undefined,
+        onPause: true,
     })
 }
 
 const actions: AudioPlayerContextActions = {
-    playSong,
+    toggleSongPlay,
     stopPlay,
     continuePlay
 }

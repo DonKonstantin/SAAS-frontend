@@ -1,4 +1,4 @@
-import React, {FC, memo, useState} from "react";
+import React, {FC, memo, useState, Suspense} from "react";
 import FilterDrawer from "../ListPage/FilterDrawer";
 import {Box, Grid, IconButton, Paper, Tooltip, Typography} from "@mui/material";
 import Breadcrumbs from "../Breadcrumbs";
@@ -10,6 +10,7 @@ import LogsListTablePagination from "./LogsListTable/LogsListTablePagination";
 import {useSystemLogsEntity} from "./SystemLogsEntityContext";
 import LoadingBlocker from "../LoadingBlocker";
 import TableListLoader from "./LogsListTable/TableListLoader";
+import SystemLogsFilter from "./SystemLogsFilter";
 
 const LogsListPage: FC = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -19,9 +20,9 @@ const LogsListPage: FC = () => {
         setIsFilterOpen(s => !s)
     }
 
-    const {entityItems} = useSystemLogsEntity();
+    const {entityItems, isLoading} = useSystemLogsEntity();
 
-    if (entityItems.length === 0) {
+    if (entityItems.length === 0 && isLoading) {
         return <LoadingBlocker/>
     }
 
@@ -31,7 +32,10 @@ const LogsListPage: FC = () => {
     return (
         <FilterDrawer
             isOpen={isFilterOpen}
-            filterContent={() => <div>Test filter</div>}
+            filterContent={
+                <Suspense fallback={"loading"}>
+                <SystemLogsFilter/>
+                </Suspense>}
             onChangeOpen={handleToggleFilter}
         >
             <Box sx={{pb: 3}}>

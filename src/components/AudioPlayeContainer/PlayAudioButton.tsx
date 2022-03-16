@@ -3,6 +3,7 @@ import {useAudioPlayer} from "../../context/AudioPlayerContext";
 import {IconButton} from "@mui/material";
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined';
+import {distinctUntilKeyChanged} from "rxjs";
 
 type Props = {
     fileName: string
@@ -10,18 +11,17 @@ type Props = {
 
 const PlayAudioButton: FC<Props> = props => {
     const {fileName} = props;
-    const {playSong, currentPlaySongId} = useAudioPlayer();
+    const {toggleSongPlay, currentPlaySongId} = useAudioPlayer(distinctUntilKeyChanged("currentPlaySongId"));
 
     return (
         <IconButton
-            onClick={() => playSong(fileName)}
+            onClick={() => toggleSongPlay(fileName)}
         >
             {
                 currentPlaySongId !== fileName
                     ? (<PlayCircleFilledWhiteOutlinedIcon/>)
                     : (<PauseCircleOutlineOutlinedIcon/>)
             }
-
         </IconButton>
     )
 }

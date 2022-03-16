@@ -1,10 +1,10 @@
 import React from 'react';
 import {PageWithMetaTags} from "../../../components/UILayer/PageWithMetaTags";
 import {NextPage} from "next";
-import LogsListPage from "../../../components/LogsListPage";
-import SystemLogsProvider, {WithSystemLogsProps} from "../../../components/LogsListPage/SystemLogsProvider";
 import {LogsLevel} from "../../../services/systemLogsService/interface";
 import {PageWithChangeableMenu} from "../../../layouts/MenuChangeLayout";
+import SystemLogsProvider, {WithSystemLogsProps} from "../../../components/SystemLogsList/SystemLogsProvider";
+import LogsListPage from "../../../components/SystemLogsList";
 
 // Свойства страницы
 type Props = PageWithMetaTags & WithSystemLogsProps & PageWithChangeableMenu;
