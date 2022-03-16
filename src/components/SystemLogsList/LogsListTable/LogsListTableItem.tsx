@@ -31,7 +31,7 @@ const LogsListTableItem: FC<Props> = props => {
                 </Tooltip>
             </TableCell>
             <TableCell width={145}>
-                {dayjs(date).format(`DD.MM.YY hh:mm`)}
+                {dayjs(date).format(`DD.MM.YY HH:mm`)}
             </TableCell>
         </TableRow>
     )
