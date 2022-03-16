@@ -4,6 +4,7 @@ import {UndefinedBaseValuesLoader} from "./UndefinedBaseValuesLoader";
 import {SliderBaseValuesLoader} from "./SliderBaseValuesLoader";
 import {schemaValueConverter} from "../../../../schemaValueConverter";
 import {VariantsBaseValuesLoader} from "./VariantsBaseValuesLoader";
+import {DateRangeValuesLoader} from "./DateRangeValuesLoader";
 
 // Коллекция базовых загрузчиков
 export type BaseLoadProcessors = { [F in AvailableFilterField]: FilterBaseValuesLoaderProcessor<F> }
@@ -24,5 +25,6 @@ export const baseLoadProcessors: { (): BaseLoadProcessors } = (): BaseLoadProces
         VariantsSelectorString: FilterBaseValuesLoaderProcessor<"VariantsSelectorString"> = new VariantsBaseValuesLoader(valueConverter);
         EnumSelector: FilterBaseValuesLoaderProcessor<"EnumSelector"> = new UndefinedBaseValuesLoader();
         RelationAutocompleteSelector: FilterBaseValuesLoaderProcessor<"RelationAutocompleteSelector"> = new VariantsBaseValuesLoader(valueConverter);
+        DateTimeRange: FilterBaseValuesLoaderProcessor<"DateTimeRange"> = new DateRangeValuesLoader(valueConverter);
     }
 };

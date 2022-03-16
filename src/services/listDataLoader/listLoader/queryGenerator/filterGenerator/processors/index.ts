@@ -5,6 +5,7 @@ import {CheckboxSwitchProcessor} from "./CheckboxSwitchProcessor";
 import {EqualsProcessor} from "./EqualsProcessor";
 import {LikeProcessor} from "./LikeProcessor";
 import {VariantsProcessor} from "./VariantsProcessor";
+import {StringSliderProcessor} from "./StringSliderProcessor";
 
 // Фабрика процессоров
 export type FilterGeneratorProcessors = { [P in keyof FilterFieldComponents]: FilterGeneratorProcessor<P> }
@@ -24,5 +25,6 @@ export const filterGeneratorProcessors: { (): FilterGeneratorProcessors } = () =
         VariantsSelectorString: FilterGeneratorProcessor<"VariantsSelectorString"> = new VariantsProcessor;
         EnumSelector: FilterGeneratorProcessor<"EnumSelector"> = new EqualsProcessor;
         RelationAutocompleteSelector: FilterGeneratorProcessor<"RelationAutocompleteSelector"> = new VariantsProcessor;
+        DateTimeRange: FilterGeneratorProcessor<"DateTimeRange"> = new StringSliderProcessor;
     }
 };

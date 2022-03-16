@@ -46,7 +46,7 @@ type EntityListHocActions<T extends keyof Schemas = keyof Schemas> = {
     // Обработка изменения offset
     onChangeOffset: { (offset: number): void }
 
-    reloadedListingData:{ (): void }
+    reloadedListingData: { (): void }
 
     // Обработка изменения значения фильтра
     onChangeFilterValues: {
@@ -111,7 +111,7 @@ const reloadedListingData = () => {
 
     context$.next(new DefaultContext())
 
-    fullDataReloadCtx$.next({schema:data.schema, additionFilter})
+    fullDataReloadCtx$.next({schema: data.schema, additionFilter})
 
     context$.next({
         ...context,
@@ -293,6 +293,7 @@ const onResetFilterValues: EntityListHocActions['onResetFilterValues'] = () => {
  */
 const onChangeFilterValues: EntityListHocActions['onChangeFilterValues'] = (field, value) => {
     const {data} = context$.getValue()
+
     if (!data) {
         return
     }

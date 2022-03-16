@@ -62,6 +62,7 @@ export interface FilterFieldComponents {
     VariantsSelectorString: FilterField
     RelationVariantsSelector: FilterField
     RelationAutocompleteSelector: FilterField
+    DateTimeRange: FilterField
     Checkbox: FilterField
     Switch: FilterField
     EnumSelector: FilterField
@@ -85,6 +86,7 @@ export class RegisteredFilterFieldConfiguration<T extends keyof Schemas, F exten
     VariantsSelectorInt: BaseFilterFieldConfiguration<T, F, "VariantsSelectorInt">;
     VariantsSelectorString: BaseFilterFieldConfiguration<T, F, "VariantsSelectorString">;
     EnumSelector: BaseFilterFieldConfiguration<T, F, "EnumSelector">;
+    DateTimeRange: BaseFilterFieldConfiguration<T, F, "DateTimeRange">;
 }
 
 // Параметры конфигурации для доступных полей фильтрации
@@ -105,6 +107,7 @@ export class RegisteredFilterFieldComponentValues implements FilterFieldComponen
     VariantsSelectorInt: VariantsComponentValue<number[]>;
     VariantsSelectorString: VariantsComponentValue<string[]>;
     EnumSelector: SimpleComponentValue<string | null>;
+    DateTimeRange: SliderComponentValues<string>;
 }
 
 // Параметры конфигурации для доступных полей фильтрации
@@ -125,6 +128,7 @@ export class RegisteredFilterFieldBaseComponentValues implements FilterFieldComp
     VariantsSelectorString: VariantsBaseValues<string>;
     EnumSelector: undefined;
     RelationAutocompleteSelector: VariantsBaseValues<string>;
+    DateTimeRange: SliderBaseValues<string>;
 }
 
 // Предзагружаемые данные для полей фильтрации
@@ -145,6 +149,7 @@ export class DeclaredFilterFieldPreloadedData implements FilterFieldPreloadedDat
     VariantsSelectorInt: undefined;
     VariantsSelectorString: undefined;
     EnumSelector: undefined;
+    DateTimeRange: undefined;
 }
 
 // Данные, необходимые для работы фильтра по отношениям
@@ -165,7 +170,9 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "Switch",
         "Checkbox",
     ];
-    "DateTime!": AvailableFilterField[] = [];
+    "DateTime!": AvailableFilterField[] = [
+        "DateTimeRange",
+    ];
     "Float!": AvailableFilterField[] = [
         "EqualsFloat",
         "FloatSlider",
