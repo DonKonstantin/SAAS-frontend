@@ -261,12 +261,12 @@ const MediaFileEditForm: FC<Props> = props => {
                                 <div>Выберите новый файл</div>
                             </Stack>
                         )}
-                        <input
+                        {!selectedFile && (<input
                             accept="audio/mpeg, audio/mp3"
                             type="file"
                             onChange={changeHandler}
                             hidden
-                        />
+                        />)}
                     </Button>
                     {selectedFile && (
                         <Tooltip title={t("Отменить замену файла") as string}>

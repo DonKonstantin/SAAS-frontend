@@ -19,6 +19,7 @@ export const valueLoadProcessors: {(): ValueLoadProcessors} = (): ValueLoadProce
         Switch: FilterValueLoaderProcessor<"Switch"> = new SimpleValueProcessor<"Switch">();
         VariantsSelectorFloat: FilterValueLoaderProcessor<"VariantsSelectorFloat"> = new VariantsProcessor<"VariantsSelectorFloat">();
         VariantsSelectorInt: FilterValueLoaderProcessor<"VariantsSelectorInt"> = new VariantsProcessor<"VariantsSelectorInt">();
+        DateTimeRange: FilterValueLoaderProcessor<"DateTimeRange"> = new SliderProcessor<"DateTimeRange">();
         VariantsSelectorString: FilterValueLoaderProcessor<"VariantsSelectorString"> = new VariantsProcessor<"VariantsSelectorString">();
         EnumSelector: FilterValueLoaderProcessor<"EnumSelector"> = new SimpleValueProcessor<"EnumSelector">();
         RelationAutocompleteSelector: FilterValueLoaderProcessor<"RelationAutocompleteSelector"> = new VariantsProcessor<"RelationAutocompleteSelector">();

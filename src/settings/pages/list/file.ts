@@ -8,14 +8,25 @@ import React from "react";
 import BulkEditing from "../../../components/ListPageCustom/BulkEditing";
 import ListPageEditDeleteFilesButtons from "../../../components/ListPageEditDeleteFilesButtons";
 import {ListHeaderProps} from "../../../components/ListPageParts/TableCaption";
+import LoaderTrackFromFile from "../../../components/ListPageCustom/LoaderTrackFromFile";
+import CustomTitleComponentForLoaderTrackFromFile
+    from "../../../components/ListPageCustom/CustomTitleComponentForLoaderTrackFromFile";
 
 export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     filter: FilterFieldsConfiguration<"file"> = {
+        publisher: {
+            field: "publisher",
+            filterType: "VariantsSelectorString",
+            schema: "file",
+            title: "Название файла",
+            customComponent: LoaderTrackFromFile
+        },
         title: {
             field: "title",
             filterType: "Like",
             schema: "file",
-            title: "Название файла"
+            title: "Название файла",
+            customComponent: CustomTitleComponentForLoaderTrackFromFile
         },
         artist: {
             field: "artist",
@@ -89,13 +100,12 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             schema: "file",
             title: "Год создания"
         },
-        // creation_date: {
-        //     field: "creation_date",
-        //     filterType: "EqualsInt",
-        //     schema: "file",
-        //     title: "Дата создания",
-        //     customComponent: DateTimeRangeField
-        // },
+        creation_date: {
+            field: "creation_date",
+            filterType: "DateTimeRange",
+            schema: "file",
+            title: "Дата создания",
+        },
     };
     listFields: ListFieldsConfiguration<"file"> = {
         fields: {
@@ -106,15 +116,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Simple",
-                }
-            },
-            id: {
-                field: "id",
-                title: "",
-                isEnabled: true,
-                fieldType: {
-                    config: undefined,
-                    type: "Hidden",
                 }
             },
             file_name: {
@@ -283,7 +284,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     type: "Hidden"
                 }
             },
-
             publisher: {
                 field: "publisher",
                 title: "publisher",
