@@ -69,7 +69,7 @@ const SimpleMainMenuItem: FC<MainMenuItemProps> = props => {
 
 // Обработчик вывода пунктов меню с дочерними элементами
 const MainMenuWithSubItems: FC<MainMenuItemProps> = props => {
-    const [isExpanded, setIsExpanded] = useState(false)
+    const route = useRouter();
     const {
         item: {
             title,
@@ -77,6 +77,10 @@ const MainMenuWithSubItems: FC<MainMenuItemProps> = props => {
             subItems,
         }
     } = props
+    // ищем возможные вложенные пункты меню
+    const childPathNames = subItems?.map(({link}) => typeof link === "function" ? link().href : link.href)
+    const isOpen = !!childPathNames.find(path => path.search(new RegExp(route.pathname)) === 0);
+    const [isExpanded, setIsExpanded] = useState(isOpen);
 
     const {t} = useTranslation()
 
