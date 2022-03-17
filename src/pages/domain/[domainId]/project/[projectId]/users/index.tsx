@@ -1,10 +1,9 @@
 import React from 'react';
 import {NextPage} from "next";
-import {PageWithEntityList} from "../../../../components/ListPage/types";
-import ListPage from "../../../../components/ListPage";
-import {allRoles} from "../../../../services/loaders/allRoles";
-import GetToken from "../../../../services/helpers/GetToken";
-import LoadDomainsAndProjectsByRequest from "../../../../services/helpers/LoadDomainsAndProjectsByRequest";
+import {PageWithEntityList} from "../../../../../../components/ListPage/types";
+import ListPage from "../../../../../../components/ListPage";
+import {allRoles} from "../../../../../../services/loaders/allRoles";
+import GetToken from "../../../../../../services/helpers/GetToken";
 
 // Компонент страницы проекта
 const ListingPage: NextPage = () => {
@@ -17,12 +16,11 @@ const ListingPage: NextPage = () => {
 ListingPage.getInitialProps = async (request): Promise<PageWithEntityList> => {
     let filter: { [T: string]: any } = {id: `{_equals: 0}`}
 
+    const {query} = request
     const token = GetToken(request)
     if (0 !== token.length) {
-        const structures = await LoadDomainsAndProjectsByRequest(request)
-
         const roles = await allRoles(token).Load()
-        const roleIds = roles.roles.filter(r => structures.includes(r.structure_item_id)).map(r => r.id)
+        const roleIds = roles.roles.filter(r => r.structure_item_id === query.projectId).map(r => r.id)
 
         filter = {roles_id: `{_in: [${roleIds.join(",")}]}`}
     }
@@ -35,9 +33,9 @@ ListingPage.getInitialProps = async (request): Promise<PageWithEntityList> => {
         permissionCheckCreatePermission: "CREATE_USERS",
         permissionCheckEditPermission: "EDIT_USERS",
         permissionCheckDeletePermission: "DELETE_USERS",
-        permissionCheckLevel: "domain",
+        permissionCheckLevel: "project",
         entityListAdditionFilter: filter,
-        pageMenuType: "domain"
+        pageMenuType: "project"
     }
 }
 

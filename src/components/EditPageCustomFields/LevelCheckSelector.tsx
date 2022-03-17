@@ -12,7 +12,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     const {fieldCode} = props
     const {t} = useTranslation()
     const {entityData, validation, onChangeFieldValue} = useEntityEdit()
-    const {userInfo} = useAuthorization()
+    const {userInfo, domain, project, menuType} = useAuthorization()
 
     if (!entityData || !userInfo) {
         return null
@@ -30,7 +30,6 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     const availableDomains = domainsAndProjects.domains
         .filter(d => availableStructureIds.includes(d.id) || isRealmAccess)
 
-    const isDomainAccess = isRealmAccess || availableDomains.length > 0
     const domainIds = availableDomains.map(d => d.id)
     const availableProjects = domainsAndProjects.projects.filter(
         p => availableStructureIds.includes(p.id)
@@ -39,6 +38,22 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     )
 
     const projectIds = availableProjects.map(p => p.id)
+
+    const domainsToChoose = availableDomains.filter(d => domain.length === 0 || (d.id === domain && project.length === 0))
+    const projectsToChoose = availableProjects.filter(p => {
+        if (isRealmAccess) {
+            return true
+        }
+
+        if (menuType === `domain`) {
+            return domainsToChoose.map(d => d.id).includes(`${p.parent}`)
+        }
+
+        return p.id === project
+    })
+
+    const isNeedShowRealm = menuType === `realm`
+    const isNeedShowDomain = menuType === `domain`
 
     return (
         <Box sx={{flexGrow: 1, display: 'flex', height: 174}}>
@@ -62,13 +77,13 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                 <Tab
                     label={t(`entity-edit.fields.level-check-selector.levels.realm`) as string}
                     value={"realm"}
-                    disabled={!isRealmAccess}
+                    disabled={!isNeedShowRealm}
                     id={`level-check-selector-realm`}
                 />
                 <Tab
                     label={t(`entity-edit.fields.level-check-selector.levels.domain`) as string}
                     value={"domain"}
-                    disabled={!isDomainAccess}
+                    disabled={!isNeedShowDomain}
                     id={`level-check-selector-domain`}
                 />
                 <Tab
@@ -115,7 +130,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                                 {t(`entity-edit.fields.level-check-selector.selectors.domain.no-value`)}
                             </Typography>
                         </MenuItem>
-                        {domainsAndProjects.domains.map(domain => (
+                        {domainsToChoose.map(domain => (
                             <MenuItem value={domain.id} key={domain.id}>{domain.name}</MenuItem>
                         ))}
                     </TextField>
@@ -152,7 +167,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                                 {t(`entity-edit.fields.level-check-selector.selectors.project.no-value`)}
                             </Typography>
                         </MenuItem>
-                        {domainsAndProjects.projects.map(project => (
+                        {projectsToChoose.map(project => (
                             <MenuItem value={project.id} key={project.id}>{project.name}</MenuItem>
                         ))}
                     </TextField>

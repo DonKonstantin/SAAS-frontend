@@ -1,6 +1,6 @@
 import React from 'react';
 import {NextPage} from "next";
-import EditPage from "../../../../../components/EditPage";
+import EditPage from "../../../../../../../components/EditPage";
 
 // Компонент страницы редактирования
 const EditPageContent: NextPage = () => {
@@ -16,8 +16,8 @@ EditPageContent.getInitialProps = async ({query}) => ({
     entityEditSchema: "role",
     entityEditPrimaryKey: query?.entityId as string,
     permissionCheckPermission: "EDIT_ROLES",
-    permissionCheckLevel: "domain",
-    pageMenuType: "domain"
+    permissionCheckLevel: "project",
+    pageMenuType: "project"
 })
 
 // Экспортируем компонент

@@ -19,6 +19,7 @@ const SimpleMainMenuItem: FC<MainMenuItemProps> = props => {
             onClick,
             title,
             icon: IconComponent,
+            disableActiveState = false,
         }
     } = props
 
@@ -40,10 +41,19 @@ const SimpleMainMenuItem: FC<MainMenuItemProps> = props => {
         return router.push(href, as)
     }
 
-    const routes = [router.asPath, router.pathname]
+    const pathNames = router.pathname.split('/').filter((x) => x);
+    const paths: string[] = []
+
+    let path = ``
+    for (let i = 0; i < pathNames.length; i++) {
+        path = `${path}/${pathNames[i]}`
+        paths.push(`${path}`)
+    }
+
+    const routes = [...paths, router.asPath, router.pathname]
     const {href = "-", as = "-"} = typeof link === "function" ? link() : (link || {})
 
-    const isActive = link ? routes.includes(href) || routes.includes(as) : false
+    const isActive = !disableActiveState && (link ? routes.includes(href) || routes.includes(as) : false)
     return (
         <ListItem button onClick={onClickHandler}
                   className={clsx("left-menu-item", "can-activate", {"is-active": isActive})}>

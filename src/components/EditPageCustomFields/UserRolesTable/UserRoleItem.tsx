@@ -28,6 +28,7 @@ const UserRoleItem: FC<UserRoleItemProps> = props => {
 
     const domain = domains.find(d => d.id === role.structure_item_id)
     const project = projects.find(d => d.id === role.structure_item_id)
+    const isHasNoAccess = role.name === t(`pages.users.edit.fields.role-not-found`)
 
     let objectName = "-"
     switch (true) {
@@ -39,10 +40,20 @@ const UserRoleItem: FC<UserRoleItemProps> = props => {
             break
     }
 
+    // Обработка переключения состояния чекбокса выбора роли для обмена
+    const handleToggle = () => {
+        if (isHasNoAccess) {
+            return
+        }
+
+        onToggle();
+    }
+
+    const tStyle = isHasNoAccess ? {color: `rgba(0, 0, 0, 0.26)`} : {}
     return (
         <TableRow
-            hover
-            onClick={onToggle}
+            hover={!isHasNoAccess}
+            onClick={handleToggle}
             role="checkbox"
             aria-checked={selected}
             selected={selected}
@@ -51,11 +62,13 @@ const UserRoleItem: FC<UserRoleItemProps> = props => {
                 <Checkbox
                     color="primary"
                     checked={selected}
+                    disabled={isHasNoAccess}
                 />
             </TableCell>
             <TableCell
                 className="list-table-cell"
                 padding="none"
+                style={tStyle}
                 sx={{
                     pt: 2,
                     pl: 1,
@@ -63,15 +76,15 @@ const UserRoleItem: FC<UserRoleItemProps> = props => {
                     width: "calc(55% - 48px)",
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
-                    overflow:"hidden"
+                    overflow: "hidden"
                 }}
             >
                 {role.name}
             </TableCell>
-            <TableCell className="list-table-cell" sx={{pt: 2, pl: 1, pb: 2, width: "25%"}}>
+            <TableCell style={tStyle} className="list-table-cell" sx={{pt: 2, pl: 1, pb: 2, width: "25%"}}>
                 {objectName}
             </TableCell>
-            <TableCell className="list-table-cell" padding="none" sx={{p: 1, width: "20%"}}>
+            <TableCell style={tStyle} className="list-table-cell" padding="none" sx={{p: 1, width: "20%"}}>
                 {t(`entity-edit.fields.user-roles-group.header.level.${role.level}`)}
             </TableCell>
         </TableRow>

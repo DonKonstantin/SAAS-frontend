@@ -11,6 +11,7 @@ import LevelCheckSelector from "../../../components/EditPageCustomFields/LevelCh
 import PermissionChooseSelector from "../../../components/EditPageCustomFields/PermissionChooseSelector";
 import LevelCheckSelectorGroup from "../../../components/EditPageCustomFields/LevelCheckSelectorGroup";
 import {UniqueValueInColumnValidator} from "../../../services/validation/validators/uniqueValueInColumn";
+import {getCurrentState} from "../../../context/AuthorizationContext";
 
 export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
     groups: EditFormGroup<"role">[] = [
@@ -90,8 +91,24 @@ export class RoleEditPageConfig implements EditPageConfiguration<"role"> {
     isCopyEnabled: boolean = true;
     isSaveAndCloseEnabled: boolean = true;
     isSaveEnabled: boolean = true;
-    editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => ({
-        href: "/roles/edit/[entityId]",
-        as: `/roles/edit/${pk}`
-    });
+    editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => {
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/roles/edit/${pk}`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/roles/edit/${pk}`
+                }
+            default:
+                return {
+                    href: "/roles/edit/[entityId]",
+                    as: `/roles/edit/${pk}`
+                }
+        }
+    };
 }

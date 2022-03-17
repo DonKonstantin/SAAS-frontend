@@ -49,6 +49,7 @@ const UserRolesTable: FC<UserRolesTableProps> = props => {
                         onChangeFilter={setFilter}
                         selectedItems={selectedItems}
                         allItems={rolesToDisplay.map(r => r.id)}
+                        roles={rolesToDisplay}
                         onChangeSelected={items => onChangeSelected(() => items)}
                     />
                 </TableHead>

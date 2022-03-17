@@ -1,6 +1,7 @@
 import React, {FC} from "react";
 import {Checkbox, MenuItem, TableCell, TableRow, TextField} from "@mui/material";
 import {useTranslation} from "react-i18next";
+import {RoleData} from "../../../services/loaders/allRoles/LoaderQuery";
 
 // Параметры фильтрации ролей
 export type UserRoleHeaderFilter = {
@@ -16,6 +17,7 @@ type UserRoleHeaderProps = {
 
     selectedItems: string[]
     allItems: string[]
+    roles: RoleData[]
     onChangeSelected: { (selectedItems: string[]): void }
 }
 
@@ -27,17 +29,27 @@ const UserRoleHeader: FC<UserRoleHeaderProps> = props => {
         selectedItems,
         allItems,
         onChangeSelected,
+        roles,
     } = props
 
     const {t} = useTranslation()
 
     // Обработчик выбора элементов через чекбокс
     const handleSelectItems = () => {
-        if (allItems.length === selectedItems.length) {
+        const itemsAvailableToSelect = allItems.filter(item => {
+            const role = roles.find(r => r.id === item)
+            if (!role) {
+                return false
+            }
+
+            return role.name !== t(`pages.users.edit.fields.role-not-found`)
+        })
+
+        if (itemsAvailableToSelect.length === selectedItems.length) {
             return onChangeSelected([])
         }
 
-        return onChangeSelected([...allItems])
+        return onChangeSelected([...itemsAvailableToSelect])
     }
 
     return (

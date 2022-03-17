@@ -20,14 +20,14 @@ export const RealmMenuItems = (): MenuItem[] => ([
         link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
-        level: "project",
+        level: "realm",
         icon: PersonIcon,
     },
     {
         link: {href: "/roles"},
         title: "UI.menu.left-menu.items.roles",
         permission: "READ_ROLES",
-        level: "project",
+        level: "realm",
         icon: CheckCircleIcon,
     },
     {
@@ -53,6 +53,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
     {
         title: "UI.menu.left-menu.items.media-library.index",
         icon: VolumeUpIcon,
+        level: "realm",
         subItems: [
             {
                 link: {href: "/media/check"},
@@ -74,6 +75,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
     {
         title: "UI.menu.left-menu.items.notifications.index",
         icon: NotificationsIcon,
+        level: "realm",
         subItems: [
             {
                 link: {href: "/notifications-template"},
@@ -91,7 +93,8 @@ export const RealmMenuItems = (): MenuItem[] => ([
         link: {href: "/logs"},
         title: "UI.menu.left-menu.items.logs",
         icon: DvrIcon,
-        permission: "READ_LOGS"
+        permission: "READ_LOGS",
+        level: "realm",
     },
 ]);
 
@@ -100,7 +103,8 @@ export const DomainMenuItems = (): MenuItem[] => ([
     {
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain-list",
-        icon: ArrowBackIosIcon
+        icon: ArrowBackIosIcon,
+        disableActiveState: true,
     },
     {
         link: () => {
@@ -115,37 +119,38 @@ export const DomainMenuItems = (): MenuItem[] => ([
     {
         link: () => {
             const {domain} = getCurrentState()
-             return {
+            return {
                 href: "/domain/[domainId]/users",
                 as: `/domain/${domain}/users`,
             }
         },
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
-        level: "project",
+        level: "domain",
     },
     {
         link: () => {
             const {domain} = getCurrentState()
-             return {
+            return {
                 href: "/domain/[domainId]/roles",
                 as: `/domain/${domain}/roles`,
             }
         },
         title: "UI.menu.left-menu.items.roles",
         permission: "READ_ROLES",
-        level: "project",
+        level: "domain",
     },
     {
         link: () => {
             const {domain} = getCurrentState()
-             return {
+            return {
                 href: "/domain/[domainId]/logs",
                 as: `/domain/${domain}/logs`,
             }
         },
         title: "UI.menu.left-menu.items.logs",
         permission: "READ_LOGS",
+        level: "domain",
     },
 ]);
 
@@ -160,7 +165,8 @@ export const ProjectMenuItems = (): MenuItem[] => ([
             }
         },
         title: "UI.menu.left-menu.items.projects-list",
-        icon: ArrowBackIosIcon
+        icon: ArrowBackIosIcon,
+        disableActiveState: true,
     },
     {
         link: () => {
@@ -173,13 +179,25 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.playlists",
     },
     {
-        link: {href: "/users"},
+        link: () => {
+            const {domain, project} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project/[projectId]/users",
+                as: `/domain/${domain}/project/${project}/users`,
+            }
+        },
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
         level: "project",
     },
     {
-        link: {href: "/roles"},
+        link: () => {
+            const {domain, project} = getCurrentState()
+            return {
+                href: "/domain/[domainId]/project/[projectId]/roles",
+                as: `/domain/${domain}/project/${project}/roles`,
+            }
+        },
         title: "UI.menu.left-menu.items.roles",
         permission: "READ_ROLES",
         level: "project",
@@ -187,6 +205,7 @@ export const ProjectMenuItems = (): MenuItem[] => ([
     {
         title: "UI.menu.left-menu.items.logs",
         permission: "READ_LOGS",
+        level: "project",
         link: () => {
             const {domain, project} = getCurrentState()
             return {

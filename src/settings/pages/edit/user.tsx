@@ -17,7 +17,6 @@ import {allRoles} from "../../../services/loaders/allRoles";
 import UserRolesGroup from "../../../components/EditPageCustomFields/UserRolesGroup";
 import {allDomainsAndProjectsLoader} from "../../../services/loaders/allDomainsAndProjects";
 import {getCurrentState} from "../../../context/AuthorizationContext";
-import CheckPermission from "../../../services/helpers/CheckPermission";
 
 export class UserEditPageConfig implements EditPageConfiguration<"user"> {
     groups: EditFormGroup<"user">[] = [
@@ -132,23 +131,28 @@ export class UserEditPageConfig implements EditPageConfiguration<"user"> {
     ];
     schema: "user" = "user";
     listPageUrl: PageUrl = {href: "/users"};
-    editPageUrlGenerator: { (primaryKey: any): PageUrl } = primaryKey => {
-        const {userInfo} = getCurrentState()
-        if (!userInfo) {
-            return {href: "/users"}
-        }
-
-        const notHasEditAccess = !CheckPermission(userInfo, "EDIT_USERS", "project")
-        if (notHasEditAccess) {
-            return {href: "/users"}
-        }
-
-        return {
-            as: `/users/edit/${primaryKey}`,
-            href: `/users/edit/[entityId]`
-        }
-    };
     isCopyEnabled: boolean = false;
     isSaveAndCloseEnabled: boolean = true;
     isSaveEnabled: boolean = true;
+
+    editPageUrlGenerator: { (primaryKey: any): PageUrl } = pk => {
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/users/edit/${pk}`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/users/edit/${pk}`
+                }
+            default:
+                return {
+                    href: "/users/edit/[entityId]",
+                    as: `/users/edit/${pk}`
+                }
+        }
+    };
 }

@@ -11,6 +11,7 @@ export type MenuItem = {
     title: string
     permission?: string
     level?: "realm" | "domain" | "project"
+    disableActiveState?: boolean
 
     icon?: OverridableComponent<SvgIconTypeMap>
 

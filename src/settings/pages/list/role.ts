@@ -76,17 +76,43 @@ export class RoleListingConfiguration implements ListPageConfiguration<"role"> {
         await rolesCloneService().CloneRoles(rows)
     }
     addPageUrl: {(): PageUrl} = () => {
-        const {domain} = getCurrentState()
-        return {
-            href: "/domain/[domainId]/roles/add",
-            as: `/domain/${domain}/roles/add`
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles/add",
+                    as: `/domain/${domain}/project/${project}/roles/add`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/roles/add",
+                    as: `/domain/${domain}/roles/add`
+                }
+            default:
+                return {
+                    href: "/roles/add",
+                    as: `/roles/add`
+                }
         }
     };
     editPageUrl: EditPageLinkGenerator = pk => {
-        const {domain} = getCurrentState()
-        return {
-            href: "/domain/[domainId]/roles/edit/[entityId]",
-            as: `/domain/${domain}/roles/edit/${pk}`
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/roles/edit/${pk}`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/roles/edit/${pk}`
+                }
+            default:
+                return {
+                    href: "/roles/edit/[entityId]",
+                    as: `/roles/edit/${pk}`
+                }
         }
     };
 }

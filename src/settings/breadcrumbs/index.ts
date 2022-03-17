@@ -144,6 +144,16 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 }
             }
         },
+        "/domain/[domainId]/roles/edit/[entityId]": {
+            breadcrumb: "pages.role.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/roles/edit/${entityEditPrimaryKey}`
+                }
+            }
+        },
         "/domain/[domainId]/logs": {
             breadcrumb: "pages.SystemLogs.breadcrumb",
             link: () => {
@@ -151,16 +161,6 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
                 return {
                     href: "/domain/[domainId]/logs",
                     as: `/domain/${domain}/logs`
-                }
-            }
-        },
-        "/domain/[domainId]/roles/edit/[entityId]": {
-            breadcrumb: "pages.role.edit.breadcrumb",
-            link: ({entityEditPrimaryKey})=> {
-                const {domain} = getCurrentState()
-                return {
-                    href: "/domain/[domainId]/roles/edit/[entityId]",
-                    as: `/domain/${domain}/roles/edit/${entityEditPrimaryKey}`
                 }
             }
         },
@@ -205,11 +205,71 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
         },
         "/domain/[domainId]/project/[projectId]/logs": {
             breadcrumb: "pages.project.logs.breadcrumb",
-            link: ({entityEditPrimaryKey}) => {
-                const {domain} = getCurrentState()
+            link: () => {
+                const {domain, project} = getCurrentState()
                 return {
                     href: "/domain/[domainId]/project/[projectId]/logs",
-                    as: `/domain/${domain}/project/${entityEditPrimaryKey}/logs`,
+                    as: `/domain/${domain}/project/${project}/logs`,
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/roles": {
+            breadcrumb: "pages.role.list.breadcrumb",
+            link: () => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles",
+                    as: `/domain/${domain}/project/${project}/roles`
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/roles/add": {
+            breadcrumb: "pages.role.add.breadcrumb",
+            link: () => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles/add",
+                    as: `/domain/${domain}/project/${project}/roles/add`
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/roles/edit/[entityId]": {
+            breadcrumb: "pages.role.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/roles/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/roles/edit/${entityEditPrimaryKey}`
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/users": {
+            breadcrumb: "pages.users.list.breadcrumb",
+            link: () => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users",
+                    as: `/domain/${domain}/project/${project}/users`
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/users/add": {
+            breadcrumb: "pages.users.add.breadcrumb",
+            link: () => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users/add",
+                    as: `/domain/${domain}/project/${project}/users/add`
+                }
+            }
+        },
+        "/domain/[domainId]/project/[projectId]/users/edit/[entityId]": {
+            breadcrumb: "pages.users.edit.breadcrumb",
+            link: ({entityEditPrimaryKey}) => {
+                const {domain, project} = getCurrentState()
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/users/edit/${entityEditPrimaryKey}`
                 }
             }
         },

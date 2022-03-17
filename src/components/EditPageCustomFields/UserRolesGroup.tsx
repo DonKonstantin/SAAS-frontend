@@ -9,6 +9,7 @@ import {RoleData} from "../../services/loaders/allRoles/LoaderQuery";
 import {DomainData, ProjectData} from "../../services/loaders/allDomainsAndProjects/LoaderQuery";
 import UserRolesTable from "./UserRolesTable";
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import {useAuthorization} from "../../context/AuthorizationContext";
 
 // Компонент вывода группы привязки ролей к пользователям
 const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
@@ -18,6 +19,7 @@ const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
 
     const [selectedUnassignedRoles, setSelectedUnassignedRoles] = useState<string[]>([])
     const [selectedAssignedRoles, setSelectedAssignedRoles] = useState<string[]>([])
+    const {domain, project, menuType} = useAuthorization(distinctUntilChanged())
 
     if (!entityData) {
         return null
@@ -28,11 +30,35 @@ const UserRolesGroup: FC<EditFormGroupProperties> = ({config}) => {
         return null
     }
 
-    const roles = additionData['roles_id'].roles as RoleData[]
     const domains = additionData['roles_id'].domains as DomainData[]
     const projects = additionData['roles_id'].projects as ProjectData[]
+    const assignedRoles = (values['roles_id'] as string[]).map(roleId => {
+        return (additionData['roles_id'].roles as RoleData[]).find(r => r.id === roleId) || {
+            id: roleId,
+            name: t(`pages.users.edit.fields.role-not-found`),
+            level: "project",
+            permissions_id: [],
+            structure_item_id: `0`,
+        } as RoleData
+    })
+    const roles = (additionData['roles_id'].roles as RoleData[]).filter(role => {
+        if (assignedRoles.map(r => r.id).includes(role.id)) {
+            return true
+        }
 
-    const assignedRoles = roles.filter(r => (values['roles_id'] as string[]).includes(r.id))
+        switch (menuType) {
+            case "domain":
+                return [
+                    domain,
+                    ...projects.filter(p => `${p.parent}` === domain).map(p => p.id)
+                ].includes(role.structure_item_id)
+            case "project":
+                return role.structure_item_id === project
+            default:
+                return true
+        }
+    })
+
     const unassignedRoles = roles.filter(r => !(values['roles_id'] as string[]).includes(r.id))
     const rolesValidation = validation['roles_id']
 

@@ -89,17 +89,43 @@ export class UserListingConfiguration implements ListPageConfiguration<"user"> {
     schema: "user" = "user";
     elementsPerPage: number = 25;
     addPageUrl: {(): PageUrl} = () => {
-        const {domain} = getCurrentState()
-        return {
-            href: "/domain/[domainId]/users/add",
-            as: `/domain/${domain}/users/add`
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users/add",
+                    as: `/domain/${domain}/project/${project}/users/add`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/users/add",
+                    as: `/domain/${domain}/users/add`
+                }
+            default:
+                return {
+                    href: "/users/add",
+                    as: `/users/add`
+                }
         }
     };
     editPageUrl: EditPageLinkGenerator = pk => {
-        const {domain} = getCurrentState()
-        return {
-            href: "/domain/[domainId]/users/edit/[entityId]",
-            as: `/domain/${domain}/users/edit/${pk}`
+        const {domain, project, menuType} = getCurrentState()
+        switch (true) {
+            case menuType === `project`:
+                return {
+                    href: "/domain/[domainId]/project/[projectId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/project/${project}/users/edit/${pk}`
+                }
+            case menuType === `domain`:
+                return {
+                    href: "/domain/[domainId]/users/edit/[entityId]",
+                    as: `/domain/${domain}/users/edit/${pk}`
+                }
+            default:
+                return {
+                    href: "/users/edit/[entityId]",
+                    as: `/users/edit/${pk}`
+                }
         }
     };
 }
