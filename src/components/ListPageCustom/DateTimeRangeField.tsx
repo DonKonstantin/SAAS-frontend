@@ -13,7 +13,7 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import {FilterFieldProperties} from "../../services/listDataLoader/filterLoader/types";
 import useFieldConfiguration from "../ListPageParts/Filter/useFieldConfiguration";
 import {SliderComponentValues} from "services/listDataLoader/filterLoader/fieldValues/Slider";
-import DateAdapter from '@mui/lab/AdapterDateFns';
+import DateAdapter from '@mui/lab/AdapterDayjs';
 import ruLocale from 'dayjs/locale/ru'
 
 
