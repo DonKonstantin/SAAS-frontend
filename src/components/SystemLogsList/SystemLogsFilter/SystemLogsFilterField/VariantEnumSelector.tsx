@@ -64,7 +64,7 @@ const VariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                         )
                         .join(', ')
                 }
-                MenuProps={{disablePortal: true}}
+                MenuProps={{disableScrollLock: true}}
             >
                 <MenuItem value="">
                     <em>{t(`${i18nextPath}.variants.none`)}</em>

@@ -8,7 +8,7 @@ const HeaderConfig: LogsListTableHeaderCellProps[] = [
         align: 'left',
         sorted: true,
         title: "pages.SystemLogs.list.field.user",
-        width: 260,
+        width: 200,
         field: "user",
         sortField: LogsOrderBy.user
     },
@@ -16,7 +16,7 @@ const HeaderConfig: LogsListTableHeaderCellProps[] = [
         align: 'left',
         sorted: true,
         title: "pages.SystemLogs.list.field.eventTypeName",
-        width: 260,
+        width: 200,
         field: "eventTypeName",
         sortField: LogsOrderBy.event
     },

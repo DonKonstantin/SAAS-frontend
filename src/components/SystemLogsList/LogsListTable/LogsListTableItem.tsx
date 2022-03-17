@@ -17,13 +17,13 @@ const LogsListTableItem: FC<Props> = props => {
 
     return (
         <TableRow>
-            <TableCell width={260}>
+            <TableCell width={200}>
                 {user.firstName} {user.lastName}
             </TableCell>
-            <TableCell width={260}>
+            <TableCell width={200}>
                 {eventTypeName}
             </TableCell>
-            <TableCell width={300} sx={{ whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", maxWidth: "300px"}}>
+            <TableCell  sx={{ whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", maxWidth: 150}}>
                 <Tooltip title={entityName}>
                     <span>
                     {entityName}
