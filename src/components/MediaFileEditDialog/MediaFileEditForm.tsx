@@ -152,7 +152,7 @@ const MediaFileEditForm: FC<Props> = props => {
                         }]) => {
 
                             return (
-                                <Grid item md={6}>
+                                <Grid item md={6} key={field}>
                                     <Controller
                                         rules={rules}
                                         // @ts-ignore
@@ -161,7 +161,6 @@ const MediaFileEditForm: FC<Props> = props => {
                                         render={({field: {onChange, value}}) => (
                                             <Component
                                                 {...props}
-                                                key={field}
                                                 fullWidth
                                                 variants={variants || []}
                                                 onChange={onChange}

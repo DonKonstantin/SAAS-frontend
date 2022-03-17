@@ -109,6 +109,15 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     };
     listFields: ListFieldsConfiguration<"file"> = {
         fields: {
+            id: {
+                field: "id",
+                title: "id",
+                isEnabled: true,
+                fieldType: {
+                    config: undefined,
+                    type: "Hidden"
+                }
+            },
             title: {
                 field: "title",
                 title: "Название файла",
@@ -315,6 +324,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
         actions: ListPageEditDeleteFilesButtons,
     };
     schema: "file" = "file";
+    deleteSchema: "file_data" = "file_data";
     elementsPerPage: number = 25;
     addPageUrl: PageUrl = {href: "/file/add"};
     action: React.ComponentType<ListHeaderProps> = BulkEditing
