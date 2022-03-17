@@ -22,7 +22,7 @@ export class DeleteFilesByIdMutation implements GraphQLQuery<DeleteFilesByIdMuta
 
         this.query = gql(`
         mutation __DELETE_FILE__($ids: [ID]) {
-          file_delete(where: {
+          file_data_delete (where: {
             id: {
                 _in: $ids
             }

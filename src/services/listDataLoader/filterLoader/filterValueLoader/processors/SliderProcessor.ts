@@ -9,7 +9,7 @@ import {SliderComponentValues} from "../../fieldValues/Slider";
 /**
  * Процессор обработки значений слайдера
  */
-export class SliderProcessor<F extends "FloatSlider" | "IntegerSlider"> implements FilterValueLoaderProcessor<F> {
+export class SliderProcessor<F extends "FloatSlider" | "IntegerSlider" | "DateTimeRange"> implements FilterValueLoaderProcessor<F> {
     /**
      * Парсинг базовых значений
      * @param _

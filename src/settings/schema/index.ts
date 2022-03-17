@@ -1,7 +1,7 @@
 import {Collection} from "../../services/types";
 import notifications_template from "./NotificationsTemplate";
 import notification_config from "./NotificationConfig";
-import file from "./File";
+import file, {file_data} from "./File";
 
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
@@ -220,6 +220,7 @@ export class Schemas {
     notifications_template = notifications_template
     notification_config = notification_config
     file = file
+    file_data = file_data
 }
 
 /**

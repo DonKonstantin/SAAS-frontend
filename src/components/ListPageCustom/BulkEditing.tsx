@@ -90,9 +90,11 @@ const BulkEditing = (props: ListHeaderProps) => {
     return (
         <>
             <Tooltip title={'Массовое редактирование'}>
-                <Button disabled={checkedItems.length <= 1} variant={"outlined"} onClick={handleToggleBulkEditFiles}>
-                    Массовое редактирование
-                </Button>
+                <span>
+                    <Button disabled={checkedItems.length <= 1} variant={"outlined"} onClick={handleToggleBulkEditFiles}>
+                        Массовое редактирование
+                    </Button>
+                </span>
             </Tooltip>
             <SingleEditFile onSave={handleSingleUpdateFile}/>
             <BulkMediaFileEditDialog onSave={handlePluralUpdateFile}/>

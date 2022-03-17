@@ -20,5 +20,6 @@ export const filterPreloaderProcessors: { (token?: string): FilterPreloaderProce
         VariantsSelectorString: FilterPreloaderProcessorInterface<"VariantsSelectorString"> = new SkipPreloader();
         EnumSelector: FilterPreloaderProcessorInterface<"EnumSelector"> = new SkipPreloader();
         RelationAutocompleteSelector: FilterPreloaderProcessorInterface<"RelationAutocompleteSelector"> = new RelationPreloader(graphQLClient(), loggerFactory());
+        DateTimeRange: FilterPreloaderProcessorInterface<"DateTimeRange"> = new SkipPreloader();
     }
 };

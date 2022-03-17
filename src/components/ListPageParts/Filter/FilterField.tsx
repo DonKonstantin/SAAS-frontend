@@ -13,6 +13,7 @@ import RelationVariantsSelector from "./RelationVariantsSelector";
 import RelationAutocompleteSelector from "./RelationAutocompleteSelector";
 import ChooseGroup from "./ChooseGroup";
 import EnumSelector from "./EnumSelector";
+import DateTimeRangeField from "../../ListPageCustom/DateTimeRangeField";
 
 // Компонент поля фильтра. Отображает конечное поле по переданному коду
 const FilterField: FC<FilterFieldProperties> = props => {
@@ -60,6 +61,8 @@ const FilterField: FC<FilterFieldProperties> = props => {
             return <ChooseGroup {...props} />
         case "EnumSelector":
             return <EnumSelector {...props} />
+        case "DateTimeRange":
+            return <DateTimeRangeField {...props} />
     }
 
     return null

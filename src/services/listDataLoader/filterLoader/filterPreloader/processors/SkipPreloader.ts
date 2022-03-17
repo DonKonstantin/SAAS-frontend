@@ -16,6 +16,7 @@ export class SkipPreloader<
         "VariantsSelectorFloat" |
         "VariantsSelectorInt" |
         "VariantsSelectorString" |
+        "DateTimeRange" |
         "EnumSelector"
 > implements FilterPreloaderProcessorInterface<C> {
     /**

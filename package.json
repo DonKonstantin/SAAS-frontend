@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@types/date-fns": "^2.6.0"
+  }
+}

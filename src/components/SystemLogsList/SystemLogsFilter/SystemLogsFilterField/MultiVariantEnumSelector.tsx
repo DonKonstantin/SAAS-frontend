@@ -66,7 +66,7 @@ const MultiVariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                         )
                         .join(', ')
                 }
-                MenuProps={{disablePortal: true}}
+                MenuProps={{disableScrollLock: true}}
             >
 
                 {Object.values(variants).map((name: string) => (
