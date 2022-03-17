@@ -1,21 +1,12 @@
-import {
-    FC,
-    useEffect,
-    useState
-} from "react";
-
-import {DateRangePicker, LocalizationProvider} from "@mui/lab";
-import {
-    Stack,
-    TextField
-} from "@mui/material";
+import {FC, useEffect, useMemo, useState} from "react";
+import {DateRange, DateRangePicker, LocalizationProvider} from "@mui/lab";
+import {Stack, TextField} from "@mui/material";
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import {FilterFieldProperties} from "../../services/listDataLoader/filterLoader/types";
 import useFieldConfiguration from "../ListPageParts/Filter/useFieldConfiguration";
-import {SliderComponentValues} from "services/listDataLoader/filterLoader/fieldValues/Slider";
-import DateAdapter from '@mui/lab/AdapterDayjs';
+import AdapterDateFns from '@mui/lab/AdapterDayjs';
 import ruLocale from 'dayjs/locale/ru'
-
+import dayjs from "dayjs";
 
 // Слайдер для значений типа Int
 const DateTimeRangeField: FC<FilterFieldProperties> = props => {
@@ -25,9 +16,22 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
     const fieldConfig = useFieldConfiguration(fieldCode);
 
     //  стэйт данных полей ввода
-    const [stateValue, setStateValue] = useState<SliderComponentValues<string | null>>();
+    const [stateValue, setStateValue] = useState<DateRange<Date>>([null, null]);
 
     const {value} = fieldConfig || {};
+    const [minDate, maxDate] = useMemo(
+        () => {
+            if (!value?.value) {
+                return [undefined, undefined]
+            }
+
+            return [
+                value?.value.min ? dayjs(value?.value.min as string) : undefined,
+                value?.value.max ? dayjs(value?.value.max as string) : undefined,
+            ]
+        },
+        [value?.value],
+    )
 
     //  записываем значение стэйта данных полей
     useEffect(() => {
@@ -35,7 +39,10 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
             return
         }
 
-        setStateValue(value?.value as SliderComponentValues<string>);
+        const currentMin = value.value.currentMin ? new Date(value.value.currentMin) : null
+        const currentMax = value.value.currentMax ? new Date(value.value.currentMax) : null
+
+        setStateValue([currentMin, currentMax]);
     }, [value?.value]);
 
     if (!fieldConfig || !stateValue) {
@@ -45,51 +52,28 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
     const {t, fieldConfig: {title}, onChangeFilterValues} = fieldConfig;
 
     return (
-        <LocalizationProvider dateAdapter={DateAdapter} locale={ruLocale}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={ruLocale}>
             <div className={'filter-title'}>{t(title)}</div>
             <DateRangePicker
-                startText={'from'}
+                startText={''}
                 toolbarTitle={t(title)}
-                endText={'to'}
-                mask={"__.__.____"}
-                value={[stateValue.currentMin, stateValue.currentMax]}
-                minDate={new Date(stateValue.min as string)}
-                maxDate={new Date(stateValue.max as string)}
+                endText={''}
+                value={stateValue}
+                minDate={minDate}
+                maxDate={maxDate}
                 onChange={(newValue) => {
-                    let [min, max] = newValue
+                    const [min, max] = newValue;
 
-                    const parsedMin = !!min ? (typeof min === "string" ? new Date(min) : min) : undefined
-                    if (parsedMin) {
-                        parsedMin.setHours(0)
-                        parsedMin.setMinutes(0)
-                        parsedMin.setSeconds(0)
-                    }
-
-                    const parsedMax = !!max ? (typeof max === "string" ? new Date(max) : max) : undefined
-                    if (parsedMax) {
-                        parsedMax.setHours(23)
-                        parsedMax.setMinutes(59)
-                        parsedMax.setSeconds(59)
-                    }
-
-                    setStateValue(value => ({
-                        ...(value as SliderComponentValues<string | null>),
-                        currentMin: min as any,
-                        currentMax: max as any,
-                    }));
-
-                    if (!parsedMin || !parsedMax || isNaN(parsedMin as any) || isNaN(parsedMax as any)) {
-                        return
-                    }
+                    setStateValue(newValue);
 
                     return onChangeFilterValues(
                         fieldCode,
                         {
                             ...value,
                             value: {
-                                ...stateValue,
-                                currentMin: parsedMin.toISOString(),
-                                currentMax: parsedMax.toISOString()
+                                ...value.value,
+                                currentMin: dayjs(min).startOf("day").toDate().toISOString(),
+                                currentMax: dayjs(max).endOf("day").toDate().toISOString(),
                             }
                         } as any
                     )
@@ -107,16 +91,14 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
                     >
                         <TextField
                             {...startProps}
-                            sx={{
-                                width: '100%'
-                            }}
+                            variant={"standard"}
+                            fullWidth
                         />
                         <DateRangeIcon/>
                         <TextField
                             {...endProps}
-                            sx={{
-                                width: '100%'
-                            }}
+                            variant={"standard"}
+                            fullWidth
                         />
                     </Stack>
                 )}
