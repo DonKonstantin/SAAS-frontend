@@ -1,6 +1,6 @@
 import {FC, memo, useMemo, useState} from "react";
 import exampleVariablesJSON from "./exampleVariablesJSON";
-import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography} from "@mui/material";
+import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Tooltip, Typography} from "@mui/material";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {useTranslation} from "react-i18next";
 
@@ -99,15 +99,19 @@ const NotificationPresetVariables: FC<Props> = props => {
                     </FormControl>
                 </Grid>
                 <Grid item lg={3}>
-                    <Button
-                        onClick={handleChange}
-                        fullWidth
-                        size={"large"}
-                        variant={"outlined"}
-                        disabled={!entity && !event}
-                    >
-                        <ArrowUpwardIcon/>
-                    </Button>
+                    <Tooltip title={t(`Подставить тестовый значения`) as string}>
+                        <span>
+                            <Button
+                                onClick={handleChange}
+                                fullWidth
+                                size={"large"}
+                                variant={"outlined"}
+                                disabled={!entity && !event}
+                            >
+                                <ArrowUpwardIcon/>
+                            </Button>
+                        </span>
+                    </Tooltip>
                 </Grid>
             </Grid>
         </>

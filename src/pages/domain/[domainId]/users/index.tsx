@@ -24,7 +24,9 @@ ListingPage.getInitialProps = async (request): Promise<PageWithEntityList> => {
         const roles = await allRoles(token).Load()
         const roleIds = roles.roles.filter(r => structures.includes(r.structure_item_id)).map(r => r.id)
 
-        filter = {roles_id: `{_in: [${roleIds.join(",")}]}`}
+        if (0 !== roleIds.length) {
+            filter = {roles_id: `{_in: [${roleIds.join(",")}]}`}
+        }
     }
 
     return {

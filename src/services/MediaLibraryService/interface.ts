@@ -5,7 +5,6 @@ export enum LicenseType {
     rao_voice = "rao_voice",
     sparx = "sparx",
     amurco = "amurco",
-    none = "none"
 }
 
 // File of Media library

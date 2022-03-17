@@ -85,6 +85,7 @@ const ListPageEditDeleteFilesButtons: FC<ListPageEditDeleteButtonsProps> = props
             className="list-table-cell"
             align="right"
             sx={{pt: 0, pb: 0}}
+            width={130}
         >
             {!notHasEditAccess && (
                 <Tooltip title={t(`entity-list.components.actions.edit-tooltip`) as string}>

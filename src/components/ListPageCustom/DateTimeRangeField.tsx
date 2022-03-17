@@ -39,8 +39,8 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
             return
         }
 
-        const currentMin = value.value.currentMin ? new Date(value.value.currentMin) : null
-        const currentMax = value.value.currentMax ? new Date(value.value.currentMax) : null
+        const currentMin = value?.value.currentMin ? new Date(value.value.currentMin) : null
+        const currentMax = value?.value.currentMax ? new Date(value.value.currentMax) : null
 
         setStateValue([currentMin, currentMax]);
     }, [value?.value]);

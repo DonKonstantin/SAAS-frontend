@@ -89,7 +89,7 @@ const ListHeader: FC<ListHeaderProps> = props => {
                     )
                 })}
                 {!!ActionsComponent && (
-                    <TableCell className="list-table-cell"/>
+                    <TableCell className="list-table-cell" width={130}/>
                 )}
             </TableRow>
         </TableHead>

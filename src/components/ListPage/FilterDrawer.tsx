@@ -76,13 +76,14 @@ const FilterDrawer: FC<FilterDrawerProps> = props => {
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
+                        height: "100vh",
                     },
                 }}
                 variant="persistent"
                 anchor="right"
                 open={isOpen}
             >
-                <Box sx={{p: 3, flex: "1 1 0"}}>
+                <Box sx={{p: 3, flex: "1 1 0", overflowY: "auto"}}>
                     <Box sx={{pb: 3}}>
                         <Typography color="primary">Параметры фильтрации</Typography>
                     </Box>

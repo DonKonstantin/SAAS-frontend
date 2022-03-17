@@ -1,5 +1,16 @@
-import {FC} from "react";
-import {Button, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField, Tooltip} from "@mui/material";
+import React, {FC} from "react";
+import {
+    Autocomplete,
+    Button,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Tooltip
+} from "@mui/material";
 import {Controller, useForm} from "react-hook-form";
 import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
 import {TextFieldProps} from "@mui/material/TextField/TextField";
@@ -15,6 +26,7 @@ type Props = {
 
 type ComponentsForms =
     (props: TextFieldProps & { variants: any[] }) => JSX.Element
+
 
 const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
     const {
@@ -49,6 +61,28 @@ const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
     )
 }
 
+const YearSelector: FC<TextFieldProps & { options: any[] }> = props => {
+    const {
+        onChange,
+        value,
+        label,
+        options
+    } = props;
+    const {t} = useTranslation();
+
+    return (
+        <Autocomplete
+            fullWidth
+            options={options}
+            onChange={(_, value) => onChange(value)}
+            value={value}
+            renderInput={(params) => <TextField {...params} label={t(label as string)} fullWidth/>}
+        />
+    )
+}
+
+const now = new Date();
+
 const formConfig: {
     [key in keyof MediaFile]?: {
         Component: ComponentsForms,
@@ -78,7 +112,12 @@ const formConfig: {
     year: {
         label: "pages.file.field.year",
         rules: {},
-        Component: TextField as unknown as ComponentsForms
+        Component: YearSelector as unknown as ComponentsForms,
+        props: {
+            options: Array.from(new Array(100)).map(
+                (value, index) => +now.getFullYear() - index
+            ),
+        }
     },
     genre: {
         label: "pages.file.field.genre",
@@ -107,7 +146,11 @@ const formConfig: {
     bpm: {
         label: "pages.file.field.bpm",
         rules: {},
-        Component: TextField as unknown as ComponentsForms
+        Component: TextField as unknown as ComponentsForms,
+        props: {
+            type: "number",
+            inputProps: {inputMode: 'numeric', pattern: '[0-9]*'}
+        }
     },
     isrc: {
         label: "pages.file.field.isrc",
@@ -150,7 +193,6 @@ const MediaFileEditForm: FC<Props> = props => {
                             rules = {},
                             variants
                         }]) => {
-
                             return (
                                 <Grid item md={6} key={field}>
                                     <Controller

@@ -11,6 +11,7 @@ import {ListHeaderProps} from "../../../components/ListPageParts/TableCaption";
 import LoaderTrackFromFile from "../../../components/ListPageCustom/LoaderTrackFromFile";
 import CustomTitleComponentForLoaderTrackFromFile
     from "../../../components/ListPageCustom/CustomTitleComponentForLoaderTrackFromFile";
+import DurationIntegerSlider from "../../../components/ListPageParts/Filter/DurationIntegerSlider";
 
 export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     filter: FilterFieldsConfiguration<"file"> = {
@@ -78,21 +79,32 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
         },
         duration: {
             field: "duration",
-            filterType: "EqualsInt",
+            filterType: "IntegerSlider",
             schema: "file",
-            title: "Длительность трека"
+            title: "Длительность трека",
+            customComponent: DurationIntegerSlider,
         },
         creator: {
             field: "creator",
-            filterType: "EqualsString",
+            filterType: "RelationAutocompleteSelector",
             schema: "file",
-            title: "Пользователь, который добавил трек"
+            title: "Пользователь, который добавил трек",
+            relationConfiguration: {
+                schema: "user",
+                visibleFields: ["first_name", "last_name"],
+                joinSymbol: " ",
+            },
         },
         last_editor: {
+            title: "Последний пользователь который изменял трек",
+            relationConfiguration: {
+                schema: "user",
+                visibleFields: ["first_name", "last_name"],
+                joinSymbol: " ",
+            },
             field: "last_editor",
-            filterType: "EqualsString",
+            filterType: "RelationAutocompleteSelector",
             schema: "file",
-            title: "Последний пользователь который изменял трек"
         },
         year: {
             field: "year",
@@ -322,12 +334,13 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             },
         },
         actions: ListPageEditDeleteFilesButtons,
+        defaultOrderDirection: "desc",
     };
     schema: "file" = "file";
     deleteSchema: "file_data" = "file_data";
     elementsPerPage: number = 25;
     addPageUrl: PageUrl = {href: "/file/add"};
-    action: React.ComponentType<ListHeaderProps> = BulkEditing
+    action: React.ComponentType<ListHeaderProps> = BulkEditing;
     editPageUrl: EditPageLinkGenerator = pk => ({
         href: "/file/edit/[entityId]",
         as: `/file/edit/${pk}`

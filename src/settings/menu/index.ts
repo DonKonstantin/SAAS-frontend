@@ -66,7 +66,7 @@ export const RealmMenuItems = (): MenuItem[] => ([
                 permission: "EDIT_MEDIA_FILES"
             },
             {
-                link: {href: "/media"},
+                link: {href: "/media/storage"},
                 title: "UI.menu.left-menu.items.media-library.storage",
                 permission: "READ_MEDIA_FILES"
             },

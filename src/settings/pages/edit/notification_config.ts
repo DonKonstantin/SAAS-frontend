@@ -15,6 +15,34 @@ export class NotificationConfigEditPageConfig implements EditPageConfiguration<"
             sizes: {xs: 12, lg: 6},
             fields: [
                 {
+                    field: "entity",
+                    title: "pages.notification_config.edit.fields.entity",
+                    size: {xs: 12},
+                    defaultValue: "",
+                    validation: [
+                        MinimalLengthValidator({minimalLength: 3}),
+                    ],
+                    component: EnumField
+                },
+                {
+                    field: "event_type",
+                    title: "pages.notification_config.edit.fields.event_type",
+                    size: {xs: 12},
+                    defaultValue: "",
+                    validation: [
+                        MinimalLengthValidator({minimalLength: 3}),
+                    ],
+                    component: EnumField
+                },
+                {
+                    field: "is_active",
+                    title: "pages.notification_config.edit.fields.is_active",
+                    size: {xs: 12},
+                    defaultValue: "",
+                    validation: [],
+                    component: SwitchField
+                },
+                {
                     field: "id",
                     title: "pages.notification_config.edit.fields.id",
                     size: {xs: 12},
@@ -31,40 +59,15 @@ export class NotificationConfigEditPageConfig implements EditPageConfiguration<"
                         }
                     }
                 },
-                {
-                    field: "entity",
-                    title: "pages.notification_config.edit.fields.entity",
-                    size: {xs: 12, md: 6},
-                    defaultValue: "",
-                    validation: [
-                        MinimalLengthValidator({minimalLength: 3}),
-                    ],
-                    component: EnumField
-                },
-                {
-                    field: "event_type",
-                    title: "pages.notification_config.edit.fields.event_type",
-                    size: {xs: 12, md: 6},
-                    defaultValue: "",
-                    validation: [
-                        MinimalLengthValidator({minimalLength: 3}),
-                    ],
-                    component: EnumField
-                },
-                {
-                    field: "template_id",
-                    title: "pages.notification_config.edit.fields.template_id",
-                    size: {xs: 12, md: 6},
-                    defaultValue: "",
-                    validation: [
-                        ValueExistsValidator({errorMessage: "pages.notification_config.edit.fields-error.template_id"})
-                    ],
-                    component: NotificationConfigTemplate
-                },
+            ]
+        },
+        {
+            sizes: {xs: 12, lg: 6},
+            fields: [
                 {
                     field: "channel",
                     title: "pages.notification_config.edit.fields.channel",
-                    size: {xs: 12, md: 6},
+                    size: {xs: 12},
                     defaultValue: "mail",
                     validation: [
                         ValueExistsValidator({errorMessage: "pages.users.edit.fields.roles_id-error"}),
@@ -72,15 +75,16 @@ export class NotificationConfigEditPageConfig implements EditPageConfiguration<"
                     component: EnumField
                 },
                 {
-                    field: "is_active",
-                    title: "pages.notification_config.edit.fields.is_active",
-                    size: {xs: 12, md: 6},
+                    field: "template_id",
+                    title: "pages.notification_config.edit.fields.template_id",
+                    size: {xs: 12},
                     defaultValue: "",
                     validation: [
-                        MinimalLengthValidator({minimalLength: 3}),
+                        ValueExistsValidator({errorMessage: "pages.notification_config.edit.fields-error.template_id"})
                     ],
-                    component: SwitchField
+                    component: NotificationConfigTemplate
                 },
+
             ]
         },
     ];

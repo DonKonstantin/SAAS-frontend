@@ -7,7 +7,7 @@ import {
     DialogTitle,
     MenuItem,
     Select,
-    SelectChangeEvent,
+    SelectChangeEvent, Tooltip,
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {NotificationChannel} from "../../../services/NotificationService/interface";
@@ -77,14 +77,16 @@ const NotificationTemplateTestSend: FC<NotificationTemplateTestSendProps> = prop
 
     return (
         <>
-            <Button
-                onClick={handleOpenClick}
-                variant={"contained"}
-                color={"primary"}
-                fullWidth
-            >
-                {t("pages.notifications_template.edit.action.testSend")}
-            </Button>
+            <Tooltip title={t(`Тестовая отправка оповещения с выбранными переменными`) as string}>
+                <Button
+                    onClick={handleOpenClick}
+                    variant={"contained"}
+                    color={"primary"}
+                    fullWidth
+                >
+                    {t("pages.notifications_template.edit.action.testSend")}
+                </Button>
+            </Tooltip>
             <Dialog open={isOpen} onClose={handleClose}>
                 <DialogTitle>{t("pages.notifications_template.edit.dialog.testSend.title")}</DialogTitle>
                 <DialogContent>

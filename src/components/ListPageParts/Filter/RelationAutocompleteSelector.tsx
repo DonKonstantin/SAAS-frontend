@@ -24,7 +24,7 @@ const RelationAutocompleteSelector: FC<FilterFieldProperties> = props => {
         return currentValue.value.find(val => variant.key === val)
     });
 
-    const translationKey = `entity-list.components.filter.fields.choose-group`
+    const translationKey = `entity-list.components.filter.fields.autocomplete`
     return (
         <Autocomplete
             id={`list-fields-filter-${fieldCode}`}
@@ -34,10 +34,10 @@ const RelationAutocompleteSelector: FC<FilterFieldProperties> = props => {
             fullWidth
             multiple
             limitTags={1}
-            noOptionsText={`${translationKey}.noOptionsText`}
-            closeText={`${translationKey}.closeText`}
-            clearText={`${translationKey}.clearText`}
-            openText={`${translationKey}.openText`}
+            noOptionsText={t(`${translationKey}.noOptionsText`)}
+            closeText={t(`${translationKey}.closeText`)}
+            clearText={t(`${translationKey}.clearText`)}
+            openText={t(`${translationKey}.openText`)}
             renderInput={(params) => (
                 <TextField
                     {...params}

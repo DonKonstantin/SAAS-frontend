@@ -33,7 +33,8 @@ const NotificationsNeedSaveTemplate: FC<Props> = props => {
         title,
         content,
         okText = 'Да',
-        cancelText = 'Нет'
+        cancelText = 'Нет',
+        children
     } = props;
 
     return (
@@ -45,6 +46,7 @@ const NotificationsNeedSaveTemplate: FC<Props> = props => {
                 <DialogContentText>
                     {content}
                 </DialogContentText>
+                {children}
             </DialogContent>
             <DialogActions>
                 <Button variant={"outlined"} size={'medium'} onClick={onConfirm}>

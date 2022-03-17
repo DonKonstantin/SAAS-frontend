@@ -1,4 +1,4 @@
-import {Schema} from "./index";
+import {RelationConfiguration, Schema} from "./index";
 
 // Описание сущности файла в медиабиблиотеке
 const file: Schema = {
@@ -50,16 +50,6 @@ const file: Schema = {
         },
         hash_sum: {
             type: "String!",
-            isPrimaryKey: false,
-            isArray: false
-        },
-        creator: {
-            type: "ID!",
-            isPrimaryKey: false,
-            isArray: false
-        },
-        last_editor: {
-            type: "ID!",
             isPrimaryKey: false,
             isArray: false
         },
@@ -125,6 +115,24 @@ const file: Schema = {
             isPrimaryKey: false,
             isArray: false
         },
+        creator: {
+            type: "ID!",
+            isPrimaryKey: false,
+            isArray: false,
+            relation: <RelationConfiguration<"user">>{
+                schema: "user",
+                target: "id",
+            },
+        },
+        last_editor: {
+            type: "ID!",
+            isPrimaryKey: false,
+            isArray: false,
+            relation: <RelationConfiguration<"user">>{
+                schema: "user",
+                target: "id",
+            },
+        }
     },
     isChangeable: true,
     isCreatable: false,
@@ -215,6 +223,7 @@ export const file_data: Schema = {
             isPrimaryKey: false,
             isArray: false
         },
+
     },
     isChangeable: true,
     isCreatable: false,

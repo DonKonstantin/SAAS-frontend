@@ -1,10 +1,12 @@
 import React, {FC, useState} from "react";
 import {
+    Autocomplete, Box,
     Button,
     FormControl,
     Grid,
     IconButton,
     InputLabel,
+    LinearProgress,
     MenuItem,
     Select,
     Stack,
@@ -67,6 +69,28 @@ const SelectControl: FC<SelectProps & { variants: any[] }> = props => {
     )
 }
 
+const YearSelector: FC<TextFieldProps & { options: any[] }> = props => {
+    const {
+        onChange,
+        value,
+        label,
+        options
+    } = props;
+    const {t} = useTranslation();
+
+    return (
+        <Autocomplete
+            fullWidth
+            options={options}
+            onChange={(_, value) => onChange(value)}
+            value={value}
+            renderInput={(params) => <TextField {...params} label={t(label as string)} fullWidth/>}
+        />
+    )
+}
+
+const now = new Date();
+
 const formConfig: {
     [key in keyof MediaFile]?: {
         Component: ComponentsForms,
@@ -96,7 +120,12 @@ const formConfig: {
     year: {
         label: "pages.file.field.year",
         rules: {},
-        Component: TextField as unknown as ComponentsForms
+        Component: YearSelector as unknown as ComponentsForms,
+        props: {
+            options: Array.from(new Array(100)).map(
+                (value, index) => +now.getFullYear() - index
+            ),
+        }
     },
     genre: {
         label: "pages.file.field.genre",
@@ -110,9 +139,7 @@ const formConfig: {
     },
     license_type: {
         label: "pages.file.field.license_type",
-        props: {
-            disabled: true
-        },
+        props: {},
         rules: {},
         Component: SelectControl as unknown as ComponentsForms,
         variants: Object.values(LicenseType).map(type => (
@@ -125,7 +152,11 @@ const formConfig: {
     bpm: {
         label: "pages.file.field.bpm",
         rules: {},
-        Component: TextField as unknown as ComponentsForms
+        Component: TextField as unknown as ComponentsForms,
+        props: {
+            type: "number",
+            inputProps: {inputMode: 'numeric', pattern: '[0-9]*'}
+        }
     },
     isrc: {
         label: "pages.file.field.isrc",
@@ -154,7 +185,8 @@ const MediaFileEditForm: FC<Props> = props => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [selectedFile, setSelectedFile] = useState<any>();
-    const {control, setValue, getValues} = useForm<MediaFile>({
+    const [completeProcess, setCompleteProcess] = useState(0);
+    const {control, getValues} = useForm<MediaFile>({
         defaultValues: file,
     });
 
@@ -173,33 +205,30 @@ const MediaFileEditForm: FC<Props> = props => {
     const changeHandler = async (event) => {
         const currentFile = event.target.files[0]
         setSelectedFile(currentFile);
-
-        let metadata = await mmb.parseBlob(currentFile, {skipPostHeaders: true});
-        const metaDataToDisplay = mediaFileFactory(metadataToMediaInfo(metadata), file.license_type);
-
-        const title = metaDataToDisplay.title
-        setValue('title', title ? title : currentFile.name)
     };
 
     const onConfirm = async () => {
         setIsLoading(true)
-        let metadata = await mmb.parseBlob(selectedFile, {skipPostHeaders: true});
-        const metaDataToDisplay = mediaFileFactory(metadataToMediaInfo(metadata), file.license_type);
 
         await mediaFileClient().Replace(
             file.id,
             selectedFile,
-            metaDataToDisplay
+            file,
+            {
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setCompleteProcess(percent);
+                }
+            }
         )
 
         setIsLoading(false)
         setIsOpen(false)
-        onSave(metaDataToDisplay)
+        onSave(file);
     }
 
     const handleDeleteFile = () => {
         setSelectedFile(undefined)
-        setValue('title', file.title)
     }
 
     return (
@@ -213,7 +242,6 @@ const MediaFileEditForm: FC<Props> = props => {
                         rules = {},
                         variants
                     }]) => {
-
                         return (
                             <Grid item md={6}>
                                 <Controller
@@ -284,7 +312,11 @@ const MediaFileEditForm: FC<Props> = props => {
                         open={isOpen}
                         onConfirm={onConfirm}
                         onClose={() => setIsOpen(false)}
-                    />
+                    >
+                        <Box sx={{mt: 2}}>
+                            <LinearProgress value={completeProcess} variant={"determinate"}/>
+                        </Box>
+                    </NotificationsNeedSaveTemplate>
                 )}
             </Stack>
         </>

@@ -3,7 +3,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged} from "rxjs";
-import {ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
+import {List, ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
 import Draggable from 'react-draggable';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import clsx from "clsx";
@@ -73,13 +73,15 @@ const AudioPlayerContainer: FC = () => {
 
     return (
         <>
-            <ListItem button onClick={() => setShowPlayer(val => !val)}
-                      className={clsx("left-menu-item", "can-activate", {"is-active": showPlayer})}>
-                <ListItemIcon color="inherit">
-                    <AudiotrackIcon/>
-                </ListItemIcon>
-                <ListItemText primary={t("Медиа-плеер")}/>
-            </ListItem>
+            <List>
+                <ListItem button onClick={() => setShowPlayer(val => !val)}
+                          className={clsx("left-menu-item", "can-activate", {"is-active": showPlayer})}>
+                    <ListItemIcon color="inherit">
+                        <AudiotrackIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary={t("Медиа-плеер")}/>
+                </ListItem>
+            </List>
             <Portal>
                 <Draggable
                     handle="#draggable-dialog-title"

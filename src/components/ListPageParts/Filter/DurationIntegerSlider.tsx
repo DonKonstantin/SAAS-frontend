@@ -5,6 +5,14 @@ import {SliderComponentValues} from "../../../services/listDataLoader/filterLoad
 import {FormControl, FormLabel, Slider} from "@mui/material";
 import {Mark} from "@mui/core/SliderUnstyled/SliderUnstyled";
 
+// Format seconds in MM:SS format
+const toMinute = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const formatSeconds = Math.ceil(seconds - 60 * minutes);
+
+    return `${minutes}:${`${formatSeconds}`.padStart(2, "0")}`;
+}
+
 /**
  * Получение шага слайдера и меток, отображаемых на нем
  * @param max
@@ -18,13 +26,13 @@ const getMarksAndStep = ({max, min}: SliderComponentValues<number>): { marks: Ma
     let marks: { value: number, label: string }[] = [];
     for (let i = min; i < max; i += step) {
         marks.push({
-            label: `${i}`,
+            label: `${toMinute(i)}`,
             value: i,
         })
     }
 
     marks.push({
-        label: `${max}`,
+        label: `${toMinute(max)}`,
         value: max,
     });
 
@@ -97,8 +105,8 @@ const useInitState = (props: FilterFieldProperties) => {
     };
 }
 
-// Слайдер для значений типа Int
-const IntegerSlider: FC<FilterFieldProperties> = props => {
+// Слайдер для значений типа Duration Int
+const DurationIntegerSlider: FC<FilterFieldProperties> = props => {
     const state = useInitState(props);
     const {fieldCode} = props;
 
@@ -119,6 +127,7 @@ const IntegerSlider: FC<FilterFieldProperties> = props => {
                 max={currentValue.max}
                 step={step}
                 marks={marks}
+                valueLabelFormat={toMinute}
                 onChange={(_, newValue) => setValue(newValue)}
                 onChangeCommitted={(_, newValue) => {
                     if (!Array.isArray(newValue)) {
@@ -137,4 +146,4 @@ const IntegerSlider: FC<FilterFieldProperties> = props => {
 }
 
 // Экспортируем компонент
-export default IntegerSlider
+export default DurationIntegerSlider

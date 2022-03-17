@@ -39,7 +39,7 @@ type SystemLogsContextActions = {
 }
 
 class SystemLogsDefaultContext implements SystemLogsContext {
-    direction: "asc" | "desc" = "asc";
+    direction: "asc" | "desc" = "desc";
     filter: LogsFilterParams = {};
     level: LogsLevel = LogsLevel.domain;
     limit: number = 25;
@@ -66,9 +66,8 @@ export const systemLogsLoadingInProgress = new Subject<boolean>();
 
 const updateDataBus$ = systemLogsContext$.pipe(
     combineLatestWith(filterState$.pipe(
-        auditTime(1000),
     )),
-    auditTime(400),
+    auditTime(300),
     map(([baseState$, filterState$]) => ({
         ...baseState$,
         filter: filterState$
@@ -76,7 +75,6 @@ const updateDataBus$ = systemLogsContext$.pipe(
 )
 
 const loadLogsBus$ = updateDataBus$.pipe(
-    auditTime(400),
     distinctUntilChanged(
         (previous, current) => {
             return previous.level === current.level
@@ -116,7 +114,6 @@ const loadLogsBus$ = updateDataBus$.pipe(
 );
 
 const loadQuantityBus$ = updateDataBus$.pipe(
-    auditTime(400),
     distinctUntilChanged(
         (previous, current) => {
             return previous.structureId === current.structureId
@@ -154,8 +151,11 @@ const initEntityContext: SystemLogsContextActions["initEntityContext"] = (level,
         }
     });
 
-    setStructureId(structureId);
-    setLevel(level)
+    systemLogsContext$.next({
+        ...new SystemLogsDefaultContext(),
+        structureId,
+        level
+    })
 
     subscribers.add(
         loadQuantityBus$.subscribe({
