@@ -123,15 +123,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     };
     listFields: ListFieldsConfiguration<"file"> = {
         fields: {
-            id: {
-                field: "id",
-                title: "id",
-                isEnabled: true,
-                fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
-            },
             title: {
                 field: "title",
                 title: "Название файла",
@@ -139,6 +130,15 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Simple",
+                }
+            },
+            id: {
+                field: "id",
+                title: "id",
+                isEnabled: true,
+                fieldType: {
+                    config: undefined,
+                    type: "Hidden"
                 }
             },
             file_name: {
