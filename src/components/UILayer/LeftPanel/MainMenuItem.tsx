@@ -78,8 +78,13 @@ const MainMenuWithSubItems: FC<MainMenuItemProps> = props => {
         }
     } = props
     // ищем возможные вложенные пункты меню
-    const childPathNames = subItems?.map(({link}) => typeof link === "function" ? link().href : link?.href)
-    const isOpen = childPathNames.length > 0 && !!childPathNames.find(path => path && path.search(new RegExp(route.pathname)) === 0);
+    let isOpen = false;
+
+    if (subItems) {
+        const childPathNames = subItems.map(({link}) => typeof link === "function" ? link().href : link?.href)
+        isOpen = childPathNames.length > 0 && !!childPathNames.find(path => path && path.search(new RegExp(route.pathname)) === 0);
+    }
+
     const [isExpanded, setIsExpanded] = useState(isOpen);
 
     const {t} = useTranslation()
