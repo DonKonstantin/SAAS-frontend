@@ -12,6 +12,7 @@ import LoaderTrackFromFile from "../../../components/ListPageCustom/LoaderTrackF
 import CustomTitleComponentForLoaderTrackFromFile
     from "../../../components/ListPageCustom/CustomTitleComponentForLoaderTrackFromFile";
 import DurationIntegerSlider from "../../../components/ListPageParts/Filter/DurationIntegerSlider";
+import YearSelector from "../../../components/ListPageParts/Filter/YearSelector";
 
 export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     filter: FilterFieldsConfiguration<"file"> = {
@@ -110,7 +111,8 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             field: "year",
             filterType: "EqualsInt",
             schema: "file",
-            title: "Год создания"
+            title: "Год создания",
+            customComponent: YearSelector
         },
         creation_date: {
             field: "creation_date",
