@@ -4,13 +4,25 @@ import {useTranslation} from "react-i18next";
 import {useSystemLogsFilterEntity} from "../../SystemLogsEntityContext";
 import {SystemLogsFilterConfiguration} from "../../systemLogsFilterConfiguration";
 import {
-    FormControl,
+    FormControl, IconButton, InputAdornment,
     InputLabel,
     ListItemText,
     MenuItem,
     Select,
-    SelectChangeEvent
+    SelectChangeEvent, Tooltip
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import {styled} from "@mui/material/styles";
+
+const SelectWithReset = styled(Select)`
+    & .MuiInputAdornment-positionEnd{
+        margin-left: -50px
+    }
+    
+    & .MuiInput-input  {
+        padding-right: 50px!important;
+    }
+`
 
 const VariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
     const {t} = useTranslation();
@@ -47,10 +59,17 @@ const VariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
         [],
     );
 
+    const handleResetField = useCallback(
+        () => {
+            setFilterField(fieldCode, [])
+        },
+        [fieldCode]
+    )
+
     return (
         <FormControl variant="standard" fullWidth>
             <InputLabel id="demo-multiple-checkbox-label">{t(`${i18nextPath}.title`)}</InputLabel>
-            <Select
+            <SelectWithReset
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
                 variant="standard"
@@ -65,6 +84,19 @@ const VariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                         .join(', ')
                 }
                 MenuProps={{disableScrollLock: true}}
+                endAdornment={
+                    fieldValue.length > 0 && (
+                        <InputAdornment position="end" sx={{mr: "20px"}}>
+                            <Tooltip title="Очистить поле">
+                                <IconButton size={"small"} onClick={handleResetField}>
+                                    <CloseIcon
+                                        color="primary"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </InputAdornment>
+                    )
+                }
             >
                 <MenuItem value="">
                     <em>{t(`${i18nextPath}.variants.none`)}</em>
@@ -74,7 +106,7 @@ const VariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                         <ListItemText primary={t(`${i18nextPath}.variants.${variants ? variants[name] : name}`)}/>
                     </MenuItem>
                 ))}
-            </Select>
+            </SelectWithReset>
         </FormControl>
     )
 }

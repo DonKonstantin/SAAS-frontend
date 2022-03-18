@@ -6,12 +6,27 @@ import {SystemLogsFilterConfiguration} from "../../systemLogsFilterConfiguration
 import {
     Checkbox,
     FormControl,
+    IconButton,
+    InputAdornment,
     InputLabel,
     ListItemText,
     MenuItem,
     Select,
-    SelectChangeEvent
+    SelectChangeEvent,
+    Tooltip
 } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import {styled} from "@mui/material/styles";
+
+const SelectWithReset = styled(Select)`
+    & .MuiInputAdornment-positionEnd{
+        margin-left: -50px
+    }
+    
+    & .MuiInput-input  {
+        padding-right: 50px!important;
+    }
+`
 
 const MultiVariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
     const {t} = useTranslation();
@@ -48,13 +63,20 @@ const MultiVariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
         [],
     );
 
+    const handleResetField = useCallback(
+        () => {
+            setFilterField(fieldCode, [])
+        },
+        [fieldCode]
+    )
+
 
     return (
-        <FormControl   variant="standard" fullWidth>
-            <InputLabel id="demo-multiple-checkbox-label">{t(`${i18nextPath}.title`)}</InputLabel>
-            <Select
-                labelId="demo-multiple-checkbox-label"
-                id="demo-multiple-checkbox"
+        <FormControl variant="standard" fullWidth>
+            <InputLabel id={`multiple-checkbox-label-${fieldCode}`}>{t(`${i18nextPath}.title`)}</InputLabel>
+            <SelectWithReset
+                labelId={`multiple-checkbox-label-${fieldCode}`}
+                id={`multiple-checkbox-${fieldCode}`}
                 multiple
                 // @ts-ignore
                 value={fieldValue}
@@ -62,11 +84,24 @@ const MultiVariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                 renderValue={(selected) =>
                     // @ts-ignore
                     selected.map(
-                            (value) => t(`${i18nextPath}.variants.${variants ? variants[value] : value}`)
-                        )
+                        (value) => t(`${i18nextPath}.variants.${variants ? variants[value] : value}`)
+                    )
                         .join(', ')
                 }
                 MenuProps={{disableScrollLock: true}}
+                endAdornment={
+                    fieldValue.length > 0 && (
+                        <InputAdornment position="end" sx={{mr: "20px"}}>
+                            <Tooltip title="Очистить поле">
+                                <IconButton size={"small"} onClick={handleResetField}>
+                                    <CloseIcon
+                                        color="primary"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </InputAdornment>
+                    )
+                }
             >
 
                 {Object.values(variants).map((name: string) => (
@@ -75,7 +110,7 @@ const MultiVariantEnumSelector: FC<SystemLogsFilterFieldProps> = props => {
                         <ListItemText primary={t(`${i18nextPath}.variants.${variants ? variants[name] : name}`)}/>
                     </MenuItem>
                 ))}
-            </Select>
+            </SelectWithReset>
         </FormControl>
     )
 }

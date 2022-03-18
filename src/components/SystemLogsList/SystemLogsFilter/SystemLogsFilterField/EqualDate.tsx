@@ -5,8 +5,20 @@ import {useSystemLogsFilterEntity} from "../../SystemLogsEntityContext";
 import {SystemLogsFilterConfiguration} from "../../systemLogsFilterConfiguration";
 import DateAdapter from '@mui/lab/AdapterDayjs';
 import {DatePicker, LocalizationProvider} from "@mui/lab";
-import {TextField} from "@mui/material";
+import {IconButton, InputAdornment, Select, TextField, Tooltip} from "@mui/material";
 import ruLocale from 'dayjs/locale/ru';
+import CloseIcon from "@mui/icons-material/Close";
+import {styled} from "@mui/material/styles";
+
+const DatePickerWithReset = styled(DatePicker)`
+    & .MuiInputAdornment-positionEnd{
+        margin-left: -50px
+    }
+    
+    & .MuiInput-input  {
+        padding-right: 50px!important;
+    }
+`
 
 const EqualDate: FC<SystemLogsFilterFieldProps> = props => {
     const {t} = useTranslation();
@@ -54,9 +66,16 @@ const EqualDate: FC<SystemLogsFilterFieldProps> = props => {
         [],
     );
 
+    const handleResetField = useCallback(
+        () => {
+            setFilterField(fieldCode, undefined)
+        },
+        [fieldCode]
+    )
+
     return (
         <LocalizationProvider dateAdapter={DateAdapter} locale={ruLocale}>
-            <DatePicker
+            <DatePickerWithReset
                 onChange={handleChangeFilterValue}
                 value={selectedDate}
                 renderInput={(params) =>
@@ -66,6 +85,26 @@ const EqualDate: FC<SystemLogsFilterFieldProps> = props => {
                         label={t(`${i18nextPath}.title`) as string}
                         placeholder={t(`${i18nextPath}.placeholder`) as string}
                         variant={"standard"}
+                        InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                                <>
+                                    {!!selectedDate && (
+                                        <InputAdornment position="end" sx={{mr: -2, ml: "-50px"}}>
+                                            <Tooltip title="Очистить поле">
+                                                <IconButton size={"small"} onClick={handleResetField}>
+                                                    <CloseIcon
+                                                        color="primary"
+                                                    />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </InputAdornment>
+                                    )}
+                                    {params?.InputProps.endAdornment}
+                                </>
+                            )
+                        }}
+
                     />
                 }
             />
