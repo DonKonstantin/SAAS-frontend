@@ -112,11 +112,6 @@ const reloadedListingData = () => {
     context$.next(new DefaultContext())
 
     fullDataReloadCtx$.next({schema: data.schema, additionFilter})
-
-    context$.next({
-        ...context,
-        isLoading: false,
-    })
 }
 
 /**
@@ -392,12 +387,18 @@ const initializeSubscriptions = () => {
                         data: data,
                         additionFilter: additionFilter,
                         itemsToDelete: [],
+                        isLoading: false
                     })
                 } catch (e) {
                     notificationsDispatcher().dispatch({
                         message: i18n.t(`Не удалось загрузить данные, попробуйте обновить страницу`),
                         type: "warning"
                     })
+
+                    context$.next({
+                        ...context$.getValue(),
+                        isLoading: false
+                    });
 
                     throw e
                 }

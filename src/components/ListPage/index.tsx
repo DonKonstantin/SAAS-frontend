@@ -22,8 +22,7 @@ const ListPage: FC = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false)
     const [selected, setSelected] = useState<any[]>([])
 
-
-    const {data, setSchema} = useEntityList(
+    const {data, setSchema, itemsToDelete} = useEntityList(
         distinctUntilChanged((previous, current) => {
             const prevVal = previous.data ? 1 : 2
             const currentVal = current.data ? 1 : 2
@@ -38,6 +37,12 @@ const ListPage: FC = () => {
         // При размонтировании страницы очищаем загруженные данные
         return () => setSchema("" as any)
     }, [])
+
+    useEffect(
+        // При изменении удаляемых элементов сбрасываем список выбранные
+        () => setSelected([]),
+        [itemsToDelete]
+    );
 
     if (!data) {
         return <LoadingBlocker/>
