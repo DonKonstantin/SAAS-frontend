@@ -6,7 +6,7 @@ import {FilterFieldProperties} from "../../services/listDataLoader/filterLoader/
 import useFieldConfiguration from "../ListPageParts/Filter/useFieldConfiguration";
 import AdapterDateFns from '@mui/lab/AdapterDayjs';
 import ruLocale from 'dayjs/locale/ru'
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 
 // Слайдер для значений типа Int
 const DateTimeRangeField: FC<FilterFieldProperties> = props => {
@@ -16,17 +16,19 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
     const fieldConfig = useFieldConfiguration(fieldCode);
 
     //  стэйт данных полей ввода
-    const [stateValue, setStateValue] = useState<DateRange<Date>>([null, null]);
+    const [stateValue, setStateValue] = useState<DateRange<Dayjs>>([null, null]);
 
     const {value} = fieldConfig || {};
     const [minDate, maxDate] = useMemo(
         () => {
             if (!value?.value) {
-                return [undefined, undefined]
+                return [null, null]
             }
 
             return [
+                // @ts-ignore
                 value?.value.min ? dayjs(value?.value.min as string) : undefined,
+                // @ts-ignore
                 value?.value.max ? dayjs(value?.value.max as string) : undefined,
             ]
         },
@@ -38,9 +40,10 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
         if (JSON.stringify(value?.value || {}) === JSON.stringify(stateValue)) {
             return
         }
-
-        const currentMin = value?.value.currentMin ? new Date(value.value.currentMin) : null
-        const currentMax = value?.value.currentMax ? new Date(value.value.currentMax) : null
+        // @ts-ignore
+        const currentMin = value?.value.currentMin ? new dayjs(value.value.currentMin) : null
+        // @ts-ignore
+        const currentMax = value?.value.currentMax ? new dayjs(value.value.currentMax) : null
 
         setStateValue([currentMin, currentMax]);
     }, [value?.value]);
@@ -71,7 +74,8 @@ const DateTimeRangeField: FC<FilterFieldProperties> = props => {
                         {
                             ...value,
                             value: {
-                                ...value.value,
+                                // @ts-ignore
+                                ...value?.value,
                                 currentMin: dayjs(min).startOf("day").toDate().toISOString(),
                                 currentMax: dayjs(max).endOf("day").toDate().toISOString(),
                             }

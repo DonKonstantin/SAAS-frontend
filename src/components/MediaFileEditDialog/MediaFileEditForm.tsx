@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {ChangeEvent, FC} from "react";
 import {
     Autocomplete,
     Button,
@@ -74,7 +74,10 @@ const YearSelector: FC<TextFieldProps & { options: any[] }> = props => {
         <Autocomplete
             fullWidth
             options={options}
-            onChange={(_, value) => onChange(value)}
+            onChange={(_, value) => {
+                // @ts-ingore
+                onChange && onChange(value as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
+            }}
             value={value}
             renderInput={(params) => <TextField {...params} label={t(label as string)} fullWidth/>}
         />
@@ -115,7 +118,7 @@ const formConfig: {
         Component: YearSelector as unknown as ComponentsForms,
         props: {
             options: Array.from(new Array(100)).map(
-                (value, index) => +now.getFullYear() - index
+                (_, index) => +now.getFullYear() - index
             ),
         }
     },

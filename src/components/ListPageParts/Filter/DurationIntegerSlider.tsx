@@ -128,7 +128,7 @@ const DurationIntegerSlider: FC<FilterFieldProperties> = props => {
                 step={step}
                 marks={marks}
                 valueLabelFormat={toMinute}
-                onChange={(_, newValue) => setValue(newValue)}
+                onChange={(_, newValue) => setValue(newValue as number[])}
                 onChangeCommitted={(_, newValue) => {
                     if (!Array.isArray(newValue)) {
                         return

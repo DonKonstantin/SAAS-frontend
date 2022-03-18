@@ -1,6 +1,6 @@
 import React from 'react';
-import {PageWithMetaTags} from "../components/UILayer/PageWithMetaTags";
 import {NextPage} from "next";
+import {PageWithMetaTags} from "../../components/UILayer/PageWithMetaTags";
 
 // Свойства страницы
 type Props = PageWithMetaTags

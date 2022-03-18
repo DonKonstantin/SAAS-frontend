@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {ChangeEvent, FC, useState} from "react";
 import {
     Autocomplete, Box,
     Button,
@@ -23,9 +23,6 @@ import {v4 as uuidv4} from 'uuid';
 import NotificationsNeedSaveTemplate from "../NotificationsNeedSaveTemplate";
 import mediaFileClient from "../../services/MediaFileClient";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import * as mmb from "music-metadata-browser";
-import {metadataToMediaInfo} from "../MediaLibraryUploadPage/MediaUploadArea";
-import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
 
 type Props = {
     file: MediaFile
@@ -82,7 +79,9 @@ const YearSelector: FC<TextFieldProps & { options: any[] }> = props => {
         <Autocomplete
             fullWidth
             options={options}
-            onChange={(_, value) => onChange(value)}
+            onChange={(_, value) => {
+                onChange && onChange(value as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
+            }}
             value={value}
             renderInput={(params) => <TextField {...params} label={t(label as string)} fullWidth/>}
         />
@@ -123,7 +122,7 @@ const formConfig: {
         Component: YearSelector as unknown as ComponentsForms,
         props: {
             options: Array.from(new Array(100)).map(
-                (value, index) => +now.getFullYear() - index
+                (_, index) => +now.getFullYear() - index
             ),
         }
     },

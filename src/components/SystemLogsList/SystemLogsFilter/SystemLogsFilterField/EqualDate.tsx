@@ -5,7 +5,7 @@ import {useSystemLogsFilterEntity} from "../../SystemLogsEntityContext";
 import {SystemLogsFilterConfiguration} from "../../systemLogsFilterConfiguration";
 import DateAdapter from '@mui/lab/AdapterDayjs';
 import {DatePicker, LocalizationProvider} from "@mui/lab";
-import {IconButton, InputAdornment, Select, TextField, Tooltip} from "@mui/material";
+import {IconButton, InputAdornment, TextField, Tooltip} from "@mui/material";
 import ruLocale from 'dayjs/locale/ru';
 import CloseIcon from "@mui/icons-material/Close";
 import {styled} from "@mui/material/styles";
@@ -100,7 +100,7 @@ const EqualDate: FC<SystemLogsFilterFieldProps> = props => {
                                             </Tooltip>
                                         </InputAdornment>
                                     )}
-                                    {params?.InputProps.endAdornment}
+                                    {params?.InputProps?.endAdornment}
                                 </>
                             )
                         }}

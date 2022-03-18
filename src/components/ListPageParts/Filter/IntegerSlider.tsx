@@ -119,7 +119,7 @@ const IntegerSlider: FC<FilterFieldProperties> = props => {
                 max={currentValue.max}
                 step={step}
                 marks={marks}
-                onChange={(_, newValue) => setValue(newValue)}
+                onChange={(_, newValue) => setValue(newValue as number[])}
                 onChangeCommitted={(_, newValue) => {
                     if (!Array.isArray(newValue)) {
                         return

@@ -22,7 +22,7 @@ export const TemplateMediaFile: MediaFile = {
     language: "",
     last_change_date: "",
     last_editor: "",
-    license_type: LicenseType.none,
+    license_type: LicenseType.amurco,
     lyricist: "",
     mime_type: "audio/mpeg",
     obscene: false,

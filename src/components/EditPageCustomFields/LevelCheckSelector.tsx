@@ -53,7 +53,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     })
 
     const isNeedShowRealm = menuType === `realm`
-    const isNeedShowDomain = menuType === `domain`
+    const isNeedShowDomain = menuType === `domain` || menuType === `realm`
 
     return (
         <Box sx={{flexGrow: 1, display: 'flex', height: 174}}>

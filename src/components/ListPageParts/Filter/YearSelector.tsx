@@ -17,7 +17,7 @@ const YearSelector: FC<FilterFieldProperties> = props => {
     }
 
     const options = Array.from(new Array(100)).map(
-        (value, index) => +now.getFullYear() - index
+        (_, index) => +now.getFullYear() - index
     );
 
     const {t, fieldConfig: {title}, value, onChangeFilterValues} = fieldConfig
@@ -27,6 +27,7 @@ const YearSelector: FC<FilterFieldProperties> = props => {
         return onChangeFilterValues(fieldCode, {...value, value: {value: newValue}} as any)
     }
 
+    // @ts-ignore
     const currentValue = value?.value?.value || null;
 
     return (
