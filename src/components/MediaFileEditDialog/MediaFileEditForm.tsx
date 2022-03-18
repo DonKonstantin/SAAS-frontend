@@ -79,6 +79,7 @@ const YearSelector: FC<TextFieldProps & { options: any[] }> = props => {
                 onChange && onChange(value as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>);
             }}
             value={value}
+            getOptionLabel={newValue => `${newValue}`}
             renderInput={(params) => <TextField {...params} label={t(label as string)} fullWidth/>}
         />
     )
