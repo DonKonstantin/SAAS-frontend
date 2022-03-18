@@ -11,15 +11,15 @@ export const metadataToMediaInfo = (
     metadata: IAudioMetadata,
 ): Partial<MediaFile> => {
     return {
-        album: metadata.common.genre || "",
-        artist: metadata.common.album || "",
+        album: metadata.common.album || "",
+        artist: metadata.common.artist || "",
         bpm: metadata.common.bpm || "",
         composer: metadata.common.composer || "",
         genre: metadata.common.genre || "",
         isrc: metadata.common.isrc || "",
         language: metadata.common.language || "",
         lyricist: metadata.common.lyricist || "",
-        publisher: metadata.common.date || "",
+        publisher: metadata.common.producer || "",
         title: metadata.common.title || "",
         year: metadata.common.year || 0,
         duration: metadata.format.duration || 0,
@@ -31,6 +31,7 @@ const makeMediaFileInfo = async (
     licenseType: LicenseType
 ): Promise<MediaFileToUpload> => {
     const metadata = await mmb.parseBlob(file, {skipPostHeaders: true})
+    console.log(metadata)
     return {
         replace: false,
         replaceId: "",
