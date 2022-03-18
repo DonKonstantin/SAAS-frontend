@@ -80,8 +80,11 @@ const MainMenuWithSubItems: FC<MainMenuItemProps> = props => {
     // ищем возможные вложенные пункты меню
     let isOpen = false;
 
-    if (subItems) {
-        const childPathNames = subItems.map(({link}) => typeof link === "function" ? link().href : link?.href)
+    if (subItems && route.pathname !== '/') {
+        const childPathNames = subItems
+            .map(({link}) => typeof link === "function" ? link().href : link?.href)
+            .filter(v => !!v);
+
         isOpen = childPathNames.length > 0 && !!childPathNames.find(path => path && path.search(new RegExp(route.pathname)) === 0);
     }
 
