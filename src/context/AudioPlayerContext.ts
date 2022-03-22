@@ -18,7 +18,8 @@ type AudioPlayerContext = {
 const context$ = new BehaviorSubject<AudioPlayerContext>({
     currentPlaySongId: undefined,
     lastSongPlay: undefined,
-    onPause: true
+    onPause: true,
+    songName: undefined,
 });
 
 const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileName, songName?: string) => {
