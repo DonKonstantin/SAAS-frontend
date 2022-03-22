@@ -68,10 +68,11 @@ export class RelationPreloader implements FilterPreloaderProcessorInterface<"Rel
                     item.key = data[String(targetKey)];
 
                     let title = "";
+                    const joinSymbol = params.configuration.relationConfiguration.joinSymbol || ", ";
                     params.configuration.relationConfiguration.visibleFields.map(field => {
                         if (!data[field]) return;
 
-                        if (0 !== title.length) title += `, `;
+                        if (0 !== title.length) title += joinSymbol;
 
                         title += `${data[field]}`
                     });
