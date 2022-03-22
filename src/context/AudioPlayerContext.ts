@@ -3,13 +3,14 @@ import mediaFileClient from "../services/MediaFileClient";
 import {useEffect, useState} from "react";
 
 type AudioPlayerContextActions = {
-    toggleSongPlay(fileName: string): void;
+    toggleSongPlay(fileName: string, songName?: string): void;
     continuePlay(): void;
     stopPlay(): void
 }
 
 type AudioPlayerContext = {
     currentPlaySongId: string | undefined;
+    songName: string | undefined;
     lastSongPlay: string | undefined;
     onPause: boolean;
 }
@@ -20,7 +21,7 @@ const context$ = new BehaviorSubject<AudioPlayerContext>({
     onPause: true
 });
 
-const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileName) => {
+const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileName, songName?: string) => {
     const {
         onPause,
         lastSongPlay
@@ -32,10 +33,10 @@ const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileN
         return;
     }
 
-    startPlay(fileName)
+    startPlay(fileName, songName);
 }
 
-const startPlay = async (fileName: string) => {
+const startPlay = async (fileName: string, songName?: string) => {
     const url = await mediaFileClient().GetFilePath(fileName);
 
     audioPlayerChangeSongBus$.next(url);
@@ -46,6 +47,7 @@ const startPlay = async (fileName: string) => {
         currentPlaySongId: fileName,
         lastSongPlay: fileName,
         onPause: false,
+        songName: songName || undefined
     })
 }
 

@@ -2,13 +2,14 @@ import React, {FC, useEffect, useRef, useState} from "react";
 import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
-import {distinctUntilChanged} from "rxjs";
-import {List, ListItem, ListItemIcon, ListItemText, Portal} from "@mui/material";
+import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
+import {List, ListItem, ListItemIcon, ListItemText, Portal, Typography} from "@mui/material";
 import Draggable from 'react-draggable';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import clsx from "clsx";
 import {clientServerDetector} from "../../services/clientServerDetector";
 import {useTranslation} from "react-i18next";
+import {styled} from "@mui/material/styles";
 
 const eventLogger = (_, {x, y}) => {
     localStorage.setItem('audioPlayerPosition', JSON.stringify({x, y}));
@@ -29,6 +30,26 @@ const getStartPosition = () => {
 }
 
 const savePositions = getStartPosition();
+
+const SongTitle = styled(Typography)`
+    &.MuiTypography-root {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        display: block;
+    }
+`
+
+const SongName = () => {
+    const {songName} = useAudioPlayer(distinctUntilKeyChanged("songName"));
+
+    if (!songName ) {
+        return <> </>;
+    }
+
+    return <SongTitle variant={"caption"} color={"primary"}>{`${songName}`}</SongTitle>
+}
 
 const AudioPlayerContainer: FC = () => {
     const [songSrc, setSongSrc] = useState<string>("");
@@ -100,6 +121,7 @@ const AudioPlayerContainer: FC = () => {
                             ref={player}
                             layout={"stacked-reverse"}
                             src={songSrc}
+                            header={<SongName/>}
                             onPause={() => stopPlay()}
                             onPlay={() => continuePlay()}
                         />

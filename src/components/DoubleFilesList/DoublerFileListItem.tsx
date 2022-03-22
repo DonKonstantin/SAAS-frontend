@@ -36,6 +36,7 @@ const DoublerFileListItem: FC<Props> = (props) => {
             <TableCell width={40} padding={"checkbox"}>
                 <PlayAudioButton
                     fileName={file.file_name}
+                    songName={file.title}
                 />
             </TableCell>
         </TableRow>

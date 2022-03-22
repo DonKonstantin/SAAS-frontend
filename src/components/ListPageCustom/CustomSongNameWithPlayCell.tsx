@@ -7,13 +7,13 @@ import PlayAudioButton from "../AudioPlayeContainer/PlayAudioButton";
 
 // Компонент вывода простой ячейки
 const CustomSongNameWithPlayCell: FC<ListFieldProperties<SimpleValues>> = props => {
-    const {schema, configuration, value} = props;
+    const {schema, configuration, value, rowValues} = props;
 
     const {
         align = columnDirection(schema, configuration),
         width,
         padding
-    } = configuration
+    } = configuration;
 
     if (value === undefined) {
         return <></>
@@ -23,6 +23,7 @@ const CustomSongNameWithPlayCell: FC<ListFieldProperties<SimpleValues>> = props 
         <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
                 <PlayAudioButton
                     fileName={value.value}
+                    songName={rowValues.title.value}
                 />
         </TableCell>
     )
