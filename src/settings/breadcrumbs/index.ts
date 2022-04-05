@@ -331,8 +331,8 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
             breadcrumb: "pages.mediaLibrary.breadcrumb",
             link: () => {
                 return {
-                    href: "/media-rules",
-                    as: `/media-rules`,
+                    href: "/media/storage",
+                    as: `/media/storage`,
                 }
             }
         },

@@ -4,9 +4,16 @@ import {MediaFile} from "../../services/MediaLibraryService/interface";
 
 export const editMediaFilesOpen$ = new Subject<boolean>();
 const file$ = new BehaviorSubject<MediaFile | undefined>(undefined);
+const users$ = new BehaviorSubject<SongUser[]>([]);
+
+export type SongUser = {
+    id: string;
+    name: string;
+    lastName: string
+}
 
 type ContextActions = {
-    setEditFile(file: MediaFile): void
+    setEditFile(file: MediaFile, users?: SongUser[]): void
     saveEditFile(file: MediaFile): void
     closeModal(): void
     initEditFileForm(): () => void
@@ -14,11 +21,13 @@ type ContextActions = {
 
 type EditMediaFileContext = {
     file: MediaFile | undefined,
+    users: SongUser[] // вспомогательная инфа по пользователям, работающих с файлом
     open: boolean
 };
 
-const setEditFile: ContextActions["setEditFile"] = file => {
+const setEditFile: ContextActions["setEditFile"] =( file, users = []) => {
     file$.next(JSON.parse(JSON.stringify(file)));
+    users$.next(users);
 
     editMediaFilesOpen$.next(true);
 };
@@ -33,7 +42,8 @@ const closeModal: ContextActions["closeModal"] = () => {
 
 const context$ = new BehaviorSubject<EditMediaFileContext>({
     open: false,
-    file: undefined
+    file: undefined,
+    users: []
 });
 
 const initEditFileForm = () => {
@@ -52,11 +62,15 @@ const actions: ContextActions = {
 const contextBus$ = file$.pipe(
     combineLatestWith(editMediaFilesOpen$.pipe(
         startWith(false),
-    )),
+    ),
+        users$.pipe(
+            startWith([])
+        )),
     map(
-        ([file, open]) => ({
+        ([file, open, users]) => ({
             file,
-            open
+            open,
+            users
         })
     ),
     tap(value => context$.next(value))

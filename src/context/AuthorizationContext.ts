@@ -59,28 +59,23 @@ const updateCookies = (name: string, value: string | undefined) => {
         return;
     }
 
-    value = value ? value : ``
-    if (value.length === 0) {
-        const date = new Date();
-        date.setFullYear(date.getFullYear() - 1);
+    value = value ? value : ``;
 
-        cookie.set(
-            name,
-            ``,
-            {
-                ...COOKIE_CONFIG,
-                expires: date,
-            }
-        )
+    if (value.length === 0) {
+        cookie.remove(name, {
+            ...COOKIE_CONFIG,
+        })
     }
 
     cookie.set(
         name,
         value,
-        COOKIE_CONFIG
+        {
+            ...COOKIE_CONFIG,
+            maxAge: 60 * 60 * 24,
+        },
     )
 }
-
 
 
 // События, происходящие с контекстом
@@ -343,7 +338,7 @@ const initializeContextBus = () => {
     // Сохраняем изменения токена в Cookie
     const tokenCookieSet = tokenContext$
         .pipe(throttleTime(1000))
-        .subscribe(updateCookies.bind(null, "token"))
+        .subscribe(updateCookies.bind(null, ["token"]))
 
     tokenCookieSet.add(
         updateDomain$.subscribe(updateCookies.bind(null, ['domain']))
@@ -354,7 +349,7 @@ const initializeContextBus = () => {
     );
 
     tokenCookieSet.add(
-        updateLevel$.subscribe(value => levelEnum[value] !== undefined && updateCookies( 'level', levelEnum[value as keyof levelEnum]))
+        updateLevel$.subscribe(value => levelEnum[value] !== undefined && updateCookies('level', levelEnum[value as keyof levelEnum]))
     )
 
     // Запускаем обновление токена

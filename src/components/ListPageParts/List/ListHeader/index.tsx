@@ -75,6 +75,10 @@ const ListHeader: FC<ListHeaderProps> = props => {
                     />
                 )}
                 {Object.values(fields).map(field => {
+                    if (field.isHidden) {
+                        return null
+                    }
+
                     if (!field.isEnabled || field.fieldType.type === "Hidden") {
                         return null;
                     }

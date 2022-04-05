@@ -127,6 +127,7 @@ const runCheck: CheckMediaFilesContextActions["runCheck"] = async () => {
 const resetCheck: CheckMediaFilesContextActions["resetCheck"] = () => {
     context$.next({
         ...context$.getValue(),
+        rawData: "",
         fileCheckResult: [],
         isChecked: false,
         isCheckProgress: false,

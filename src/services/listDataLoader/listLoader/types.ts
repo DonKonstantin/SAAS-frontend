@@ -30,6 +30,7 @@ export class ListFieldValueTypes {
 // Настройки отношения
 export type RelationConfig<T extends keyof Schemas> = {
     relatedFields: FieldOfSchema<T>[]
+    joinSymbol?: string,
 }
 
 // Конфигурация поля
@@ -75,7 +76,8 @@ export interface ListFieldConfiguration<T extends keyof Schemas, K extends keyof
     align?: AlignRow;   // Выравнивание ячеек (кастомное)
     padding?: 'normal' | 'checkbox' | 'none' // Размер отступов
     title: string       // Заголовок поля
-    isEnabled: boolean  // Флаг отображения поля
+    isEnabled: boolean  // Флаг отображения и загрузки данных для поля. Если выключен - данные для поля не получаются
+    isHidden?: boolean   // Флаг отображения поля
     fieldType: FieldType<any>  // Тип поля
 }
 

@@ -25,7 +25,7 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
             <DialogTitle>
                 Файл действительно является дублем?
                 <Typography variant={"subtitle2"} sx={{opacity: 0.56, fontSize: 12}}>
-                    Список возможных дубликатов приведен ниже
+                    Список возможных дубликатов, найденных в хранилище
                 </Typography>
             </DialogTitle>
             <DialogContent>

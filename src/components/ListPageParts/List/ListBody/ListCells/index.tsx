@@ -12,6 +12,14 @@ export type ListCellsProps<T extends keyof ListFieldValueTypes = keyof ListField
 
 // Общий компонент вывода ячейки
 const ListCells: FC<ListCellsProps> = props => {
+    const {
+        configuration
+    } = props;
+
+    if (configuration.isHidden) {
+        return null;
+    }
+
     const {fieldType, ...other} = props
     switch (fieldType) {
         case "Simple":

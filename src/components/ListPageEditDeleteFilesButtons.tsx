@@ -56,17 +56,19 @@ const ListPageEditDeleteFilesButtons: FC<ListPageEditDeleteButtonsProps> = props
         return <TableCell className="list-table-cell"/>
     }
 
-    const {initEditFileForm,setEditFile} = useEditMediaFilesModal(distinctUntilChanged(() => true));
+    const {initEditFileForm, setEditFile} = useEditMediaFilesModal(distinctUntilChanged(() => true));
 
     useEffect(() => initEditFileForm(), []);
     //Обработка нажатия на кнопку редактирования
     const file: MediaFile = Object.keys(item.columnValues).reduce((acc, element) => {
         acc = {
             ...acc,
-            [element]: item.columnValues[element].value
+            [element]: item.columnValues[element].relationCaption
+                ? item.columnValues[element].relationCaption
+                : item.columnValues[element].value
         }
         return acc
-    }, TemplateMediaFile)
+    }, TemplateMediaFile);
 
     const handleEditFile = () => {
         setEditFile(file)

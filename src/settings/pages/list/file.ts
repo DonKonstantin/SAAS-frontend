@@ -1,6 +1,6 @@
 import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/list";
 import {FilterFieldsConfiguration} from "../../../services/listDataLoader/filterLoader/types";
-import {ListFieldsConfiguration} from "../../../services/listDataLoader/listLoader/types";
+import {ListFieldsConfiguration, RelationConfig} from "../../../services/listDataLoader/listLoader/types";
 import CustomStatusCell from "../../../components/ListPageCustom/CustomStatusCell";
 import CustomSongNameWithPlayCell from "../../../components/ListPageCustom/CustomSongNameWithPlayCell";
 import CustomSongDurationWithPlayCell from "../../../components/ListPageCustom/CustomSongDurationWithPlayCell";
@@ -130,7 +130,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Simple",
-                }
+                },
             },
             id: {
                 field: "id",
@@ -139,7 +139,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             file_name: {
                 field: "file_name",
@@ -150,7 +150,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     config: undefined,
                     type: "Simple",
                     customComponent: CustomSongNameWithPlayCell
-                }
+                },
             },
             artist: {
                 field: "artist",
@@ -159,7 +159,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Simple",
-                }
+                },
             },
             duration: {
                 field: "duration",
@@ -169,7 +169,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     config: undefined,
                     type: "Simple",
                     customComponent: CustomSongDurationWithPlayCell
-                }
+                },
             },
             album: {
                 field: "album",
@@ -179,7 +179,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                     config: undefined,
                     type: "Simple",
                     customComponent: CustomStatusCell
-                }
+                },
             },
             composer: {
                 field: "composer",
@@ -188,25 +188,29 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             creation_date: {
                 field: "creation_date",
-                title: "creation_date",
+                title: "Создан",
                 isEnabled: true,
                 fieldType: {
                     config: undefined,
-                    type: "Hidden"
-                }
+                    type: "Simple"
+                },
             },
             creator: {
                 field: "creator",
                 title: "creator",
                 isEnabled: true,
+                isHidden: true,
                 fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
+                    config: <RelationConfig<"user">>{
+                        relatedFields: ["first_name", "last_name"],
+                        joinSymbol: " ",
+                    },
+                    type: "Relation"
+                },
             },
             bpm: {
                 field: "bpm",
@@ -215,7 +219,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             genre: {
                 field: "genre",
@@ -224,7 +228,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             hash_sum: {
                 field: "hash_sum",
@@ -233,7 +237,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             isrc: {
                 field: "isrc",
@@ -242,7 +246,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             language: {
                 field: "language",
@@ -251,7 +255,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             last_change_date: {
                 field: "last_change_date",
@@ -260,16 +264,20 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             last_editor: {
                 field: "last_editor",
                 title: "last_editor",
                 isEnabled: true,
+                isHidden: true,
                 fieldType: {
-                    config: undefined,
-                    type: "Hidden"
-                }
+                    config: <RelationConfig<"user">>{
+                        relatedFields: ["first_name", "last_name"],
+                        joinSymbol: " ",
+                    },
+                    type: "Relation"
+                },
             },
             license_type: {
                 field: "license_type",
@@ -278,7 +286,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             lyricist: {
                 field: "lyricist",
@@ -287,7 +295,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             mime_type: {
                 field: "mime_type",
@@ -296,7 +304,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             obscene: {
                 field: "obscene",
@@ -305,7 +313,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             publisher: {
                 field: "publisher",
@@ -314,7 +322,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             origin_name: {
                 field: "origin_name",
@@ -323,7 +331,7 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
             year: {
                 field: "year",
@@ -332,11 +340,11 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
                 fieldType: {
                     config: undefined,
                     type: "Hidden"
-                }
+                },
             },
         },
         actions: ListPageEditDeleteFilesButtons,
-        defaultOrderDirection: "desc",
+        defaultOrderDirection: "asc",
     };
     schema: "file" = "file";
     deleteSchema: "file_data" = "file_data";
@@ -345,6 +353,6 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     action: React.ComponentType<ListHeaderProps> = BulkEditing;
     editPageUrl: EditPageLinkGenerator = pk => ({
         href: "/file/edit/[entityId]",
-        as: `/file/edit/${pk}`
+        as: `/file/edit/${pk}`,
     });
 }

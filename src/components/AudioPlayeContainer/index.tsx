@@ -3,13 +3,14 @@ import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
-import {List, ListItem, ListItemIcon, ListItemText, Portal, Typography} from "@mui/material";
+import {Button, Fab, IconButton, List, ListItem, ListItemIcon, ListItemText, Portal, Typography} from "@mui/material";
 import Draggable from 'react-draggable';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import clsx from "clsx";
 import {clientServerDetector} from "../../services/clientServerDetector";
 import {useTranslation} from "react-i18next";
 import {styled} from "@mui/material/styles";
+import CloseIcon from '@mui/icons-material/Close';
 
 const eventLogger = (_, {x, y}) => {
     localStorage.setItem('audioPlayerPosition', JSON.stringify({x, y}));
@@ -44,12 +45,13 @@ const SongTitle = styled(Typography)`
 const SongName = () => {
     const {songName} = useAudioPlayer(distinctUntilKeyChanged("songName"));
 
-    if (!songName ) {
+    if (!songName) {
         return <> </>;
     }
 
     return <SongTitle variant={"caption"} color={"primary"}>{`${songName}`}</SongTitle>
 }
+
 
 const AudioPlayerContainer: FC = () => {
     const [songSrc, setSongSrc] = useState<string>("");
@@ -90,7 +92,14 @@ const AudioPlayerContainer: FC = () => {
         return () => subscriber.unsubscribe();
     }, [])
 
+    const handleClosePlayer = () => {
+        stopPlay();
+        setShowPlayer(false);
+    }
+
     const player = useRef<H5AudioPlayer | undefined>();
+
+
 
     return (
         <>
@@ -110,12 +119,30 @@ const AudioPlayerContainer: FC = () => {
                     onStop={eventLogger}
                     defaultPosition={savePositions}
                 >
+
                     <div
                         id="draggable-dialog-title"
                         className={clsx("audio-player", {
                             '--visible': showPlayer
                         })}
                     >
+                        <Fab
+                            size={"small"}
+                            color={"primary"}
+                            sx={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                                transform: "translate(50%, -50%);",
+                                minHeight: 24,
+                                width: 24,
+                                height: 24,
+                                fontSize: 14,
+                            }}
+                            onClick={handleClosePlayer}
+                        >
+                            <CloseIcon fontSize={"inherit"}/>
+                        </Fab>
                         <AudioPlayer
                             // @ts-ignore
                             ref={player}

@@ -1,7 +1,7 @@
-import React, {FC, memo} from "react";
-import {Button, Stack} from "@mui/material";
+import React, {FC, memo, useEffect, useState} from "react";
+import {Button, Stack, Tooltip} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import {useMediaLibraryUpload} from "./MediaFilesUploadContext";
+import {inProgressUpload$, useMediaLibraryUpload} from "./MediaFilesUploadContext";
 
 const MediaLibraryUploadControls: FC = () => {
     const {t} = useTranslation();
@@ -11,6 +11,21 @@ const MediaLibraryUploadControls: FC = () => {
         replaceAllFiles,
         files,
     } = useMediaLibraryUpload();
+
+    const hasReplacedFiles = files.filter(file => !!file.autoReplaceId).length > 0;
+
+    const [isProcess, setProcess] = useState(false);
+
+   /* useEffect(
+        () => {
+            const s =  inProgressUpload$.subscribe({
+                next: setProcess
+            });
+
+            return () => s.unsubscribe();
+        },
+        []
+    )*/
 
     if (files.length === 0) {
         return null;
@@ -22,25 +37,27 @@ const MediaLibraryUploadControls: FC = () => {
                 <Button
                     variant={"outlined"}
                     onClick={() => uploadAllFiles()}
-                    disabled={files.length === 0}
+                    disabled={isProcess}
                 >
                     {t(`Загрузить все`)}
                 </Button>
                 <Button
                     variant={"outlined"}
                     onClick={() => replaceAllFiles()}
-                    disabled={files.length === 0}
+                    disabled={!hasReplacedFiles || isProcess}
                 >
                     {t(`Заменить все`)}
                 </Button>
-                <Button
-                    variant={"outlined"}
-                    onClick={() => deleteAllFiles()}
-                    color={"error"}
-                    disabled={files.length === 0}
-                >
-                    {t(`Удалить все`)}
-                </Button>
+                <Tooltip title={"Очистить очередь, уже загруженные файлы не удаляться из хранилища"}>
+                    <Button
+                        variant={"outlined"}
+                        onClick={() => deleteAllFiles()}
+                        color={"error"}
+                        disabled={isProcess}
+                    >
+                        {t(`Очистить список`)}
+                    </Button>
+                </Tooltip>
             </Stack>
         </>
     )

@@ -2,22 +2,19 @@ import React, {FC, useCallback, useEffect} from "react";
 import {Grid, Paper, Stack} from "@mui/material";
 import Breadcrumbs from "../Breadcrumbs";
 import {Box} from "@mui/system";
-import MediaUploadArea from "./MediaUploadArea";
 import {useMediaLibraryUpload} from "./MediaFilesUploadContext";
 import {distinctUntilChanged} from "rxjs";
 import MediaFileEditDialog from "../MediaFileEditDialog";
-import MediaFileTable from "./MediaFileTable";
 import {useEditMediaFilesModal} from "../MediaFileEditDialog/MediaFileEditDialogContext";
 import MediaLibraryUploadLicenseType from "./MediaLibraryUploadLicenseType";
-import MediaLibraryUploadControls from "./MediaLibraryUploadControls";
-import MediaLibraryProgressStatus from "./MediaLibraryProgressStatus";
 import SelectReplaceFileDialog from "./SelectReplaceFileDialog";
+import MediaLibraryFiles from "./MediaLibraryFiles";
 
 const MediaLibraryUploadPage: FC = () => {
     const {
         initMediaFilesUploadContext,
         updateMediaInfoFile,
-        setReplacedTargetFile
+        setReplacedTargetFile,
     } = useMediaLibraryUpload(distinctUntilChanged(() => true))
     const {initEditFileForm} = useEditMediaFilesModal(distinctUntilChanged(() => true));
 
@@ -41,15 +38,7 @@ const MediaLibraryUploadPage: FC = () => {
                 <Paper sx={{p: 3}}>
                     <MediaLibraryUploadLicenseType/>
                 </Paper>
-                <Paper sx={{p: 3}}>
-                    <MediaUploadArea/>
-                    <Box
-                        sx={{mb: 2}}
-                    />
-                    <MediaFileTable/>
-                    <MediaLibraryProgressStatus/>
-                    <MediaLibraryUploadControls/>
-                </Paper>
+                <MediaLibraryFiles/>
             </Stack>
             <MediaFileEditDialog
                 onSave={updateMediaInfoFile}

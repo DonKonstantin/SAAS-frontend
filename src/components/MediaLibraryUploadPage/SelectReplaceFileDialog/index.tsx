@@ -37,7 +37,8 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
             <DialogTitle>
                 Выбор заменяемого файла
                 <Typography variant={"subtitle2"} sx={{opacity: 0.56, fontSize: 12}}>
-                    Найдены возможные дубли. Выберите заменяемый файл или разрешите загрузку нового.
+                    В хранилище найдены возможные дубли. Выберите заменяемый файл или разрешите
+                    загрузку нового.
                 </Typography>
             </DialogTitle>
             <DialogContent>

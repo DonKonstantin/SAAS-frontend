@@ -19,7 +19,8 @@ export const metadataToMediaInfo = (
         isrc: metadata.common.isrc || "",
         language: metadata.common.language || "",
         lyricist: metadata.common.lyricist || "",
-        publisher: metadata.common.producer || "",
+        // TODO: must get from not from default prop
+        publisher: metadata.common?.label?.join(", ") || "",
         title: metadata.common.title || "",
         year: metadata.common.year || 0,
         duration: metadata.format.duration || 0,

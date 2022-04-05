@@ -32,7 +32,8 @@ export type MediaFileToUpload = {
     file: File,
     replace: boolean    //Флаг для перезаписи файла
     replaceId: string,  // ID
-    hasDoubles: boolean,    // Флаг налиячия дублей файла
+    autoReplaceId?: string // ID в случае автоматической замены файлыа
+    hasDoubles: boolean,    // Флаг наличия дублей файла
     forceUpload?: boolean // флаг принудительной загрузки
 }
 
@@ -146,7 +147,7 @@ async function uploadFileOnServer(uploadedFile: MediaFileToUpload, licenseType: 
 }
 
 // Текущий выбранный тип лиценции
-const licenseType$ = new BehaviorSubject<LicenseType>(LicenseType.amurco);
+const licenseType$ = new BehaviorSubject<LicenseType | undefined>(undefined);
 
 // set new license type
 const setLicenseType: ContextActions["setLicenseType"] = type => {
@@ -158,6 +159,7 @@ const setLicenseType: ContextActions["setLicenseType"] = type => {
  */
 const mediaFilesToUpload$ = new BehaviorSubject<MediaFileToUpload[]>([]);
 
+export const inProgressUpload$ = new BehaviorSubject(false);
 
 const addFilesToUpload: ContextActions["addFilesToUpload"] = files => {
     const currentFiles = mediaFilesToUpload$.getValue();
@@ -223,7 +225,7 @@ const deleteFilesBus$ = idMediaFilesToDelete$.pipe(
         const mediaFile = files.find((file) => file.mediaInfo.id === idOrUuid || file.mediaInfo.uuid === idOrUuid) as MediaFileToUpload;
 
         if (mediaFile) {
-            acc.push(mediaFile );
+            acc.push(mediaFile);
         }
 
         return acc;
@@ -355,9 +357,18 @@ const uploadAllFiles: ContextActions["uploadAllFiles"] = () => {
 
 
 const replaceAllFiles: ContextActions["replaceAllFiles"] = () => {
-    uploadBus$.next(mediaFilesToUpload$.getValue().filter(
-        file => !!file.replaceId
-    ));
+    const replacedFiles = mediaFilesToUpload$.getValue().filter(
+        file => !!file.autoReplaceId || !!file.replaceId
+    ).map(
+        file => {
+            if (!!file.autoReplaceId) {
+                file.replaceId = file.autoReplaceId;
+            }
+
+            return file;
+        }
+    )
+    uploadBus$.next(replacedFiles);
 }
 
 type WithMediaUploadHoc = ContextActions & MediaFileUploadContext;
@@ -393,6 +404,8 @@ const metaTagsValidator = new MediaFileTagValidator(["title", "origin_name", "ar
  */
 const filesUploadBus$ = uploadBus$.pipe(
     mergeMap(file => file),
+    tap(() => inProgressUpload$.next(true)),
+
     concatMap(file =>
         of(file as MediaFileToUpload).pipe(
             // Отменяем загрузку уже загруженных файлов
@@ -420,6 +433,11 @@ const filesUploadBus$ = uploadBus$.pipe(
                         return file;
                     }
 
+                    if (file.autoReplaceId) {
+                        file.replaceId = file.autoReplaceId;
+                        delete file.autoReplaceId;
+                    }
+
                     if (file.replaceId) {
                         const doubles = doubleFiles$.getValue();
 
@@ -442,10 +460,17 @@ const filesUploadBus$ = uploadBus$.pipe(
 
                         file.hasDoubles = true
 
-                        notificationsDispatcher().dispatch({
-                            message: `Файл ${file.mediaInfo.origin_name} имеет дубли`,
-                            type: "warning"
-                        })
+                        // В случае если один дубль, разрешаем автозамену
+                        if (doubles.doubles.length === 1) {
+                            file.autoReplaceId = doubles.doubles[0].id;
+                        } else {
+                            file.autoReplaceId = "";
+
+                            notificationsDispatcher().dispatch({
+                                message: `Файл ${file.mediaInfo.origin_name} имеет дубли, необходимо выбрать замену`,
+                                type: "warning"
+                            })
+                        }
                     }
 
                     return {
@@ -453,7 +478,37 @@ const filesUploadBus$ = uploadBus$.pipe(
                     };
                 }
             ),
-            // У файла есть дубли, не выбран какой файл и з дублей заменяем и нет принудительного обновления
+            tap(file => {
+                if (!file) {
+                    return;
+                }
+
+                const files = mediaFilesToUpload$.getValue();
+                let needUpdates = false;
+
+                const newState = files.map(f => {
+                    if (f.mediaInfo.uuid !== file.mediaInfo.uuid) {
+                        return f;
+                    }
+
+                    needUpdates = true;
+
+                    return {
+                        ...f,
+                        mediaInfo: {
+                            ...f.mediaInfo,
+                            ...file.mediaInfo
+                        }
+                    }
+                })
+
+                if (!needUpdates) {
+                    return;
+                }
+
+                mediaFilesToUpload$.next(newState);
+            }),
+            // У файла есть дубли, не выбран какой файл из дублей заменяем и нет принудительного обновления
             filter(file => !(file.hasDoubles && !file.replaceId && !file.forceUpload)),
             switchMap(async (file) => {
                     /**
@@ -464,7 +519,12 @@ const filesUploadBus$ = uploadBus$.pipe(
                         return replaceFileOnServer(file);
                     }
 
-                    return uploadFileOnServer(file, licenseType$.getValue());
+                    const licenseType = licenseType$.getValue();
+                    if (!licenseType) {
+                        return file;
+                    }
+
+                    return uploadFileOnServer(file, licenseType);
                 }
             ),
             tap(file => {
@@ -520,11 +580,12 @@ const initMediaFilesUploadContext: ContextActions["initMediaFilesUploadContext"]
             }
         ),
     ).subscribe({
-        next: value => context$.next(value)
+        next: value => {
+            context$.next(value)
+        }
     });
 
     subscriber.add(filesUploadBus$.subscribe());
-    subscriber.add(deleteFromServer$.subscribe());
     subscriber.add(deleteFromState$.subscribe());
     subscriber.add(updateStatusBus$.subscribe());
 

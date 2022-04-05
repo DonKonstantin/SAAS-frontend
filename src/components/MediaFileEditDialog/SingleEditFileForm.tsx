@@ -1,6 +1,7 @@
 import React, {ChangeEvent, FC, useState} from "react";
 import {
-    Autocomplete, Box,
+    Autocomplete,
+    Box,
     Button,
     FormControl,
     Grid,
@@ -11,7 +12,8 @@ import {
     Select,
     Stack,
     TextField,
-    Tooltip
+    Tooltip,
+    Typography
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {Controller, useForm} from "react-hook-form";
@@ -23,6 +25,7 @@ import {v4 as uuidv4} from 'uuid';
 import NotificationsNeedSaveTemplate from "../NotificationsNeedSaveTemplate";
 import mediaFileClient from "../../services/MediaFileClient";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import dayjs from "dayjs";
 
 type Props = {
     file: MediaFile
@@ -243,7 +246,7 @@ const MediaFileEditForm: FC<Props> = props => {
                         variants
                     }]) => {
                         return (
-                            <Grid item md={6}>
+                            <Grid item md={6} key={field}>
                                 <Controller
                                     rules={rules}
                                     // @ts-ignore
@@ -256,7 +259,7 @@ const MediaFileEditForm: FC<Props> = props => {
                                             variants={variants || []}
                                             onChange={onChange}
                                             label={t(label)}
-                                            value={value}
+                                            value={!!value ? `${value}` : undefined}
                                         />
                                     )}
                                 />
@@ -264,6 +267,29 @@ const MediaFileEditForm: FC<Props> = props => {
                         )
                     }
                 )}
+
+            </Grid>
+            <Grid container sx={{mt: 2}} columnSpacing={2}>
+                <Grid md={6} item>
+                    <Typography variant={"caption"}>
+                        Создан: {dayjs(file.creation_date).format("DD-MM-YYYY hh:mm:ss")}
+                    </Typography>
+                </Grid>
+                <Grid md={6} item>
+                    <Typography variant={"caption"}>
+                        Создатель: {file.creator}
+                    </Typography>
+                </Grid>
+                <Grid md={6} item>
+                    <Typography variant={"caption"}>
+                        Редактировался: {dayjs(file.last_change_date).format("DD-MM-YYYY hh:mm:ss")}
+                    </Typography>
+                </Grid>
+                <Grid md={6} item>
+                    <Typography variant={"caption"}>
+                        Последний редактор: {file.last_editor}
+                    </Typography>
+                </Grid>
             </Grid>
             <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"} sx={{mt: 2}}>
                 <Stack direction={'row'} spacing={2} justifyContent={"space-between"} flexWrap={"wrap"}>

@@ -15,6 +15,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import ReplayIcon from '@mui/icons-material/Replay';
+import FileStatusCell from "./FileStatusCell";
 
 type Props = {
     file: MediaFileToUpload
@@ -36,12 +38,7 @@ const MediaFileTableRow: FC<Props> = props => {
 
     const [progress, setProgress] = useState(0);
     const [doubles, setHasDoubles] = useState<MediaFile[]>([]);
-    const {openReplaceFileDialog} = useReplaceFileDialog();
     const {t} = useTranslation();
-
-    const handleOpenReplaceDialog = () => {
-        openReplaceFileDialog(file.mediaInfo, doubles)
-    }
 
     useEffect(() => {
         const s = uploadStatus$.subscribe({
@@ -69,7 +66,9 @@ const MediaFileTableRow: FC<Props> = props => {
                         return;
                     }
 
-                    setHasDoubles(thisFileStatus.doubles);
+                    const {doubles} = thisFileStatus
+
+                    setHasDoubles(doubles);
                 }
             }
         ))
@@ -96,50 +95,17 @@ const MediaFileTableRow: FC<Props> = props => {
     }, [progress, requireFieldFill]);
 
     const successUploaded = progress === 100;
-
-    const isNewFile = file.forceUpload;
-    const hasDoubles = doubles.length > 0;
-    const isReplaced = !!file.replaceId;
-
     return (
         <TableRow>
             <TableCell>
                 {file.mediaInfo.origin_name}
             </TableCell>
             <TableCell align={"center"} width={100}>
-                {hasDoubles && progress !== 100 && (
-                    <Tooltip title={t(`Имеются дубли файла. Нажмите чтобы принять решение`) as string}>
-                        <IconButton onClick={() => handleOpenReplaceDialog()} size={"small"}>
-                            <WarningIcon
-                                color={
-                                    !!file.replaceId || file.forceUpload
-                                        ? 'primary'
-                                        : 'warning'
-                                }
-                            />
-                        </IconButton>
-                    </Tooltip>
-                )}
-                {(progress === 100) && (
-                    <Tooltip title={t(`Файл загружен`) as string}>
-                        <span>
-                            <IconButton disabled size={"small"}>
-                                <DoneIcon color={"success"}/>
-                            </IconButton>
-                        </span>
-                    </Tooltip>
-                )}
-                {isReplaced && (
-                    <IconButton size={"small"}>
-                        <PublishedWithChangesIcon color={"primary"}/>
-                    </IconButton>
-                )}
-                {isNewFile && (
-                    <IconButton size={"small"} disabled>
-                        <FiberNewIcon color={"primary"}/>
-                    </IconButton>
-                )}
-
+                <FileStatusCell
+                    file={file}
+                    progress={progress}
+                    doubles={doubles}
+                />
             </TableCell>
             <TableCell width={120}>
                 {humanFileSize(file.mediaInfo.size)}
@@ -169,7 +135,7 @@ const MediaFileTableRow: FC<Props> = props => {
                     }
                     {
                         onUpload !== undefined && (
-                            <Tooltip title={t(!!file.replaceId ? "Заменить" : "Загрузить") as string}>
+                            <Tooltip title={t(!!file.replaceId || !!file.autoReplaceId ? "Заменить" : "Загрузить") as string}>
                                 <span>
                                     <IconButton
                                         onClick={() => onUpload ? onUpload(file) : false}

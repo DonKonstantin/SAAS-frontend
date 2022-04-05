@@ -211,7 +211,7 @@ const MediaFileEditForm: FC<Props> = props => {
                                                 variants={variants || []}
                                                 onChange={onChange}
                                                 label={t(label)}
-                                                value={value}
+                                                value={!!value ? `${value}` : undefined}
                                             />
                                         )
                                         }

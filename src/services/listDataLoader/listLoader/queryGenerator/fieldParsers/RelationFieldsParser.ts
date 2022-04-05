@@ -102,8 +102,9 @@ export class RelationFieldsParser<G extends "Relation" | "MultipleRelation"> imp
                 const val = new RelationValue();
                 // @ts-ignore
                 val.relationId = `${item[String(fieldSchema.relation.target)]}`;
+                const joinString = config.fieldType.config?.joinSymbol || ", ";
                 // @ts-ignore
-                val.relationCaption = config.fieldType.config?.relatedFields.map(field => `${item[field]}`).join(", ") || val.relationId;
+                val.relationCaption = config.fieldType.config?.relatedFields.map(field => `${item[field]}`).join(joinString) || val.relationId;
                 val.relationFieldValues = JSON.parse(JSON.stringify(item));
 
                 additionColumnsData[val.relationId] = val
