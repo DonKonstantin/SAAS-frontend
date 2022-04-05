@@ -12,4 +12,4 @@ Cleanup:
   extends: .werf_init
   stage: cleanup
   script:
-    - werf cleanup
+    - werf cleanup --without-kube
