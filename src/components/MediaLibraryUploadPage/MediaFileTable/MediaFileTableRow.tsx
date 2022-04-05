@@ -4,18 +4,12 @@ import {IconButton, LinearProgress, Stack, TableCell, TableRow, Tooltip} from "@
 import {humanFileSize} from "../../../services/MediaLibraryService/helpers";
 import MediaFileMetaTagStatus from "../../ListPageCustom/MediaFileMetaTagStatus";
 import {MediaFile} from "../../../services/MediaLibraryService/interface";
-import {useReplaceFileDialog} from "../SelectReplaceFileDialog/SelectReplaceFileDialogContext";
-import WarningIcon from '@mui/icons-material/Warning';
-import DoneIcon from '@mui/icons-material/Done';
 import {useTranslation} from "react-i18next";
 import MediaFileTagValidator from "../../../services/MediaLibraryService/validator/MediaFileTagValidator";
 import EditIcon from '@mui/icons-material/Edit';
 import CloudDoneIcon from '@mui/icons-material/CloudDone';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FiberNewIcon from '@mui/icons-material/FiberNew';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import ReplayIcon from '@mui/icons-material/Replay';
 import FileStatusCell from "./FileStatusCell";
 
 type Props = {

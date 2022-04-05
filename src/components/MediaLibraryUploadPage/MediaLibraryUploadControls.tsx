@@ -1,7 +1,7 @@
-import React, {FC, memo, useEffect, useState} from "react";
+import React, {FC, memo} from "react";
 import {Button, Stack, Tooltip} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import {inProgressUpload$, useMediaLibraryUpload} from "./MediaFilesUploadContext";
+import {useMediaLibraryUpload} from "./MediaFilesUploadContext";
 
 const MediaLibraryUploadControls: FC = () => {
     const {t} = useTranslation();
@@ -14,19 +14,6 @@ const MediaLibraryUploadControls: FC = () => {
 
     const hasReplacedFiles = files.filter(file => !!file.autoReplaceId).length > 0;
 
-    const [isProcess, setProcess] = useState(false);
-
-   /* useEffect(
-        () => {
-            const s =  inProgressUpload$.subscribe({
-                next: setProcess
-            });
-
-            return () => s.unsubscribe();
-        },
-        []
-    )*/
-
     if (files.length === 0) {
         return null;
     }
@@ -37,14 +24,13 @@ const MediaLibraryUploadControls: FC = () => {
                 <Button
                     variant={"outlined"}
                     onClick={() => uploadAllFiles()}
-                    disabled={isProcess}
                 >
                     {t(`Загрузить все`)}
                 </Button>
                 <Button
                     variant={"outlined"}
                     onClick={() => replaceAllFiles()}
-                    disabled={!hasReplacedFiles || isProcess}
+                    disabled={!hasReplacedFiles }
                 >
                     {t(`Заменить все`)}
                 </Button>
@@ -53,7 +39,6 @@ const MediaLibraryUploadControls: FC = () => {
                         variant={"outlined"}
                         onClick={() => deleteAllFiles()}
                         color={"error"}
-                        disabled={isProcess}
                     >
                         {t(`Очистить список`)}
                     </Button>

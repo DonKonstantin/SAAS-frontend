@@ -232,17 +232,6 @@ const deleteFilesBus$ = idMediaFilesToDelete$.pipe(
     }, [] as MediaFileToUpload[]),
 );
 
-/**
- * Шина на удаление с сервера
- */
-const deleteFromServer$ = deleteFilesBus$.pipe(
-    switchMap(async (files) => {
-        const deleteFromServer = files.filter(f => !!f.mediaInfo?.id).map(f => f.mediaInfo.id);
-
-        return await mediaLibraryService().delete(deleteFromServer);
-    })
-);
-
 // Шина на удаление из стейта
 const deleteFromState$ = deleteFilesBus$.pipe(
     tap(
