@@ -16,7 +16,7 @@ import YearSelector from "../../../components/ListPageParts/Filter/YearSelector"
 
 export class FileListingConfiguration implements ListPageConfiguration<"file"> {
     filter: FilterFieldsConfiguration<"file"> = {
-        publisher: {
+        publisherJSON: {
             field: "publisher",
             filterType: "VariantsSelectorString",
             schema: "file",
@@ -47,6 +47,12 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             filterType: "Like",
             schema: "file",
             title: "Жанр"
+        },
+        license_type: {
+            field: "license_type",
+            filterType: "EnumSelector",
+            schema:"file",
+            title: "Тип лицензии"
         },
         bpm: {
             field: "bpm",
@@ -119,6 +125,12 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             filterType: "DateTimeRange",
             schema: "file",
             title: "Дата создания",
+        },
+        publisher: {
+            field: "publisher",
+            filterType: "EqualsString",
+            schema: "file",
+            title: "Издатель",
         },
     };
     listFields: ListFieldsConfiguration<"file"> = {

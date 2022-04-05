@@ -74,9 +74,9 @@ const file: Schema = {
             isArray: false,
             enum: {
                 variants: {
-                    rao_voice: "mediaLibrary.field.lincese_type-enum.rao_voice",
-                    sparx: "mediaLibrary.field.lincese_type-enum.sparx",
-                    amurco: "mediaLibrary.field.lincese_type-enum.amurco"
+                    rao_voice: "mediaLibrary.field.license_type-enum.rao_voice",
+                    sparx: "mediaLibrary.field.license_type-enum.sparx",
+                    amurco: "mediaLibrary.field.license_type-enum.amurco"
                 }
             }
         },
