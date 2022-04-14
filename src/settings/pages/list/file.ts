@@ -356,7 +356,8 @@ export class FileListingConfiguration implements ListPageConfiguration<"file"> {
             },
         },
         actions: ListPageEditDeleteFilesButtons,
-        defaultOrderDirection: "asc",
+        defaultOrderDirection: "desc",
+        defaultSortField: "creation_date",
     };
     schema: "file" = "file";
     deleteSchema: "file_data" = "file_data";

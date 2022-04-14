@@ -109,4 +109,5 @@ export interface ListFieldsConfiguration<T extends keyof Schemas> {
     rowBelow?: React.ComponentType<{ item: ListFieldRow<T> }>   // Дополнительная строка данных ниже текущей. Для вывода доп. информации
     additionDataLoader?: (items: ListFieldRow<T>[], token?: string) => Promise<any>   // Загрузчик дополнительных данных для отображения
     defaultOrderDirection?: "asc" | "desc" // Порядок сортировки по умолчанию
+    defaultSortField?: keyof Schemas[T]['fields'] // Поле для сортировки по умолчанию
 }

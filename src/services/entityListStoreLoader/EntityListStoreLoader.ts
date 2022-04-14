@@ -38,8 +38,13 @@ export class EntityListStoreLoader implements EntityListStoreLoaderInterfaces {
         // @ts-ignore
         const currentConfiguration: ListPageConfiguration<T> = this.configurationBuilder()[configuration.schema];
 
+        const {defaultSortField} = configuration.listFields;
+        let firstField = configuration.listFields.fields[defaultSortField];
         // Получаем первое из простых полей
-        const firstField = Object.values(configuration.listFields.fields).filter(field => field.fieldType.config === undefined)[0] || undefined;
+        if (!defaultSortField) {
+            firstField = Object.values(configuration.listFields.fields).filter(field => field.fieldType.config === undefined)[0] || undefined;
+        }
+
         let baseOrder: OrderParameter<T>[] = [];
         let currentOrder: OrderParameter<T>[] = [];
         if (firstField) {
