@@ -56,6 +56,7 @@ export class QueryGenerator implements QueryGeneratorInterface {
         const offset = countQuery.length !== 0 ? 0 : params.offset;
 
         argumentsRows.push(`limit: ${params.limit}, offset: ${offset}`);
+
         const orderQueries = params.order.reduce((result: string[], order: OrderParameter<T>): string[] => {
             return [
                 ...result,
