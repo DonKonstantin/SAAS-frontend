@@ -11,11 +11,11 @@ type Props = {
 
 const SelectReplaceFileDialog: FC<Props> = (props) => {
     const {open, closeReplaceFileDialog, targetFile, availableFiles} = useReplaceFileDialog();
-    const [file, setFile] = useState<MediaFile | undefined>(undefined);
+    const [file, setFile] = useState<MediaFile | undefined>(availableFiles.length === 1 ? availableFiles[0] : undefined);
     const {onSave, force = false} = props;
 
     useEffect(() => {
-        setFile(undefined);
+        setFile(availableFiles.length === 1 ? availableFiles[0] : undefined);
     }, [targetFile])
 
     if (!targetFile) {
@@ -23,8 +23,8 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
     }
 
     const saveHandler = (file: MediaFile) => {
-        onSave(targetFile as MediaFile, file?.id || "", false),
-        closeReplaceFileDialog();
+        setFile(file);
+        onSave(targetFile as MediaFile, file?.id || "", false);
     }
 
     const uploadNewHandler = () => {
