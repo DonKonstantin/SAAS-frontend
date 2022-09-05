@@ -216,6 +216,110 @@ export class Schemas {
         isCreatable: true,
         isDeletable: true,
     };
+
+    // Параметры схемы сущности Паспорт объекта
+    object_passport: Schema = {
+      fields: {
+        id: {
+            type: "ID!",
+            isPrimaryKey: true,
+            isArray: false
+        },
+        accountant: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        director: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        locality: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        project_id: {
+            type: "ID!",
+            isArray: false,
+            isPrimaryKey: false,
+            relation: <RelationConfiguration<"project">>{
+                schema: "project",
+                target: "id",
+            },
+        },
+        rao_authors_fee_for_december: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        rao_authors_fee_for_on_to_eleven_months: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        rao_date_of_conclusion: {
+            type: "DateTime!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        rao_email: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        rao_license_number: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        rao_requisites: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        site_name: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        user_inn: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        user_name: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        vois_date_of_conclusion: {
+            type: "DateTime!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        vois_email: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        vois_fee: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        },
+        vois_license_number: {
+            type: "String!",
+            isPrimaryKey: false,
+            isArray: false
+        }
+    },
+    isChangeable: true,
+    isCreatable: true,
+    isDeletable: true,
+    };
+
     // Шаблоны для рассылок
     notifications_template = notifications_template
     notification_config = notification_config

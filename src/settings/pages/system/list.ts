@@ -24,4 +24,7 @@ export interface ListPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     rowSelectAction?: boolean;                                          // Тогдл дающий возможность выбирать элемент нажимая на всю поверхность строки
     onCopyRows?: { (primaryKeys: string[]): Promise<void> }             // Обработка копирования строк
     additionFilter?: string                                             // Дополнительный фильтр для листинга. Вводится в формате подстроки GraphQL запроса
+    additionButtonTitle?: string                                        // Текст для кнопки добавления новой сущности
+    hidePagination?: boolean                                            // Отключает пагинацию листинга
+    hideFilter?: boolean                                                // Отключает фильтр для листинга
 }
