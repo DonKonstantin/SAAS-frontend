@@ -17,18 +17,6 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: StorageIcon,
     },
     {
-        title: "UI.menu.left-menu.items.projects.index",
-        level: "realm",
-        subItems: [
-            {
-                link: {href: "/projects/object-passports"},
-                title: "objects-passport-list.left-menu-title",
-                permission: "READ_OBJECT_PASSPORTS",
-                level: "realm",
-            },
-        ]
-    },
-    {
         link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
@@ -200,7 +188,7 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         }
       },
       title: "objects-passport-list.left-menu-title",
-      permission: "READ_OBJECT_PASSPORTS",
+      permission: "READ_OBJECT_PASSPORT",
       level: "project",
     },
     {
