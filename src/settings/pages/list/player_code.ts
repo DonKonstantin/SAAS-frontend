@@ -3,6 +3,7 @@ import ListPageEditDeleteButtons from "components/ListPageEditDeleteButtons";
 import { getCurrentState } from 'context/AuthorizationContext';
 import { FilterFieldsConfiguration } from 'services/listDataLoader/filterLoader/types';
 import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/types';
+import EmptyCell from 'components/ListPageCustom/EmptyCell';
 
 /**
  * Конфигурация листинга кодов плееров
@@ -13,16 +14,6 @@ import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/type
  filter: FilterFieldsConfiguration<"player_code"> = {};
  listFields: ListFieldsConfiguration<"player_code"> = {
    fields: {
-    channels: {
-       field: "channels",
-       title: "",
-       isEnabled: true,
-       isHidden: true,
-       fieldType: {
-         config: undefined,
-         type: "Simple",
-       },
-     },
      close_time: {
        field: "close_time",
        title: "",
@@ -37,16 +28,7 @@ import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/type
        field: "code",
        title: "player-codes.list.headers.code",
        isEnabled: true,
-       fieldType: {
-         config: undefined,
-         type: "Simple",
-       },
-     },
-     id: {
-       field: "id",
-       title: "",
-       isEnabled: true,
-       isHidden: true,
+       width: 115,
        fieldType: {
          config: undefined,
          type: "Simple",
@@ -56,23 +38,16 @@ import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/type
        field: "is_active",
        title: "player-codes.list.headers.is_active",
        isEnabled: true,
+       width: 100,
+       align: 'left',
        fieldType: {
          config: undefined,
          type: "Simple",
+         customComponent: EmptyCell,
        },
      },
      open_time: {
        field: "open_time",
-       title: "",
-       isEnabled: true,
-       isHidden: true,
-       fieldType: {
-         config: undefined,
-         type: "Simple",
-       },
-     },
-     players: {
-       field: "players",
        title: "",
        isEnabled: true,
        isHidden: true,
