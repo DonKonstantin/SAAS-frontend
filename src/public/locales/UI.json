@@ -1,0 +1,117 @@
+{
+  "UI": {
+    "meta": {
+      "title": {
+        "prefix": "",
+        "suffix": " :: Inplay v2.0"
+      }
+    },
+    "login": {
+      "auth": {
+        "title": "Авторизация",
+        "email": "Email",
+        "email-placeholder": "Введите email",
+        "email-invalid": "Неправильный email",
+        "password": "Пароль",
+        "password-placeholder": "Введите пароль",
+        "password-invalid": "Неправильный пароль",
+        "login": "Войти",
+        "forgot-password": "Забыли пароль?"
+      },
+      "forgot-password": {
+        "title": "Забыли пароль?",
+        "caption": "Забыли пароль?",
+        "email": "Email",
+        "email-placeholder": "Введите email",
+        "email-invalid": "Необходимо заполнить значение",
+        "send": "Отправить",
+        "login": "Войти"
+      },
+      "change-password": {
+        "title": "Новый пароль",
+        "caption": "Новый пароль",
+        "password": "Пароль",
+        "password-placeholder": "Новый пароль",
+        "password-invalid": "Пароли не совпадают",
+        "password-confirm": "Пароль",
+        "password-confirm-placeholder": "Подтвердите пароль",
+        "password-confirm-invalid": "Пароли не совпадают",
+        "send": "Отправить",
+        "login": "Войти"
+      }
+    },
+    "auth-context": {
+      "reset-password": {
+        "success": "На почту отправлено письмо с инструкцией по восстановлению пароля",
+        "error": "Не удалось выполнить восстановление пароля, попробуйте позже"
+      },
+      "load-profile": {
+        "error": "Не удалось получить данные профиля пользователя"
+      },
+      "change-password": {
+        "success": "Пароль успешно сохранен",
+        "error": "Не удалось установить новый пароль, попробуйте позже"
+      }
+    },
+    "menu": {
+      "profile-menu": {
+        "tooltip": "Меню пользователя",
+        "logout": "Выйти"
+      },
+      "left-menu": {
+        "toggle-button": {
+          "show": "Развернуть панель",
+          "hide": "Свернуть панель"
+        },
+        "items": {
+          "domain": "Домены",
+          "user": "Пользователи",
+          "roles": "Роли",
+          "media-library": {
+            "index": "Медиабиблиотека",
+            "check": "Проверка",
+            "uploading": "Загрузка",
+            "storage": "Хранилище",
+            "categories": "Категории"
+          },
+          "logs": "Логи",
+          "permissions": {
+            "index": "Разрешения",
+            "permissions": "Разрешения",
+            "categories": "Группы"
+          },
+          "projects": {
+            "index": "Проекты",
+            "object-passports": "Паспорта объектов"
+          },
+          "playlists": "Плейлисты",
+          "projects-list": "Список проектов",
+          "domain-list": "Список доменов",
+          "notifications": {
+            "index": "Оповещения",
+            "templates": "Шаблоны",
+            "rules": "Настройки"
+          },
+          "player-codes": {
+            "index": "Коды плееров"
+          }
+        }
+      }
+    },
+    "pages": {
+      "error": {
+        "404": "Страница не найдена",
+        "500": "Внутренняя ошибка системы",
+        "back-to-main-page": "Вернуться на главную"
+      },
+      "loading": {
+        "title": "Загрузка CRM"
+      }
+    },
+    "layouts": {
+      "permissions": {
+        "message": "У вас нет доступа в этот раздел. <1>Вернуться на главную?</1>"
+      }
+    }
+  }
+}

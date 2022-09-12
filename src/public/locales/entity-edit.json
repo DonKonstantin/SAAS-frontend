@@ -1,0 +1,100 @@
+{
+  "entity-edit": {
+    "fields": {
+      "input": {
+        "placeholder": "Введите значение",
+        "restore-default": "Восстановить значение по умолчанию"
+      },
+      "enum": {
+        "no-value": "Значение не выбрано",
+        "restore-default": "Восстановить значение по умолчанию"
+      },
+      "permission-category-selector": {
+        "restore-default": "Восстановить значение по умолчанию"
+      },
+      "domain-selector": {
+        "no-value": "Домен не выбран",
+        "restore-default": "Восстановить значение по умолчанию"
+      },
+      "level-check-selector": {
+        "title": "Уровень доступа",
+        "levels": {
+          "realm": "Реалм",
+          "domain": "Домен",
+          "project": "Проект"
+        },
+        "level-descriptions": {
+          "realm": "Уровень доступа «Реалм» не требует дополнительной настройки.",
+          "domain": "Уровень доступа «Домен» требует указания домена, для которого действует доступ.",
+          "project": "Уровень доступа «Проект» требует указания проекта, для которого действует доступ."
+        },
+        "selectors": {
+          "domain": {
+            "label": "Выберите домен",
+            "no-value": "Домен не выбран"
+          },
+          "project": {
+            "label": "Выберите проект",
+            "no-value": "Проект не выбран"
+          }
+        }
+      },
+      "permission-choose-selector": {
+        "caption": "Назначение прав"
+      },
+      "user-create-password": {
+        "title": "Создание пароля",
+        "password": "Пароль",
+        "password-placeholder": "Новый пароль",
+        "password-confirm": "Подтверждение",
+        "password-confirm-placeholder": "Подтвердите пароль"
+      },
+      "user-info-group": {
+        "title": "Личные данные"
+      },
+      "user-update-password": {
+        "title": "Изменение пароля",
+        "password": "Пароль",
+        "password-placeholder": "Новый пароль",
+        "password-confirm": "Подтверждение",
+        "password-confirm-placeholder": "Подтвердите пароль",
+        "set-password": "Установить пароль",
+        "messages": {
+          "password-changed": "Пароль успешно изменен",
+          "password-change-error": "Не удалось изменить пароль"
+        }
+      },
+      "user-roles-group": {
+        "title": "Выбор роли",
+        "tooltips": {
+          "unassign": "Убрать выбранные роли",
+          "assign": "Добавить выбранные роли"
+        },
+        "header": {
+          "name": "Название",
+          "name-placeholder": "Введите название",
+          "object": "Имя",
+          "object-placeholder": "Введите имя",
+          "level": {
+            "caption": "Уровень",
+            "no-value": "Не выбран",
+            "realm": "Реалм",
+            "domain": "Домен",
+            "project": "Проект"
+          }
+        }
+      },
+      "CKEEditor": {
+        "switcher": {
+          "label": "Редактор"
+        }
+      }
+    },
+    "actions": {
+      "save": "Сохранить страницу [Ctrl + S]",
+      "copy": "Сохранить как новый элемент [Ctrl + Shift + C]",
+      "save-and-close": "Сохранить и закрыть страницу [Ctrl + Shift + S]",
+      "close": "Закрыть [Ctrl + Shift + X]"
+    }
+  }
+}
