@@ -13,6 +13,18 @@
     },
     "edit": {
 
+    },
+    "button": {
+      "create-random-code": "СОЗДАТЬ ПРОИЗВОЛЬНО",
+      "create-code": "СОЗДАТЬ КОД",
+      "deactivate": "Деактивировать"
+    },
+    "tooltip": {
+      "checkCode": {
+        "success": "код не используется в системе",
+        "error": "код уже используется в системе"
+      },
+      "deactivate-button": "деактивировать код плеера"
     }
   }
 }

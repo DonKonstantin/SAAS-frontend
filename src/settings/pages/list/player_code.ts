@@ -4,6 +4,8 @@ import { getCurrentState } from 'context/AuthorizationContext';
 import { FilterFieldsConfiguration } from 'services/listDataLoader/filterLoader/types';
 import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/types';
 import EmptyCell from 'components/ListPageCustom/EmptyCell';
+import PlayerCodeActions from "components/ListPageCustom/PlayerCodeActions";
+import { ListHeaderProps } from 'components/ListPageParts/TableCaption';
 
 /**
  * Конфигурация листинга кодов плееров
@@ -108,4 +110,5 @@ import EmptyCell from 'components/ListPageCustom/EmptyCell';
  };
  hidePagination = true;
  hideFilter = true;
+ action: React.ComponentType<ListHeaderProps> = PlayerCodeActions;
 }
