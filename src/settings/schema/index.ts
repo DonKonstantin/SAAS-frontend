@@ -343,7 +343,7 @@ export class Schemas {
       //  ID сущности
       id: {
         type: "ID",
-        isPrimaryKey: false,
+        isPrimaryKey: true,
         isArray: false,
       },
       //  Флаг активности кода плеера
@@ -427,6 +427,51 @@ export class Schemas {
     isDeletable: true,
   };
 
+  project_playlist: Schema = {
+  fields: {
+    //  Общая длительность плейлиста
+    duration: {
+      type: "Int!",
+      isPrimaryKey: false,
+      isArray: false,
+    },
+    //  ID сущности
+    id: {
+      type: "ID",
+      isPrimaryKey: true,
+      isArray: false,
+    },
+    //  Флаг, что в плейлисте используется единая громкость мелодий
+    is_overall_volume: {
+      type: "Boolean!",
+      isPrimaryKey: false,
+      isArray: false,
+    },
+    //  Название плейлиста
+    name: {
+      type: "String!",
+      isPrimaryKey: false,
+      isArray: false,
+    },
+    // Общая громкость звука в плейлисте
+    overall_volume: {
+      type: "Int!",
+      isPrimaryKey: false,
+      isArray: false,
+    },
+    //  Идентификатор проекта, к которому относится плейлист
+    project_id: {
+      type: "ID!",
+      isPrimaryKey: false,
+      isArray: false,
+    },
+  },
+
+  isChangeable: true,
+  isCreatable: true,
+  isDeletable: true,
+  };
+
   // Шаблоны для рассылок
   notifications_template = notifications_template;
   notification_config = notification_config;
@@ -454,7 +499,9 @@ export type FieldType =
   | "Enum"
   | "Enum!"
   | "Project_Channel"
-  | "Player_Without_Relations";
+  | "Player_Without_Relations"
+  | "Project_PlayList_File";
+
 export class SchemaField {
   type: FieldType;
   isPrimaryKey: boolean;

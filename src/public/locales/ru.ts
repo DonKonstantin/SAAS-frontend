@@ -5,6 +5,7 @@ import UI from './UI.json';
 import pages from './pages.json';
 import entityEdit from './entity-edit.json';
 import playerCodes from './player-codes.json';
+import projectPlaylist from './project-playlist.json';
 
 const RU = {
   ...entityList,
@@ -14,6 +15,7 @@ const RU = {
   ...pages,
   ...entityEdit,
   ...playerCodes,
+  ...projectPlaylist,
 };
 
 export default RU;

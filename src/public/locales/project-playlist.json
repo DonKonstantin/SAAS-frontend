@@ -1,0 +1,17 @@
+{
+  "project-playlists": {
+    "title": "Все плейлисты",
+    "header": "Все плейлисты",
+    "list": {
+      "header": {
+        "name": "Название",
+        "project": "Используется в кампании"
+      }
+    },
+    "button": {
+      "open-import-playlist": "ИМПОРТИРОВАТЬ ПЛЕЙЛИСТ",
+      "refresh-linked-companies": "ОБНОВИТЬ СВЯЗАННЫЕ КАМПАНИИ",
+      "copy-playlist": "Копировать"
+    }
+  } 
+}

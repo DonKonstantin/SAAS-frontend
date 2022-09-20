@@ -170,7 +170,8 @@ export const ProjectMenuItems = (): MenuItem[] => ([
     },
     {
         link: () => {
-            const {domain, project} = getCurrentState()
+            const {domain, project} = getCurrentState();
+
             return {
                 href: "/domain/[domainId]/project/[projectId]/player-codes",
                 as: `/domain/${domain}/project/${project}/player-codes`,
@@ -178,6 +179,17 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         },
         title: "UI.menu.left-menu.items.player-codes.index",
     },
+    {
+      link: () => {
+          const {domain, project} = getCurrentState();
+
+          return {
+              href: "/domain/[domainId]/project/[projectId]/project-playlists",
+              as: `/domain/${domain}/project/${project}/project-playlists`,
+          }
+      },
+      title: "UI.menu.left-menu.items.project-playlists",
+  },
     {
         link: () => {
             const {domain, project} = getCurrentState()

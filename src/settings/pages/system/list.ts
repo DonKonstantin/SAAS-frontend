@@ -27,4 +27,5 @@ export interface ListPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     additionButtonTitle?: string                                        // Текст для кнопки добавления новой сущности
     hidePagination?: boolean                                            // Отключает пагинацию листинга
     hideFilter?: boolean                                                // Отключает фильтр для листинга
+    headerActions?: React.ComponentType<ListHeaderProps>                // Слот для действий верхний правый угол 
 }

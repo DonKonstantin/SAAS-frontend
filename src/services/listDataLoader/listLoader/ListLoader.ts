@@ -84,6 +84,8 @@ export class ListLoader implements ListLoaderInterface {
 
             let additionData: any = undefined;
             if (actualConfig.listFields.additionDataLoader) {
+              console.log(rows, "rows");
+              
                 additionData = await actualConfig.listFields.additionDataLoader(rows, this.token)
             }
 
