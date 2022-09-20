@@ -56,6 +56,8 @@ const ListPage: FC = () => {
         setIsFilterOpen(s => !s)
     }
 
+    const additionItemButtonTitle = config?.additionButtonTitle || undefined;
+
     const FilterIcon = isFilterOpen ? ChevronRightIcon : ChevronLeftIcon
     const filterTooltip = `entity-list.components.filter.show-button.tooltip.${!isFilterOpen ? "show" : "hide"}`
     return (
@@ -71,15 +73,17 @@ const ListPage: FC = () => {
                             <Breadcrumbs/>
                         </Grid>
                         <Grid item>
-                            <Tooltip title={t(filterTooltip) as string}>
-                                <IconButton
-                                    size="small"
-                                    color="primary"
-                                    onClick={handleToggleFilter}
-                                >
-                                    <FilterIcon fontSize="medium"/>
-                                </IconButton>
-                            </Tooltip>
+                          {!config?.hideFilter && (
+                                <Tooltip title={t(filterTooltip) as string}>
+                                    <IconButton
+                                        size="small"
+                                        color="primary"
+                                        onClick={handleToggleFilter}
+                                    >
+                                        <FilterIcon fontSize="medium"/>
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </Grid>
                     </Grid>
                 </Box>
@@ -97,7 +101,9 @@ const ListPage: FC = () => {
                                 spacing={1}
                             >
                                 <Grid item sx={{flex: "1 1 0"}}>
-                                    <ListPagePagination/>
+                                    {!config?.hidePagination && (
+                                        <ListPagePagination/>
+                                    )}
                                 </Grid>
                                 {ActionComponent && (
                                     <Grid item>
@@ -105,7 +111,7 @@ const ListPage: FC = () => {
                                     </Grid>
                                 )}
                                 <Grid item>
-                                    <ListPageCreationButton/>
+                                    <ListPageCreationButton buttonTitle={additionItemButtonTitle} />
                                 </Grid>
                             </Grid>
                         </Box>

@@ -1,0 +1,15 @@
+{
+  "objects-passport-list": {
+    "header": "Паспорта объектов",
+    "title": "Паспорта объектов",
+    "left-menu-title": "Паспорта объектов",
+    "list-headers": {
+      "locality": "Населенный пункт",
+      "site-name": "Наименование площадки",
+      "user-name": "Имя пользователя"
+    },
+    "addition-item-button": {
+      "title": "Создать паспорт объекта"
+    }
+  }
+}

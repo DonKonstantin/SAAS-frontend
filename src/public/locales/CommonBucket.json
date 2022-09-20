@@ -80,7 +80,10 @@
             "permissions": "Разрешения",
             "categories": "Группы"
           },
-          "projects": "Проекты",
+          "projects": {
+            "index": "Проекты",
+            "object-passports": "Паспорта объектов"
+          },
           "playlists": "Плейлисты",
           "projects-list": "Список проектов",
           "domain-list": "Список доменов",

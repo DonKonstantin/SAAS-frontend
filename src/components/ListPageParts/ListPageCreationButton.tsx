@@ -11,11 +11,12 @@ import {ListPageConfiguration} from "../../settings/pages/system/list";
 import {withPageProps} from "../../layouts/PagePropsProvider";
 
 // Компонент вывода кнопки создания элемента
-const ListPageCreationButton: FC<PageWithEntityList> = props => {
+const ListPageCreationButton: FC<PageWithEntityList & {buttonTitle?: string}> = props => {
     const {
         permissionCheckCreatePermission,
         permissionCheckLevel = "project",
-        permissionCheckCreateLevel = permissionCheckLevel
+        permissionCheckCreateLevel = permissionCheckLevel,
+        buttonTitle
     } = props
 
     const {userInfo} = useAuthorization()
@@ -52,7 +53,7 @@ const ListPageCreationButton: FC<PageWithEntityList> = props => {
     return (
         <Tooltip title={t(`entity-list.components.actions.add-tooltip`) as string}>
             <Button variant={"outlined"} onClick={onClick}>
-                {t(`entity-list.components.actions.add`)}
+                {t(buttonTitle || `entity-list.components.actions.add`)}
             </Button>
         </Tooltip>
     )

@@ -17,6 +17,18 @@ export const RealmMenuItems = (): MenuItem[] => ([
         icon: StorageIcon,
     },
     {
+        title: "UI.menu.left-menu.items.projects.index",
+        level: "realm",
+        subItems: [
+            {
+                link: {href: "/projects/object-passports"},
+                title: "objects-passport-list.left-menu-title",
+                permission: "READ_OBJECT_PASSPORTS",
+                level: "realm",
+            },
+        ]
+    },
+    {
         link: {href: "/users"},
         title: "UI.menu.left-menu.items.user",
         permission: "READ_USERS",
@@ -114,7 +126,7 @@ export const DomainMenuItems = (): MenuItem[] => ([
                 as: `/domain/${domain}/project`,
             }
         },
-        title: "UI.menu.left-menu.items.projects",
+        title: "UI.menu.left-menu.items.projects.index",
     },
     {
         link: () => {
@@ -177,6 +189,19 @@ export const ProjectMenuItems = (): MenuItem[] => ([
             }
         },
         title: "UI.menu.left-menu.items.playlists",
+    },
+    {
+      link: () => {
+        const {domain, project} = getCurrentState();
+        
+        return {
+            href: "/domain/[domainId]/project/[projectId]/object-passports",
+            as: `/domain/${domain}/project/${project}/object-passports`,
+        }
+      },
+      title: "objects-passport-list.left-menu-title",
+      permission: "READ_OBJECT_PASSPORTS",
+      level: "project",
     },
     {
         link: () => {
