@@ -4,7 +4,8 @@ import {DropzoneOptions, useDropzone} from "react-dropzone";
 import {Box, Typography} from "@mui/material";
 
 type Props = {
-    active?: boolean
+    active?: boolean;
+    iconSize?: number;
 } & DropzoneOptions;
 
 
@@ -49,7 +50,7 @@ const rejectStyle = {
  * @param props
  */
 const DropZoneArea: FC<Props> = props => {
-    const {active = false, ...other} = props
+    const {active = false, iconSize = 100, ...other} = props
     const {getRootProps, getInputProps, isFocused, isDragAccept, isDragReject} = useDropzone(other);
 
     const style = useMemo(() => ({
@@ -82,7 +83,7 @@ const DropZoneArea: FC<Props> = props => {
                 }}
             >
                 <div>
-                    <CloudUploadIcon color={"primary"} sx={{fontSize: 100}}/>
+                    <CloudUploadIcon color={"primary"} sx={{fontSize: iconSize}}/>
                 </div>
                 <Typography color={"primary"}>Переместите <br/>файлы для загрузки</Typography>
             </Box>

@@ -8,10 +8,21 @@
         "project": "Используется в кампании"
       }
     },
+    "import-playlist": {
+      "drop-step": {
+        "text-header": "Импортировать плейлист",
+        "text": "Переместите все файлы для загрузки в контейнер"
+      }
+    },
+    "epsent-tracks": {
+      "header": "Треки не найдены"
+    },
     "button": {
       "open-import-playlist": "ИМПОРТИРОВАТЬ ПЛЕЙЛИСТ",
       "refresh-linked-companies": "ОБНОВИТЬ СВЯЗАННЫЕ КАМПАНИИ",
-      "copy-playlist": "Копировать"
+      "copy-playlist": "Копировать",
+      "cancel": "ОТМЕНА",
+      "accept": "ПРИНЯТЬ"
     }
   } 
 }
