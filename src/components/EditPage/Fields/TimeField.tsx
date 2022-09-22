@@ -5,6 +5,7 @@ import { distinctUntilChanged } from "rxjs";
 import { InputAdornment, TextField } from "@mui/material";
 import { DesktopTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
+import dayjs from "dayjs";
 
 // Поле ввода времени
 const TimeField: FC<EditFieldProperties> = (props) => {
@@ -42,14 +43,16 @@ const TimeField: FC<EditFieldProperties> = (props) => {
     return null;
   }
 
+  const timeValue = dayjs(new Date()).format("YYYY-MM-DD") + "T" + value;
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
       <DesktopTimePicker
         label={t(title)}
-        value={value}
+        value={new Date(timeValue)}
         ampm={false}
         onChange={(value: any) => {
-          onChangeFieldValue(() => value);
+          onChangeFieldValue(() => dayjs(value).format("HH:mm:ss"));
         }}
         renderInput={(params) => (
           <TextField
