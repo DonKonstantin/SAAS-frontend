@@ -6,8 +6,8 @@ import { InputAdornment, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 
-// Поле ввода числового значения
-const StringField: FC<EditFieldProperties> = (props) => {
+// Поле ввода даты
+const DateField: FC<EditFieldProperties> = (props) => {
   const { fieldCode } = props;
   const fieldData = useEntityEditField(
     fieldCode,
@@ -74,6 +74,6 @@ const StringField: FC<EditFieldProperties> = (props) => {
 };
 
 // Экспортируем компонент
-export default React.memo(StringField, (prevProps, nextProps) => {
+export default React.memo(DateField, (prevProps, nextProps) => {
   return prevProps.fieldCode === nextProps.fieldCode;
 });
