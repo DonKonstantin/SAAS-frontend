@@ -1,14 +1,15 @@
 import { EditPageLinkGenerator, ListPageConfiguration, PageUrl } from '../system/list';
-import ListPageEditDeleteButtons from "components/ListPageEditDeleteButtons";
 import { getCurrentState } from 'context/AuthorizationContext';
 import { FilterFieldsConfiguration } from 'services/listDataLoader/filterLoader/types';
 import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/types';
-import EmptyCell from 'components/ListPageCustom/EmptyCell';
 import PlayerCodeActions from "components/ListPageCustom/PlayerCodeActions";
 import { ListHeaderProps } from 'components/ListPageParts/TableCaption';
 import { ListRowProps } from 'components/ListPageParts/List/ListBody/ListRow';
 import { FC } from "react";
 import PlayerCodeRow from 'components/ListPageCustom/PlayerCodeRow';
+import ListPageEditDeleteButtons from 'components/ListPageEditDeleteButtons';
+import { loggerFactory } from 'services/logger';
+import { playerCodeService } from 'services/playerCodeService';
 
 /**
  * Конфигурация листинга кодов плееров
@@ -33,7 +34,7 @@ import PlayerCodeRow from 'components/ListPageCustom/PlayerCodeRow';
        field: "code",
        title: "player-codes.list.headers.code",
        isEnabled: true,
-       width: 115,
+       width: 233,
        fieldType: {
          config: undefined,
          type: "Simple",
@@ -43,26 +44,14 @@ import PlayerCodeRow from 'components/ListPageCustom/PlayerCodeRow';
        field: "is_active",
        title: "player-codes.list.headers.is_active",
        isEnabled: true,
-       width: 100,
        align: 'left',
        fieldType: {
          config: undefined,
          type: "Simple",
-         customComponent: EmptyCell,
        },
      },
      open_time: {
        field: "open_time",
-       title: "",
-       isEnabled: true,
-       isHidden: true,
-       fieldType: {
-         config: undefined,
-         type: "Simple",
-       },
-     },
-     project_channels: {
-       field: "project_channels",
        title: "",
        isEnabled: true,
        isHidden: true,
@@ -93,6 +82,33 @@ import PlayerCodeRow from 'components/ListPageCustom/PlayerCodeRow';
      },
    },
    actions: ListPageEditDeleteButtons,
+   additionDataLoader: async listData => {
+    const logger = loggerFactory().make("Edit player code");
+
+    const { project } = getCurrentState();
+
+    console.log(listData.map(item => item.primaryKeyValue), "listData");
+    
+    const playerCodeKeys = listData.map(item => item.primaryKeyValue);
+
+    try {
+      const checkResult = await playerCodeService().getPlayersForPlayerCodes(
+        project,
+        playerCodeKeys
+      );
+
+      logger.Debug(
+        "Edit player code addition data response: ",
+        checkResult
+      );
+
+      return checkResult;
+    } catch (error) {
+      logger.Error("Edit player code addition data error: ", error);
+
+      return [];
+    }
+   }
  };
  schema: "player_code" = "player_code";
  elementsPerPage: number = 25;

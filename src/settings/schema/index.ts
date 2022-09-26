@@ -337,7 +337,7 @@ export class Schemas {
       //  Символьный код кода плеера
       code: {
         type: "String!",
-        isPrimaryKey: false,
+        isPrimaryKey: true,
         isArray: false,
       },
       //  ID сущности
