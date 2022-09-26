@@ -27,6 +27,7 @@ const ListRowContainer: FC<ListRowProps> = props => {
             rowBelow: PrevRow,
             rowHigher: NextRow,
         },
+        customRow: CustomRow,
     } = config
 
     // Переключение состояния чекбокса выбора элемента
@@ -53,7 +54,9 @@ const ListRowContainer: FC<ListRowProps> = props => {
                 tabIndex={-1}
                 onClick={onToggleItemCheckedState}
             >
-                <ListRow {...props} />
+              {CustomRow
+              ? <CustomRow {...props} />
+              : <ListRow {...props} />}
             </TableRow>
             {!!NextRow && (
                 <NextRow item={row}/>

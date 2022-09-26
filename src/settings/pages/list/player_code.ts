@@ -6,6 +6,9 @@ import { ListFieldsConfiguration } from 'services/listDataLoader/listLoader/type
 import EmptyCell from 'components/ListPageCustom/EmptyCell';
 import PlayerCodeActions from "components/ListPageCustom/PlayerCodeActions";
 import { ListHeaderProps } from 'components/ListPageParts/TableCaption';
+import { ListRowProps } from 'components/ListPageParts/List/ListBody/ListRow';
+import { FC } from "react";
+import PlayerCodeRow from 'components/ListPageCustom/PlayerCodeRow';
 
 /**
  * Конфигурация листинга кодов плееров
@@ -111,4 +114,5 @@ import { ListHeaderProps } from 'components/ListPageParts/TableCaption';
  hidePagination = true;
  hideFilter = true;
  action: React.ComponentType<ListHeaderProps> = PlayerCodeActions;
+ customRow: FC<ListRowProps> = PlayerCodeRow;
 }

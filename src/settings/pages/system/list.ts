@@ -1,8 +1,9 @@
 import {Schemas} from "../../schema";
 import {FilterFieldsConfiguration} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldsConfiguration} from "../../../services/listDataLoader/listLoader/types";
-import React from "react";
+import React, { FC } from "react";
 import {ListHeaderProps} from "../../../components/ListPageParts/TableCaption";
+import { ListRowProps } from "components/ListPageParts/List/ListBody/ListRow";
 
 // Тип, описывающий ссылку на страницу
 export type PageUrl = { href: string, as?: string }
@@ -27,4 +28,5 @@ export interface ListPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     additionButtonTitle?: string                                        // Текст для кнопки добавления новой сущности
     hidePagination?: boolean                                            // Отключает пагинацию листинга
     hideFilter?: boolean                                                // Отключает фильтр для листинга
+    customRow?: FC<ListRowProps>                                        // Компонент кастомной строки листинга
 }
