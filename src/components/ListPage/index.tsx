@@ -110,9 +110,11 @@ const ListPage: FC = () => {
                                         <ActionComponent checkedItems={selected} />
                                     </Grid>
                                 )}
-                                <Grid item>
+                                {!ActionComponent && (
+                                  <Grid item>
                                     <ListPageCreationButton buttonTitle={additionItemButtonTitle} />
-                                </Grid>
+                                  </Grid>
+                                )}
                             </Grid>
                         </Box>
                     </Paper>

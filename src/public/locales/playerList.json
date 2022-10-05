@@ -1,0 +1,19 @@
+{
+  "player-list": {
+    "title": "Плееры",
+    "header": "Плееры",
+    "list": {
+      "header": {
+        "name": "Плеер",
+        "is-active": "Статусы плееров",
+        "last-update": "Последнее обращение",
+        "project-id": "Канал",
+        "uploading-status": "Загружено %"
+      }
+    },
+    "status": {
+      "true": "активен",
+      "false": "не активен"
+    }
+  }
+}

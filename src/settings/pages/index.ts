@@ -19,6 +19,7 @@ import {NotificationConfigListingConfiguration} from "./list/notification_config
 import {NotificationConfigEditPageConfig} from "./edit/notification_config";
 import {FileListingConfiguration} from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
+import { PlayersListingConfiguration } from "./list/player";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -34,6 +35,7 @@ export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): List
         notifications_template: new NotificationsTemplateListingConfiguration,
         notification_config: new NotificationConfigListingConfiguration,
         object_passport: new ObjectsPassportListingConfiguration,
+        player: new PlayersListingConfiguration,
     }
 };
 
