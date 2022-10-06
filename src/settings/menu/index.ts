@@ -179,6 +179,17 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         title: "UI.menu.left-menu.items.playlists",
     },
     {
+        link: () => {
+            const {domain, project} = getCurrentState();
+
+            return {
+                href: "/domain/[domainId]/project/[projectId]/player-list",
+                as: `/domain/${domain}/project/${project}/player-list`,
+            };
+        },
+        title: "UI.menu.left-menu.items.player-list",
+    },
+    {
       link: () => {
         const {domain, project} = getCurrentState();
         

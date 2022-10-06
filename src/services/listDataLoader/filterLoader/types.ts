@@ -232,4 +232,13 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Enum!": AvailableFilterField[] = [
         "EnumSelector"
     ];
+    "Object_Passport": AvailableFilterField[] = [
+      
+    ];
+    "NullableID": AvailableFilterField[] = [
+      
+    ];
+    "Player_Code!": AvailableFilterField[] = [
+      
+    ];
 }
