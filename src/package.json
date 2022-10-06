@@ -23,6 +23,7 @@
     "@mui/material": "^5.0.3",
     "@mui/styles": "^5.0.1",
     "@mui/x-data-grid": "^5.6.1",
+    "@types/lodash": "^4.14.186",
     "axios": "^0.26.0",
     "babel-plugin-styled-components": "^1.13.2",
     "dayjs": "^1.10.7",
