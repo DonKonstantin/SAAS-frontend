@@ -337,7 +337,7 @@ export class Schemas {
       //  Символьный код кода плеера
       code: {
         type: "String!",
-        isPrimaryKey: false,
+        isPrimaryKey: true,
         isArray: false,
       },
       //  ID сущности
@@ -383,6 +383,45 @@ export class Schemas {
         isArray: false,
       },
     },
+    isChangeable: true,
+    isCreatable: true,
+    isDeletable: true,
+  };
+
+  project_channel: Schema = {
+    fields: {
+      //  ID сущности
+      id: {
+        type: "ID",
+        isPrimaryKey: true,
+        isArray: false,
+      },
+      //  Флаг активности расписания
+      is_active: {
+        type: "Boolean!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Название канала
+      name: {
+        type: "String!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Плееры, относящиеся к каналу
+      players: {
+        type: "Player_Without_Relations",
+        isPrimaryKey: false,
+        isArray: true,
+      },
+      //  Идентификатор проекта, к которому относится канал
+      project_id: {
+        type: "ID!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+    },
+
     isChangeable: true,
     isCreatable: true,
     isDeletable: true,
