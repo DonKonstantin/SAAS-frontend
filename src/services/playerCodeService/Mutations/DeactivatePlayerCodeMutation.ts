@@ -6,7 +6,9 @@ export type DeactivatePlayerCodeMutationParams = {
 };
 
 export type DeactivatePlayerCodeMutationResponse = {
-  affected_rows: number;
+  player_code_update: {
+    affected_rows: number;
+  }
 };
 
 /**

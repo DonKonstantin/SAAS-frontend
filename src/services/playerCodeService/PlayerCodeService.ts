@@ -135,17 +135,17 @@ export class PlayerCodeService implements PlayerCodeServiceInterface {
     this.logger.Debug("Код плеера для деактивации: ", code);
 
     try {
-      const { affected_rows } = await this.client.Mutation<
+      const { player_code_update } = await this.client.Mutation<
         DeactivatePlayerCodeMutationParams,
         DeactivatePlayerCodeMutationResponse
       >(new DeactivatePlayerCodeMutation(code), {});
 
-      this.logger.Debug(
+      this.logger.Info(
         "Ответ на мутацию деактивации кода плеера: ",
-        affected_rows
+        player_code_update
       );
 
-      return affected_rows > 0;
+      return player_code_update.affected_rows > 0;
     } catch (error) {
       this.logger.Error("Ошибка деактивации кода плеера: ", error);
 

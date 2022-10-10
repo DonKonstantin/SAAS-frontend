@@ -70,9 +70,9 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
     return null;
   }
 
-  const hasActive = data.currentData.rows.some(
-    (item) => item.columnValues.is_active.value
-  );
+  const hasActive = data.currentData.rows
+  .filter(value => checkedItems.some(v => v === value.columnValues.code.value))
+  .some((item) => !!item.columnValues.is_active.value);
 
   return (
     <Stack direction="row" columnGap={1.5}>

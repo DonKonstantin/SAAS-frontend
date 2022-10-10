@@ -9,7 +9,6 @@ import {
 import React, {
   FC,
   memo,
-  useCallback,
   useState,
   useRef,
   useEffect,
@@ -69,7 +68,7 @@ const PlayerCodeField: FC<EditFieldProperties> = (props) => {
     onChangeFieldValue,
   } = fieldData;
 
-  const onRandomeClick = useCallback(async () => {
+  const onRandomeClick = async () => {
     setIsChecking(true);
 
     setIsFree(false);
@@ -106,16 +105,13 @@ const PlayerCodeField: FC<EditFieldProperties> = (props) => {
     setIsChecking(false);
 
     onChangeFieldValue(() => result);
-  }, [onChangeFieldValue, playerCodeService, setIsChecking, setIsFree]);
+  };
 
-  const onChangeCodeHandler = useCallback(
-    (value: string) => {
-      setIsFree(false);
+  const onChangeCodeHandler = (value: string) => {
+    setIsFree(false);
 
-      onChangeFieldValue(() => value);
-    },
-    [onChangeFieldValue, setIsFree]
-  );
+    onChangeFieldValue(() => value);
+  };
 
   useEffect(() => {
     const listener = fromEvent(inputRef.current!, "input")
