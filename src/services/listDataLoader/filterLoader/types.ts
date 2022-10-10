@@ -238,4 +238,13 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Player_Without_Relations": AvailableFilterField[] = [
       
     ];
+    "Object_Passport": AvailableFilterField[] = [
+      
+    ];
+    "NullableID": AvailableFilterField[] = [
+      
+    ];
+    "Player_Code!": AvailableFilterField[] = [
+      
+    ];
 }
