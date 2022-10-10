@@ -28,6 +28,8 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
 
   const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
 
+  const percent = campaigns.reduce((acc: number, item) => acc + item.uploadingStatus, 0) / campaigns.length;
+
   return (
     <TableCell
       className="list-table-cell"
@@ -36,7 +38,7 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
       align={align}
     >
       <Typography variant="caption">
-        {campaigns.reduce((acc: number, item) => acc + item.uploadingStatus, 0).toFixed(2)}%
+        {percent.toFixed(2)}%
       </Typography>
     </TableCell>
   );

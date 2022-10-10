@@ -35,12 +35,6 @@ export class PlayersListingConfiguration
       schema: "player",
       title: "player-list.list.header.name",
     },
-    is_active: {
-      field: "is_active",
-      filterType: "Switch",
-      schema: "player",
-      title: "player-list.list.header.is-active",
-    },
     last_update: {
       field: "last_update",
       filterType: "DateTimeRange",
