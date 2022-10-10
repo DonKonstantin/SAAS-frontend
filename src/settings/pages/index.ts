@@ -20,6 +20,7 @@ import {NotificationConfigEditPageConfig} from "./edit/notification_config";
 import {FileListingConfiguration} from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
 import { PlayersListingConfiguration } from "./list/player";
+import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -51,5 +52,6 @@ export const editSchemaConfiguration: { (): EditSchemaConfiguration } = (): Edit
         user: new UserEditPageConfig,
         notifications_template: new NotificationsTemplateEditPageConfig,
         notification_config: new NotificationConfigEditPageConfig,
+        object_passport: new ObjectPassportEditPageConfig,
     }
 };

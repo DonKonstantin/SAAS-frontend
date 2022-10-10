@@ -6,6 +6,7 @@ import {
 import { FilterFieldsConfiguration } from "../../../services/listDataLoader/filterLoader/types";
 import { ListFieldsConfiguration } from "../../../services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
+import { getCurrentState } from "context/AuthorizationContext";
 
 /**
  * Конфигурация листинга паспортов объектов
@@ -198,11 +199,21 @@ export class ObjectsPassportListingConfiguration
   };
   schema: "object_passport" = "object_passport";
   elementsPerPage: number = 25;
-  editPageUrl: EditPageLinkGenerator = (pk) => ({
-    href: "/projects/object-passports/edit/[entityId]",
-    as: `/projects/object-passports/edit/${pk}`,
-  });
-  addPageUrl: PageUrl = { href: "/projects/object-passports/add" };
+  editPageUrl: EditPageLinkGenerator = (pk) => {
+    const {domain, project} = getCurrentState();
+
+    return {
+    href: "/domain/[domainId]/project/[projectId]/object-passports/edit/[entityId]",
+    as: `/domain/${domain}/project/${project}/object-passports/edit/${pk}`,
+  }};
+  addPageUrl: {(): PageUrl} = () => {
+    const {domain, project} = getCurrentState();
+
+    return {
+      href: "/domain/[domainId]/project/[projectId]/object-passports/add",
+      as: `/domain/${domain}/project/${project}/object-passports/add`,
+    }
+  };
   additionButtonTitle = 'objects-passport-list.addition-item-button.title';
   hidePagination = true;
   hideFilter = true;
