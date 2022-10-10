@@ -28,7 +28,7 @@ export class GetCampaignsQuery
 
     this.query = gql(`
     query __CAMPAIGNS_FOR_PLAYER_LIST__($playerIds: [ID], $projectId: ID) {
-      player: player_list(
+      players: player_list(
         where: { _and: [{ project_id: { _equals: $projectId }, id: { _in: $playerIds} }] }
       ) {
         id

@@ -125,12 +125,11 @@ export class PlayersListingConfiguration
         return {};
       }
 
-      const campaigns = playerListService().getCampaigns(playerIDs, project);
+      const campaigns = await playerListService().getCampaigns(playerIDs, project);
 
       return {
         campaigns,
       };
-      
     }
   };
   schema: "player" = "player";

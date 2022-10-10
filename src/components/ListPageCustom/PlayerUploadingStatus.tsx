@@ -26,7 +26,7 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
 
   const playerId = rowValues.id.value;
 
-  const channel = additionData.filter((data) => data.id === playerId)[0];
+  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
 
   return (
     <TableCell
@@ -36,7 +36,7 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
       align={align}
     >
       <Typography variant="caption">
-        {channel.campaigns.uploadingStatus}%
+        {campaigns.reduce((acc: number, item) => acc + item.uploadingStatus, 0).toFixed(2)}%
       </Typography>
     </TableCell>
   );
