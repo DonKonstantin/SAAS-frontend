@@ -12,11 +12,29 @@ import React, {
 import { listSchemaConfiguration } from "settings/pages";
 import { ListPageConfiguration } from "settings/pages/system/list";
 import { SwitchBaseProps } from "@mui/material/internal/SwitchBase";
-import { IconButton, TableCell, Collapse, TableRow, Table } from "@mui/material";
+import {
+  IconButton,
+  TableCell,
+  Collapse,
+  TableRow,
+  Table,
+  Tooltip,
+} from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import { useEntityList } from "context/EntityListContext";
+import { PlayerWithoutRelations } from "services/playerCodeService/interfaces";
+import PlayerCodeSubRow from "./PlayerCodeSubRow";
+import CustomActiveCell from "./CustomActiveCell";
 
+/**
+ * Кастомноая строка для листинга кодов плеера
+ * @param props
+ * @returns
+ */
 const PlayerCodeRow: FC<ListRowProps> = (props) => {
   const { data, row, checkedItems, onChangeCheckedItems } = props;
+
+  const contextData = useEntityList();
 
   const [config, setConfig] = useState<ListPageConfiguration>();
   const [open, setOpen] = useState<boolean>(false);
@@ -34,22 +52,18 @@ const PlayerCodeRow: FC<ListRowProps> = (props) => {
     setOpen((prev) => !prev);
   }, [setOpen]);
 
-  if (!data || !config) {
+  if (!data || !config || !contextData) {
     return null;
   }
 
   const {
-    schema,
-    currentData: {
-      parameters: {
-        listConfiguration: { fields },
-      },
-    },
+    currentData: { additionData },
   } = data;
 
-  const { disableMultiChoose = false, listFields } = config;
-
-  const { actions: ActionsComponent } = listFields;
+  const subRowsData: PlayerWithoutRelations[] =
+    additionData?.player_code?.filter(
+      (item) => item.code === row.primaryKeyValue
+    )[0].players || [];
 
   // Переключение состояния чекбокса выбора элемента
   const onToggleItemCheckedState: SwitchBaseProps["onClick"] = (event) => {
@@ -64,8 +78,6 @@ const PlayerCodeRow: FC<ListRowProps> = (props) => {
     });
   };
 
-  console.log(row, "Fields");
-
   return (
     <Fragment>
       <TableRow>
@@ -73,30 +85,42 @@ const PlayerCodeRow: FC<ListRowProps> = (props) => {
           checked={checkedItems.includes(row.primaryKeyValue)}
           onClick={onToggleItemCheckedState}
         />
-        <TableCell
-          sx={{
-            width: fields.code.width,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <TableCell className="list-table-cell" padding="checkbox">
           {row.columnValues.code.value}
-          <IconButton onClick={openHandler}>
-            <ArrowDropUpIcon
-              sx={{ transform: `rotate(${open ? 180 : 0}deg)` }}
-            />
-          </IconButton>
+          <Tooltip title="">
+            <IconButton onClick={openHandler} disabled={!subRowsData.length}>
+              <ArrowDropUpIcon
+                sx={{ transform: `rotate(${open ? 180 : 0}deg)` }}
+              />
+            </IconButton>
+          </Tooltip>
         </TableCell>
-        <TableCell></TableCell>
+        <CustomActiveCell
+          schema="player_code"
+          value={{
+            value: row.columnValues.is_active.value,
+          }}
+          rowValues={[]}
+          configuration={
+            listSchemaConfiguration()["player_code"]?.listFields.fields[
+              "is_active"
+            ]!
+          }
+          primaryKeyValue={""}
+        />
         <ListPageEditDeleteButtons item={row} />
       </TableRow>
-      <Collapse in={open}>
-        <TableRow>
-          <Table>
-            
-          </Table>
-        </TableRow>
-      </Collapse>
+      <TableRow>
+        <TableCell sx={{ p: 0, border: 0 }} colSpan={4}>
+          <Collapse in={open}>
+            <Table>
+              {subRowsData.map((subRow) => (
+                <PlayerCodeSubRow row={subRow} />
+              ))}
+            </Table>
+          </Collapse>
+        </TableCell>
+      </TableRow>
     </Fragment>
   );
 };

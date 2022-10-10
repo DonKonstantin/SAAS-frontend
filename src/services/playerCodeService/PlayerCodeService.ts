@@ -3,16 +3,25 @@ import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
 import { PlayerCodeServiceInterface, ProjectChannel } from "./interfaces";
 import {
+  DeactivatePlayerCodeMutation,
+  DeactivatePlayerCodeMutationParams,
+  DeactivatePlayerCodeMutationResponse,
+} from "./Mutations/DeactivatePlayerCodeMutation";
+import {
   CheckCodeIsFreeQuery,
   CheckCodeIsFreeQueryParams,
   CheckCodeIsFreeQueryResponse,
-} from "./Querys/CheckCodeIsFree";
+} from "./Queries/CheckCodeIsFree";
 import {
   GetChannelsByProjectIDQuery,
   GetChannelsByProjectIDQueryParams,
   GetChannelsByProjectIDQueryResponse,
-} from "./Querys/GetChannelsByProjectID";
-import { GetChannelsForPlayerCodesQuery, GetChannelsForPlayerCodesQueryParams, GetChannelsForPlayerCodesQueryResponse } from "./Querys/GetChannelsForPlayerCodes";
+} from "./Queries/GetChannelsByProjectID";
+import {
+  GetChannelsForPlayerCodesQuery,
+  GetChannelsForPlayerCodesQueryParams,
+  GetChannelsForPlayerCodesQueryResponse,
+} from "./Queries/GetChannelsForPlayerCodes";
 
 /**
  * Сервис кодов плееров
@@ -84,7 +93,10 @@ export class PlayerCodeService implements PlayerCodeServiceInterface {
     }
   }
 
-  async getPlayersForPlayerCodes(projectId: string, playerCodeIDs: string[]): Promise<ProjectChannel[]> {
+  async getPlayersForPlayerCodes(
+    projectId: string,
+    playerCodeIDs: string[]
+  ): Promise<GetChannelsForPlayerCodesQueryResponse> {
     this.logger.Debug("ID проекта: ", projectId);
     this.logger.Debug("ID кодов плееров в листинге: ", playerCodeIDs);
 
@@ -94,17 +106,50 @@ export class PlayerCodeService implements PlayerCodeServiceInterface {
         GetChannelsForPlayerCodesQueryResponse
       >(new GetChannelsForPlayerCodesQuery(projectId, playerCodeIDs), {});
 
-      this.logger.Debug("Ответ на запрос списка каналов для листинга кодов плеера: ", response);
+      this.logger.Debug(
+        "Ответ на запрос списка каналов для листинга кодов плеера: ",
+        response
+      );
 
-      return response.channels;
+      this.logger.Info(
+        "Ответ на запрос списка каналов для листинга кодов плеера: ",
+        response
+      );
+
+      return response;
     } catch (error) {
-      this.logger.Error("Ошибка запроса списка каналов для листинга кодов плеера: ", error);
+      this.logger.Error(
+        "Ошибка запроса списка каналов для листинга кодов плеера: ",
+        error
+      );
 
       if (!error.errors) {
         throw error;
       }
 
       throw error.errors;
+    }
+  }
+
+  async deactivatePlayerCode(code: string[]): Promise<boolean> {
+    this.logger.Debug("Код плеера для деактивации: ", code);
+
+    try {
+      const { affected_rows } = await this.client.Mutation<
+        DeactivatePlayerCodeMutationParams,
+        DeactivatePlayerCodeMutationResponse
+      >(new DeactivatePlayerCodeMutation(code), {});
+
+      this.logger.Debug(
+        "Ответ на мутацию деактивации кода плеера: ",
+        affected_rows
+      );
+
+      return affected_rows > 0;
+    } catch (error) {
+      this.logger.Error("Ошибка деактивации кода плеера: ", error);
+
+      return false;
     }
   }
 }

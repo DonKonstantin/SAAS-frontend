@@ -1,6 +1,6 @@
 import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { ProjectChannel } from "../interfaces";
+import { PlayerWithoutRelations } from "../interfaces";
 
 export type GetChannelsForPlayerCodesQueryParams = {
   projectId: string;
@@ -8,7 +8,10 @@ export type GetChannelsForPlayerCodesQueryParams = {
 };
 
 export type GetChannelsForPlayerCodesQueryResponse = {
-  channels: ProjectChannel[];
+  player_code: {
+    code: string;
+    players: PlayerWithoutRelations[];
+  }[];
 };
 
 /**
