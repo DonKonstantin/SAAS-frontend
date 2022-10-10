@@ -24,8 +24,6 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
     distinctUntilKeyChanged("data")
   );
 
-  console.log(data, "List data");
-
   const deactivateHandler = useCallback(async () => {
     setDisabled(true);
 
