@@ -115,7 +115,7 @@ export class PlayersListingConfiguration
     },
     actions: ListPageEditDeleteButtons,
     additionDataLoader: async (listData: ListFieldRow<"player">[]) => {
-      this.logger.Info(listData, "listData");
+      this.logger.Debug(listData, "listData");
       
       const playerIDs = listData.map(item => item.columnValues.id.value);
 
