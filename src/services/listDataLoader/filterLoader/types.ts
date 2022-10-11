@@ -241,4 +241,13 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Project_PlayList_File": AvailableFilterField[] = [
       
     ];
+    "Object_Passport": AvailableFilterField[] = [
+      
+    ];
+    "NullableID": AvailableFilterField[] = [
+      
+    ];
+    "Player_Code!": AvailableFilterField[] = [
+      
+    ];
 }
