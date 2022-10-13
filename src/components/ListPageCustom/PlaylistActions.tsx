@@ -15,11 +15,12 @@ import { notificationsDispatcher } from "services/notifications";
 const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const { t } = useTranslation();
 
-  const { data } = useEntityList(distinctUntilKeyChanged("data"));
+  const { data, reloadedListingData } = useEntityList(distinctUntilKeyChanged("data"));
 
   const notificatins = notificationsDispatcher();
 
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [isCopying, setIsCopying] = useState<boolean>(false);
 
   /**
    * Обработчик кнопки обновления связных компаний
@@ -59,16 +60,66 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
     }
   }, [checkedItems, data, projectPlaylistService, notificatins, setIsRefreshing]);
 
-  const copyHandler = useCallback(() => {
-    console.log(checkedItems, "checkedItems");
-  }, [checkedItems]);
+  /**
+   * Обработчик кнопки создания копии плейлиста(ов)
+   */
+  const copyHandler = useCallback(async () => {
+    setIsCopying(true);
+
+    const selectedPlaylistsRows = data?.currentData.rows.filter(row => checkedItems.some(item => item === row.primaryKeyValue));
+
+    const playlistIds = selectedPlaylistsRows?.map(playlist => playlist.primaryKeyValue) || [];
+    
+    try {
+      const { files } = await projectPlaylistService().getFiles(playlistIds);
+
+      const inputPlaylists = selectedPlaylistsRows?.map(playlist => {
+        const columnValues = playlist.columnValues;
+
+        const playlistFiles = files
+        .filter(file => file.id === playlist.primaryKeyValue)[0].files
+        .map(file => ({
+          id: Number(file.id),
+          volume: file.volume,
+          fileId: Number(file.file_id),
+          sort: file.sort,
+        }));
+
+        return {
+          files: playlistFiles,
+          projectId: columnValues.project_id.value,
+          name: `COPY ${columnValues.name.value}`,
+          isOverallVolume: columnValues.is_overall_volume.value,
+          overallVolume: columnValues.overall_volume.value,
+        };
+      }) || [];
+
+      await projectPlaylistService().copyPlaylists(inputPlaylists);
+
+      notificatins.dispatch({
+        message: t(`project-playlists.notificatins.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.success`),
+        type: "success",
+      });
+
+      reloadedListingData();
+
+      setIsCopying(false);
+    } catch (error) {
+      notificatins.dispatch({
+        message: t(`project-playlists.notificatins.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.error`),
+        type: "error",
+      });
+
+      setIsCopying(false);
+    }
+  }, [checkedItems, setIsCopying]);
 
   return (
     <Stack direction="row" columnGap={1.5}>
       <Button variant="outlined" onClick={refreshHandler} disabled={isRefreshing}>
         {t("project-playlists.button.refresh-linked-campaigns")}
       </Button>
-      <Button variant="outlined" onClick={copyHandler}>
+      <Button variant="outlined" onClick={copyHandler} disabled={isCopying || !checkedItems.length}>
         {t("project-playlists.button.copy-playlist")}
       </Button>
     </Stack>

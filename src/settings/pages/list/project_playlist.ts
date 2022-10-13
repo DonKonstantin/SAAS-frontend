@@ -20,7 +20,14 @@ import PlaylistActions from "components/ListPageCustom/PlaylistActions";
 export class PlaylistListingConfiguration
   implements ListPageConfiguration<"project_playlist">
 {
-  filter: FilterFieldsConfiguration<"project_playlist"> = {};
+  filter: FilterFieldsConfiguration<"project_playlist"> = {
+    name: {
+      field: "name",
+      filterType: "Like",
+      schema: "project_playlist",
+      title: "project-playlists.list.header.name"
+    },
+  };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
     fields: {
       name: {
@@ -95,8 +102,6 @@ export class PlaylistListingConfiguration
 
         const playlistProjects = await projectPlaylistService().getProjects(projectIds);
 
-        console.log(playlistProjects, "playlistProjects");
-
         logger.Debug(
           "Playlist listing projects response: ",
           playlistProjects
@@ -106,7 +111,7 @@ export class PlaylistListingConfiguration
       } catch (error) {
         logger.Error("Playlist listing additional data error: ", error);
 
-        return [];
+        return null;
       }
     },
   };

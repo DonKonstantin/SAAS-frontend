@@ -26,8 +26,8 @@ const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
         setProject(primaryKeyValue)
 
         return router.push(
-            `/domain/[domainId]/project/[projectId]/media`,
-            `/domain/${domain}/project/${primaryKeyValue}/media`
+            `/domain/[domainId]/project/[projectId]/player-code`,
+            `/domain/${domain}/project/${primaryKeyValue}/player-code`
         )
     }
 
