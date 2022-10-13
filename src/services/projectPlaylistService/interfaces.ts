@@ -1,4 +1,6 @@
 import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
+import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
+import { StorePlaylistMutationResponse } from "./Mutations/StorePlaylistMutation";
 
 export interface ProjectPlaylistServiceInterface {
   /**
@@ -10,7 +12,14 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список проектов по ID плэйлистов
    */
   getProjects: (playlistsIDs: string[]) => Promise<ProjectData[]>;
+
+  /**
+   * Экспорт плэйлистов
+   */
+  storePlaylist: (playlists: ExportedPlaylistType, playlistFiles: MediaFilesDoubles[], projectId: string) => Promise<StorePlaylistMutationResponse>;
 };
+
+export type ExportedPlaylistType = {[x: string]: string[]};
 
 //  Список типов файла
 export type PlaylistGlobalFileLicenseType = 'rao_voice' | 'sparx' | 'amurco';
@@ -50,6 +59,112 @@ export interface ProjectPlayListFile {
   playlist_id:  string;                           //  Идентификатор плейлиста, к которому относится файл
   volume: number;                                 //  Громкость звука файла в плейлисте
 };
+
+//  Дни недели кампании
+export type CampaignDaysType = 
+'daily'           //  Ежедневно
+| 'daysOfTheWeek';//  По дням
+
+//  После окончания кампании
+export type CampaignEndType = 
+'break'           //  Прервать немедленно
+| 'finish';       //  Закончить трек
+
+//  Кампании с меньшим приоритетом
+export type CampaignLowPriority = 
+'break'           //  Прервать немедленно
+| 'finish';       //  Закончить трек
+
+//  Типы времени периодического воспроизведения кампании
+export type CampaignPeriodType = 
+'minutes'         //  минуты
+| 'hours';        //  часы
+
+//  Воспроизведение
+export type CampaignPlayType = 
+'periodic'        //  Подряд
+| 'continuous';   //  Перемешать
+
+//  Типы приоритета кампании
+export type CampaignPriority = 
+'low'             //  Низкий
+| 'normal'        //  Обычный
+| 'high'          //  Высокий
+| 'higher'        //  Наивысший
+| 'background';   //  Перемешать
+
+//  Типы кампаний
+export type CampaignType = 
+'simple'          //  Обычная
+| 'mute';         //  Mute
+
+//  Типы порядка воспроизведения
+export type CampaignPlayOrder = 
+'byOrder'         //  Подряд
+| 'mix';          //  Перемешать
+
+//  Сущность дня расписания кампании проекта
+export interface CampaignDay {
+  campaign_id: string;                                //  Идентификатор кампании, к которой относится день расписания
+  day_num: number;                                    //  Порядковый номер дня [от 1 до 7]
+  days_start_minutes: number;                         //  Период (начало) в мин.
+  days_stop_minutes: number;                          //  Период (окончание) в мин.
+  is_active: boolean;                                 //  Активность
+  id?: string;                                        //  ID сущности
+}
+
+//  Сущность кампании проекта (только базовые поля)
+export interface CampaignBase {
+  campaign_all_days_start_minutes: string;              //  Дни недели (начало общее) мин.
+  campaign_all_days_stop_minutes: string;               //  Дни недели (окончание общее) мин.
+  campaign_days_type: CampaignDaysType;                 //  Дни недели
+  campaign_end_type: CampaignEndType;                   //  После окончания (Режим работы после окончания)
+  campaign_low_priority_end_type: CampaignLowPriority;  //  Кампании с меньшим приоритетом
+  campaign_period_start: Date;                          //  Период кампании (начало)
+  campaign_period_stop: Date;                           //  Период кампании (окончание)
+  campaign_play_order: CampaignPlayOrder;               //  Тип времени для периодического воспроизведения
+  campaign_play_tracks_period_type: CampaignPeriodType; //  Тип времени для периодического воспроизведения
+  campaign_play_tracks_period_value: string;            //  Количество времени для периодического воспроизведения
+  campaign_play_tracks_quantity: string;                //  Количество треков для периодического воспроизведения
+  campaign_play_type: CampaignPlayType;                 //  Воспроизведение
+  campaign_priority: CampaignPriority;                  //  Приоритет - приоритет кампании
+  campaign_type: CampaignType;                          //  Тип кампании
+  days: CampaignDay[];                                  //  Дни расписания кампании
+  id: string;                                           //  ID сущности
+  name: string;                                         //  Название кампании
+  project_id: string;                                   //  Идентификатор проекта, к которому относится кампания
+  version: string;                                      //  Версия кампании
+}
+
+//  Сущность плейлиста проекта
+export interface ProjectPlayList {
+  campaigns?: CampaignBase[];                           //  Кампании, в которые включен плейлист
+  duration: number;                                     //  Общая длительность плейлиста
+  files: ProjectPlayListFile[];                         //  Файлы, относящиеся к плейлисту
+  id?: string;                                          //  ID сущности
+  is_overall_volume: boolean;                           //  Флаг, что в плейлисте используется единая громкость мелодий
+  name: string;                                         //  Название плейлиста
+  overall_volume: number;                               //  Общая громкость звука в плейлисте
+  project_id: string;                                   //  Идентификатор проекта, к которому относится плейлист
+}
+
+//  Сущность файла из плейлиста проекта для сохранения/создания
+export interface ProjectPlayListFileInputObject {
+  id?: number;                                          //  Идентификатор файла
+  volume: number;                                       //  Громкость звука файла в плейлисте
+  fileId: number;                                       //  Идентификатор файла из глобальной медиа библиотеки
+  sort: number;                                         //  Порядок сортировки
+}
+
+//  Сущность плейлиста проекта для сохранения/создания
+export interface ProjectPlayListInputObject {
+  files: ProjectPlayListFileInputObject[];              //  Список файлов плейлиста проекта
+  id?: number;                                          //  ID сущности
+  projectId: number;                                    //  Идентификатор проекта, к которому относится плейлист
+  name: string;                                         //  Название плейлиста
+  isOverallVolume: boolean;                             //  Флаг, что в плейлисте используется единая громкость мелодий
+  overallVolume: number;                                //  Общая громкость звука в плейлисте
+}
 
 export type GetPlaylistFilesByPlaylistIDsQueryParams = {
   playlistIds: string[];

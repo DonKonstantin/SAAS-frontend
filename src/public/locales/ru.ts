@@ -7,7 +7,7 @@ import entityEdit from './entity-edit.json';
 import playerCodes from './player-codes.json';
 import projectPlaylist from './project-playlist.json';
 
-const RU = {
+export const RU = {
   ...entityList,
   ...ObjectsPassportList,
   ...validators,
@@ -17,5 +17,3 @@ const RU = {
   ...playerCodes,
   ...projectPlaylist,
 };
-
-export default RU;

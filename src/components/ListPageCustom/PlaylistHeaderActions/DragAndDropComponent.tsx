@@ -4,6 +4,11 @@ import DropZoneArea from "../../DropZoneArea";
 import { useTranslation } from "react-i18next";
 import { metadataToMediaInfo } from "components/MediaLibraryUploadPage/MediaUploadArea";
 import * as mmb from "music-metadata-browser";
+import { checksFileExists } from "./helpers";
+import { notificationsDispatcher } from "services/notifications";
+import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
+import projectPlaylistService from "services/projectPlaylistService";
+import { getCurrentState } from "context/AuthorizationContext";
 
 interface Props {
   onClose: VoidFunction;
@@ -18,7 +23,10 @@ const makeMediaFileInfo = async (file: File) => {
 const DragAndDropComponent: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
 
+  const notifications = notificationsDispatcher();
+
   const [showResult, setShowResult] = useState<boolean>(false);
+  const [notAvailables, setNotAvailables] = useState<MediaFilesDoubles[]>([]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -26,7 +34,49 @@ const DragAndDropComponent: FC<Props> = ({ onClose }) => {
         return;
       }
 
-      console.log(acceptedFiles, "acceptedFiles");
+      const dropedList = JSON.parse(await acceptedFiles[0].text());
+
+      const checkResul = await checksFileExists(dropedList);
+
+      if (!checkResul.filter(item => !!item.doubles.length).length) {
+        notifications.dispatch({
+          message: t('project-playlists.notifications.no-files'),
+          type: 'warning',
+        });
+
+        return
+      }
+
+      const availableInStock = checkResul.filter(item => !item.doubles.length);
+
+      const noAvailableInStock = checkResul.filter(item => !!item.doubles.length);
+
+      setNotAvailables(noAvailableInStock);
+
+      if (!availableInStock.length) {
+        notifications.dispatch({
+          message: t('project-playlists.notifications.no-available-in-stock'),
+          type: 'warning',
+        });
+
+        setShowResult(true);
+
+        return
+      }
+
+      const { project } = getCurrentState();
+
+      const existsFiles = checkResul.filter(item => !!item.doubles.length)
+
+      const response = await projectPlaylistService().storePlaylist(dropedList, existsFiles, project);
+      
+
+      if (!noAvailableInStock.length) {
+        notifications.dispatch({
+          message: t('project-playlists.notifications.successfully-added'),
+          type: 'success',
+        });
+      }
     },
     [makeMediaFileInfo]
   );
@@ -44,7 +94,7 @@ const DragAndDropComponent: FC<Props> = ({ onClose }) => {
     >
       {!showResult && (
         <Fragment>
-          <DropZoneArea iconSize={18} onDrop={onDrop} accept={'application/json'} />
+          <DropZoneArea customInputText={t('project-playlists.import-playlist.drop-step.input-text')} iconSize={18} onDrop={onDrop} accept={'application/json'} />
           <Stack
             direction="row"
             justifyContent="space-between"
