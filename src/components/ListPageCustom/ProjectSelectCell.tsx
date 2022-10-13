@@ -27,8 +27,8 @@ const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = props => {
 
         //  пушит на вкладку проекта по умолчанию
         return router.push(
-            `/domain/[domainId]/project/[projectId]/player-codes`,
-            `/domain/${domain}/project/${primaryKeyValue}/player-codes`
+            `/domain/[domainId]/project/[projectId]/player-code`,
+            `/domain/${domain}/project/${primaryKeyValue}/player-code`
         )
     }
 

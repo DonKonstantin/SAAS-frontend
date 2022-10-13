@@ -17,7 +17,7 @@ export class GetProjectsByPlaylistIDsQuery
     };
 
     this.query = gql(`
-      query __GET_PROJECTS__($projectIds: ID){
+      query __GET_PROJECTS__($projectIds: [ID]){
         projects: project_list(where: {id: {_in: $projectIds}}){
           id
           name

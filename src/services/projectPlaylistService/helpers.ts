@@ -1,6 +1,13 @@
 import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 import { ExportedPlaylistType } from "./interfaces";
 
+/**
+ * Создает объект плэйтиста для создания сущьности
+ * @param playlists 
+ * @param playlistsFiles 
+ * @param projectId 
+ * @returns 
+ */
 export const makeInputPlaylists = (playlists: ExportedPlaylistType, playlistsFiles: MediaFilesDoubles[], projectId: string) => {
   const playlistsNames = Object.keys(playlists);
 

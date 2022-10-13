@@ -1,7 +1,7 @@
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import React, { FC, memo, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Modal, Stack } from "@mui/material";
+import { Button, Modal, Stack, Divider } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DragAndDropComponent from "./DragAndDropComponent";
 
@@ -23,6 +23,7 @@ const PlaylistHeaderActions: FC<ListHeaderProps> = () => {
       <Button variant="outlined" onClick={openImportHandler} startIcon={<CloudUploadIcon />}>
         {t("project-playlists.button.open-import-playlist")}
       </Button>
+      <Divider/>
       <Modal
         open={open}
         onClose={() => setOpen(false)}

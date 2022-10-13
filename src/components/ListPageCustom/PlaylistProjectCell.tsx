@@ -31,11 +31,11 @@ const PlaylistProjectCell: FC<ListFieldProperties<SimpleValues>> = props => {
     return null
   }
 
-  const projectName = additionData.playlistProjects.find(project => project.id === value)
+  const projectName = additionData.playlistProjects?.find(project => project.id === value.value);
 
   return (
     <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
-      {projectName}
+      {!projectName ? '' : projectName.name}
     </TableCell>
   );
 };

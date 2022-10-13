@@ -20,7 +20,14 @@ import PlaylistActions from "components/ListPageCustom/PlaylistActions";
 export class PlaylistListingConfiguration
   implements ListPageConfiguration<"project_playlist">
 {
-  filter: FilterFieldsConfiguration<"project_playlist"> = {};
+  filter: FilterFieldsConfiguration<"project_playlist"> = {
+    name: {
+      field: "name",
+      filterType: "Like",
+      schema: "project_playlist",
+      title: "project-playlists.list.header.name"
+    },
+  };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
     fields: {
       name: {
@@ -86,37 +93,25 @@ export class PlaylistListingConfiguration
       },
     },
     actions: ListPageEditDeleteButtons,
-    additionDataLoader: async ([rows]) => {
+    additionDataLoader: async (rows) => {
       const logger = loggerFactory().make("Playlist listing additional data");
-
-      console.log(rows, "useEntityList rows");
 
       try {
         //@ts-ignore
-        const playlistIDs = rows.map(row => row.id) as string[];
-
-        //@ts-ignore
-        const projectIds = rows.map(row => row.id) as string[];
-
-        const playlistFiles = await projectPlaylistService().getFiles(playlistIDs);
+        const projectIds = rows.map(row => row.columnValues.project_id.value) as string[];
 
         const playlistProjects = await projectPlaylistService().getProjects(projectIds);
-
-        logger.Debug(
-          "Playlist listing files response: ",
-          playlistFiles
-        );
 
         logger.Debug(
           "Playlist listing projects response: ",
           playlistProjects
         );
 
-        return {playlistFiles, playlistProjects};
+        return {playlistProjects};
       } catch (error) {
         logger.Error("Playlist listing additional data error: ", error);
 
-        return [];
+        return null;
       }
     },
   };

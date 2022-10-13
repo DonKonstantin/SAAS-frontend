@@ -1,6 +1,5 @@
 import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
 import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
-import { StorePlaylistMutationResponse } from "./Mutations/StorePlaylistMutation";
 
 export interface ProjectPlaylistServiceInterface {
   /**
@@ -16,7 +15,17 @@ export interface ProjectPlaylistServiceInterface {
   /**
    * Экспорт плэйлистов
    */
-  storePlaylist: (playlists: ExportedPlaylistType, playlistFiles: MediaFilesDoubles[], projectId: string) => Promise<StorePlaylistMutationResponse>;
+  storePlaylist: (playlists: ExportedPlaylistType, playlistFiles: MediaFilesDoubles[], projectId: string) => Promise<string[]>;
+
+  /**
+   * Обновление связных компаний
+   */
+  refreshCampaigns: (playlistIds: string[]) => Promise<boolean>;
+
+  /**
+   * Копирование плейлистов
+   */
+  copyPlaylists: (playlists: ProjectPlayListInputObject[]) => Promise<string[]>;
 };
 
 export type ExportedPlaylistType = {[x: string]: string[]};
@@ -58,6 +67,7 @@ export interface ProjectPlayListFile {
   id?:  string;                                   //  ID сущности
   playlist_id:  string;                           //  Идентификатор плейлиста, к которому относится файл
   volume: number;                                 //  Громкость звука файла в плейлисте
+  sort: number;                                   //  Порядок сортировки
 };
 
 //  Дни недели кампании
@@ -183,4 +193,22 @@ export type GetProjectsByPlaylistIDsQueryParams = {
 
 export type GetProjectsByPlaylistIDsQueryResponse = {
   projects: ProjectData[];
+};
+
+export type RefreshCampaignsMutationParams = {
+  playlistIds: string[];
+};
+
+export type RefreshCampaignsMutationResponse = {
+  campaignPublishByPlaylists: boolean;
+};
+
+export type StorePlaylistMutationParams = {
+  playList: ProjectPlayListInputObject;
+};
+
+export type StorePlaylistMutationResponse = {
+  result: {
+    id: string;
+  };
 };
