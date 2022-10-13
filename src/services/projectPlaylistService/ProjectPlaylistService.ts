@@ -2,9 +2,10 @@ import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
 import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
 import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
-import { GetPlaylistFilesByPlaylistIDsQueryParams, GetPlaylistFilesByPlaylistIDsQueryResponse, GetProjectsByPlaylistIDsQueryParams, GetProjectsByPlaylistIDsQueryResponse, ProjectPlaylistServiceInterface } from "./interfaces";
+import { GetPlaylistFilesByPlaylistIDsQueryParams, GetPlaylistFilesByPlaylistIDsQueryResponse, GetProjectsByPlaylistIDsQueryParams, GetProjectsByPlaylistIDsQueryResponse, ProjectPlaylistServiceInterface, RefreshCampaignsMutationParams, RefreshCampaignsMutationResponse } from "./interfaces";
 import { GetPlaylistFilesByPlaylistIDsQuery } from "./Querys/getFiles";
 import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
+import { RefreshCampaignsMutation } from "./Querys/refreshCampaigns";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -72,6 +73,34 @@ export default class ProjectPlaylistService implements ProjectPlaylistServiceInt
       return response.projects;
     } catch (error) {
       this.logger.Error("Ошибка запроса проектов плэйлистов: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
+   * Обновление связных компаний
+   * @param playlistIds 
+   * @returns 
+   */
+  async refreshCampaigns(playlistIds: string[]): Promise<boolean> {
+    this.logger.Debug("ID плэйлистов: ", playlistIds);
+
+    try {
+      const response = await this.client.Query<
+        RefreshCampaignsMutationParams,
+        RefreshCampaignsMutationResponse
+      >(new RefreshCampaignsMutation(playlistIds), {});
+
+      this.logger.Debug("Ответ мутации обновления связных компаний: ", response);
+
+      return response.campaignPublishByPlaylists;
+    } catch (error) {
+      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
       if (!error.errors) {
         throw error;

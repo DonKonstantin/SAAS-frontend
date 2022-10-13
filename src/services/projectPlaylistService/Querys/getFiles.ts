@@ -17,10 +17,16 @@ export class GetPlaylistFilesByPlaylistIDsQuery
     };
 
     this.query = gql(`
-      query __GET_FILES__($playlistIds: ID){
-        files: playlist_list(where: {id: {_in: $playlistIds}}){
+      query __GET_FILES__($playlistIds: [ID]){
+        files: project_playlist_list(where: {id: {_in: $playlistIds}}){
           id
-          files
+          files {
+            id
+            file_id
+            playlist_id
+            sort
+            volume
+          }
         }
       }`);
   }

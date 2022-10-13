@@ -10,6 +10,11 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список проектов по ID плэйлистов
    */
   getProjects: (playlistsIDs: string[]) => Promise<ProjectData[]>;
+
+  /**
+   * Обновление связных компаний
+   */
+  refreshCampaigns: (playlistIds: string[]) => Promise<boolean>;
 };
 
 //  Список типов файла
@@ -68,4 +73,12 @@ export type GetProjectsByPlaylistIDsQueryParams = {
 
 export type GetProjectsByPlaylistIDsQueryResponse = {
   projects: ProjectData[];
+};
+
+export type RefreshCampaignsMutationParams = {
+  playlistIds: string[];
+};
+
+export type RefreshCampaignsMutationResponse = {
+  campaignPublishByPlaylists: boolean;
 };

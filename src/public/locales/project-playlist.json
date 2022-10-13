@@ -10,8 +10,14 @@
     },
     "button": {
       "open-import-playlist": "ИМПОРТИРОВАТЬ ПЛЕЙЛИСТ",
-      "refresh-linked-companies": "ОБНОВИТЬ СВЯЗАННЫЕ КАМПАНИИ",
+      "refresh-linked-campaigns": "ОБНОВИТЬ СВЯЗАННЫЕ КАМПАНИИ",
       "copy-playlist": "Копировать"
+    },
+    "notificatins": {
+      "refresh-campaigns": {
+        "error": "Связные компании не были обновлены",
+        "success": "Связные компании успешно обновлены"
+      }
     }
   } 
 }
