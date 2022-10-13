@@ -21,7 +21,7 @@ import {FileListingConfiguration} from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
-import { PlaylistListingConfiguration } from "./list/project_playList";
+import { PlaylistListingConfiguration } from "./list/project_playlist";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }

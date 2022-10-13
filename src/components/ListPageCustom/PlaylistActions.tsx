@@ -35,7 +35,7 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
 
       if (!response) {
         notificatins.dispatch({
-          message: t('project-playlists.notificatins.refresh-campaigns.error'),
+          message: t('project-playlists.notifications.refresh-campaigns.error'),
           type: "error",
         });
 
@@ -45,14 +45,14 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       }
 
       notificatins.dispatch({
-        message: t('project-playlists.notificatins.refresh-campaigns.success'),
+        message: t('project-playlists.notifications.refresh-campaigns.success'),
         type: "success",
       });
 
       setIsRefreshing(false);
     } catch (error) {
       notificatins.dispatch({
-        message: t('project-playlists.notificatins.refresh-campaigns.error'),
+        message: t('project-playlists.notifications.refresh-campaigns.error'),
         type: "error",
       });
 
@@ -97,7 +97,7 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       await projectPlaylistService().copyPlaylists(inputPlaylists);
 
       notificatins.dispatch({
-        message: t(`project-playlists.notificatins.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.success`),
+        message: t(`project-playlists.notifications.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.success`),
         type: "success",
       });
 
@@ -106,7 +106,7 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       setIsCopying(false);
     } catch (error) {
       notificatins.dispatch({
-        message: t(`project-playlists.notificatins.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.error`),
+        message: t(`project-playlists.notifications.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.error`),
         type: "error",
       });
 

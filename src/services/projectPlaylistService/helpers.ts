@@ -12,17 +12,19 @@ export const makeInputPlaylists = (playlists: ExportedPlaylistType, playlistsFil
   const playlistsNames = Object.keys(playlists);
 
   const response = playlistsNames.map(name => {
-    const playlistFiles = playlistsFiles
-    .filter(file => playlists[name].some(track => track === file.fileName))
+    const playlistFiles = playlists[name]
+    .map(track => playlistsFiles.find(item => item.fileName === track))
+    .filter(el => !!el)
     .map(item => {
-      const media = item.doubles[0];
-
-      return {
-        volume: 100,
-        fileId: Number(media.id),
-        sort: 1,
-      };
-    });
+        const media = item?.doubles[0];
+  
+        return {
+          volume: 100,
+          fileId: Number(media?.id),
+          sort: 1,
+        };
+      });
+    
 
     if (!playlistFiles.length) {
       return undefined
