@@ -15,7 +15,9 @@ import { notificationsDispatcher } from "services/notifications";
 const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const { t } = useTranslation();
 
-  const { data, reloadedListingData } = useEntityList(distinctUntilKeyChanged("data"));
+  const { data, reloadedListingData } = useEntityList(
+    distinctUntilKeyChanged("data")
+  );
 
   const notificatins = notificationsDispatcher();
 
@@ -28,37 +30,46 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const refreshHandler = useCallback(async () => {
     setIsRefreshing(true);
 
-    const playerIds = data?.currentData.rows.map(row => row.columnValues.id.value) || [];
+    const playerIds =
+      data?.currentData.rows.map((row) => row.columnValues.id.value) || [];
 
     try {
-      const response = await projectPlaylistService().refreshCampaigns(playerIds);
+      const response = await projectPlaylistService().refreshCampaigns(
+        playerIds
+      );
 
       if (!response) {
         notificatins.dispatch({
-          message: t('project-playlists.notifications.refresh-campaigns.error'),
+          message: t("project-playlists.notifications.refresh-campaigns.error"),
           type: "error",
         });
 
         setIsRefreshing(false);
 
-        return
+        return;
       }
 
       notificatins.dispatch({
-        message: t('project-playlists.notifications.refresh-campaigns.success'),
+        message: t("project-playlists.notifications.refresh-campaigns.success"),
         type: "success",
       });
 
       setIsRefreshing(false);
     } catch (error) {
       notificatins.dispatch({
-        message: t('project-playlists.notifications.refresh-campaigns.error'),
+        message: t("project-playlists.notifications.refresh-campaigns.error"),
         type: "error",
       });
 
       setIsRefreshing(false);
     }
-  }, [checkedItems, data, projectPlaylistService, notificatins, setIsRefreshing]);
+  }, [
+    checkedItems,
+    data,
+    projectPlaylistService,
+    notificatins,
+    setIsRefreshing,
+  ]);
 
   /**
    * Обработчик кнопки создания копии плейлиста(ов)
@@ -66,38 +77,46 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const copyHandler = useCallback(async () => {
     setIsCopying(true);
 
-    const selectedPlaylistsRows = data?.currentData.rows.filter(row => checkedItems.some(item => item === row.primaryKeyValue));
+    const selectedPlaylistsRows = data?.currentData.rows.filter((row) =>
+      checkedItems.some((item) => item === row.primaryKeyValue)
+    );
 
-    const playlistIds = selectedPlaylistsRows?.map(playlist => playlist.primaryKeyValue) || [];
-    
+    const playlistIds =
+      selectedPlaylistsRows?.map((playlist) => playlist.primaryKeyValue) || [];
+
     try {
       const { files } = await projectPlaylistService().getFiles(playlistIds);
 
-      const inputPlaylists = selectedPlaylistsRows?.map(playlist => {
-        const columnValues = playlist.columnValues;
+      const inputPlaylists =
+        selectedPlaylistsRows?.map((playlist) => {
+          const columnValues = playlist.columnValues;
 
-        const playlistFiles = files
-        .filter(file => file.id === playlist.primaryKeyValue)[0].files
-        .map(file => ({
-          id: Number(file.id),
-          volume: file.volume,
-          fileId: Number(file.file_id),
-          sort: file.sort,
-        }));
+          const playlistFiles = files
+            .filter((file) => file.id === playlist.primaryKeyValue)[0]
+            .files.map((file) => ({
+              id: Number(file.id),
+              volume: file.volume,
+              fileId: Number(file.file_id),
+              sort: file.sort,
+            }));
 
-        return {
-          files: playlistFiles,
-          projectId: columnValues.project_id.value,
-          name: `COPY ${columnValues.name.value}`,
-          isOverallVolume: columnValues.is_overall_volume.value,
-          overallVolume: columnValues.overall_volume.value,
-        };
-      }) || [];
+          return {
+            files: playlistFiles,
+            projectId: columnValues.project_id.value,
+            name: `COPY ${columnValues.name.value}`,
+            isOverallVolume: columnValues.is_overall_volume.value,
+            overallVolume: columnValues.overall_volume.value,
+          };
+        }) || [];
 
       await projectPlaylistService().copyPlaylists(inputPlaylists);
 
       notificatins.dispatch({
-        message: t(`project-playlists.notifications.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.success`),
+        message: t(
+          `project-playlists.notifications.copy.${
+            playlistIds.length > 1 ? "multiple" : "single"
+          }-playlist.success`
+        ),
         type: "success",
       });
 
@@ -106,7 +125,11 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       setIsCopying(false);
     } catch (error) {
       notificatins.dispatch({
-        message: t(`project-playlists.notifications.copy.${playlistIds.length > 1 ? 'multiple' : 'single'}-playlist.error`),
+        message: t(
+          `project-playlists.notifications.copy.${
+            playlistIds.length > 1 ? "multiple" : "single"
+          }-playlist.error`
+        ),
         type: "error",
       });
 
@@ -116,10 +139,18 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
 
   return (
     <Stack direction="row" columnGap={1.5}>
-      <Button variant="outlined" onClick={refreshHandler} disabled={isRefreshing}>
+      <Button
+        variant="outlined"
+        onClick={refreshHandler}
+        disabled={isRefreshing}
+      >
         {t("project-playlists.button.refresh-linked-campaigns")}
       </Button>
-      <Button variant="outlined" onClick={copyHandler} disabled={isCopying || !checkedItems.length}>
+      <Button
+        variant="outlined"
+        onClick={copyHandler}
+        disabled={isCopying || !checkedItems.length}
+      >
         {t("project-playlists.button.copy-playlist")}
       </Button>
     </Stack>

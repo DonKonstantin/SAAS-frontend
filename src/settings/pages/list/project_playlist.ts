@@ -25,7 +25,7 @@ export class PlaylistListingConfiguration
       field: "name",
       filterType: "Like",
       schema: "project_playlist",
-      title: "project-playlists.list.header.name"
+      title: "project-playlists.list.header.name",
     },
   };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
@@ -48,7 +48,7 @@ export class PlaylistListingConfiguration
         fieldType: {
           config: undefined,
           type: "Simple",
-          customComponent: PlaylistProjectCell
+          customComponent: PlaylistProjectCell,
         },
       },
       duration: {
@@ -98,16 +98,17 @@ export class PlaylistListingConfiguration
 
       try {
         //@ts-ignore
-        const projectIds = rows.map(row => row.columnValues.project_id.value) as string[];
+        const projectIds = rows.map(
+          (row) => row.columnValues.project_id.value
+        ) as string[];
 
-        const playlistProjects = await projectPlaylistService().getProjects(projectIds);
-
-        logger.Debug(
-          "Playlist listing projects response: ",
-          playlistProjects
+        const playlistProjects = await projectPlaylistService().getProjects(
+          projectIds
         );
 
-        return {playlistProjects};
+        logger.Debug("Playlist listing projects response: ", playlistProjects);
+
+        return { playlistProjects };
       } catch (error) {
         logger.Error("Playlist listing additional data error: ", error);
 

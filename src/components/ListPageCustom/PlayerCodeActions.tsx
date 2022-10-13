@@ -8,18 +8,16 @@ import { distinctUntilKeyChanged } from "rxjs";
 
 /**
  * Компонент кнопок действий листинга кодов плеера
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-const PlayerCodeActions: FC<ListHeaderProps> = ({checkedItems}) => {
+const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const { t } = useTranslation();
 
-  const {data} = useEntityList(distinctUntilKeyChanged('data'));
+  const { data } = useEntityList(distinctUntilKeyChanged("data"));
 
   const deactivateHandler = useCallback(() => {
     console.log(data, "data");
-    
-
   }, [checkedItems]);
 
   return (
@@ -27,9 +25,7 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({checkedItems}) => {
       <ListPageCreationButton
         buttonTitle={t("player-codes.button.create-code")}
       />
-      <Tooltip
-        title={t(`player-codes.tooltip.deactivate-button`) as string}
-      >
+      <Tooltip title={t(`player-codes.tooltip.deactivate-button`) as string}>
         <Button variant="outlined" onClick={deactivateHandler}>
           {t("player-codes.button.deactivate")}
         </Button>

@@ -1,6 +1,9 @@
 import gql from "graphql-tag";
 import { GraphQLQuery } from "services/graphQLClient/GraphQLClient";
-import { ProjectPlayListInputObject, StorePlaylistMutationParams } from "../interfaces";
+import {
+  ProjectPlayListInputObject,
+  StorePlaylistMutationParams,
+} from "../interfaces";
 
 /**
  * Мутация создания плейлиста
@@ -14,9 +17,7 @@ export class StorePlaylistMutation
   constructor(playList: ProjectPlayListInputObject) {
     this.variables = { playList };
     this.query = gql`
-      mutation StorePlaylist(
-        $playList: ProjectPlayListInputObject!
-      ) {
+      mutation StorePlaylist($playList: ProjectPlayListInputObject!) {
         result: projectPlayListStore(playList: $playList) {
           id
         }

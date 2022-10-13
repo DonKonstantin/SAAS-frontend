@@ -75,7 +75,9 @@ export const onDropHandler = async (
 
     notifications.dispatch({
       message: t(
-        `project-playlists.notifications.export-playlist.successfully-added.${response.length > 1 ? 'multiple' : 'single'}`
+        `project-playlists.notifications.export-playlist.successfully-added.${
+          response.length > 1 ? "multiple" : "single"
+        }`
       ),
       type: "success",
     });

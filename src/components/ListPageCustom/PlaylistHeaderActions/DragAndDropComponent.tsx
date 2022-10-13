@@ -22,14 +22,15 @@ const StyledPaper = styled(Paper)({
 
 /**
  * Компонент обработки экспорта плэйлистов
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const DragAndDropComponent: FC<Props> = ({ onClose }) => {
   const { t } = useTranslation();
 
   const [showResult, setShowResult] = useState<boolean>(false);
-  const [dropedPlaylistList, setDropedPlaylistList] = useState<ExportedPlaylistType>({});
+  const [dropedPlaylistList, setDropedPlaylistList] =
+    useState<ExportedPlaylistType>({});
   const [notAvailables, setNotAvailables] = useState<string[]>([]);
 
   const onDrop = async (acceptedFiles: File[]) => {
@@ -48,7 +49,7 @@ const DragAndDropComponent: FC<Props> = ({ onClose }) => {
   };
 
   return (
-    <StyledPaper >
+    <StyledPaper>
       {!showResult && <ExportBlock onClose={onClose} onDrop={onDrop} />}
       {showResult && (
         <ExportResultBlock

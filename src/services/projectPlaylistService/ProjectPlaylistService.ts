@@ -11,13 +11,13 @@ import {
   GetProjectsByPlaylistIDsQueryParams,
   GetProjectsByPlaylistIDsQueryResponse,
   ProjectPlaylistServiceInterface,
-  ProjectPlayListInputObject, 
-  RefreshCampaignsMutationParams, 
+  ProjectPlayListInputObject,
+  RefreshCampaignsMutationParams,
   RefreshCampaignsMutationResponse,
   StorePlaylistMutationParams,
-  StorePlaylistMutationResponse
+  StorePlaylistMutationResponse,
 } from "./interfaces";
-import {  } from "./interfaces";
+import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIDsQuery } from "./Querys/getFiles";
 import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
@@ -100,12 +100,12 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  };
+  }
 
   /**
    * Обновление связных компаний
-   * @param playlistIds 
-   * @returns 
+   * @param playlistIds
+   * @returns
    */
   async refreshCampaigns(playlistIds: string[]): Promise<boolean> {
     this.logger.Debug("ID плэйлистов: ", playlistIds);
@@ -116,7 +116,10 @@ export default class ProjectPlaylistService
         RefreshCampaignsMutationResponse
       >(new RefreshCampaignsMutation(playlistIds), {});
 
-      this.logger.Debug("Ответ мутации обновления связных компаний: ", response);
+      this.logger.Debug(
+        "Ответ мутации обновления связных компаний: ",
+        response
+      );
 
       return response.campaignPublishByPlaylists;
     } catch (error) {
@@ -128,14 +131,14 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  };
+  }
 
   /**
    * Экспорт плэйлистов
-   * @param playlists 
-   * @param playlistFiles 
-   * @param projectId 
-   * @returns 
+   * @param playlists
+   * @param playlistFiles
+   * @param projectId
+   * @returns
    */
   async storePlaylist(
     playlists: ExportedPlaylistType,
@@ -153,21 +156,24 @@ export default class ProjectPlaylistService
     this.logger.Debug("ID проекта: ", projectId);
 
     try {
-      const preparedPlaylists = makeInputPlaylists(playlists, playlistFiles, projectId);
+      const preparedPlaylists = makeInputPlaylists(
+        playlists,
+        playlistFiles,
+        projectId
+      );
 
       const response = await Promise.all(
-        preparedPlaylists.map(async playlist => {
+        preparedPlaylists.map(async (playlist) => {
           return await this.client.Mutation<
-          StorePlaylistMutationParams,
-          StorePlaylistMutationResponse
-        >(new StorePlaylistMutation(playlist!), {})
+            StorePlaylistMutationParams,
+            StorePlaylistMutationResponse
+          >(new StorePlaylistMutation(playlist!), {});
         })
       );
 
       this.logger.Debug("Ответ на запрос проектов для плэйлистов: ", "");
 
-      
-      return response.map(item => item.result.id);
+      return response.map((item) => item.result.id);
     } catch (error) {
       this.logger.Error(
         "Ошибка мутации создания плейлистов плэйлистов: ",
@@ -180,34 +186,33 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  };
+  }
 
   /**
    * Копирование плейлистов
-   * @param playlists 
-   * @returns 
+   * @param playlists
+   * @returns
    */
-  async copyPlaylists(playlists: ProjectPlayListInputObject[]): Promise<string[]> {
+  async copyPlaylists(
+    playlists: ProjectPlayListInputObject[]
+  ): Promise<string[]> {
     this.logger.Debug("Копии плейлистов: ", playlists);
 
     try {
       const response = await Promise.all(
-        playlists.map(async playlist => {
+        playlists.map(async (playlist) => {
           return await this.client.Mutation<
-          StorePlaylistMutationParams,
-          StorePlaylistMutationResponse
-        >(new StorePlaylistMutation(playlist!), {})
+            StorePlaylistMutationParams,
+            StorePlaylistMutationResponse
+          >(new StorePlaylistMutation(playlist!), {});
         })
       );
 
       this.logger.Debug("Ответ на мутации копирования плэйлистов: ", response);
 
-      return response.map(res =>res.result.id);
+      return response.map((res) => res.result.id);
     } catch (error) {
-      this.logger.Error(
-        "Ошибка мутации копирования плэйлистов: ",
-        error
-      );
+      this.logger.Error("Ошибка мутации копирования плэйлистов: ", error);
 
       if (!error.errors) {
         throw error;
@@ -215,5 +220,5 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  };
-};
+  }
+}

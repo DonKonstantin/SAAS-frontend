@@ -14,7 +14,9 @@ import { distinctUntilChanged } from "rxjs";
 const PlaylistHeaderActions: FC<ListHeaderProps> = () => {
   const { t } = useTranslation();
 
-  const { reloadedListingData } = useEntityList(distinctUntilChanged(() => true));
+  const { reloadedListingData } = useEntityList(
+    distinctUntilChanged(() => true)
+  );
 
   const [open, setOpen] = useState<boolean>(false);
 

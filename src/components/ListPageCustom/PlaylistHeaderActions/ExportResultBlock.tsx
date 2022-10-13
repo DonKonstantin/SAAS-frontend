@@ -12,8 +12,8 @@ interface Props {
 
 /**
  * Компонент выводит отсутствующие при экспорте файлы
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const ExportResultBlock: FC<Props> = ({
   dropedPlaylistList,
