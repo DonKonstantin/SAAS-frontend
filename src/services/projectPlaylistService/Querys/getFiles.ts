@@ -1,24 +1,24 @@
 import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { GetPlaylistFilesByPlaylistIDsQueryParams } from "../interfaces";
+import { GetPlaylistFilesByPlaylistIdQueryParams } from "../interfaces";
 
 /**
- * Запрос файлов для списка плэйлистов
+ * Запрос файлов для плэйлиста
  */
-export class GetPlaylistFilesByPlaylistIDsQuery
-  implements GraphQLQuery<GetPlaylistFilesByPlaylistIDsQueryParams>
+export class GetPlaylistFilesByPlaylistIdQuery
+  implements GraphQLQuery<GetPlaylistFilesByPlaylistIdQueryParams>
 {
   readonly query: any;
-  readonly variables: GetPlaylistFilesByPlaylistIDsQueryParams;
+  readonly variables: GetPlaylistFilesByPlaylistIdQueryParams;
 
-  constructor(playlistIds: string[]) {
+  constructor(playlistId: string) {
     this.variables = {
-      playlistIds,
+      playlistId,
     };
 
     this.query = gql(`
-      query __GET_FILES__($playlistIds: [ID]){
-        files: project_playlist_list(where: {id: {_in: $playlistIds}}){
+      query __GET_FILES__($playlistId: ID){
+        files: project_playlist_list(where: {id: {_equals: $playlistId}}){
           id
           files {
             id
@@ -26,6 +26,32 @@ export class GetPlaylistFilesByPlaylistIDsQuery
             playlist_id
             sort
             volume
+            file {
+              album
+              artist
+              bpm
+              composer
+              creation_date
+              creator
+              duration
+              file_name
+              genre
+              hash_sum
+              id
+              isrc
+              language
+              last_change_date
+              last_editor
+              license_type
+              lyricist
+              mime_type
+              obscene
+              origin_name
+              player_file_id
+              publisher
+              title
+              year
+            }
           }
         }
       }`);

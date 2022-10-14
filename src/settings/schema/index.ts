@@ -465,6 +465,12 @@ export class Schemas {
       isPrimaryKey: false,
       isArray: false,
     },
+    //  Файлы, относящиеся к плейлисту
+    files: {
+      type: "[Project_PlayList_File!]",
+      isPrimaryKey: false,
+      isArray: false,
+    },
   },
 
   isChangeable: true,
@@ -500,7 +506,8 @@ export type FieldType =
   | "Enum!"
   | "Project_Channel"
   | "Player_Without_Relations"
-  | "Project_PlayList_File";
+  | "Project_PlayList_File"
+  | "[Project_PlayList_File!]";
 
 export class SchemaField {
   type: FieldType;

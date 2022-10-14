@@ -6,19 +6,20 @@ import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 import { makeInputPlaylists } from "./helpers";
 import {
   ExportedPlaylistType,
-  GetPlaylistFilesByPlaylistIDsQueryParams,
-  GetPlaylistFilesByPlaylistIDsQueryResponse,
-  GetProjectsByPlaylistIDsQueryParams,
-  GetProjectsByPlaylistIDsQueryResponse,
   ProjectPlaylistServiceInterface,
   ProjectPlayListInputObject,
   RefreshCampaignsMutationParams,
   RefreshCampaignsMutationResponse,
   StorePlaylistMutationParams,
   StorePlaylistMutationResponse,
+  ProjectPlayListFile,
+  GetPlaylistFilesByPlaylistIdQueryParams,
+  GetPlaylistFilesByPlaylistIdQueryResponse,
+  GetProjectsByPlaylistIDsQueryParams,
+  GetProjectsByPlaylistIDsQueryResponse,
 } from "./interfaces";
 import {} from "./interfaces";
-import { GetPlaylistFilesByPlaylistIDsQuery } from "./Querys/getFiles";
+import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
 import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
 import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
@@ -50,19 +51,19 @@ export default class ProjectPlaylistService
    * @returns
    */
   async getFiles(
-    playlistsIDs: string[]
-  ): Promise<GetPlaylistFilesByPlaylistIDsQueryResponse> {
-    this.logger.Debug("ID плэйлистов: ", playlistsIDs);
+    playlistsId: string
+  ): Promise<ProjectPlayListFile[]> {
+    this.logger.Debug("ID плэйлистов: ", playlistsId);
 
     try {
       const response = await this.client.Query<
-        GetPlaylistFilesByPlaylistIDsQueryParams,
-        GetPlaylistFilesByPlaylistIDsQueryResponse
-      >(new GetPlaylistFilesByPlaylistIDsQuery(playlistsIDs), {});
+        GetPlaylistFilesByPlaylistIdQueryParams,
+        GetPlaylistFilesByPlaylistIdQueryResponse
+      >(new GetPlaylistFilesByPlaylistIdQuery(playlistsId), {});
 
       this.logger.Debug("Ответ на запрос файлов для плэйлистов: ", response);
 
-      return response;
+      return response.files.files;
     } catch (error) {
       this.logger.Error("Ошибка запроса файлов плэйлистов: ", error);
 

@@ -3,9 +3,9 @@ import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 
 export interface ProjectPlaylistServiceInterface {
   /**
-   * Получаем сведения о файлах плэйлистов по ID плэйлистов
+   * Получаем сведения о файлах плэйлистов по ID плэйлиста
    */
-  getFiles: (playlistsIDs: string[]) => Promise<GetPlaylistFilesByPlaylistIDsQueryResponse>;
+  getFiles: (playlistId: string) => Promise<ProjectPlayListFile[]>;
 
   /**
    * Получаем список проектов по ID плэйлистов
@@ -176,15 +176,15 @@ export interface ProjectPlayListInputObject {
   overallVolume: number;                                //  Общая громкость звука в плейлисте
 }
 
-export type GetPlaylistFilesByPlaylistIDsQueryParams = {
-  playlistIds: string[];
+export type GetPlaylistFilesByPlaylistIdQueryParams = {
+  playlistId: string;
 };
 
-export type GetPlaylistFilesByPlaylistIDsQueryResponse = {
+export type GetPlaylistFilesByPlaylistIdQueryResponse = {
   files: {
     id: string;
     files: ProjectPlayListFile[];
-  }[];
+  };
 };
 
 export type GetProjectsByPlaylistIDsQueryParams = {
