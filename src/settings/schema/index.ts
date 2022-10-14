@@ -337,12 +337,12 @@ export class Schemas {
       //  Символьный код кода плеера
       code: {
         type: "String!",
-        isPrimaryKey: false,
+        isPrimaryKey: true,
         isArray: false,
       },
       //  ID сущности
       id: {
-        type: "ID",
+        type: "ID!",
         isPrimaryKey: true,
         isArray: false,
       },
@@ -366,7 +366,7 @@ export class Schemas {
       },
       //  Каналы проекта, доступные для плеера
       project_channels: {
-        type: "ID!",
+        type: "ID",
         isPrimaryKey: false,
         isArray: true,
       },
