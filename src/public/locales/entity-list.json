@@ -1,0 +1,93 @@
+{
+  "entity-list": {
+    "components": {
+      "delete-dialog": {
+        "title": "Удалить элементы",
+        "description": "Вы точно хотите удалить элементы ({{count}} шт)? Это действие нельзя отменить!",
+        "cancel": "Отменить",
+        "cancel-tooltip": "Отменить удаление элементов",
+        "submit": "Удалить ({{count}} шт)",
+        "submit-tooltip": "Подтвердить удаление элементов"
+      },
+      "copy-dialog": {
+        "title": "Копировать элементы",
+        "description": "Вы точно хотите копировать элементы ({{count}} шт.)?",
+        "cancel": "Отменить",
+        "cancel-tooltip": "Отменить копирование элементов",
+        "submit": "Копировать ({{count}} шт)",
+        "submit-tooltip": "Подтвердить копирование элементов"
+      },
+      "table-caption": {
+        "delete-tooltip": "Удалить выбранные элементы"
+      },
+      "actions": {
+        "add": "Создать",
+        "add-tooltip": "Создать новый элемент",
+        "copy": "Копировать",
+        "copy-tooltip": "Копировать выбранные элементы",
+        "edit-tooltip": "Редактировать элемент",
+        "delete-tooltip": "Удалить элемент"
+      },
+      "pagination": {
+        "rows-per-page": "Строк на странице:",
+        "items-quantity": "{{from}} - {{to}} из {{count}}"
+      },
+      "filter": {
+        "show-button": {
+          "tooltip": {
+            "show": "Показать фильтр",
+            "hide": "Скрыть фильтр"
+          }
+        },
+        "reset-button": {
+          "caption": "Сброс фильтра",
+          "tooltip": "Сбросить выбранные значения в фильтре"
+        },
+        "hide-button": {
+          "show": "Развернуть фильтр",
+          "hide": "Свернуть фильтр"
+        },
+        "fields": {
+          "choose-group": {
+            "all": "Оба варианта",
+            "yes": "Да",
+            "no": "Нет"
+          },
+          "enum-selector": {
+            "all-variants": "Все варианты"
+          },
+          "input": {
+            "placeholder": "Введите значение"
+          },
+          "autocomplete": {
+            "noOptionsText": "Нет найденных значений",
+            "closeText": "Закрыть",
+            "clearText": "Очистить",
+            "openText": "Открыть"
+          }
+        }
+      },
+      "list": {
+        "checkbox": {
+          "checked": "Снять выделение",
+          "not-checked": "Выбрать элемент"
+        },
+        "checkbox-header": {
+          "checked": "Снять выделение",
+          "not-checked": "Выбрать все элементы"
+        },
+        "header": {
+          "order-tooltip": {
+            "asc": "Сортировка по убыванию",
+            "desc": "Отключить сортировку",
+            "default": "Сортировка по возрастанию"
+          },
+          "order": {
+            "asc": "сортировка по возрастанию",
+            "desc": "сортировка по убыванию"
+          }
+        }
+      }
+    }
+  }
+}
