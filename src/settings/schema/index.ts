@@ -342,8 +342,8 @@ export class Schemas {
       },
       //  ID сущности
       id: {
-        type: "ID",
-        isPrimaryKey: false,
+        type: "ID!",
+        isPrimaryKey: true,
         isArray: false,
       },
       //  Флаг активности кода плеера
@@ -366,7 +366,7 @@ export class Schemas {
       },
       //  Каналы проекта, доступные для плеера
       project_channels: {
-        type: "ID!",
+        type: "ID",
         isPrimaryKey: false,
         isArray: true,
       },

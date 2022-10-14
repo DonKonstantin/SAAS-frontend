@@ -21,6 +21,7 @@ import { FileListingConfiguration } from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
+import { PlayerCodeEditPageConfig } from "./edit/player_code";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = {
@@ -61,5 +62,6 @@ export const editSchemaConfiguration: {
     notifications_template: new NotificationsTemplateEditPageConfig(),
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
+    player_code: new PlayerCodeEditPageConfig(),
   };
 };

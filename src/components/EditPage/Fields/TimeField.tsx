@@ -3,11 +3,12 @@ import { EditFieldProperties } from "../../../settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
 import { distinctUntilChanged } from "rxjs";
 import { InputAdornment, TextField } from "@mui/material";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
+import { DesktopTimePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
+import dayjs from "dayjs";
 
-// Поле ввода даты
-const DateField: FC<EditFieldProperties> = (props) => {
+// Поле ввода времени
+const TimeField: FC<EditFieldProperties> = (props) => {
   const { fieldCode } = props;
   const fieldData = useEntityEditField(
     fieldCode,
@@ -42,22 +43,23 @@ const DateField: FC<EditFieldProperties> = (props) => {
     return null;
   }
 
+  const timeValue = dayjs(new Date()).format("YYYY-MM-DD") + "T" + value;
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DesktopDatePicker
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
+      <DesktopTimePicker
         label={t(title)}
-        value={value}
+        value={new Date(timeValue)}
+        ampm={false}
         onChange={(value: any) => {
-          onChangeFieldValue(() => value);
+          onChangeFieldValue(() => dayjs(value).format("HH:mm:ss"));
         }}
         renderInput={(params) => (
           <TextField
             {...params}
             error={!!validation}
-            helperText={validation ? t(validation) : undefined}
             required={validators.length > 0}
             fullWidth
-            placeholder={t(`entity-edit.fields.input.placeholder`) as string}
             variant="standard"
           />
         )}
@@ -74,6 +76,6 @@ const DateField: FC<EditFieldProperties> = (props) => {
 };
 
 // Экспортируем компонент
-export default React.memo(DateField, (prevProps, nextProps) => {
+export default React.memo(TimeField, (prevProps, nextProps) => {
   return prevProps.fieldCode === nextProps.fieldCode;
 });
