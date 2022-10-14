@@ -73,7 +73,6 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const hasActive = data.currentData.rows
   .filter(value => checkedItems.some(v => v === value.columnValues.code.value))
   .some((item) => !!item.columnValues.is_active.value);
->>>>>>> src/components/ListPageCustom/PlayerCodeActions.tsx
 
   return (
     <Stack direction="row" columnGap={1.5}>
@@ -81,12 +80,6 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
         buttonTitle={t("player-codes.button.create-code")}
         disabled={disabled}
       />
-<<<<<<< src/components/ListPageCustom/PlayerCodeActions.tsx
-      <Tooltip title={t(`player-codes.tooltip.deactivate-button`) as string}>
-        <Button variant="outlined" onClick={deactivateHandler}>
-          {t("player-codes.button.deactivate")}
-        </Button>
-=======
       <Tooltip
         title={
           checkedItems.length
@@ -109,7 +102,6 @@ const PlayerCodeActions: FC<ListHeaderProps> = ({ checkedItems }) => {
             {t("player-codes.button.deactivate")}
           </Button>
         </span>
->>>>>>> src/components/ListPageCustom/PlayerCodeActions.tsx
       </Tooltip>
     </Stack>
   );
