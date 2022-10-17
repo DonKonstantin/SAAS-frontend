@@ -1,66 +1,61 @@
-import React, {FC, useEffect, useState} from "react";
-import ListRow, {ListRowProps} from "./ListRow";
+import React, { FC, useEffect, useState } from "react";
+import ListRow, { ListRowProps } from "./ListRow";
 import EntityListHoc from "../../../../context/EntityListContext";
-import {listSchemaConfiguration} from "../../../../settings/pages";
-import {TableRow} from "@mui/material";
-import {ListPageConfiguration} from "../../../../settings/pages/system/list";
+import { listSchemaConfiguration } from "../../../../settings/pages";
+import { TableRow } from "@mui/material";
+import { ListPageConfiguration } from "../../../../settings/pages/system/list";
 
 // Компонент вывода контекнера строки со всеми дополнительными компонентами
-const ListRowContainer: FC<ListRowProps> = props => {
-    const {data, row, onChangeCheckedItems} = props
-    const [config, setConfig] = useState<ListPageConfiguration>()
-    useEffect(() => {
-        if (!data) {
-            return
-        }
-
-        const {schema} = data
-        setConfig(listSchemaConfiguration()[schema])
-    }, [data?.schema])
-
-    if (!data || !config) {
-        return null
+const ListRowContainer: FC<ListRowProps> = (props) => {
+  const { data, row, onChangeCheckedItems } = props;
+  const [config, setConfig] = useState<ListPageConfiguration>();
+  useEffect(() => {
+    if (!data) {
+      return;
     }
 
-    const {
-        listFields: {
-            rowBelow: PrevRow,
-            rowHigher: NextRow,
-        },
-    } = config
+    const { schema } = data;
+    setConfig(listSchemaConfiguration()[schema]);
+  }, [data?.schema]);
 
-    // Переключение состояния чекбокса выбора элемента
-    const onToggleItemCheckedState = () => {
-        if (!config.rowSelectAction) {
-            return
-        }
-        onChangeCheckedItems(items => {
-            if (items.includes(row.primaryKeyValue)) {
-                return items.filter(i => i !== row.primaryKeyValue)
-            }
+  if (!data || !config) {
+    return null;
+  }
 
-            return [...items, row.primaryKeyValue]
-        })
+  const {
+    listFields: { rowBelow: PrevRow, rowHigher: NextRow },
+    customRow: CustomRow,
+  } = config;
+
+  // Переключение состояния чекбокса выбора элемента
+  const onToggleItemCheckedState = () => {
+    if (!config.rowSelectAction) {
+      return;
     }
+    onChangeCheckedItems((items) => {
+      if (items.includes(row.primaryKeyValue)) {
+        return items.filter((i) => i !== row.primaryKeyValue);
+      }
 
-    return (
-        <>
-            {!!PrevRow && (
-                <PrevRow item={row}/>
-            )}
-            <TableRow
-                hover
-                tabIndex={-1}
-                onClick={onToggleItemCheckedState}
-            >
-                <ListRow {...props} />
-            </TableRow>
-            {!!NextRow && (
-                <NextRow item={row}/>
-            )}
-        </>
-    )
-}
+      return [...items, row.primaryKeyValue];
+    });
+  };
+
+  return (
+    <>
+      {!!PrevRow && <PrevRow item={row} />}
+      {CustomRow ? (
+        <CustomRow {...props} />
+      ) : (
+        <TableRow hover tabIndex={-1} onClick={onToggleItemCheckedState}>
+          <ListRow {...props} />
+        </TableRow>
+      )}
+
+      {!!NextRow && <NextRow item={row} />}
+    </>
+  );
+};
 
 // Экспортируем компонент
-export default EntityListHoc()(ListRowContainer)
+export default EntityListHoc()(ListRowContainer);
