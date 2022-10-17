@@ -41,6 +41,17 @@ export class ListLoader implements ListLoaderInterface {
      * @param params
      */
     async Load<T extends keyof Schemas>(params: ListLoadingParameters<T>): Promise<ListResponse<T>> {
+      
+      //!!  возврат моковых данных
+      // if (params.schema === 'player') {
+      //   return {
+      //     count: 3,
+      //     parameters: params,
+      //     //@ts-ignore
+      //     rows: plaerRows,
+      //     additionData: additionData,
+      //   }
+      // }
         const {list, count} = this.queryGenerator.GenerateQuery(params);
         try {
             // @ts-ignore

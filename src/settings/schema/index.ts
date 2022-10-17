@@ -32,6 +32,92 @@ export class Schemas {
     isDeletable: true,
   };
 
+  // Параметры схемы сущности плеера
+  player: Schema = {
+    fields: {
+      //  ID сущности
+      id: {
+        type: "ID",
+        isPrimaryKey: true,
+        isArray: false,
+      },
+      //  Токен авторизации, привязанный к плееру
+      authorization_token: {
+        type: "String!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  GUID плеера
+      guid: {
+        type: "ID!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Флаг активности плеера
+      is_active: {
+        type: "Boolean!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Последнее обращение к плееру
+      last_query: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Последнее обновление плеера
+      last_update: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Название плеера
+      name: {
+        type: "String!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Паспорт объекта, который привязан к плееру.
+      object_passport: {
+        type: "Object_Passport",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Идентификатор паспорта объекта, который привязан к плееру.
+      object_passport_id: {
+        type: "NullableID",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Код плеера, к которому относится плеер.
+      player_code: {
+        type: "Player_Code!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Идентификатор кода плеера, к которому относится плеер.
+      player_code_id: {
+        type: "ID!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Идентификатор проекта, к которому относится плеер
+      project_id: {
+        type: "ID!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Статус загрузки плеера, в %
+      uploading_status: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+    },
+    isChangeable: true,
+    isCreatable: true,
+    isDeletable: true,
+  };
   // Параметры схемы сущности Проект
   project: Schema = {
     fields: {
@@ -454,7 +540,11 @@ export type FieldType =
   | "Enum"
   | "Enum!"
   | "Project_Channel"
-  | "Player_Without_Relations";
+  | "Player_Without_Relations"
+  | "Object_Passport"
+  | "NullableID"
+  | "Player_Code!";
+
 export class SchemaField {
   type: FieldType;
   isPrimaryKey: boolean;
