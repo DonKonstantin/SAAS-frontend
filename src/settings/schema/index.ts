@@ -544,6 +544,7 @@ export type FieldType =
   | "Object_Passport"
   | "NullableID"
   | "Player_Code!";
+
 export class SchemaField {
   type: FieldType;
   isPrimaryKey: boolean;

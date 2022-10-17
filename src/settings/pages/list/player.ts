@@ -35,12 +35,6 @@ export class PlayersListingConfiguration
       schema: "player",
       title: "player-list.list.header.name",
     },
-    is_active: {
-      field: "is_active",
-      filterType: "Switch",
-      schema: "player",
-      title: "player-list.list.header.is-active",
-    },
     last_update: {
       field: "last_update",
       filterType: "DateTimeRange",
@@ -125,12 +119,11 @@ export class PlayersListingConfiguration
         return {};
       }
 
-      const campaigns = playerListService().getCampaigns(playerIDs, project);
+      const campaigns = await playerListService().getCampaigns(playerIDs, project);
 
       return {
         campaigns,
       };
-      
     }
   };
   schema: "player" = "player";

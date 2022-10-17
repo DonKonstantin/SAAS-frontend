@@ -25,8 +25,8 @@ const PlayerChannelCell: FC<ListFieldProperties<SimpleValues>> = ({
   );
 
   const playerId = rowValues.id.value;
-
-  const channel = additionData.filter((data) => data.id === playerId)[0];
+  
+  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
 
   return (
     <TableCell
@@ -35,7 +35,7 @@ const PlayerChannelCell: FC<ListFieldProperties<SimpleValues>> = ({
       sx={{ width: width }}
       align={align}
     >
-      <Typography variant="caption">{channel.campaigns.channel.name}</Typography>
+      <Typography variant="caption">{campaigns.map(item => item.channel.name).join(", ")}</Typography>
     </TableCell>
   );
 };

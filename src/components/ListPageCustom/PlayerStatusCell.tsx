@@ -5,7 +5,7 @@ import { SimpleValues } from "services/listDataLoader/listLoader/listValues/Simp
 import { ListFieldProperties } from "services/listDataLoader/listLoader/types";
 import { TableCell } from "@mui/material";
 
-const StyledBox = styled("div")<{ value: boolean }>(({ theme, value }) => ({
+const StyledBox = styled("div")<{ bgColor: boolean }>(({ theme, bgColor }) => ({
   borderRadius: 3,
   display: "flex",
   justifyContent: "center",
@@ -13,7 +13,7 @@ const StyledBox = styled("div")<{ value: boolean }>(({ theme, value }) => ({
   alignContent: "center",
   padding: "0 7px",
   width: 70,
-  backgroundColor: !!value
+  backgroundColor: !!bgColor
     ? theme.palette.primary.main
     : theme.palette.error.main,
 }));
@@ -44,8 +44,8 @@ const PlayerStatusCell: FC<ListFieldProperties<SimpleValues>> = ({
       style={{ width: width }}
       align={align}
     >
-      <StyledBox value={value.value}>
-        <StyledTypography sx={{}}>
+      <StyledBox bgColor={value.value}>
+        <StyledTypography>
           {t(`player-list.status.${value.value}`)}
         </StyledTypography>
       </StyledBox>

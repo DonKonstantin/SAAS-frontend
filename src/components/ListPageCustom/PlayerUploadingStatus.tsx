@@ -17,16 +17,23 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
 }) => {
   const { padding, width, align } = configuration;
 
-  //@ts-ignore
-  const { data: { currentData: { additionData } } } = useEntityList(
+  const { data } = useEntityList(
     distinctUntilChanged((previous, current) =>
       isEqual(previous.data, current.data)
     )
   );
 
+  if (!data) {
+    return null
+  }
+
+  const { currentData: { additionData } } = data;
+
   const playerId = rowValues.id.value;
 
-  const channel = additionData.filter((data) => data.id === playerId)[0];
+  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
+
+  const percent = campaigns.reduce((acc: number, item) => acc + item.uploadingStatus, 0) / campaigns.length;
 
   return (
     <TableCell
@@ -36,7 +43,7 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
       align={align}
     >
       <Typography variant="caption">
-        {channel.campaigns.uploadingStatus}%
+        {percent.toFixed(2)}%
       </Typography>
     </TableCell>
   );
