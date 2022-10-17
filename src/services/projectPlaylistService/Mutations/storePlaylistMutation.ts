@@ -1,6 +1,16 @@
 import gql from "graphql-tag";
 import { GraphQLQuery } from "services/graphQLClient/GraphQLClient";
-import { ProjectPlayListInputObject, StorePlaylistMutationParams } from "../interfaces";
+import { ProjectPlayListInputObject } from "../interfaces";
+
+export type StorePlaylistMutationParams = {
+  playList: ProjectPlayListInputObject;
+};
+
+export type StorePlaylistMutationResponse = {
+  result: {
+    id: string;
+  };
+};
 
 /**
  * Мутация создания плейлиста
