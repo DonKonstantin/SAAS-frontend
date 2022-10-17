@@ -19,6 +19,7 @@ import { NotificationConfigListingConfiguration } from "./list/notification_conf
 import { NotificationConfigEditPageConfig } from "./edit/notification_config";
 import { FileListingConfiguration } from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
+import { PlayersListingConfiguration } from "./list/player";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
@@ -43,6 +44,7 @@ export const listSchemaConfiguration: {
     notification_config: new NotificationConfigListingConfiguration(),
     object_passport: new ObjectsPassportListingConfiguration(),
     player_code: new PlayerCodeListingConfiguration(),
+    player: new PlayersListingConfiguration,
     project_playlist: new PlaylistListingConfiguration(),
   };
 };
