@@ -232,22 +232,22 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Enum!": AvailableFilterField[] = [
         "EnumSelector"
     ];
-    "Project_Channel": AvailableFilterField[] = [
-      
-    ];
-    "Player_Without_Relations": AvailableFilterField[] = [
-      
-    ];
-    "Project_PlayList_File": AvailableFilterField[] = [
-      
-    ];
     "Object_Passport": AvailableFilterField[] = [
       
     ];
     "NullableID": AvailableFilterField[] = [
       
     ];
+    "Project_PlayList_File": AvailableFilterField[] = [
+      
+    ];
     "Player_Code!": AvailableFilterField[] = [
+      
+    ];
+    "Project_Channel": AvailableFilterField[] = [
+      
+    ];
+    "Player_Without_Relations": AvailableFilterField[] = [
       
     ];
 }
