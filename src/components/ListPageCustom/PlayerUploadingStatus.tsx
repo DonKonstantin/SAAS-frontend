@@ -17,12 +17,17 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
 }) => {
   const { padding, width, align } = configuration;
 
-  //@ts-ignore
-  const { data: { currentData: { additionData } } } = useEntityList(
+  const { data } = useEntityList(
     distinctUntilChanged((previous, current) =>
       isEqual(previous.data, current.data)
     )
   );
+
+  if (!data) {
+    return null
+  }
+
+  const { currentData: { additionData } } = data;
 
   const playerId = rowValues.id.value;
 
