@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD:src/public/locales/CommonBucket.json
   "UI": {
     "meta": {
       "title": {
@@ -112,6 +113,8 @@
       }
     }
   },
+=======
+>>>>>>> master:src/public/locales/pages.json
   "pages": {
     "main": {
       "title": "Главная",
@@ -608,195 +611,6 @@
           "rao_voice": "РАО/ВОИС",
           "sparx": "SPARX",
           "amurco": "AMURCO"
-        }
-      }
-    }
-  },
-  "entity-edit": {
-    "fields": {
-      "input": {
-        "placeholder": "Введите значение",
-        "restore-default": "Восстановить значение по умолчанию"
-      },
-      "enum": {
-        "no-value": "Значение не выбрано",
-        "restore-default": "Восстановить значение по умолчанию"
-      },
-      "permission-category-selector": {
-        "restore-default": "Восстановить значение по умолчанию"
-      },
-      "domain-selector": {
-        "no-value": "Домен не выбран",
-        "restore-default": "Восстановить значение по умолчанию"
-      },
-      "level-check-selector": {
-        "title": "Уровень доступа",
-        "levels": {
-          "realm": "Реалм",
-          "domain": "Домен",
-          "project": "Проект"
-        },
-        "level-descriptions": {
-          "realm": "Уровень доступа «Реалм» не требует дополнительной настройки.",
-          "domain": "Уровень доступа «Домен» требует указания домена, для которого действует доступ.",
-          "project": "Уровень доступа «Проект» требует указания проекта, для которого действует доступ."
-        },
-        "selectors": {
-          "domain": {
-            "label": "Выберите домен",
-            "no-value": "Домен не выбран"
-          },
-          "project": {
-            "label": "Выберите проект",
-            "no-value": "Проект не выбран"
-          }
-        }
-      },
-      "permission-choose-selector": {
-        "caption": "Назначение прав"
-      },
-      "user-create-password": {
-        "title": "Создание пароля",
-        "password": "Пароль",
-        "password-placeholder": "Новый пароль",
-        "password-confirm": "Подтверждение",
-        "password-confirm-placeholder": "Подтвердите пароль"
-      },
-      "user-info-group": {
-        "title": "Личные данные"
-      },
-      "user-update-password": {
-        "title": "Изменение пароля",
-        "password": "Пароль",
-        "password-placeholder": "Новый пароль",
-        "password-confirm": "Подтверждение",
-        "password-confirm-placeholder": "Подтвердите пароль",
-        "set-password": "Установить пароль",
-        "messages": {
-          "password-changed": "Пароль успешно изменен",
-          "password-change-error": "Не удалось изменить пароль"
-        }
-      },
-      "user-roles-group": {
-        "title": "Выбор роли",
-        "tooltips": {
-          "unassign": "Убрать выбранные роли",
-          "assign": "Добавить выбранные роли"
-        },
-        "header": {
-          "name": "Название",
-          "name-placeholder": "Введите название",
-          "object": "Имя",
-          "object-placeholder": "Введите имя",
-          "level": {
-            "caption": "Уровень",
-            "no-value": "Не выбран",
-            "realm": "Реалм",
-            "domain": "Домен",
-            "project": "Проект"
-          }
-        }
-      },
-      "CKEEditor": {
-        "switcher": {
-          "label": "Редактор"
-        }
-      }
-    },
-    "actions": {
-      "save": "Сохранить страницу [Ctrl + S]",
-      "copy": "Сохранить как новый элемент [Ctrl + Shift + C]",
-      "save-and-close": "Сохранить и закрыть страницу [Ctrl + Shift + S]",
-      "close": "Закрыть [Ctrl + Shift + X]"
-    }
-  },
-  "entity-list": {
-    "components": {
-      "delete-dialog": {
-        "title": "Удалить элементы",
-        "description": "Вы точно хотите удалить элементы ({{count}} шт)? Это действие нельзя отменить!",
-        "cancel": "Отменить",
-        "cancel-tooltip": "Отменить удаление элементов",
-        "submit": "Удалить ({{count}} шт)",
-        "submit-tooltip": "Подтвердить удаление элементов"
-      },
-      "copy-dialog": {
-        "title": "Копировать элементы",
-        "description": "Вы точно хотите копировать элементы ({{count}} шт.)?",
-        "cancel": "Отменить",
-        "cancel-tooltip": "Отменить копирование элементов",
-        "submit": "Копировать ({{count}} шт)",
-        "submit-tooltip": "Подтвердить копирование элементов"
-      },
-      "table-caption": {
-        "delete-tooltip": "Удалить выбранные элементы"
-      },
-      "actions": {
-        "add": "Создать",
-        "add-tooltip": "Создать новый элемент",
-        "copy": "Копировать",
-        "copy-tooltip": "Копировать выбранные элементы",
-        "edit-tooltip": "Редактировать элемент",
-        "delete-tooltip": "Удалить элемент"
-      },
-      "pagination": {
-        "rows-per-page": "Строк на странице:",
-        "items-quantity": "{{from}} - {{to}} из {{count}}"
-      },
-      "filter": {
-        "show-button": {
-          "tooltip": {
-            "show": "Показать фильтр",
-            "hide": "Скрыть фильтр"
-          }
-        },
-        "reset-button": {
-          "caption": "Сброс фильтра",
-          "tooltip": "Сбросить выбранные значения в фильтре"
-        },
-        "hide-button": {
-          "show": "Развернуть фильтр",
-          "hide": "Свернуть фильтр"
-        },
-        "fields": {
-          "choose-group": {
-            "all": "Оба варианта",
-            "yes": "Да",
-            "no": "Нет"
-          },
-          "enum-selector": {
-            "all-variants": "Все варианты"
-          },
-          "input": {
-            "placeholder": "Введите значение"
-          },
-          "autocomplete": {
-            "noOptionsText": "Нет найденных значений",
-            "closeText": "Закрыть",
-            "clearText": "Очистить",
-            "openText": "Открыть"
-          }
-        }
-      },
-      "list": {
-        "checkbox": {
-          "checked": "Снять выделение",
-          "not-checked": "Выбрать элемент"
-        },
-        "checkbox-header": {
-          "checked": "Снять выделение",
-          "not-checked": "Выбрать все элементы"
-        },
-        "header": {
-          "order-tooltip": {
-            "asc": "Сортировка по убыванию",
-            "desc": "Отключить сортировку",
-            "default": "Сортировка по возрастанию"
-          },
-          "order": {
-            "asc": "сортировка по возрастанию",
-            "desc": "сортировка по убыванию"
-          }
         }
       }
     }

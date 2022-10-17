@@ -22,6 +22,8 @@ import { ObjectsPassportListingConfiguration } from "./list/object_passport";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayersListingConfiguration } from "./list/player";
 import { PlayerEditPageConfiguration } from "./edit/player";
+import { PlayerCodeListingConfiguration } from "./list/player_code";
+import { PlayerCodeEditPageConfig } from "./edit/player_code";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = {
@@ -42,6 +44,7 @@ export const listSchemaConfiguration: {
     notification_config: new NotificationConfigListingConfiguration(),
     object_passport: new ObjectsPassportListingConfiguration(),
     player: new PlayersListingConfiguration(),
+    player_code: new PlayerCodeListingConfiguration(),
   };
 };
 
@@ -63,5 +66,6 @@ export const editSchemaConfiguration: {
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
     player: new PlayerEditPageConfiguration(),
+    player_code: new PlayerCodeEditPageConfig(),
   };
 };

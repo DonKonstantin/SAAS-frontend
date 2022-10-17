@@ -241,4 +241,10 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Player_Code!": AvailableFilterField[] = [
       
     ];
+    "Project_Channel": AvailableFilterField[] = [
+      
+    ];
+    "Player_Without_Relations": AvailableFilterField[] = [
+      
+    ];
 }
