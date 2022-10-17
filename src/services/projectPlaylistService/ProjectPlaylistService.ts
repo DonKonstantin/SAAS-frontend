@@ -20,7 +20,7 @@ import {
 import { GetPlaylistFilesByPlaylistIDsQuery } from "./Querys/getFiles";
 import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
-import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
+import { StorePlaylistMutation } from "./Mutations/storePlaylist";
 
 /**
  * Сервис для работы со списком плэйлистов
