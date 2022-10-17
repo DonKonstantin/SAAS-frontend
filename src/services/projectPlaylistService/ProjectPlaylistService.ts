@@ -17,7 +17,6 @@ import {
   StorePlaylistMutationParams,
   StorePlaylistMutationResponse,
 } from "./interfaces";
-import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIDsQuery } from "./Querys/getFiles";
 import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
