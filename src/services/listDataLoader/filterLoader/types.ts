@@ -251,6 +251,6 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
       
     ];
     "[Project_PlayList_File!]": AvailableFilterField[] = [
-      
+
     ];
 }

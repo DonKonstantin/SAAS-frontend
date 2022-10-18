@@ -19,10 +19,12 @@ import { NotificationConfigListingConfiguration } from "./list/notification_conf
 import { NotificationConfigEditPageConfig } from "./edit/notification_config";
 import { FileListingConfiguration } from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
+import { PlayersListingConfiguration } from "./list/player";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
 import { ProjectPlaylistEditPageConfig } from "./edit/project_playlist";
+import { PlayerCodeEditPageConfig } from "./edit/player_code";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = {
@@ -44,6 +46,7 @@ export const listSchemaConfiguration: {
     object_passport: new ObjectsPassportListingConfiguration(),
     player_code: new PlayerCodeListingConfiguration(),
     project_playlist: new PlaylistListingConfiguration(),
+    player: new PlayersListingConfiguration(),
   };
 };
 
@@ -65,5 +68,6 @@ export const editSchemaConfiguration: {
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
     project_playlist: new ProjectPlaylistEditPageConfig(),
+    player_code: new PlayerCodeEditPageConfig(),
   };
 };

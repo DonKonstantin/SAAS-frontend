@@ -1,8 +1,9 @@
 import {Schemas} from "../../schema";
 import {FilterFieldsConfiguration} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldsConfiguration} from "../../../services/listDataLoader/listLoader/types";
-import React from "react";
+import React, { FC } from "react";
 import {ListHeaderProps} from "../../../components/ListPageParts/TableCaption";
+import { ListRowProps } from "components/ListPageParts/List/ListBody/ListRow";
 
 // Тип, описывающий ссылку на страницу
 export type PageUrl = { href: string, as?: string }
@@ -28,4 +29,5 @@ export interface ListPageConfiguration<T extends keyof Schemas = keyof Schemas> 
     hidePagination?: boolean                                            // Отключает пагинацию листинга
     hideFilter?: boolean                                                // Отключает фильтр для листинга
     headerActions?: React.ComponentType<ListHeaderProps>                // Слот для действий верхний правый угол 
+    customRow?: FC<ListRowProps>                                        // Компонент кастомной строки листинга
 }
