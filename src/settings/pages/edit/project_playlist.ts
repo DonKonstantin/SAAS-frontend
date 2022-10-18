@@ -10,6 +10,7 @@ import CheckboxField from "components/EditPage/Fields/CheckboxField";
 import VolumeSliderField from "components/EditPage/Fields/VolumeSliderField";
 import { loggerFactory } from "services/logger";
 import projectPlaylistService from "services/projectPlaylistService";
+import { ProjectPlayListFile, ProjectPlayListFileInputObject } from 'services/projectPlaylistService/interfaces';
 
 
 /**
@@ -71,7 +72,38 @@ export class ProjectPlaylistEditPageConfig
 
               return {};
             }
-          }
+          },
+          onAfterSave: async (_, values, additionData) => {
+            this.logger.Info("values: ", values);
+            this.logger.Info("additionData: ", additionData);
+
+            const { project } = getCurrentState();
+
+            const files: ProjectPlayListFileInputObject[] = additionData.id.files.map((file: ProjectPlayListFile) => ({
+              id: file.id,
+              volume: file.volume,
+              fileId: file.file_id,
+              sort: file.sort,
+            }));
+
+            this.logger.Info("files:", files)
+
+            const playlistData = {
+              id: values.id as number,
+              projectId: Number(project),
+              name: values.name as string,
+              isOverallVolume: values.is_overall_volume as boolean,
+              overallVolume: values.overall_volume as number,
+              files,
+            };
+
+            try {
+              await projectPlaylistService().storePlaylistChanges(playlistData);
+            } catch (error) {
+              this.logger.Info("error:", error)
+            }
+            
+          },
         },
       ],
       component: EditProjectPlaylist,
@@ -87,8 +119,8 @@ export class ProjectPlaylistEditPageConfig
     };
   };
   isCopyEnabled: boolean = true;
-  isSaveAndCloseEnabled: boolean = true;
-  isSaveEnabled: boolean = true;
+  isSaveAndCloseEnabled: boolean = false;
+  isSaveEnabled: boolean = false;
   editPageUrlGenerator: { (primaryKey: any): PageUrl } = (pk) => {
     const { domain, project } = getCurrentState();
 

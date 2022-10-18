@@ -26,6 +26,11 @@ export interface ProjectPlaylistServiceInterface {
    * Копирование плейлистов
    */
   copyPlaylists: (playlists: ProjectPlayListInputObject[]) => Promise<string[]>;
+
+  /**
+   * Сохраняем изменения в плэйлисте
+   */
+  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<boolean>;
 };
 
 export type ExportedPlaylistType = {[x: string]: string[]};
@@ -184,7 +189,7 @@ export type GetPlaylistFilesByPlaylistIdQueryResponse = {
   files: {
     id: string;
     files: ProjectPlayListFile[];
-  };
+  }[];
 };
 
 export type GetProjectsByPlaylistIDsQueryParams = {

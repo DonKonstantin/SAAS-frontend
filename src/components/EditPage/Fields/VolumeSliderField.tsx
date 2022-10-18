@@ -8,7 +8,6 @@ import { distinctUntilChanged } from "rxjs";
 
 const VolumeSliderField: FC<EditFieldProperties> = (props) => {
   const { fieldCode } = props;
-  console.log("Hey");
 
   const fieldData = useEntityEditField(
     fieldCode,

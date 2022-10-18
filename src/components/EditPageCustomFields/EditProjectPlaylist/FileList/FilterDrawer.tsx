@@ -1,16 +1,20 @@
-import React, { FC } from "react";
+import React, { ChangeEvent, FC } from "react";
 import { CSSObject, styled } from "@mui/material/styles";
-import { Box } from "@mui/system";
 import {
   Divider,
   Drawer,
   IconButton,
   Tooltip,
   Typography,
+  Grid,
+  Box,
+  Button,
+  TextField,
 } from "@mui/material";
 import clsx from "clsx";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
+import { FilterFields } from ".";
 
 const drawerWidth = 350;
 
@@ -31,6 +35,21 @@ const Main = styled(Box, { shouldForwardProp: (prop) => prop !== "open" })<{
     }),
   }),
 }));
+
+const StyledDrawer = styled(Drawer)({
+  width: drawerWidth,
+  flexShrink: 0,
+  "& .MuiDrawer-paper": {
+    width: drawerWidth,
+    height: "100vh",
+  },
+});
+
+const StyledFilterWrapper = styled('div')({
+  padding: 24, 
+  flex: "1 1 0", 
+  overflowY: "auto",
+});
 
 // Компонент вывода подвала меню
 const DrawerFooter = styled("div")(({ theme }) => ({
@@ -55,39 +74,77 @@ const MenuButton = styled(IconButton)(() => ({
 // Свойства компонента
 type FilterDrawerProps = {
   isOpen: boolean;
-  onChangeOpen: { (): void };
+  filterValues: FilterFields;
+  onChangeOpen: VoidFunction;
+  onResetFilterValues: VoidFunction;
+  setFilterValues: (values: FilterFields) => void;
 
   children: React.ReactNode;
-  filterContent?: React.ReactNode;
 };
 
 // Компонент вывода панели фильтра
 const FilterDrawer: FC<FilterDrawerProps> = (props) => {
-  const { isOpen, onChangeOpen, children, filterContent } = props;
+  const {
+    isOpen,
+    children,
+    filterValues,
+    onChangeOpen,
+    onResetFilterValues,
+    setFilterValues,
+  } = props;
 
   const { t } = useTranslation();
+
+  const onNameChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+
+    setFilterValues({ ...filterValues, name: value });
+  };
+
   return (
     <>
       <Main open={isOpen}>{children}</Main>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            height: "100vh",
-          },
-        }}
+      <StyledDrawer
         variant="persistent"
         anchor="right"
         open={isOpen}
       >
-        <Box sx={{ p: 3, flex: "1 1 0", overflowY: "auto" }}>
+        <StyledFilterWrapper>
           <Box sx={{ pb: 3 }}>
             <Typography color="primary">Параметры фильтрации</Typography>
           </Box>
-          <Box>{filterContent}</Box>
-        </Box>
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  value={filterValues.name}
+                  onChange={onNameChangeHandler}
+                  sx={{ width: "100%" }}
+                  variant="standard"
+                  label={t("project-playlists.edit.list.header.track-name")}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Tooltip
+                  title={
+                    t(
+                      `entity-list.components.filter.reset-button.tooltip`
+                    ) as string
+                  }
+                >
+                  <Button
+                    sx={{ mt: 3 }}
+                    variant={"outlined"}
+                    fullWidth
+                    onClick={onResetFilterValues}
+                  >
+                    {t(`entity-list.components.filter.reset-button.caption`)}
+                  </Button>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </Box>
+        </StyledFilterWrapper>
         <Divider />
         <DrawerFooter>
           <Tooltip
@@ -108,7 +165,7 @@ const FilterDrawer: FC<FilterDrawerProps> = (props) => {
             </MenuButton>
           </Tooltip>
         </DrawerFooter>
-      </Drawer>
+      </StyledDrawer>
     </>
   );
 };

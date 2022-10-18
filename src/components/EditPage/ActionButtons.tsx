@@ -46,7 +46,7 @@ const useActionButtons = () => {
     }
 
     const {primaryKey} = entityData
-    const {listPageUrl, editPageUrlGenerator} = config
+    const {listPageUrl, isSaveEnabled, isSaveAndCloseEnabled, editPageUrlGenerator} = config
     const {href, as} = typeof listPageUrl === "function" ? listPageUrl() : listPageUrl
 
     // Обработка сохранения страницы
@@ -55,7 +55,8 @@ const useActionButtons = () => {
             return
         }
 
-        const newPrimaryKey = await onSave()
+        const newPrimaryKey = await onSave(false, isSaveEnabled);
+        
         if (!newPrimaryKey || newPrimaryKey === primaryKey) {
             return
         }
@@ -80,7 +81,8 @@ const useActionButtons = () => {
             return
         }
 
-        const newPrimaryKey = await onSave()
+        const newPrimaryKey = await onSave(false, isSaveAndCloseEnabled);
+
         if (!newPrimaryKey) {
             return
         }
@@ -148,7 +150,8 @@ const ActionButtons: FC<PageWithEntityList> = (props) => {
         handleClose,
         handleSaveAndClose,
         handleSave,
-        primaryKey
+        primaryKey,
+
     } = actionsCtx
 
     const permissionUpdateCheckPermission = !!primaryKey ? permissionCheckEditPermission : permissionCheckCreatePermission;
@@ -187,7 +190,7 @@ const ActionButtons: FC<PageWithEntityList> = (props) => {
                                 size="medium"
                                 disabled={isActionInProgress}
                                 color="primary"
-                                onClick={handleSave}
+                                onClick={() => handleSave()}
                             >
                                 <SaveIcon/>
                             </Fab>

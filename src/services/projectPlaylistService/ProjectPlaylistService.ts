@@ -63,7 +63,7 @@ export default class ProjectPlaylistService
 
       this.logger.Debug("Ответ на запрос файлов для плэйлистов: ", response);
 
-      return response.files.files;
+      return response.files[0].files;
     } catch (error) {
       this.logger.Error("Ошибка запроса файлов плэйлистов: ", error);
 
@@ -73,7 +73,7 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  }
+  };
 
   /**
    * Получаем список проектов по ID плэйлистов
@@ -101,7 +101,7 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  }
+  };
 
   /**
    * Обновление связных компаний
@@ -132,7 +132,7 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  }
+  };
 
   /**
    * Экспорт плэйлистов
@@ -187,7 +187,7 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  }
+  };
 
   /**
    * Копирование плейлистов
@@ -221,5 +221,29 @@ export default class ProjectPlaylistService
 
       throw error.errors;
     }
-  }
+  };
+
+  /**
+   * Сохраняем изменения в плэйлисте
+   * @param playlist 
+   * @returns 
+   */
+  async storePlaylistChanges(playlist: ProjectPlayListInputObject): Promise<boolean> {
+    this.logger.Info("Данные плэйлиста для сохранения: ", playlist);
+
+    try {
+      const response = await this.client.Mutation<
+            StorePlaylistMutationParams,
+            StorePlaylistMutationResponse
+          >(new StorePlaylistMutation(playlist), {});
+
+      this.logger.Debug("Ответ на мутацию сохранения плэйлиста: ", response);
+
+      return !!response.result.id;
+    } catch (error) {
+      this.logger.Error("Ошибка мутации сохранения плэйлиста: ", error);
+
+      return false;
+    }
+  };
 }

@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { useEntityEdit } from "context/EntityEditContext";
-import React, { FC, memo, useState } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EditFormGroupProperties } from "settings/pages/system/edit";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
-import { FileList } from "./FileList";
+import FileList from "./FileList";
 
 const StyledPaper = styled(Paper)({
   padding: "20px 40px",
@@ -26,6 +26,25 @@ const StyledGrid = styled(Grid)({
   marginTop: "15px",
 });
 
+const StyledListHeaderGrid = styled(StyledGrid)({
+  height: "51px", 
+  display: "flex", 
+  alignItems: "center", 
+  paddingLeft: 10,
+});
+
+const StyledVolumeValue = styled(Typography)({
+  ml: "7px !important",
+  fontSize: 13,
+  minWidth: 25,
+  maxWidth: 25,
+});
+
+/**
+ * Компонент редактирования плэйлиста
+ * @param param0 
+ * @returns 
+ */
 const EditProjectPlaylist: FC<EditFormGroupProperties> = ({ config }) => {
   const { fields, isVisible = () => true, sizes = { xs: 12 } } = config;
 
@@ -34,7 +53,7 @@ const EditProjectPlaylist: FC<EditFormGroupProperties> = ({ config }) => {
   const [isOverallVolume, setIsOverallVolume] = useState<boolean>(false);
   const [overallVolume, setOverallVolume] = useState<number>(0);
 
-  const { entityData } = useEntityEdit();
+  const { entityData, onChangeFieldValue } = useEntityEdit();
 
   if (!entityData) {
     return null;
@@ -49,6 +68,9 @@ const EditProjectPlaylist: FC<EditFormGroupProperties> = ({ config }) => {
   const onChangeIsOveralVolume = (_, checked: boolean) => {
     setIsOverallVolume(checked);
 
+    onChangeFieldValue('is_overall_volume', () => checked);
+    
+
     if (checked) {
       setOverallVolume(100);
     }
@@ -56,10 +78,17 @@ const EditProjectPlaylist: FC<EditFormGroupProperties> = ({ config }) => {
 
   const onChangeOveralVolume = (_, value: number) => {
     setOverallVolume(value);
+
+    onChangeFieldValue('overall_volume', () => value);
   };
 
   const NameComponent = fields.filter((field) => field.field === "name")[0]
     .component;
+
+    useEffect(() => {
+      setIsOverallVolume(values.is_overall_volume as boolean);
+      setOverallVolume(values.overall_volume as number);
+    }, []);
 
   return (
     <Grid item {...sizes}>
@@ -110,29 +139,21 @@ const EditProjectPlaylist: FC<EditFormGroupProperties> = ({ config }) => {
                     sx={{ ml: "7px !important" }}
                   />
                   <VolumeUp sx={{ ml: "14px !important", opacity: 0.54 }} />
-                  <Typography
-                    sx={{
-                      ml: "7px !important",
-                      fontSize: 13,
-                      minWidth: 25,
-                      maxWidth: 25,
-                    }}
-                  >
+                  <StyledVolumeValue>
                     {overallVolume}%
-                  </Typography>
+                  </StyledVolumeValue>
                 </Stack>
               )}
             </Stack>
           </StyledGrid>
-          <StyledGrid
+          <StyledListHeaderGrid
             item
             xs={12}
-            sx={{ height: "51px", display: "flex", alignItems: "center" }}
           >
             <Typography color="primary">
               {t("project-playlists.edit.field.track-list.header")}
             </Typography>
-          </StyledGrid>
+          </StyledListHeaderGrid>
           <Grid item xs={12}>
             <FileList/>
           </Grid>

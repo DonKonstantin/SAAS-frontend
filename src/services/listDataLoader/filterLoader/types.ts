@@ -250,4 +250,7 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Player_Code!": AvailableFilterField[] = [
       
     ];
+    "[Project_PlayList_File!]": AvailableFilterField[] = [
+      
+    ];
 }
