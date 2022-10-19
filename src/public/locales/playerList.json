@@ -2,6 +2,9 @@
   "player-list": {
     "title": "Плееры",
     "header": "Плееры",
+    "left-menu": {
+      "title": "Плееры"
+    },
     "list": {
       "header": {
         "name": "Плеер",

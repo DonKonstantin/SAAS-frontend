@@ -1,4 +1,3 @@
-import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
 import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 
 export interface ProjectPlaylistServiceInterface {
@@ -8,9 +7,14 @@ export interface ProjectPlaylistServiceInterface {
   getFiles: (playlistId: string) => Promise<ProjectPlayListFile[]>;
 
   /**
+   * Получаем сведения о файлах плэйлистов по массиву ID плэйлистов
+   */
+   getFilesByPlaylistIds: (playlistIds: string[]) => Promise<GetPlaylistFilesByPlaylistIdsQueryResponse>;
+
+  /**
    * Получаем список проектов по ID плэйлистов
    */
-  getProjects: (playlistsIDs: string[]) => Promise<ProjectData[]>;
+  getCampaigns: (playlistsIDs: string[]) => Promise<PlaylistCampaignsNameType[]>;
 
   /**
    * Экспорт плэйлистов
@@ -192,12 +196,30 @@ export type GetPlaylistFilesByPlaylistIdQueryResponse = {
   }[];
 };
 
-export type GetProjectsByPlaylistIDsQueryParams = {
-  projectIds: string[];
+export type GetPlaylistFilesByPlaylistIdsQueryParams = {
+  playlistIds: string[];
 };
 
-export type GetProjectsByPlaylistIDsQueryResponse = {
-  projects: ProjectData[];
+export type GetPlaylistFilesByPlaylistIdsQueryResponse = {
+  files: {
+    id: string;
+    files: ProjectPlayListFile[];
+  }[];
+};
+
+export type GetCampaignsByPlaylistIDsQueryParams = {
+  playlistIds: string[];
+};
+
+export type PlaylistCampaignsNameType = {
+  id: string;
+  campaigns: {
+    name: string;
+  };
+};
+
+export type GetCampaignsByPlaylistIDsQueryResponse = {
+  campaigns: PlaylistCampaignsNameType[];
 };
 
 export type RefreshCampaignsMutationParams = {

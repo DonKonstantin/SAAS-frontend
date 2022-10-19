@@ -24,6 +24,8 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isCopying, setIsCopying] = useState<boolean>(false);
 
+  const campaigns = data?.currentData.additionData.playlistCampaigns.flatMap((campaign) => campaign.campaigns) || [];
+
   /**
    * Обработчик кнопки обновления связных компаний
    */
@@ -81,11 +83,11 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       checkedItems.some((item) => item === row.primaryKeyValue)
     );
 
-    const playlistIds =
+    const playlistIds: string[] =
       selectedPlaylistsRows?.map((playlist) => playlist.primaryKeyValue) || [];
 
     try {
-      const { files } = await projectPlaylistService().getFiles(playlistIds);
+      const { files } = await projectPlaylistService().getFilesByPlaylistIds(playlistIds);
 
       const inputPlaylists =
         selectedPlaylistsRows?.map((playlist) => {
@@ -142,7 +144,7 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
       <Button
         variant="outlined"
         onClick={refreshHandler}
-        disabled={isRefreshing}
+        disabled={isRefreshing || !campaigns.length}
       >
         {t("project-playlists.button.refresh-linked-campaigns")}
       </Button>

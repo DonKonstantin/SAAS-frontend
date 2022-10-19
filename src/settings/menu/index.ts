@@ -212,7 +212,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
                 as: `/domain/${domain}/project/${project}/player-list`,
             };
         },
-        title: "UI.menu.left-menu.items.player-list",
+        title: "player-list.left-menu.title",
     },
     {
       link: () => {

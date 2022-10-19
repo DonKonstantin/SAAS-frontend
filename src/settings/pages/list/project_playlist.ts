@@ -10,7 +10,7 @@ import { ListFieldsConfiguration } from "services/listDataLoader/listLoader/type
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import { loggerFactory } from "services/logger";
 import projectPlaylistService from "services/projectPlaylistService";
-import PlaylistProjectCell from "components/ListPageCustom/PlaylistProjectCell";
+import PlaylistCampaignsCell from "components/ListPageCustom/PlaylistCampaignsCell";
 import PlaylistHeaderActions from "components/ListPageCustom/PlaylistHeaderActions";
 import PlaylistActions from "components/ListPageCustom/PlaylistActions";
 
@@ -27,6 +27,12 @@ export class PlaylistListingConfiguration
       schema: "project_playlist",
       title: "project-playlists.list.header.name",
     },
+    project_id: {
+      field: "project_id",
+      filterType: "VariantsSelectorInt",
+      schema: "project_playlist",
+      title: "project-playlists.list.header.name",
+    },
   };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
     fields: {
@@ -40,15 +46,15 @@ export class PlaylistListingConfiguration
           type: "Simple",
         },
       },
-      project_id: {
-        field: "project_id",
+      id: {
+        field: "id",
         title: "project-playlists.list.header.project",
         isEnabled: true,
         isHidden: false,
         fieldType: {
           config: undefined,
           type: "Simple",
-          customComponent: PlaylistProjectCell,
+          customComponent: PlaylistCampaignsCell,
         },
       },
       duration: {
@@ -61,8 +67,8 @@ export class PlaylistListingConfiguration
           type: "Simple",
         },
       },
-      id: {
-        field: "id",
+      project_id: {
+        field: "project_id",
         title: "",
         isEnabled: true,
         isHidden: true,
@@ -98,17 +104,17 @@ export class PlaylistListingConfiguration
 
       try {
         //@ts-ignore
-        const projectIds = rows.map(
-          (row) => row.columnValues.project_id.value
+        const playlistsId = rows.map(
+          (row) => row.columnValues.id.value
         ) as string[];
 
-        const playlistProjects = await projectPlaylistService().getProjects(
-          projectIds
+        const playlistCampaigns = await projectPlaylistService().getCampaigns(
+          playlistsId
         );
 
-        logger.Debug("Playlist listing projects response: ", playlistProjects);
+        logger.Debug("Playlist listing projects response: ", playlistCampaigns);
 
-        return { playlistProjects };
+        return { playlistCampaigns };
       } catch (error) {
         logger.Error("Playlist listing additional data error: ", error);
 

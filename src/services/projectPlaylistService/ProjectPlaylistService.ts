@@ -1,5 +1,4 @@
 import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
-import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
 import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
 import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
@@ -15,14 +14,18 @@ import {
   ProjectPlayListFile,
   GetPlaylistFilesByPlaylistIdQueryParams,
   GetPlaylistFilesByPlaylistIdQueryResponse,
-  GetProjectsByPlaylistIDsQueryParams,
-  GetProjectsByPlaylistIDsQueryResponse,
+  GetCampaignsByPlaylistIDsQueryParams,
+  GetCampaignsByPlaylistIDsQueryResponse,
+  PlaylistCampaignsNameType,
+  GetPlaylistFilesByPlaylistIdsQueryParams,
+  GetPlaylistFilesByPlaylistIdsQueryResponse,
 } from "./interfaces";
 import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
-import { GetProjectsByPlaylistIDsQuery } from "./Querys/getProjects";
+import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
 import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
+import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByplaylistIds";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -76,22 +79,52 @@ export default class ProjectPlaylistService
   };
 
   /**
+   * Получаем сведения о файлах плэйлистов по ИД плэйлистов
+   * @param playlistsIDs
+   * @returns
+   */
+   async getFilesByPlaylistIds(
+    playlistIds: string[]
+  ): Promise<GetPlaylistFilesByPlaylistIdsQueryResponse> {
+    this.logger.Debug("ID плэйлистов: ", playlistIds);
+
+    try {
+      const response = await this.client.Query<
+        GetPlaylistFilesByPlaylistIdsQueryParams,
+        GetPlaylistFilesByPlaylistIdsQueryResponse
+      >(new GetPlaylistFilesByPlaylistIdsQuery(playlistIds), {});
+
+      this.logger.Debug("Ответ на запрос файлов для плэйлистов: ", response);
+
+      return response;
+    } catch (error) {
+      this.logger.Error("Ошибка запроса файлов плэйлистов: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
    * Получаем список проектов по ID плэйлистов
    * @param playlistsIDs
    * @returns
    */
-  async getProjects(playlistsIDs: string[]): Promise<ProjectData[]> {
+  async getCampaigns(playlistsIDs: string[]): Promise<PlaylistCampaignsNameType[]> {
     this.logger.Debug("ID плэйлистов: ", playlistsIDs);
 
     try {
       const response = await this.client.Query<
-        GetProjectsByPlaylistIDsQueryParams,
-        GetProjectsByPlaylistIDsQueryResponse
-      >(new GetProjectsByPlaylistIDsQuery(playlistsIDs), {});
+        GetCampaignsByPlaylistIDsQueryParams,
+        GetCampaignsByPlaylistIDsQueryResponse
+      >(new GetCampaignsByPlaylistIDsQuery(playlistsIDs), {});
 
       this.logger.Debug("Ответ на запрос проектов для плэйлистов: ", response);
 
-      return response.projects;
+      return response.campaigns;
     } catch (error) {
       this.logger.Error("Ошибка запроса проектов плэйлистов: ", error);
 
@@ -229,7 +262,7 @@ export default class ProjectPlaylistService
    * @returns 
    */
   async storePlaylistChanges(playlist: ProjectPlayListInputObject): Promise<boolean> {
-    this.logger.Info("Данные плэйлиста для сохранения: ", playlist);
+    this.logger.Debug("Данные плэйлиста для сохранения: ", playlist);
 
     try {
       const response = await this.client.Mutation<

@@ -68,14 +68,14 @@ export class ProjectPlaylistEditPageConfig
                 files
               };
             } catch (error) {
-              this.logger.Info("Edit playlist additional data error: ", error);
+              this.logger.Debug("Edit playlist additional data error: ", error);
 
               return {};
             }
           },
           onAfterSave: async (_, values, additionData) => {
-            this.logger.Info("values: ", values);
-            this.logger.Info("additionData: ", additionData);
+            this.logger.Debug("values: ", values);
+            this.logger.Debug("additionData: ", additionData);
 
             const { project } = getCurrentState();
 
@@ -86,7 +86,7 @@ export class ProjectPlaylistEditPageConfig
               sort: file.sort,
             }));
 
-            this.logger.Info("files:", files)
+            this.logger.Debug("files:", files)
 
             const playlistData = {
               id: values.id as number,
@@ -100,7 +100,7 @@ export class ProjectPlaylistEditPageConfig
             try {
               await projectPlaylistService().storePlaylistChanges(playlistData);
             } catch (error) {
-              this.logger.Info("error:", error)
+              this.logger.Debug("error:", error)
             }
             
           },
