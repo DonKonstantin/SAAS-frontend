@@ -1,6 +1,5 @@
 import entityList from './entity-list.json';
 import ObjectsPassportList from './ObjectsPassportList.json';
-import playerList from './playerList.json';
 import validators from './validators.json';
 import playerList from './playerList.json';
 import UI from './UI.json';
