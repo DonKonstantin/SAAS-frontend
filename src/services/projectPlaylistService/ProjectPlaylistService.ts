@@ -25,7 +25,7 @@ import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
 import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
 import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
-import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByplaylistIds";
+import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByPlaylistsId";
 
 /**
  * Сервис для работы со списком плэйлистов
