@@ -18,7 +18,7 @@ import {withPageProps} from "../../layouts/PagePropsProvider";
  * Хук необходим для того, чтоб корректно обработать зависимости, когда их нет.
  * Когда они есть, то возвращаются все необходимые callback для работы.
  */
-const useActionButtons = () => {
+export const useActionButtons = () => {
     const router = useRouter()
     const [config, setConfig] = useState<EditPageConfiguration>()
     const {onSave, entityData, isActionInProgress} = useEntityEdit(distinctUntilChanged(

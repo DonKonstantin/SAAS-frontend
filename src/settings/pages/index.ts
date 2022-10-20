@@ -19,8 +19,9 @@ import { NotificationConfigListingConfiguration } from "./list/notification_conf
 import { NotificationConfigEditPageConfig } from "./edit/notification_config";
 import { FileListingConfiguration } from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
-import { PlayersListingConfiguration } from "./list/player";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
+import { PlayersListingConfiguration } from "./list/player";
+import { PlayerEditPageConfiguration } from "./edit/player";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
 import { ProjectPlaylistEditPageConfig } from "./edit/project_playlist";
@@ -68,6 +69,7 @@ export const editSchemaConfiguration: {
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
     project_playlist: new ProjectPlaylistEditPageConfig(),
+    player: new PlayerEditPageConfiguration(),
     player_code: new PlayerCodeEditPageConfig(),
   };
 };
