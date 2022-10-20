@@ -19,30 +19,35 @@ import { NotificationConfigListingConfiguration } from "./list/notification_conf
 import { NotificationConfigEditPageConfig } from "./edit/notification_config";
 import { FileListingConfiguration } from "./list/file";
 import { ObjectsPassportListingConfiguration } from "./list/object_passport";
-import { PlayersListingConfiguration } from "./list/player";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
+import { PlayersListingConfiguration } from "./list/player";
+import { PlayerEditPageConfiguration } from "./edit/player";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
 import { PlayerCodeEditPageConfig } from "./edit/player_code";
 
 // Параметры конфигурации листинга сущностей
-export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
-export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): ListSchemaConfiguration => {
-    return {
-        user: new UserListingConfiguration,
-        permission_category: new PermissionCategoryListingConfiguration,
-        file: new FileListingConfiguration,
-        permission: new PermissionListingConfiguration,
-        role: new RoleListingConfiguration,
-        domain: new DomainListingConfiguration,
-        project: new ProjectListingConfiguration,
-        notifications_template: new NotificationsTemplateListingConfiguration,
-        notification_config: new NotificationConfigListingConfiguration,
-        object_passport: new ObjectsPassportListingConfiguration,
-        project_playlist: new PlaylistListingConfiguration,
-        player: new PlayersListingConfiguration,
-        player_code: new PlayerCodeListingConfiguration(),
-    }
+export type ListSchemaConfiguration = {
+  [P in keyof Schemas]?: ListPageConfiguration<P>;
+};
+export const listSchemaConfiguration: {
+  (): ListSchemaConfiguration;
+} = (): ListSchemaConfiguration => {
+  return {
+    user: new UserListingConfiguration(),
+    permission_category: new PermissionCategoryListingConfiguration(),
+    file: new FileListingConfiguration(),
+    permission: new PermissionListingConfiguration(),
+    role: new RoleListingConfiguration(),
+    domain: new DomainListingConfiguration(),
+    project: new ProjectListingConfiguration(),
+    notifications_template: new NotificationsTemplateListingConfiguration(),
+    notification_config: new NotificationConfigListingConfiguration(),
+    object_passport: new ObjectsPassportListingConfiguration(),
+    project_playlist: new PlaylistListingConfiguration,
+    player: new PlayersListingConfiguration(),
+    player_code: new PlayerCodeListingConfiguration(),
+  };
 };
 
 // Параметры конфигурации страниц редактирования сущностей
@@ -62,6 +67,7 @@ export const editSchemaConfiguration: {
     notifications_template: new NotificationsTemplateEditPageConfig(),
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
+    player: new PlayerEditPageConfiguration(),
     player_code: new PlayerCodeEditPageConfig(),
   };
 };
