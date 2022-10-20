@@ -170,23 +170,25 @@ export const ProjectMenuItems = (): MenuItem[] => ([
     },
     {
         link: () => {
-            const {domain, project} = getCurrentState()
+            const {domain, project} = getCurrentState();
+
             return {
-                href: "/domain/[domainId]/project/[projectId]/player-codes",
-                as: `/domain/${domain}/project/${project}/player-codes`,
+                href: "/domain/[domainId]/project/[projectId]/player-code",
+                as: `/domain/${domain}/project/${project}/player-code`,
             }
         },
         title: "UI.menu.left-menu.items.player-codes.index",
     },
     {
-        link: () => {
-            const {domain, project} = getCurrentState()
-            return {
-                href: "/domain/[domainId]/project/[projectId]/media",
-                as: `/domain/${domain}/project/${project}/media`,
-            }
-        },
-        title: "UI.menu.left-menu.items.playlists",
+      link: () => {
+          const {domain, project} = getCurrentState();
+
+          return {
+              href: "/domain/[domainId]/project/[projectId]/project-playlist",
+              as: `/domain/${domain}/project/${project}/project-playlist`,
+          }
+      },
+      title: "UI.menu.left-menu.items.project-playlists",
     },
     {
         link: () => {
@@ -204,8 +206,8 @@ export const ProjectMenuItems = (): MenuItem[] => ([
         const {domain, project} = getCurrentState();
         
         return {
-            href: "/domain/[domainId]/project/[projectId]/object-passports",
-            as: `/domain/${domain}/project/${project}/object-passports`,
+            href: "/domain/[domainId]/project/[projectId]/object-passport",
+            as: `/domain/${domain}/project/${project}/object-passport`,
         }
       },
       title: "objects-passport-list.left-menu-title",
