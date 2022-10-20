@@ -594,7 +594,6 @@ export type FieldType =
   | "Player_Without_Relations"
   | "Project_PlayList_File"
   | "[Project_PlayList_File!]"
-  | "Object_Passport"
   | "NullableID"
   | "Player_Code!";
 

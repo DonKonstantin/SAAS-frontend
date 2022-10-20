@@ -247,10 +247,10 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "NullableID": AvailableFilterField[] = [
       
     ];
-    "Player_Code!": AvailableFilterField[] = [
-      
-    ];
     "[Project_PlayList_File!]": AvailableFilterField[] = [
 
+    ];
+    "Player_Code!": AvailableFilterField[] = [
+      
     ];
 }
