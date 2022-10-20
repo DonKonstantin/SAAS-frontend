@@ -35,6 +35,16 @@ export interface ProjectPlaylistServiceInterface {
    * Сохраняем изменения в плэйлисте
    */
   storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<boolean>;
+
+  /**
+   * Получаем список ID кампаний по имени
+   */
+  getCampaignsIdByName: (campaignName: string, projectId: string) => Promise<string[]>;
+
+  /**
+   * Получаем список ID плэйлистов по списку ID кампаний
+   */
+  getPlaylistsIdByCampignsId: (campignsId: string[]) => Promise<string[]>;
 };
 
 export type ExportedPlaylistType = {[x: string]: string[]};
@@ -238,4 +248,23 @@ export type StorePlaylistMutationResponse = {
   result: {
     id: string;
   };
+};
+
+export type GetCampaignsIdByNameQueryParams = {
+  campaignName: string;
+  projectId: string;
+};
+
+export type GetCampaignsIdByNameQueryResponse = {
+  campaignsId: {
+    id: string;
+  }[];
+};
+
+export type GetPlaylistsIdByCampaignsIdQueryParams = {
+  campaignsId: string[];
+};
+
+export type GetPlaylistsIdByCampaignsIdQueryResponse = {
+  campaignsId: string[];
 };

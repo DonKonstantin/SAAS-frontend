@@ -19,6 +19,10 @@ import {
   PlaylistCampaignsNameType,
   GetPlaylistFilesByPlaylistIdsQueryParams,
   GetPlaylistFilesByPlaylistIdsQueryResponse,
+  GetCampaignsIdByNameQueryParams,
+  GetCampaignsIdByNameQueryResponse,
+  GetPlaylistsIdByCampaignsIdQueryParams,
+  GetPlaylistsIdByCampaignsIdQueryResponse,
 } from "./interfaces";
 import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
@@ -26,6 +30,8 @@ import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
 import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
 import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByPlaylistsId";
+import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
+import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -277,6 +283,62 @@ export default class ProjectPlaylistService
       this.logger.Error("Ошибка мутации сохранения плэйлиста: ", error);
 
       return false;
+    }
+  };
+
+  /**
+   * Получаем список ID кампаний по имени
+   * @param campaignName 
+   * @param projectId 
+   * @returns 
+   */
+  async getCampaignsIdByName(campaignName: string, projectId: string): Promise<any> {
+    this.logger.Debug("Имя кампании: ", campaignName);
+
+    try {
+      const response = await this.client.Mutation<
+          GetCampaignsIdByNameQueryParams,
+          GetCampaignsIdByNameQueryResponse
+        >(new GetCampaignsIdByNameQuery(campaignName, projectId), {});
+
+      this.logger.Debug("Ответ на запрос массива ID кампаний по имени: ", response);
+
+      return response.campaignsId.map(item => item.id);
+    } catch (error) {
+      this.logger.Error("Ошибка запроса массива ID кампаний по имени: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
+   * Получаем список ID плэйлистов по списку ID кампаний
+   * @param campignsId 
+   */
+  async getPlaylistsIdByCampignsId(campignsId: string[]): Promise<string[]> {
+    this.logger.Debug("Список ID кампаний: ", campignsId);
+
+    try {
+      const response = await this.client.Mutation<
+          GetPlaylistsIdByCampaignsIdQueryParams,
+          GetPlaylistsIdByCampaignsIdQueryResponse
+        >(new GetPlaylistsIdByCampaignsIdQuery(campignsId), {});
+
+      this.logger.Debug("Ответ на запрос массива ID плэйлистов по массиву ID кампаний: ", response);
+
+      return response.campaignsId;
+    } catch (error) {
+      this.logger.Error("Ошибка запроса массива ID кампаний по имени массиву ID кампаний: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
     }
   };
 }
