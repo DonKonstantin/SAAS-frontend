@@ -237,6 +237,19 @@ export const ProjectMenuItems = (): MenuItem[] => [
         title: "player-list.left-menu.title",
     },
     {
+      link: () => {
+        const {domain, project} = getCurrentState();
+        
+        return {
+            href: "/domain/[domainId]/project/[projectId]/reports",
+            as: `/domain/${domain}/project/${project}/reports`,
+        }
+      },
+      title: "reports.left-menu-title",
+      permission: "READ_REPORTS",
+      level: "project",
+    },
+    {
         link: () => {
             const {domain, project} = getCurrentState();
             return {
