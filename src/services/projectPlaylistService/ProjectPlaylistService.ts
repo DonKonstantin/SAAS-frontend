@@ -28,10 +28,10 @@ import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
 import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
-import { StorePlaylistMutation } from "./Mutations/storePlaylistMutation";
 import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByPlaylistsId";
 import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
 import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
+import { StorePlaylistMutation } from "./Mutations/storePlaylist";
 
 /**
  * Сервис для работы со списком плэйлистов
