@@ -7,9 +7,32 @@ import { PageWithChangeableMenu } from "layouts/MenuChangeLayout";
 import { PageWithMetaTags } from "components/UILayer/PageWithMetaTags";
 import { TabsTypes } from "./types";
 import { useTranslation } from "react-i18next";
+import ExportPage from "./ExportPage";
+import ImportPage from "./ImportPage";
+import { styled } from "@mui/system";
+import ProjectReportPageContextInitializer from "context/ProjectReportPageContext/ProjectReportPageContextInitializer";
 
 type Props = PageWithMetaTags & PageWithChangeableMenu;
 
+const StyledTabWrapper = styled(Box)({
+  borderBottom: 1,
+  borderColor: "divider",
+});
+
+const StyledContentWrapper = styled(Paper)({
+  marginTop: 13,
+  padding: "20px 40px",
+});
+
+const StyledTabPanel = styled(TabPanel)({
+  padding: 0,
+});
+
+/**
+ * Компонент страницы отчетов
+ * @param param0
+ * @returns
+ */
 const ProjectReports: NextPage<Props> = ({}) => {
   const { t } = useTranslation();
 
@@ -20,23 +43,27 @@ const ProjectReports: NextPage<Props> = ({}) => {
   };
 
   return (
-    <>
-      <Box sx={{ pb: 3 }}>
+    <ProjectReportPageContextInitializer>
+      <Box sx={{ pb: 3.5 }}>
         <Breadcrumbs />
       </Box>
-      <Paper elevation={3}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={onTabChangeHandler}>
-              <Tab label={t("reports.tabs.export")} value="export" />
-              <Tab label={t("reports.tabs.import")} value="import" />
-            </TabList>
-          </Box>
-          <TabPanel value="export">Item One</TabPanel>
-          <TabPanel value="import">Item Two</TabPanel>
-        </TabContext>
-      </Paper>
-    </>
+      <TabContext value={value}>
+        <StyledTabWrapper>
+          <TabList onChange={onTabChangeHandler}>
+            <Tab label={t("reports.tab.export")} value="export" />
+            <Tab label={t("reports.tab.import")} value="import" />
+          </TabList>
+        </StyledTabWrapper>
+        <StyledContentWrapper elevation={3}>
+          <StyledTabPanel value="export">
+            <ExportPage />
+          </StyledTabPanel>
+          <StyledTabPanel value="import">
+            <ImportPage />
+          </StyledTabPanel>
+        </StyledContentWrapper>
+      </TabContext>
+    </ProjectReportPageContextInitializer>
   );
 };
 

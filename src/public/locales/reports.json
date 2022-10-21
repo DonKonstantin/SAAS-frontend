@@ -2,9 +2,29 @@
   "reports": {
     "left-menu-title": "Отчеты",
     "breadcrumb": "Отчеты",
-    "tabs": {
+    "tab": {
       "export": "Экспорт",
       "import": "Импорт"
+    },
+    "field": {
+      "chose-type": "Выберите тип отчета",
+      "date": "Дата",
+      "date-input": {
+        "from": "С",
+        "to": "по"
+      },
+      "report-type": {
+        "playerLogs": "Логи плеера",
+        "files": "Файлы",
+        "deviceReport": "Отчет по устройству",
+        "capmaigns": "Кампании",
+        "channels": "Каналы",
+        "reportRAO": "Отчет РАО",
+        "reportVOIS": "Отчет ВОИС"
+      }
+    },
+    "button": {
+      "generate": "СГЕНЕРИРОВАТЬ"
     }
   }
 }
