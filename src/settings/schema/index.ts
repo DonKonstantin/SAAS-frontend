@@ -512,6 +512,53 @@ export class Schemas {
     isCreatable: true,
     isDeletable: true,
   };
+  // Параметры схемы сущности Компании
+  campaign: Schema = {
+    fields: {
+      id: {
+        type: "ID",
+        isPrimaryKey: true,
+        isArray: false,
+      },
+      name: {
+        type: "String!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      version: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      campaign_priority : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            higher: "pages.campaign.list.fields.campaign-priority-enum.higher",
+            background: "pages.campaign.list.fields.campaign-priority-enum.background",
+            low: "pages.campaign.list.fields.campaign-priority-enum.low",
+            normal: "pages.campaign.list.fields.campaign-priority-enum.normal",
+            high: "pages.campaign.list.fields.campaign-priority-enum.high"
+          },
+        },
+      },
+      campaign_period_start: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      campaign_period_stop: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+    },
+    isChangeable: true,
+    isCreatable: true,
+    isDeletable: true,
+  };
 
   // Шаблоны для рассылок
   notifications_template = notifications_template;

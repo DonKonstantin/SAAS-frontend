@@ -189,6 +189,7 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorInt",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
+      "Switch"
     ];
     "String!": AvailableFilterField[] = [
         "EqualsString",

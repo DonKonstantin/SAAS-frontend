@@ -170,6 +170,17 @@ export const ProjectMenuItems = (): MenuItem[] => ([
     },
     {
         link: () => {
+            const {domain, project} = getCurrentState();
+
+            return {
+                href: "/domain/[domainId]/project/[projectId]/campaign ",
+                as: `/domain/${domain}/project/${project}/campaign`,
+            };
+        },
+        title: "UI.menu.left-menu.items.campaign",
+    },
+    {
+        link: () => {
             const {domain, project} = getCurrentState()
             return {
                 href: "/domain/[domainId]/project/[projectId]/player-codes",

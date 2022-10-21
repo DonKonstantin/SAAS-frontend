@@ -23,6 +23,7 @@ import { PlayersListingConfiguration } from "./list/player";
 import { ObjectPassportEditPageConfig } from "./edit/object_passport";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlayerCodeEditPageConfig } from "./edit/player_code";
+import { CampaignListingConfiguration } from "./list/campaign";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = { [P in keyof Schemas]?: ListPageConfiguration<P> }
@@ -40,6 +41,7 @@ export const listSchemaConfiguration: { (): ListSchemaConfiguration } = (): List
         object_passport: new ObjectsPassportListingConfiguration,
         player: new PlayersListingConfiguration,
         player_code: new PlayerCodeListingConfiguration(),
+        campaign: new CampaignListingConfiguration(),
     }
 };
 
