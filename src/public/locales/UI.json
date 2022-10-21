@@ -95,7 +95,8 @@
           },
           "player-codes": {
             "index": "Коды плееров"
-          }
+          },
+          "project-playlists": "Плейлисты"
         }
       }
     },

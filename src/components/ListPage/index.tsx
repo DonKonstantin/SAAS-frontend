@@ -51,6 +51,8 @@ const ListPage: FC = () => {
     const config = listSchemaConfiguration()[data.schema]
 
     const ActionComponent = config?.action || undefined;
+    const HeaderActionsComponent = config?.headerActions || undefined;
+
     // Обработчик переключения фильтра
     const handleToggleFilter = () => {
         setIsFilterOpen(s => !s)
@@ -89,6 +91,9 @@ const ListPage: FC = () => {
                 </Box>
                 <Box sx={{width: '100%'}}>
                     <Paper sx={{width: '100%', mb: 2, p: 3}}>
+                        {HeaderActionsComponent && (
+                          <HeaderActionsComponent checkedItems={selected} />
+                        )}
                         <TableCaption checkedItems={selected}/>
                         <List
                             checkedItems={selected}

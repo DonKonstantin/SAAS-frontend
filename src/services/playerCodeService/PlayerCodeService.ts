@@ -111,7 +111,7 @@ export class PlayerCodeService implements PlayerCodeServiceInterface {
         response
       );
 
-      this.logger.Info(
+      this.logger.Debug(
         "Ответ на запрос списка каналов для листинга кодов плеера: ",
         response
       );
@@ -140,7 +140,7 @@ export class PlayerCodeService implements PlayerCodeServiceInterface {
         DeactivatePlayerCodeMutationResponse
       >(new DeactivatePlayerCodeMutation(code), {});
 
-      this.logger.Info(
+      this.logger.Debug(
         "Ответ на мутацию деактивации кода плеера: ",
         player_code_update
       );
