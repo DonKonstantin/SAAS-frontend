@@ -7,6 +7,7 @@ import pages from './pages.json';
 import entityEdit from './entity-edit.json';
 import playerCodes from './player-codes.json';
 import projectPlaylist from './project-playlist.json';
+import reports from './reports.json';
 
 const RU = {
   ...entityList,
@@ -19,6 +20,7 @@ const RU = {
   ...entityEdit,
   ...playerCodes,
   ...projectPlaylist,
+  ...reports,
 };
 
 export default RU;

@@ -1,0 +1,1 @@
+export type TabsTypes = 'export' | 'import';

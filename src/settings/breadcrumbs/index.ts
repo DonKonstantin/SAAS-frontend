@@ -265,6 +265,17 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
         };
       },
     },
+    "/domain/[domainId]/project/[projectId]/reports": {
+      breadcrumb: "reports.breadcrumb",
+      link: () => {
+        const { domain, project } = getCurrentState();
+
+        return {
+          href: "/domain/[domainId]/project/[projectId]/reports",
+          as: `/domain/${domain}/project/${project}/reports`,
+        };
+      },
+    },
     "/domain/[domainId]/project/[projectId]/users": {
       breadcrumb: "pages.users.list.breadcrumb",
       link: () => {

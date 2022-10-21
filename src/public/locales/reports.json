@@ -1,0 +1,10 @@
+{
+  "reports": {
+    "left-menu-title": "Отчеты",
+    "breadcrumb": "Отчеты",
+    "tabs": {
+      "export": "Экспорт",
+      "import": "Импорт"
+    }
+  }
+}
