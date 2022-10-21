@@ -2,6 +2,7 @@ import { TableCell } from "@mui/material";
 import columnDirection from "components/ListPageParts/List/helpers/columnDirection";
 import { useEntityList } from "context/EntityListContext";
 import React, { FC, memo } from "react";
+import { useTranslation } from "react-i18next";
 import { SimpleValues } from "services/listDataLoader/listLoader/listValues/SimpleValues";
 import { ListFieldProperties } from "services/listDataLoader/listLoader/types";
 
@@ -10,8 +11,10 @@ import { ListFieldProperties } from "services/listDataLoader/listLoader/types";
  * @param props 
  * @returns 
  */
-const PlaylistProjectCell: FC<ListFieldProperties<SimpleValues>> = props => {
+const PlaylistCampaignsCell: FC<ListFieldProperties<SimpleValues>> = props => {
   const {schema, value, configuration} = props;
+
+  const { t } = useTranslation();
 
   const {
       align = columnDirection(schema, configuration),
@@ -31,13 +34,15 @@ const PlaylistProjectCell: FC<ListFieldProperties<SimpleValues>> = props => {
     return null
   }
 
-  const projectName = additionData.playlistProjects?.find(project => project.id === value.value);
+  const campaigns = additionData.playlistCampaigns?.find(project => project.id === value.value).campaigns;
+  
+  const campaignsString = campaigns.map(c => c.name).join(", ");
 
   return (
     <TableCell className="list-table-cell" padding={padding} style={{width: width}} align={align}>
-      {!projectName ? '' : projectName.name}
+      {!campaignsString ? t('project-playlists.list.no-campaigns') : campaignsString}
     </TableCell>
   );
 };
 
-export default memo(PlaylistProjectCell);
+export default memo(PlaylistCampaignsCell);

@@ -551,6 +551,12 @@ export class Schemas {
       isPrimaryKey: false,
       isArray: false,
     },
+    //  Файлы, относящиеся к плейлисту
+    files: {
+      type: "[Project_PlayList_File!]",
+      isPrimaryKey: false,
+      isArray: false,
+    },
   },
 
   isChangeable: true,
@@ -587,7 +593,7 @@ export type FieldType =
   | "Project_Channel"
   | "Player_Without_Relations"
   | "Project_PlayList_File"
-  | "Object_Passport"
+  | "[Project_PlayList_File!]"
   | "NullableID"
   | "Player_Code!";
 

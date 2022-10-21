@@ -1,16 +1,20 @@
-import { ProjectData } from "services/loaders/allDomainsAndProjects/LoaderQuery";
 import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 
 export interface ProjectPlaylistServiceInterface {
   /**
-   * Получаем сведения о файлах плэйлистов по ID плэйлистов
+   * Получаем сведения о файлах плэйлистов по ID плэйлиста
    */
-  getFiles: (playlistsIDs: string[]) => Promise<GetPlaylistFilesByPlaylistIDsQueryResponse>;
+  getFiles: (playlistId: string) => Promise<ProjectPlayListFile[]>;
+
+  /**
+   * Получаем сведения о файлах плэйлистов по массиву ID плэйлистов
+   */
+   getFilesByPlaylistIds: (playlistIds: string[]) => Promise<GetPlaylistFilesByPlaylistIdsQueryResponse>;
 
   /**
    * Получаем список проектов по ID плэйлистов
    */
-  getProjects: (playlistsIDs: string[]) => Promise<ProjectData[]>;
+  getCampaigns: (playlistsIDs: string[]) => Promise<PlaylistCampaignsNameType[]>;
 
   /**
    * Экспорт плэйлистов
@@ -26,6 +30,21 @@ export interface ProjectPlaylistServiceInterface {
    * Копирование плейлистов
    */
   copyPlaylists: (playlists: ProjectPlayListInputObject[]) => Promise<string[]>;
+
+  /**
+   * Сохраняем изменения в плэйлисте
+   */
+  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<boolean>;
+
+  /**
+   * Получаем список ID кампаний по имени
+   */
+  getCampaignsIdByName: (campaignName: string, projectId: string) => Promise<string[]>;
+
+  /**
+   * Получаем список ID плэйлистов по списку ID кампаний
+   */
+  getPlaylistsIdByCampignsId: (campignsId: string[]) => Promise<string[]>;
 };
 
 export type ExportedPlaylistType = {[x: string]: string[]};
@@ -176,23 +195,41 @@ export interface ProjectPlayListInputObject {
   overallVolume: number;                                //  Общая громкость звука в плейлисте
 }
 
-export type GetPlaylistFilesByPlaylistIDsQueryParams = {
-  playlistIds: string[];
+export type GetPlaylistFilesByPlaylistIdQueryParams = {
+  playlistId: string;
 };
 
-export type GetPlaylistFilesByPlaylistIDsQueryResponse = {
+export type GetPlaylistFilesByPlaylistIdQueryResponse = {
   files: {
     id: string;
     files: ProjectPlayListFile[];
   }[];
 };
 
-export type GetProjectsByPlaylistIDsQueryParams = {
-  projectIds: string[];
+export type GetPlaylistFilesByPlaylistIdsQueryParams = {
+  playlistIds: string[];
 };
 
-export type GetProjectsByPlaylistIDsQueryResponse = {
-  projects: ProjectData[];
+export type GetPlaylistFilesByPlaylistIdsQueryResponse = {
+  files: {
+    id: string;
+    files: ProjectPlayListFile[];
+  }[];
+};
+
+export type GetCampaignsByPlaylistIDsQueryParams = {
+  playlistIds: string[];
+};
+
+export type PlaylistCampaignsNameType = {
+  id: string;
+  campaigns: {
+    name: string;
+  };
+};
+
+export type GetCampaignsByPlaylistIDsQueryResponse = {
+  campaigns: PlaylistCampaignsNameType[];
 };
 
 export type RefreshCampaignsMutationParams = {
@@ -211,4 +248,23 @@ export type StorePlaylistMutationResponse = {
   result: {
     id: string;
   };
+};
+
+export type GetCampaignsIdByNameQueryParams = {
+  campaignName: string;
+  projectId: string;
+};
+
+export type GetCampaignsIdByNameQueryResponse = {
+  campaignsId: {
+    id: string;
+  }[];
+};
+
+export type GetPlaylistsIdByCampaignsIdQueryParams = {
+  campaignsId: string[];
+};
+
+export type GetPlaylistsIdByCampaignsIdQueryResponse = {
+  campaignsId: string[];
 };

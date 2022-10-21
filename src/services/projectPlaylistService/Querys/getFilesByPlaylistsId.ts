@@ -1,24 +1,24 @@
 import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { GetPlaylistFilesByPlaylistIdQueryParams } from "../interfaces";
+import { GetPlaylistFilesByPlaylistIdsQueryParams } from "../interfaces";
 
 /**
  * Запрос файлов для плэйлиста
  */
-export class GetPlaylistFilesByPlaylistIdQuery
-  implements GraphQLQuery<GetPlaylistFilesByPlaylistIdQueryParams>
+export class GetPlaylistFilesByPlaylistIdsQuery
+  implements GraphQLQuery<GetPlaylistFilesByPlaylistIdsQueryParams>
 {
   readonly query: any;
-  readonly variables: GetPlaylistFilesByPlaylistIdQueryParams;
+  readonly variables: GetPlaylistFilesByPlaylistIdsQueryParams;
 
-  constructor(playlistId: string) {
+  constructor(playlistIds: string[]) {
     this.variables = {
-      playlistId,
+      playlistIds,
     };
 
     this.query = gql(`
-      query __GET_FILES__($playlistId: ID){
-        files: project_playlist_list(where: {id: {_equals: $playlistId}}){
+      query __GET_FILES__($playlistIds: [ID]){
+        files: project_playlist_list(where: {id: {_in: $playlistIds}}){
           id
           files {
             id

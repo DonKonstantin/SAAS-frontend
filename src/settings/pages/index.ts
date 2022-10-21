@@ -24,6 +24,7 @@ import { PlayersListingConfiguration } from "./list/player";
 import { PlayerEditPageConfiguration } from "./edit/player";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
+import { ProjectPlaylistEditPageConfig } from "./edit/project_playlist";
 import { PlayerCodeEditPageConfig } from "./edit/player_code";
 
 // Параметры конфигурации листинга сущностей
@@ -45,8 +46,8 @@ export const listSchemaConfiguration: {
     notification_config: new NotificationConfigListingConfiguration(),
     object_passport: new ObjectsPassportListingConfiguration(),
     player_code: new PlayerCodeListingConfiguration(),
-    player: new PlayersListingConfiguration,
     project_playlist: new PlaylistListingConfiguration(),
+    player: new PlayersListingConfiguration(),
   };
 };
 
@@ -67,6 +68,7 @@ export const editSchemaConfiguration: {
     notifications_template: new NotificationsTemplateEditPageConfig(),
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
+    project_playlist: new ProjectPlaylistEditPageConfig(),
     player: new PlayerEditPageConfiguration(),
     player_code: new PlayerCodeEditPageConfig(),
   };
