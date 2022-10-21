@@ -12,12 +12,33 @@
     "edit": {
       "breadcrumb": "Плейлисты"
     },
+    "import-playlist": {
+      "drop-step": {
+        "text-header": "Импортировать плейлист",
+        "text": "Переместите все файлы для загрузки в контейнер",
+        "input-text": "Переместите файлы для загрузки"
+      }
+    },
+    "epsent-tracks": {
+      "header": "Треки не найдены"
+    },
     "button": {
       "open-import-playlist": "ИМПОРТИРОВАТЬ ПЛЕЙЛИСТ",
       "refresh-linked-campaigns": "ОБНОВИТЬ СВЯЗАННЫЕ КАМПАНИИ",
-      "copy-playlist": "Копировать"
+      "copy-playlist": "Копировать",
+      "cancel": "ОТМЕНА",
+      "accept": "ПРИНЯТЬ"
     },
-    "notificatins": {
+    "notifications": {
+      "export-playlist": {
+        "no-files": "В загруженном файле нет треков или структура файла не верна",
+        "no-available-in-stock": "В загруженном файле нет най треков или структура файла не верна",
+        "successfully-added": {
+          "single": "Плэйлист успешно добавлен",
+          "multiple": "Плэйлисты успешно добавлены"
+        },
+        "not-exported": "Не удалось экспортировать плэйлист(ы)"
+      },
       "refresh-campaigns": {
         "error": "Связные компании не были обновлены",
         "success": "Связные компании успешно обновлены"

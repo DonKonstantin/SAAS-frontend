@@ -44,9 +44,9 @@ export const listSchemaConfiguration: {
     notifications_template: new NotificationsTemplateListingConfiguration(),
     notification_config: new NotificationConfigListingConfiguration(),
     object_passport: new ObjectsPassportListingConfiguration(),
-    project_playlist: new PlaylistListingConfiguration,
-    player: new PlayersListingConfiguration(),
     player_code: new PlayerCodeListingConfiguration(),
+    player: new PlayersListingConfiguration,
+    project_playlist: new PlaylistListingConfiguration(),
   };
 };
 
