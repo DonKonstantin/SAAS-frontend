@@ -544,6 +544,18 @@
           "amurco": "AMURCO"
         }
       }
+    },
+    "project_channel": {
+      "list": {
+        "title": "Список каналов",
+        "header": "Каналы",
+        "breadcrumb": "Каналы",
+        "headers": {
+          "name": "Название",
+          "player-status": "Статусы плееров",
+          "active-players": "Подключено"
+        }
+      }
     }
   }
 }

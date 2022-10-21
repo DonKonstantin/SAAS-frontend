@@ -40,7 +40,7 @@ export class QueryGenerator implements QueryGeneratorInterface {
      * Генерация запроса листинга сущностей
      * @param params
      */
-    GenerateQuery<T extends keyof Schemas>(params: ListLoadingParameters<T>): {list: string, count: string} {
+    GenerateQuery<T extends keyof Schemas>(params: ListLoadingParameters<T>): { list: string, count: string } {
         let argumentsRows: string[] = [];
 
         const filterQuery = this.filterGenerator.GenerateFilter(params);
@@ -50,7 +50,7 @@ export class QueryGenerator implements QueryGeneratorInterface {
 
         let countQuery = "";
         if (JSON.stringify(params.currentFilterValues || null) !== JSON.stringify(params.prevFilterValues || null) || !params.currentFilterValues) {
-            countQuery = `query __ITEMS_COUNT__ {${params.schema}: ${params.schema}_aggregate${filterQuery.length !== 0 ? `(${filterQuery})`: ""} {count}}`
+            countQuery = `query __ITEMS_COUNT__ {${params.schema}: ${params.schema}_aggregate${filterQuery.length !== 0 ? `(${filterQuery})` : ""} {count}}`
         }
 
         const offset = countQuery.length !== 0 ? 0 : params.offset;
@@ -71,11 +71,20 @@ export class QueryGenerator implements QueryGeneratorInterface {
         this.logger.Debug(`GenerateQuery() Argument rows`, argumentsRows);
 
         const argumentsQuery = argumentsRows.join(", ");
-        let fields = Object.keys(params.listConfiguration.fields).filter((field: keyof ListFieldsConfiguration<T>["fields"]) => {
-            const fieldConfig = params.listConfiguration.fields[field];
+        let fields = Object.keys(params.listConfiguration.fields)
+            .filter((field: keyof ListFieldsConfiguration<T>["fields"]) => {
+                const fieldConfig = params.listConfiguration.fields[field];
 
-            return fieldConfig.isEnabled
-        });
+                return fieldConfig.isEnabled
+            }).map((field: keyof ListFieldsConfiguration<T>["fields"]) => {
+                const fieldConfig = params.listConfiguration.fields[field];
+                if (fieldConfig.fieldType.type !== 'Schema') {
+                    return field
+                }
+
+                return this.GenerateFieldByScheme(field as string, fieldConfig.fieldType.config.relatedScheme as keyof Schemas)
+            })
+        ;
 
         try {
             const primaryKey = getPrimaryKeyForSchema(params.schema);
@@ -114,7 +123,8 @@ export class QueryGenerator implements QueryGeneratorInterface {
             data: ListFieldValueTypes[keyof ListFieldValueTypes][]
             field: keyof ListFieldsConfiguration<T>["fields"]
         }
-        const promises = Object.keys(params.listConfiguration.fields).map(async (field: keyof ListFieldsConfiguration<T>["fields"]): Promise<FieldsParseResult>  => {
+
+        const promises = Object.keys(params.listConfiguration.fields).map(async (field: keyof ListFieldsConfiguration<T>["fields"]): Promise<FieldsParseResult> => {
             const fieldConfig = params.listConfiguration.fields[field];
 
             return {
@@ -128,7 +138,7 @@ export class QueryGenerator implements QueryGeneratorInterface {
 
         this.logger.Debug(`GenerateValuesByRowResult() Parsed data`, parsedData);
 
-        let primaryKey: {code: keyof Schemas[T]['fields'], field: SchemaField};
+        let primaryKey: { code: keyof Schemas[T]['fields'], field: SchemaField };
         try {
             primaryKey = getPrimaryKeyForSchema(params.schema)
         } catch (e) {
@@ -167,5 +177,17 @@ export class QueryGenerator implements QueryGeneratorInterface {
         this.logger.Debug(`GenerateValuesByRowResult() Parsed results`, resultRows);
 
         return resultRows
+    };
+
+    /**
+     *
+     * @param field
+     * @param schema
+     * @constructor
+     */
+    GenerateFieldByScheme<T extends keyof Schemas>(field: string, schema: T): string {
+        const schemas = new Schemas();
+
+        return `${field} {${Object.keys(schemas[schema].fields).join(" ")}}`
     }
 }

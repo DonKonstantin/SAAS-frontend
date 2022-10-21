@@ -6,6 +6,7 @@ import {graphQLClient} from "../../../../graphQLClient";
 import {SimpleFieldParsers} from "./SimpleFieldParsers";
 import {schemaValueConverter} from "../../../../schemaValueConverter";
 import {EnumFieldsParser} from "./EnumFieldsParser";
+import {SchemaFieldParser} from "./SchemaFieldParser";
 
 export type FieldParsers = { [P in keyof ListFieldValueTypes]: FieldParsersInterface<P> }
 export const fieldParsers: { (token?: string): FieldParsers } = (): FieldParsers => {
@@ -18,5 +19,6 @@ export const fieldParsers: { (token?: string): FieldParsers } = (): FieldParsers
         Simple: new SimpleFieldParsers(schemaValueConverter()),
         Enum: new EnumFieldsParser(schemaValueConverter()),
         Hidden: new SimpleFieldParsers(schemaValueConverter()),
+        Schema: new SchemaFieldParser(schemaValueConverter())
     }
 };

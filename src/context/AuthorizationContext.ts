@@ -302,6 +302,8 @@ const initializeContextBus = () => {
                 return;
             }
 
+            console.log(token)
+
             if (0 === token.length) {
                 context$.next({
                     ...context$.getValue(),

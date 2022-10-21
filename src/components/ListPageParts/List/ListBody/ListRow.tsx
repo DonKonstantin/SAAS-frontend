@@ -7,6 +7,8 @@ import CheckBoxCell from "../CheckBoxCell";
 import ListCells from "./ListCells";
 import {SwitchBaseProps} from "@mui/material/internal/SwitchBase";
 import {ListPageConfiguration} from "../../../../settings/pages/system/list";
+import SimpleCell from "./ListCells/SimpleCell";
+import {TableCell} from "@mui/material";
 
 // Свойства компонента
 export type ListRowProps<T extends keyof Schemas = keyof Schemas> = WithEntityListHoc<{
@@ -69,6 +71,16 @@ const ListRow: FC<ListRowProps> = props => {
         })
     }
 
+    let detailColSpan = Object.values(fields).length;
+
+    if (ActionsComponent) {
+        detailColSpan += 1
+    }
+
+    if (!disableMultiChoose) {
+        detailColSpan += 1;
+    }
+
     return (
         <>
             {!disableMultiChoose && (
@@ -109,6 +121,9 @@ const ListRow: FC<ListRowProps> = props => {
             {!!ActionsComponent && (
                 <ActionsComponent item={row}/>
             )}
+            <TableCell colSpan={detailColSpan}>
+                tetete
+            </TableCell>
         </>
     )
 }
