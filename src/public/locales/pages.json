@@ -267,6 +267,53 @@
         "breadcrumb": "Логи"
       }
     },
+    "campaign": {
+      "list": {
+        "title": "Список компаний",
+        "header": "Список компаний",
+        "breadcrumb": "Компании",
+        "fields": {
+          "name": "Название",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец",
+          "campaign-priority-enum": {
+            "higher": "Наивысший",
+            "background": "Фоновый",
+            "low": "Низкий",
+            "normal": "Обычный",
+            "high": "Высокий"
+          }
+        },
+        "filters": {
+          "name": "Название компании",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец"
+        }
+      },
+      "add": {
+        "title": "Создать компанию",
+        "header": "Создать компанию",
+        "breadcrumb": "Создать компанию"
+      },
+      "edit": {
+        "title": "Редактировать компанию",
+        "header": "Редактировать компанию",
+        "breadcrumb": "Редактировать компанию",
+        "fields": {
+          "active": "Компания активен",
+          "name": "Название компании",
+          "parent": "Домен",
+          "parent-error": "Необходимо выбрать домен"
+        }
+      },
+      "logs": {
+        "breadcrumb": "Логи"
+      }
+    },
     "notifications_template": {
       "title": "Шаблоны оповещений",
       "header": "Шаблоны оповещений",
