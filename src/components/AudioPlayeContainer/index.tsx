@@ -118,7 +118,6 @@ const AudioPlayerContainer: FC = () => {
                     onStop={eventLogger}
                     defaultPosition={savePositions}
                 >
-
                     <div
                         id="draggable-dialog-title"
                         className={clsx("audio-player", {

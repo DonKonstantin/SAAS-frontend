@@ -6,7 +6,7 @@ type Props = {
     checkedItems: any[]
 }
 
-const DeactivateActionButton: FC<Props> = ({checkedItems}) => {
+const DeactivateActionButton: FC<Props> = () => {
     const {t} = useTranslation()
 
     return (

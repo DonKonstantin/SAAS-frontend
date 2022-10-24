@@ -19,7 +19,7 @@ export class ProjectChannelListingConfiguration
   implements ListPageConfiguration<"project_channel">
 {
   filter: FilterFieldsConfiguration<"project_channel"> = {
-    code: {
+    name: {
       field: "name",
       filterType: "Like",
       schema: "project_channel",
