@@ -32,7 +32,6 @@ const makeMediaFileInfo = async (
     licenseType: LicenseType
 ): Promise<MediaFileToUpload> => {
     const metadata = await mmb.parseBlob(file, {skipPostHeaders: true})
-    console.log(metadata)
     return {
         replace: false,
         replaceId: "",

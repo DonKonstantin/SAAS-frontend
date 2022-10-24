@@ -61,6 +61,7 @@ export class PlayerCodeListingConfiguration
         field: "is_active",
         title: "player-codes.list.headers.is_active",
         isEnabled: true,
+        width: 233,
         align: "left",
         fieldType: {
           config: undefined,

@@ -2,6 +2,8 @@ import { Collection } from "../../services/types";
 import notifications_template from "./NotificationsTemplate";
 import notification_config from "./NotificationConfig";
 import file, { file_data } from "./File";
+import projectChannel from "./ProjectChannel";
+import Player_Without_Relations from "./PlayerWithoutRelations";
 
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
@@ -78,11 +80,11 @@ export class Schemas {
         isArray: false,
       },
       //  Паспорт объекта, который привязан к плееру.
-      object_passport: {
+     /* object_passport: {
         type: "Object_Passport",
         isPrimaryKey: false,
         isArray: false,
-      },
+      },*/
       //  Идентификатор паспорта объекта, который привязан к плееру.
       object_passport_id: {
         type: "NullableID",
@@ -474,44 +476,7 @@ export class Schemas {
     isDeletable: true,
   };
 
-  project_channel: Schema = {
-    fields: {
-      //  ID сущности
-      id: {
-        type: "ID",
-        isPrimaryKey: true,
-        isArray: false,
-      },
-      //  Флаг активности расписания
-      is_active: {
-        type: "Boolean!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      //  Название канала
-      name: {
-        type: "String!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      //  Плееры, относящиеся к каналу
-      players: {
-        type: "Player_Without_Relations",
-        isPrimaryKey: false,
-        isArray: true,
-      },
-      //  Идентификатор проекта, к которому относится канал
-      project_id: {
-        type: "ID!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-    },
 
-    isChangeable: true,
-    isCreatable: true,
-    isDeletable: true,
-  };
   // Параметры схемы сущности Компании
   campaign: Schema = {
     fields: {
@@ -616,6 +581,8 @@ export class Schemas {
   notification_config = notification_config;
   file = file;
   file_data = file_data;
+  project_channel: Schema = projectChannel;
+  Player_Without_Relations: Schema = Player_Without_Relations;
 }
 
 /**
@@ -637,6 +604,7 @@ export type FieldType =
   | "DateTime!"
   | "Enum"
   | "Enum!"
+  | "Schema"
   | "Project_Channel"
   | "Player_Without_Relations"
   | "Project_PlayList_File"
@@ -649,6 +617,7 @@ export class SchemaField {
   isPrimaryKey: boolean;
   isArray: boolean;
   relation?: RelationConfiguration<any>;
+  schema?: keyof Schemas
   enum?: EnumConfiguration;
 }
 

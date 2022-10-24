@@ -7,6 +7,7 @@ import { SavePlayerMutation, SavePlayerMutationParams, SavePlayerMutationRespons
 import { GetCampaignsQuery, GetCampaignsQueryParams, GetCampaignsQueryResponse } from "./Queries/GetCampaignsQuery";
 import { GetPlayerAvailablePasportsQuery, GetPlayerAvailablePasportsQueryParams, GetPlayerAvailablePasportsQueryResponse } from "./Queries/GetPlayerAvailablePasportsQuery";
 import { GetPlayerObjectPasportQuery, GetPlayerObjectPasportQueryParams, GetPlayerObjectPasportQueryResponse } from "./Queries/GetPlayerPasportQuery";
+import {PlayerWithoutRelations} from "../playerCodeService/interfaces";
 
 
 /**
@@ -47,7 +48,7 @@ export class PlayerListService implements PlayerListServiceInterface {
      * @param playerId 
      * @returns 
      */
-    async loadPlayerObjectPasport(playerId: string): Promise<ObjectPassport> {
+    async loadPlayerObjectPassport(playerId: string): Promise<ObjectPassport> {
       this.logger.Debug("ID плеера: ", playerId);
 
       try {
@@ -74,7 +75,7 @@ export class PlayerListService implements PlayerListServiceInterface {
      * @param projectId 
      * @returns 
      */
-    async loadPlayerObjectPasports(projectId: string): Promise<ObjectPassport[]> {
+    async loadPlayerObjectPassports(projectId: string): Promise<ObjectPassport[]> {
       this.logger.Debug("ID проекта: ", projectId);
 
       try {
@@ -124,4 +125,24 @@ export class PlayerListService implements PlayerListServiceInterface {
         return false;
       }
     };
+
+    /**
+     * Получение списка плееров по ид проекта и ид коналов
+     * @param projectId
+     * @param channels
+     */
+    getPlayersByChannels(projectId: string, channels: string[]): Promise<PlayerWithoutRelations[]> {
+        this.logger.Debug("ID проекта: ", projectId);
+        this.logger.Debug("ID каналов: ", channels);
+
+        try {
+
+
+
+        } catch (e) {
+            throw  e;
+        }
+
+        return Promise.resolve([]);
+    }
 };

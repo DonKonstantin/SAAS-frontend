@@ -96,7 +96,8 @@
           "player-codes": {
             "index": "Коды плееров"
           },
-          "project-playlists": "Плейлисты"
+          "project-playlists": "Плейлисты",
+          "channel": "Каналы"
         }
       }
     },

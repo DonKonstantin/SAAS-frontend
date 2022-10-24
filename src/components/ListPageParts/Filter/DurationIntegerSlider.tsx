@@ -3,7 +3,7 @@ import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoad
 import useFieldConfiguration from "./useFieldConfiguration";
 import {SliderComponentValues} from "../../../services/listDataLoader/filterLoader/fieldValues/Slider";
 import {FormControl, FormLabel, Slider} from "@mui/material";
-import {Mark} from "@mui/core/SliderUnstyled/SliderUnstyled";
+import {Mark} from "@mui/base/SliderUnstyled";
 
 // Format seconds in MM:SS format
 const toMinute = (seconds: number) => {

@@ -51,6 +51,7 @@ export class EntityValuesGetter implements EntityValuesGetterInterface {
         })
 
         const id = this.valueConverter.convertValueToGraphQL(primaryKeyConf.field, primaryKey)
+        // @ts-ignore
         const query = `query __ENTITY_GET__ {${schema}: ${schema}_list(where: {${primaryKeyConf.code}: {_equals: ${id}}}){${fieldsToLoad.join(",")}}}`
 
         this.logger.Debug(`generated query`, query)

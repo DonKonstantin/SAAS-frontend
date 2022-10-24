@@ -59,7 +59,7 @@ export class UpdateEntityService implements UpdateEntityServiceInterface {
                     }
                 })
                 .filter(item => item.convertedValue !== item.convertedOriginValue)
-                .map(item => `${item.fieldCode}: ${item.convertedValue}`)
+                .map(item => `${item.fieldCode.toString()}: ${item.convertedValue}`)
             ;
 
             this.logger.Debug(`generated field to update`, fields)

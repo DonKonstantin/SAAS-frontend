@@ -31,6 +31,7 @@ const PlayerCodeSubRow: FC<Props> = ({ row }) => {
         value={{
           value: row.is_active,
         }}
+
         rowValues={[]}
         configuration={
           listSchemaConfiguration()["player_code"]?.listFields.fields[

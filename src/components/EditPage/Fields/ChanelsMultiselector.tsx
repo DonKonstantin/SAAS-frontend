@@ -104,7 +104,7 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
       {!channels.length && (
         <MenuItem value={""} disabled>
           <ListItemText
-            primary={t("player-codes.add.channel-selector.no-channels")}
+            primary={t("player-codes.add.channel-selector.no-channel")}
           />
         </MenuItem>
       )}
