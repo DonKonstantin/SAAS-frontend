@@ -1,11 +1,20 @@
+import { Axios } from "axios";
 import { graphQLClient } from "services/graphQLClient";
 import { ProjectReportsServiceInterface } from "./interface";
 import ProjectReportsService from "./ProjectReportsService";
+import { getAuthorizationToken } from "../../context/AuthorizationContext";
+import { getMainFileApiLink } from "services/MediaFileClient/helpers";
 
 /**
  * Фабрика сервиса отчетов проекта
- * @returns 
+ * @returns
  */
-export const projectReportsService: () => ProjectReportsServiceInterface = () => (
-    new ProjectReportsService(graphQLClient())
-);
+export const projectReportsService: () => ProjectReportsServiceInterface =
+  () => {
+    return new ProjectReportsService(
+      graphQLClient(),
+      new Axios({
+        baseURL: 'https://reports.dev.saas.systems-fd.net/api/v1/',
+      })
+    );
+  };
