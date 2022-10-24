@@ -1,5 +1,4 @@
 import React, {FC, useEffect, useRef, useState} from "react";
-import AudioPlayer from 'react-h5-audio-player';
 import H5AudioPlayer from 'react-h5-audio-player';
 import {audioPlayerChangeSongBus$, audioPlayerControlBus$, useAudioPlayer} from "../../context/AudioPlayerContext";
 import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
@@ -99,7 +98,7 @@ const AudioPlayerContainer: FC = () => {
 
     const player = useRef<H5AudioPlayer | undefined>();
 
-
+    // @ts-ignore
     return (
         <>
             <List>
@@ -141,7 +140,7 @@ const AudioPlayerContainer: FC = () => {
                         >
                             <CloseIcon fontSize={"inherit"}/>
                         </Fab>
-                        <AudioPlayer
+                        <H5AudioPlayer
                             // @ts-ignore
                             ref={player}
                             layout={"stacked-reverse"}

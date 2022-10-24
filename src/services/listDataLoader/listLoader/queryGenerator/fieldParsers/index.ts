@@ -19,6 +19,6 @@ export const fieldParsers: { (token?: string): FieldParsers } = (): FieldParsers
         Simple: new SimpleFieldParsers(schemaValueConverter()),
         Enum: new EnumFieldsParser(schemaValueConverter()),
         Hidden: new SimpleFieldParsers(schemaValueConverter()),
-        Schema: new SchemaFieldParser(schemaValueConverter())
+        Schema: new SchemaFieldParser()
     }
 };

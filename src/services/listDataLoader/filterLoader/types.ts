@@ -255,4 +255,5 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Player_Code!": AvailableFilterField[] = [
       
     ];
+    Schema: AvailableFilterField[] = []
 }

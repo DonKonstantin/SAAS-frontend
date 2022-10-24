@@ -2,19 +2,15 @@ import {FieldParsersInterface} from "./interfaces";
 import {Schemas} from "../../../../../settings/schema";
 import {ListFieldConfiguration, ListFieldValueTypes} from "../../types";
 import {QueryRow} from "../interfaces";
-import {SchemaValueConverterInterface} from "../../../../schemaValueConverter/interfaces";
 import {SchemaValues} from "../../listValues/SchemaValues";
 
 export class SchemaFieldParser implements FieldParsersInterface<'Schema'> {
-    private readonly valueConverter: SchemaValueConverterInterface;
     private readonly schemas: Schemas;
 
     /**
      * Конструктор парсера
-     * @param valueConverter
      */
-    constructor(valueConverter: SchemaValueConverterInterface) {
-        this.valueConverter = valueConverter;
+    constructor() {
         this.schemas = new Schemas()
     }
 

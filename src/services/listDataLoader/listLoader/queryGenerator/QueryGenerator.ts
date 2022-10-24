@@ -58,8 +58,10 @@ export class QueryGenerator implements QueryGeneratorInterface {
         argumentsRows.push(`limit: ${params.limit}, offset: ${offset}`);
 
         const orderQueries = params.order.reduce((result: string[], order: OrderParameter<T>): string[] => {
+
             return [
                 ...result,
+                // @ts-ignore
                 `{by: ${order.by}, direction: ${order.direction}, priority: ${order.priority}}`
             ]
         }, []);
@@ -88,7 +90,9 @@ export class QueryGenerator implements QueryGeneratorInterface {
 
         try {
             const primaryKey = getPrimaryKeyForSchema(params.schema);
+            // @ts-ignore
             if (fields.indexOf(`${primaryKey.code}`) === -1) {
+                // @ts-ignore
                 fields.push(`${primaryKey.code}`)
             }
         } catch (e) {
