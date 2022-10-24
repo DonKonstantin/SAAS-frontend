@@ -71,16 +71,6 @@ const ListRow: FC<ListRowProps> = props => {
         })
     }
 
-    let detailColSpan = Object.values(fields).length;
-
-    if (ActionsComponent) {
-        detailColSpan += 1
-    }
-
-    if (!disableMultiChoose) {
-        detailColSpan += 1;
-    }
-
     return (
         <>
             {!disableMultiChoose && (
@@ -121,9 +111,6 @@ const ListRow: FC<ListRowProps> = props => {
             {!!ActionsComponent && (
                 <ActionsComponent item={row}/>
             )}
-            <TableCell colSpan={detailColSpan}>
-                tetete
-            </TableCell>
         </>
     )
 }

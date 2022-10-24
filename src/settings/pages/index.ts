@@ -28,6 +28,7 @@ import { ProjectPlaylistEditPageConfig } from "./edit/project_playlist";
 import { PlayerCodeEditPageConfig } from "./edit/player_code";
 import { CampaignListingConfiguration } from "./list/campaign";
 import {ProjectChannelListingConfiguration} from "./list/project_channel";
+import {ProjectChannelEditPageConfig} from "./edit/propject_channel";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = {
@@ -75,5 +76,6 @@ export const editSchemaConfiguration: {
     project_playlist: new ProjectPlaylistEditPageConfig(),
     player: new PlayerEditPageConfiguration(),
     player_code: new PlayerCodeEditPageConfig(),
+    project_channel: new ProjectChannelEditPageConfig(),
   };
 };

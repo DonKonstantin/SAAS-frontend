@@ -6,15 +6,11 @@ import {
 import { getCurrentState } from "context/AuthorizationContext";
 import { FilterFieldsConfiguration } from "services/listDataLoader/filterLoader/types";
 import { ListFieldsConfiguration } from "services/listDataLoader/listLoader/types";
-import PlayerCodeActions from "components/ListPageCustom/PlayerCodeActions";
-import { ListHeaderProps } from "components/ListPageParts/TableCaption";
-import { ListRowProps } from "components/ListPageParts/List/ListBody/ListRow";
-import { FC } from "react";
-import PlayerCodeRow from "components/ListPageCustom/PlayerCodeRow";
 import ListPageEditDeleteButtons from "components/ListPageEditDeleteButtons";
-import { loggerFactory } from "services/logger";
-import { playerCodeService } from "services/playerCodeService";
 import ActivePlayersProjectChannel from "components/ListPageCustom/ProjectChannel/ActivePlayersProjectChannel";
+import NameWithToggleCell from "../../../components/ListPageCustom/ProjectChannel/NameWithToggleCell";
+import ProjectChannelPlayers from "../../../components/ListPageCustom/ProjectChannel/ProjectChannelPlayers";
+import EmptyCell from "../../../components/ListPageCustom/EmptyCell";
 
 /**
  * Конфигурация листинга кодов плееров
@@ -23,21 +19,30 @@ export class ProjectChannelListingConfiguration
   implements ListPageConfiguration<"project_channel">
 {
   filter: FilterFieldsConfiguration<"project_channel"> = {
-   /* code: {
-      field: "code",
+    code: {
+      field: "name",
       filterType: "Like",
-      schema: "player_code",
-      title: "project_channel.list.headers.code",
+      schema: "project_channel",
+      title: "pages.project_channel.list.headers.name",
     },
     is_active: {
       field: "is_active",
       filterType: "Switch",
-      schema: "player_code",
-      title: "project_channel.list.headers.is_active",
-    },*/
+      schema: "project_channel",
+      title: "pages.project_channel.list.headers.is_active",
+    }
   };
   listFields: ListFieldsConfiguration<"project_channel"> = {
     fields: {
+      id: {
+        field: "id",
+        title: "pages.project_channel.list.headers.id",
+        isEnabled: true,
+        fieldType: {
+          config: undefined,
+          type: "Hidden",
+        },
+      },
       name: {
         field: "name",
         title: "pages.project_channel.list.headers.name",
@@ -46,6 +51,7 @@ export class ProjectChannelListingConfiguration
         fieldType: {
           config: undefined,
           type: "Simple",
+          customComponent: NameWithToggleCell
         },
       },
       is_active: {
@@ -53,9 +59,11 @@ export class ProjectChannelListingConfiguration
         title: "pages.project_channel.list.headers.is_active",
         isEnabled: true,
         align: "left",
+        width: 233,
         fieldType: {
           config: undefined,
           type: "Simple",
+          customComponent: EmptyCell
         },
       },
       players: {
@@ -73,6 +81,8 @@ export class ProjectChannelListingConfiguration
       }
     },
     actions: ListPageEditDeleteButtons,
+    rowHigher: ProjectChannelPlayers,
+    defaultSortField: "name",
   };
   schema: "project_channel" = "project_channel";
   elementsPerPage: number = 25;
@@ -80,17 +90,18 @@ export class ProjectChannelListingConfiguration
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/project_channel/edit/[entityId]",
-      as: `/domain/${domain}/project/${project}/project_channel/edit/${pk}`,
+      href: "/domain/[domainId]/project/[projectId]/channel/edit/[entityId]",
+      as: `/domain/${domain}/project/${project}/channel/edit/${pk}`,
     };
   };
   addPageUrl: { (): PageUrl } = () => {
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/project_channel/add",
-      as: `/domain/${domain}/project/${project}/project_channel/add`,
+      href: "/domain/[domainId]/project/[projectId]/channel/add",
+      as: `/domain/${domain}/project/${project}/channel/add`,
     };
   };
   hidePagination = true;
+
 }

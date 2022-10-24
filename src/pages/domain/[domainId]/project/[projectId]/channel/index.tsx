@@ -14,8 +14,8 @@ const ListingPage: NextPage = () => {
 ListingPage.getInitialProps = async ({ query }): Promise<PageWithEntityList> => {
 
     return {
-        title: "pages.project-channel.list.title",
-        header: "pages.project-channel.list.header",
+        title: "pages.project_channel.list.title",
+        header: "pages.project_channel.list.header",
         entityListSchema: "project_channel",
         permissionCheckPermission: "READ_PROJECT_CHANNELS",
         permissionCheckCreatePermission: "EDIT_PROJECT_CHANNELS",

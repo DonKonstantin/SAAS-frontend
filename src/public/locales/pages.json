@@ -552,8 +552,27 @@
         "breadcrumb": "Каналы",
         "headers": {
           "name": "Название",
-          "player-status": "Статусы плееров",
-          "active-players": "Подключено"
+          "is_active": "Статусы плееров",
+          "active-players": "Подключено",
+          "players": "Подключено"
+        }
+      },
+      "edit": {
+        "title": "Редактирование канала",
+        "header": "Редактирование канала",
+        "breadcrumb": "Каналы",
+        "button": {
+          "Save": "Сохранить"
+        },
+        "fields": {
+          "name": "Название",
+          "is_active": "Свойства расписания",
+          "enum": {
+            "is-active": {
+              "enabled": "Активный",
+              "disabled": "Неактивный"
+            }
+          }
         }
       }
     }
