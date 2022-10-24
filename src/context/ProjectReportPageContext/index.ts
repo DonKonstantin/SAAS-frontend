@@ -1,4 +1,5 @@
 import { ReportType } from "components/ProjectReports/types";
+import { getCurrentState } from "context/AuthorizationContext";
 import { useEffect, useState } from "react";
 import {
   BehaviorSubject,
@@ -7,6 +8,7 @@ import {
   map,
   Observable,
   OperatorFunction,
+  Subject,
   switchMap,
 } from "rxjs";
 import { projectReportsService } from "services/ProjectReportsService";
@@ -20,6 +22,8 @@ class DefaultContextData implements ProjectReportPageContextTypes {
   dateFrom: Date = new Date();
   dateTo: Date = new Date();
   reportType: undefined;
+  selected: string[] = [];
+  reportsList: any[] = [];
 }
 
 const context$ = new BehaviorSubject<ProjectReportPageContextTypes>(
@@ -29,19 +33,26 @@ const context$ = new BehaviorSubject<ProjectReportPageContextTypes>(
 const dateFrom$ = new BehaviorSubject<Date>(new Date());
 const dateTo$ = new BehaviorSubject<Date>(new Date());
 const reportType$ = new BehaviorSubject<keyof ReportType | undefined>(undefined);
-const reportsList$ = new BehaviorSubject<any>({});
-const errors$ = new BehaviorSubject<any>([]);
+const reportsList$ = new BehaviorSubject<any>([]);
+const errors$ = new BehaviorSubject<any>({});
+const selected$ = new BehaviorSubject<string[]>([]);
+const reportsIds$ = new Subject<string[]>();
 
+/**
+ * Шина загрузки списка доступных вариантов для генерации отчета
+ */
 const loadReportsListBus$ = combineLatest([dateFrom$, dateTo$, reportType$]).pipe(
   map(([dateFrom, dateTo, reportType]) => ({
     dateFrom,
     dateTo,
     reportType,
   })),
-  filter(({reportType}) => !reportType),
+  filter(({reportType}) => !!reportType),
   switchMap(async ({dateFrom, dateTo, reportType}) => {
+    const {project} = getCurrentState();
+    
     try {
-      const listData = await projectReportsService().getReportsList(reportType as keyof ReportType, dateFrom, dateTo);
+      const listData = await projectReportsService().getReportsList(reportType as keyof ReportType, project, dateFrom, dateTo);
 
       reportsList$.next(listData);
     } catch (error) {
@@ -56,14 +67,26 @@ const loadReportsListBus$ = combineLatest([dateFrom$, dateTo$, reportType$]).pip
   })
 );
 
+/**
+ * Шина загрузки отчетов
+ */
+const generateReportsBus$ = combineLatest([reportsIds$, dateFrom$, dateTo$, reportType$]).pipe(
+  switchMap(async ([reportsIds, dateFrom, dateTo, reportType]) => {
+    const {project} = getCurrentState();
+
+    await projectReportsService().getReports(project, reportType as keyof ReportType, dateFrom, dateTo, reportsIds);
+  })
+);
+
 const collectBus$: Observable<
   Pick<ProjectReportPageContextTypes, "dateFrom" | "dateTo">
-> = combineLatest([dateFrom$, dateTo$, reportType$, reportsList$]).pipe(
-  map(([dateFrom, dateTo, reportType, reportsList]) => ({
+> = combineLatest([dateFrom$, dateTo$, reportType$, reportsList$, selected$]).pipe(
+  map(([dateFrom, dateTo, reportType, reportsList, selected]) => ({
     dateFrom,
     dateTo,
     reportType,
     reportsList,
+    selected,
   }))
 );
 
@@ -78,6 +101,8 @@ export const InitProjectReportPageContextContext = () => {
   });
 
   subscriber.add(loadReportsListBus$.subscribe());
+
+  subscriber.add(generateReportsBus$.subscribe());
 
   return () => subscriber.unsubscribe();
 };
@@ -112,10 +137,28 @@ const setDateTo: ProjectReportPageContextActionsTypes["setDateTo"] = (
   reportType$.next(reportType);
 };
 
+/**
+ * Записывает выбранные строки
+ * @param selected 
+ */
+const setSelected: ProjectReportPageContextActionsTypes["setSelected"] = (
+  selected
+) => {
+  selected$.next(selected);
+}
+
+const generateReport: ProjectReportPageContextActionsTypes["generateReport"] = (
+  reportsIds
+) => {
+  reportsIds$.next(reportsIds);
+}
+
 const actions: ProjectReportPageContextActionsTypes = {
   setDateFrom,
   setDateTo,
   setReportType,
+  setSelected,
+  generateReport,
 };
 
 /**

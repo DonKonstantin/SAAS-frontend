@@ -37,7 +37,7 @@ const StyledButtonWrapper = styled(Box)({
 const ExportPage: FC<Props> = ({}) => {
   const { t } = useTranslation();
 
-  const { dateFrom, dateTo, reportType, setDateFrom, setDateTo, setReportType } = useProjectReportPageContext(
+  const { dateFrom, dateTo, reportType, setDateFrom, setDateTo, setReportType, generateReport } = useProjectReportPageContext(
     distinctUntilChanged((prev, curr) => 
       prev.dateFrom.getTime() === curr.dateFrom.getTime() &&
       prev.dateTo.getTime() === curr.dateTo.getTime() &&
@@ -45,8 +45,9 @@ const ExportPage: FC<Props> = ({}) => {
     )
   );
 
-  console.log(reportType, "reportType");
-  
+  const onGenerateHandler = () => {
+    generateReport(["1"]);
+  }
 
   return (
     <Box>
@@ -78,7 +79,7 @@ const ExportPage: FC<Props> = ({}) => {
         <Grid item xs={12}>
           <Divider />
           <StyledButtonWrapper>
-            <Button variant="outlined">{t("reports.button.generate")}</Button>
+            <Button variant="outlined" onClick={onGenerateHandler}>{t("reports.button.generate")}</Button>
           </StyledButtonWrapper>
         </Grid>
       </Grid>

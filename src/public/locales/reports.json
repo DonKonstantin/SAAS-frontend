@@ -25,6 +25,14 @@
     },
     "button": {
       "generate": "СГЕНЕРИРОВАТЬ"
+    },
+    "preview-table": {
+      "logs": {
+        "header": {
+          "name": "Имя плеера",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      }
     }
   }
 }

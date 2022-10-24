@@ -4,6 +4,8 @@ export interface ProjectReportPageContextTypes {
   dateFrom: Date;
   dateTo: Date;
   reportType: keyof ReportType | undefined;
+  selected: string[];
+  reportsList: any[];
 };
 
 export interface ProjectReportPageContextActionsTypes {
@@ -21,6 +23,16 @@ export interface ProjectReportPageContextActionsTypes {
     * Устанавливает тип отчета
     */
    setReportType: (reportType: keyof ReportType) => void;
+
+   /**
+    * Записывает выбранные строки
+    */
+   setSelected: (selected: any[]) => void;
+
+   /**
+    * Сгенерировать отчет
+    */
+   generateReport: (reportsIds: string[]) => void;
 };
 
 export type ProjectReportPageContextCommonType<T = {}> = T & ProjectReportPageContextTypes & ProjectReportPageContextActionsTypes;

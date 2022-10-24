@@ -14,3 +14,7 @@ export interface ReportProps {
   dateFrom: Date;
   dateTo: Date;
 }
+
+export interface ReportTableHeaderCellType {
+  title: string;
+}

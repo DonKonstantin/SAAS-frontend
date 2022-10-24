@@ -1,17 +1,41 @@
 import { ReportProps } from "components/ProjectReports/types";
+import { useProjectReportPageContext } from "context/ProjectReportPageContext";
 import React, { FC, memo } from "react";
+import ReportsTable from "../../ReportsTable";
+
+const headers = [
+  {
+    title: "reports.preview-table.logs.header.name"
+  },
+  {
+    title: "reports.preview-table.logs.header.number-of-plays"
+  },
+];
+
+export interface PlayerLogsListType {
+  id: string;
+  name: string;
+  played: number;
+};
 
 /**
  * Компонент отчета с логами плеера
  * @param param0 
  * @returns 
  */
-const PlayerLogs: FC<ReportProps> = ({ dateFrom, dateTo }) => {
+const PlayerLogs: FC<ReportProps> = () => {
+  const { reportsList } = useProjectReportPageContext();
+
+  const tableData = reportsList.map((item: PlayerLogsListType) => {
+    return {
+      primaryKey: item.id,
+      cells: [item.name, item.played],
+    };
+  });
+
   return (
     <>
-      PlayerLogs
-      {dateFrom.toDateString()}
-      {dateTo.toDateString()}
+      <ReportsTable headers={headers} rows={tableData}/>
     </>
   );
 };
