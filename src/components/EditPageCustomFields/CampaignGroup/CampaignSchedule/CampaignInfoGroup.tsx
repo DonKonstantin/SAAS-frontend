@@ -25,7 +25,6 @@ const CampaignInfoGroup: FC<EditFormGroupProperties> = ({ config }) => {
 
   const { t } = useTranslation()
 
-
   const { values } = entityData
   if (!isVisible(values)) {
     return null

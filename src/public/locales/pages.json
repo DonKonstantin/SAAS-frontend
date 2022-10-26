@@ -310,7 +310,16 @@
           "campaign_low_priority_end_type": "Компании с меньшим приоритетом:",
           "campaign_play_type": "Воспроизведение",
           "campaign_period": "Период компании",
-          "campaign_days": "Дни недели:"
+          "campaign_days": {
+            "title": "Дни недели:",
+            "monday": "Понедельник",
+            "tuesday": "Вторник",
+            "wednesday": "Среда",
+            "thursday": "Четверг",
+            "friday": "Пятница",
+            "saturday": "Суббота",
+            "sunday": "Воскресенье"
+          }
         },
         "buttons": {
           "save": "Сохранить"

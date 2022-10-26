@@ -8,6 +8,7 @@ import duration from "dayjs/plugin/duration";
 import TimePickerCampaignComponent from "./TimePickerCampaignComponent";
 import { Box } from "@mui/system";
 import { getCurrentState } from "../../../../context/AuthorizationContext";
+import { useTranslation } from "react-i18next";
 
 dayjs.extend(duration)
 
@@ -28,6 +29,8 @@ const CampaignDaysGroup: FC<EditFieldProperties & { valuesData: string }> = prop
     return null
   }
 
+  const { t } = useTranslation()
+
   const {
     onChangeFieldValue,
   } = fieldData;
@@ -42,49 +45,49 @@ const CampaignDaysGroup: FC<EditFieldProperties & { valuesData: string }> = prop
   const [campaignDayData, setCampaignDayData] = useState<any>([
     {
       day_num: 1,
-      name: 'Понедельник',
+      name: t("pages.campaign.add.fields.campaign_days.monday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 2,
-      name: 'Вторник',
+      name: t("pages.campaign.add.fields.campaign_days.tuesday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 3,
-      name: 'Среда',
+      name: t("pages.campaign.add.fields.campaign_days.wednesday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 4,
-      name: 'Четверг',
+      name: t("pages.campaign.add.fields.campaign_days.thursday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 5,
-      name: 'Пятница',
+      name: t("pages.campaign.add.fields.campaign_days.friday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 6,
-      name: 'Суббота',
+      name: t("pages.campaign.add.fields.campaign_days.saturday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
     },
     {
       day_num: 7,
-      name: 'Воскресенье',
+      name: t("pages.campaign.add.fields.campaign_days.sunday"),
       is_active: true,
       days_start_minutes: 0,
       days_stop_minutes: 0
@@ -169,35 +172,32 @@ const CampaignDaysGroup: FC<EditFieldProperties & { valuesData: string }> = prop
           />
           :
           <FormGroup>
-            {campaignDayData.map(name => {
-
-                return (
-                  <Grid container alignItems="center">
-                    <Grid item xs={4}>
-                      <FormControlLabel
-                        sx={{ minWidth: "135px", marginRight: "33px" }}
-                        control={
-                          <Checkbox
-                            checked={name.is_active}
-                            onChange={() => handleSelect(name.day_num, name.is_active)}
-                          />
-                        }
-                        key={name.name}
-                        label={name.name}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TimePickerCampaignComponent
-                        key={name.name}
-                        day_num={name.day_num}
-                        days_start_minutes={name.days_start_minutes}
-                        days_stop_minutes={name.days_stop_minutes}
-                        handleChangeTimeValue={handleChangeTimeValue}
-                      />
-                    </Grid>
+            {campaignDayData.map(name => (
+                <Grid container alignItems="center" key={name.name}>
+                  <Grid item xs={4}>
+                    <FormControlLabel
+                      sx={{ minWidth: "135px", marginRight: "33px" }}
+                      control={
+                        <Checkbox
+                          checked={name.is_active}
+                          onChange={() => handleSelect(name.day_num, name.is_active)}
+                        />
+                      }
+                      key={name.name}
+                      label={name.name}
+                    />
                   </Grid>
-                )
-              }
+                  <Grid item xs={6}>
+                    <TimePickerCampaignComponent
+                      key={name.name}
+                      day_num={name.day_num}
+                      days_start_minutes={name.days_start_minutes}
+                      days_stop_minutes={name.days_stop_minutes}
+                      handleChangeTimeValue={handleChangeTimeValue}
+                    />
+                  </Grid>
+                </Grid>
+              )
             )}
           </FormGroup>
       }

@@ -112,7 +112,7 @@ const CampaignSchedule = () => {
 
       {
         nameAndTypeCompany.map(field => (
-          <Grid container spacing={field.size.spacing} sx={field.size.sx} alignItems="center">
+          <Grid container spacing={field.size.spacing} sx={field.size.sx} alignItems="center" key={field.name}>
             <Grid item xs={field.size.xs}>
               {field.name}
             </Grid>
@@ -128,7 +128,7 @@ const CampaignSchedule = () => {
         entityData.values.campaign_type === "simple"
         &&
         simpleCompanyOptions.map(field => (
-          <Grid container {...field.size.container} alignItems="flex-start">
+          <Grid container {...field.size.container} alignItems="flex-start" key={field.name}>
             <Grid item {...field.size.gridName}>
               {field.name}
             </Grid>
@@ -154,7 +154,7 @@ const CampaignSchedule = () => {
 
       <Grid container spacing={4} alignItems="flex-start">
         <Grid item xs={2.5}>
-          {t("pages.campaign.add.fields.campaign_days")}
+          {t("pages.campaign.add.fields.campaign_days.title")}
         </Grid>
         <Grid item xs={4}>
           <RadioEnumButton fieldCode='campaign_days_type'/>
