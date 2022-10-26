@@ -27,6 +27,16 @@ const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
       variant="standard"
       value={selected}
       onChange={handleChange}
+      placeholder={"Не выбрано"}
+      displayEmpty
+      renderValue={(selected) => {
+          if (!selected) {
+              return "Не выбрано";
+          }
+
+          return selected;
+      }}
+
       MenuProps={{
         PaperProps: {
           style: {
@@ -39,6 +49,7 @@ const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
         width: "60%",
       }}
     >
+
       {Object.keys(ReportType).map(type => (
         <MenuItem value={type} key={type}>
           <ListItemText

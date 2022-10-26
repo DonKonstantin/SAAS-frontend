@@ -31,7 +31,7 @@ const Reports: FC<Props> = props => {
     case ReportType.deviceReport:
       return <DeviceReport {...otherProps}/>;
 
-    case ReportType.capmaigns:
+    case ReportType.company:
       return <Capmaigns {...otherProps}/>;
 
     case ReportType.channels:

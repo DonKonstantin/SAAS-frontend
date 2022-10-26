@@ -2,8 +2,6 @@ import { Axios } from "axios";
 import { graphQLClient } from "services/graphQLClient";
 import { ProjectReportsServiceInterface } from "./interface";
 import ProjectReportsService from "./ProjectReportsService";
-import { getAuthorizationToken } from "../../context/AuthorizationContext";
-import { getMainFileApiLink } from "services/MediaFileClient/helpers";
 
 /**
  * Фабрика сервиса отчетов проекта
