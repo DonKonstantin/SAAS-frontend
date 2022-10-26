@@ -519,6 +519,77 @@ export class Schemas {
         isPrimaryKey: false,
         isArray: false,
       },
+      days: {
+        type: "CampaignDay!",
+        isPrimaryKey: false,
+        isArray: true,
+      },
+      campaign_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            simple: "pages.campaign.edit.fields.campaign-type.simple",
+            mute: "pages.campaign.edit.fields.campaign-type.mute"
+          },
+        },
+      },
+      campaign_end_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_end_type.break"
+          },
+        },
+      },
+      campaign_low_priority_end_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_low_priority_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_low_priority_end_type.break"
+          },
+        },
+      },
+      campaign_play_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            periodic: "pages.campaign.edit.fields.campaign_play_type.periodic",
+            continuous: "pages.campaign.edit.fields.campaign_play_type.continuous"
+          },
+        },
+      },
+      campaign_play_tracks_period_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            hours: "pages.campaign.edit.fields.campaign_play_tracks_period_type.hours",
+            minutes: "pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes"
+          },
+        },
+      },
+      campaign_days_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            daily: "pages.campaign.edit.fields.campaign_days_type.daily",
+            daysOfTheWeek: "pages.campaign.edit.fields.campaign_days_type.daysOfTheWeek"
+          },
+        },
+      },
     },
     isChangeable: true,
     isCreatable: true,
@@ -610,7 +681,9 @@ export type FieldType =
   | "Project_PlayList_File"
   | "[Project_PlayList_File!]"
   | "NullableID"
-  | "Player_Code!";
+  | "Player_Code!"
+  | "CampaignDay!"
+  ;
 
 export class SchemaField {
   type: FieldType;

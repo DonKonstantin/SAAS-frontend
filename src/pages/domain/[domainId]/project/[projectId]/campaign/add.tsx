@@ -11,10 +11,10 @@ const EditPageContent: NextPage = () => {
 
 // Экспортируем основные параметры страницы
 EditPageContent.getInitialProps = async () => ({
-    title: "pages.users.add.title",
-    header: "pages.users.add.header",
-    entityEditSchema: "user",
-    permissionCheckPermission: "CREATE_USERS",
+    title: "pages.campaign.add.title",
+    header: "pages.campaign.add.header",
+    entityEditSchema: "campaign",
+    permissionCheckPermission: "EDIT_CAMPAIGNS",
     permissionCheckLevel: "project",
     pageMenuType: "project"
 })
