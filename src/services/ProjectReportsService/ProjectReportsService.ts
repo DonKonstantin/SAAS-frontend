@@ -1,12 +1,28 @@
-import { Axios, AxiosRequestConfig, AxiosRequestHeaders } from "axios";
+import { Axios, AxiosRequestConfig } from "axios";
 import { ReportType } from "components/ProjectReports/types";
 import { getAuthorizationToken } from "context/AuthorizationContext";
 import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
 import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
-import { getQuery } from "./helpers";
 import { ProjectReportsServiceInterface } from "./interface";
 import { playerLogsResponse } from "./Mocks/playerLogs";
+import {
+  ChannelPlayInfoStatistic, GlobalFilePlayInfoStatistic,
+  PlayerPlayInfoStatistic,
+  PlayInfoStatisticQueryParams,
+  ProjectFilePlayInfoStatistic
+} from "./types";
+import {
+  GetPlayerPlayInfoStatistic,
+  GetPlayerPlayInfoStatisticResponse,
+  GetPlayerPlayInfoStatisticResponseDTOFactory
+} from "./Queryes/GetPlayerPlayInfoStatistic";
+import {GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse} from "./Queryes/GetChannelPlayInfoStatistic";
+import {
+  GetFilesPlayInfoStatistic,
+  GetFilesPlayInfoStatisticResponse,
+  GetFilesPlayInfoStatisticResponseDTOFactory
+} from "./Queryes/GetFilesPlayInfoStatistic";
 
 /**
  * Сервис отчетов проекта
@@ -26,11 +42,12 @@ export default class ProjectReportsService
   /**
    * Конструктор сервиса
    * @param client
+   * @param clientAxios
    */
   constructor(client: GraphQLClient, clientAxios: Axios) {
     this.clientAxios = clientAxios;
     this.clientGQL = client;
-    this.logger = loggerFactory().make(`Project reports servic`);
+    this.logger = loggerFactory().make(`Project reports service`);
   }
 
   /**
@@ -43,13 +60,75 @@ export default class ProjectReportsService
     this.logger.Debug("Тип отчета: ", reportType);
 
     try {
-      const response = this.clientGQL.Query<any, any>(
-        getQuery(reportType, ...args)!,
-        {}
-      );
-
       // return response;
       return playerLogsResponse;
+    } catch (error) {
+      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  }
+
+  async getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    try {
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(
+          new GetPlayerPlayInfoStatistic(params),
+          {}
+      );
+
+      return GetPlayerPlayInfoStatisticResponseDTOFactory(response.logs);
+    } catch (error) {
+      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  }
+
+  async getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    try {
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetChannelPlayInfoStatisticResponse>(
+          new GetChannelPlayInfoStatistic(params),
+          {}
+      );
+
+      return response.logs;
+    } catch (error) {
+      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  }
+
+
+  async FilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    try {
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(
+          new GetFilesPlayInfoStatistic(params),
+          {}
+      );
+
+      return [
+          ...response.globalFiles,
+          ...GetFilesPlayInfoStatisticResponseDTOFactory(response.projectFiles),
+      ];
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
