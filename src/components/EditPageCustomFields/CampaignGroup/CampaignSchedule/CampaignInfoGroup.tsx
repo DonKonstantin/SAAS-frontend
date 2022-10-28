@@ -7,32 +7,32 @@ import { Box, Stack } from "@mui/system";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CampaignSchedule from "./CampaignSchedule";
 import { useTranslation } from "react-i18next";
+import { Channels } from "../Channels";
 
-const optionsForTabs = [
-  { id: "schedule", name: "Расписание" },
-  { id: "content", name: 'Контент' },
-  { id: "channels", name: "Каналы" }
-]
+enum optionsForTabs {
+  "schedule" = "schedule",
+  "content" = "content",
+  "channels" = "channels",
+}
 
 // Компонент вывода группы создания компании
 const CampaignInfoGroup: FC<EditFormGroupProperties> = ({ config }) => {
-
-  const { isVisible = () => true } = config
-  const { entityData } = useEntityEdit(distinctUntilChanged())
+  const { isVisible = () => true } = config;
+  const { entityData } = useEntityEdit(distinctUntilChanged());
   if (!entityData) {
-    return null
+    return null;
   }
 
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const { values } = entityData
+  const { values } = entityData;
   if (!isVisible(values)) {
-    return null
+    return null;
   }
 
   const onSubmit = () => {
-    console.log(values)
-  }
+    console.log(values);
+  };
 
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
@@ -44,55 +44,62 @@ const CampaignInfoGroup: FC<EditFormGroupProperties> = ({ config }) => {
   return (
     <>
       <Grid item xs={12}>
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: "100%" }}>
           <TabContext value={currentActionTab}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', backgroundColor: "#F5F5F5", mb: "13px" }}>
+            <Box
+              sx={{
+                borderBottom: 1,
+                borderColor: "divider",
+                backgroundColor: "#F5F5F5",
+                mb: "13px",
+              }}
+            >
               <TabList
                 onChange={changeCurrentTab}
-                aria-label={'campaign-create'}
+                aria-label={"campaign-create"}
               >
-                {
-                  optionsForTabs.map(permission =>
-                    <Tab
-                      sx={{ minHeight: "51px", minWidth: '168px' }}
-                      label={permission.name}
-                      value={permission.id}
-                      key={permission.id}
-                    />
-                  )
-                }
+                {Object.keys(optionsForTabs).map((permission) => (
+                  <Tab
+                    sx={{ minHeight: "51px", minWidth: "168px" }}
+                    label={t(`pages.campaign.edit.tabs.${permission}`)}
+                    value={permission}
+                    key={permission}
+                  />
+                ))}
               </TabList>
             </Box>
-            <Paper sx={{ width: '100%', p: "30px 40px" }}>
-              {
-                optionsForTabs.map(permission => {
-
-                  if (permission.id === 'schedule') {
-                    return (
-                      <TabPanel value={permission.id} key={permission.id} sx={{ p: 0 }}>
-                        <CampaignSchedule/>
-                      </TabPanel>
-                    )
-                  }
-                })
-              }
-              <Stack direction='row' justifyContent='flex-end'>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  sx={{ m: "18px 21px 18px 0" }}
-                  onClick={onSubmit}
-                >
-                  {t("pages.campaign.add.buttons.save")}
-                </Button>
-              </Stack>
+            <Paper sx={{ width: "100%", p: "30px 40px" }}>
+              <TabPanel
+                value={optionsForTabs.schedule}
+                key={optionsForTabs.schedule}
+                sx={{ p: 0 }}
+              >
+                <CampaignSchedule />
+                <Stack direction="row" justifyContent="flex-end">
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    sx={{ m: "18px 21px 18px 0" }}
+                    onClick={onSubmit}
+                  >
+                    {t("pages.campaign.add.buttons.save")}
+                  </Button>
+                </Stack>
+              </TabPanel>
+              <TabPanel
+                value={optionsForTabs.channels}
+                key={optionsForTabs.channels}
+                sx={{ p: 0 }}
+              >
+                <Channels/>
+              </TabPanel>
             </Paper>
           </TabContext>
         </Box>
       </Grid>
     </>
-  )
-}
+  );
+};
 
 // Экспортируем компонент
-export default CampaignInfoGroup
+export default CampaignInfoGroup;
