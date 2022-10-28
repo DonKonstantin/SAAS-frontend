@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useEntityEdit } from "context/EntityEditContext";
+import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
 import React, { FC, memo, useEffect, useState, useMemo } from "react";
 import { distinctUntilKeyChanged } from "rxjs";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
@@ -14,7 +14,7 @@ import { SortType } from "./types";
  * @returns 
  */
 const Channels: FC = () => {
-  const { entityData } = useEntityEdit(distinctUntilKeyChanged('entityData'));
+  const { campaign } = useCampaignEditContext(distinctUntilKeyChanged('campaign'));
   
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
 
@@ -26,13 +26,11 @@ const Channels: FC = () => {
 
   const [sort, setSort] = useState<SortType>({column: 'name', direction: 'asc'});
 
-  if (!entityData) {
+  if (!campaign) {
     return null;
   }
 
-  const { additionData, values } = entityData;
-
-  const rows = useMemo(() => [...additionData.channels, ...values.channels as any[]], [additionData, values]);
+  const rows = useMemo(() => [...campaign.channels as any[]], [campaign]);
 
   useEffect(() => {
     let localRows: ProjectChannel[] = [];

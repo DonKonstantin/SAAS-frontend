@@ -1,13 +1,20 @@
 import { ProjectChannel } from "services/playerCodeService/interfaces";
+import { Campaign, CampaignInput } from "./types";
 
 export interface CampaignListServiceInterface {
   /**
-   * Получаем каналы для листинга на странице редактирования кампании
+   * Получаем сущьность кампании по ее ID
    */
-  getChannelsForCampaign: (
-    projectId: string,
+  getCampaignById: (
     campaignId: string
-  ) => Promise<ProjectChannel[]>;
+  ) => Promise<Campaign>;
+
+  /**
+   * Создает\сохраняет сущьность кампании
+   */
+  storeCampaign: (
+    campaign: CampaignInput
+  ) => Promise<boolean>;
 
   /**
    * Получения списка каналов по ID проекта и части имени
@@ -35,5 +42,23 @@ export type GetChannelsForCampaignQueryParams = {
 export type GetChannelsForCampaignQueryResponse = {
   channels: {
     channels: ProjectChannel[];
+  };
+};
+
+export type GetCampaignByIdQueryParams = {
+  campaignId: string;
+};
+
+export type GetCampaignByIdQueryResponse = {
+  campaign: Campaign[];
+};
+
+export type StoreCampdignMutationParams = {
+  campaign: CampaignInput;
+};
+
+export type StoreCampdignMutationResponse = {
+  storedCampaign: {
+    id: string;
   };
 };

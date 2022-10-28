@@ -1,12 +1,12 @@
 import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { styled } from "@mui/system";
 import { getCurrentState } from "context/AuthorizationContext";
-import { useEntityEdit } from "context/EntityEditContext";
+import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
 import React, { FC, memo, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { debounceTime, distinctUntilChanged, filter, fromEvent, map, switchMap } from "rxjs";
-import { campaignListService } from "services/campaignListService";
+import { debounceTime, distinctUntilKeyChanged, filter, fromEvent, map, switchMap } from "rxjs";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
+import { projectChannelsService } from "services/projectChannelsService";
 
 const StyledWrapper = styled(Box)({
   display: "grid",
@@ -19,7 +19,7 @@ const StyledWrapper = styled(Box)({
 const AddChannel: FC = () => {
   const { t } = useTranslation();
 
-  const { onChangeFieldValue } = useEntityEdit(distinctUntilChanged(() => true));
+  const { campaign, setCampaign } = useCampaignEditContext(distinctUntilKeyChanged('campaign'));
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -40,10 +40,17 @@ const AddChannel: FC = () => {
   };
 
   const onAddChannelHandler = () => {
-    onChangeFieldValue('channels',
-      //@ts-ignore
-      (values) => [...values, newChannel]
-    );
+    if (!campaign || !newChannel) {
+      return
+    }
+
+    setCampaign({
+      ...campaign,
+      channels: [
+        ...campaign?.channels,
+        newChannel
+      ]
+    });
   };
 
   useEffect(() => {
@@ -65,7 +72,7 @@ const AddChannel: FC = () => {
         filter((searchParam) => searchParam.name.length >= 3),
         switchMap(async ({ name, project }) => {
           try {
-            await campaignListService().getAvailableChannels(project, name);
+            await projectChannelsService().getChannelsByName(project, name);
           } catch (error) {
             return undefined;
           }

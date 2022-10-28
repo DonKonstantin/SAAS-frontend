@@ -6,11 +6,15 @@ import {
   CampaignListServiceInterface,
   GetAvailableChannelsQueryQueryParams,
   GetAvailableChannelsQueryQueryResponse,
-  GetChannelsForCampaignQueryParams,
-  GetChannelsForCampaignQueryResponse,
+  GetCampaignByIdQueryParams,
+  GetCampaignByIdQueryResponse,
+  StoreCampdignMutationParams,
+  StoreCampdignMutationResponse,
 } from "./interface";
+import { StoreCampdignMutation } from "./mutations/StoreCampdignMutation";
 import { GetAvailableChannelsQuery } from "./Queries/GetAvailableChannelsQuery";
-import { GetChannelsForCampaignQuery } from "./Queries/GetChannelsForCampaignQuery";
+import { GetCampaignByIdQuery } from "./Queries/GetCampaignByIdQuery";
+import { Campaign, CampaignInput } from "./types";
 
 /**
  * Сервис авторизации пользователя
@@ -32,25 +36,44 @@ export class CampaignListService implements CampaignListServiceInterface {
   }
 
   /**
-   * Получаем каналы для листинга на странице редактирования кампании
-   * @param projectId
-   * @param campaignId
-   * @returns
+   * Получаем сущьность кампании по ее ID
+   * @param campaignId 
+   * @returns 
    */
-  async getChannelsForCampaign(
-    projectId: string,
-    campaignId: string
-  ): Promise<ProjectChannel[]> {
-    this.logger.Debug("ID проекта: ", projectId);
-    this.logger.Debug("Имя кампании: ", campaignId);
+  async getCampaignById(campaignId: string): Promise<Campaign> {
+    this.logger.Debug("ID кампании: ", campaignId);
 
     try {
-      const { channels } = await this.client.Query<
-        GetChannelsForCampaignQueryParams,
-        GetChannelsForCampaignQueryResponse
-      >(new GetChannelsForCampaignQuery(projectId, campaignId), {});
+      const { campaign } = await this.client.Query<
+        GetCampaignByIdQueryParams,
+        GetCampaignByIdQueryResponse
+      >(new GetCampaignByIdQuery(campaignId), {});
 
-      return channels.channels;
+      return campaign[0];
+    } catch (error) {
+      this.logger.Debug("Ошибка получения списка каналов: ", error);
+
+      throw Error(error);
+    }
+  };
+
+  /**
+   * Создает\сохраняет сущьность кампании
+   * @param campaign 
+   * @returns 
+   */
+  async storeCampaign(
+    campaign: CampaignInput
+  ): Promise<boolean> {
+    this.logger.Debug("Сущьность кампании: ", campaign);
+
+    try {
+      const { storedCampaign } = await this.client.Query<
+        StoreCampdignMutationParams,
+        StoreCampdignMutationResponse
+      >(new StoreCampdignMutation(campaign), {});
+
+      return !!storedCampaign.id;
     } catch (error) {
       this.logger.Debug("Ошибка получения списка каналов: ", error);
 
