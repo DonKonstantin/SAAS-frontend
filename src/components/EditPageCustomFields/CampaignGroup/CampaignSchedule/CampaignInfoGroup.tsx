@@ -25,6 +25,16 @@ enum optionsForTabs {
   "channels" = "channels",
 }
 
+enum daysName {
+  "monday" = 1,
+  "tuesday" = 2,
+  "wednesday" = 3,
+  "thursday" = 4,
+  "friday" = 5,
+  "saturday" = 6,
+  "sunday" = 7,
+}
+
 export type FormValuesProps = {
   // campaign_type: "simple" | "mute"
   // timeQueue: number
@@ -79,6 +89,7 @@ const CampaignInfoGroup = () => {
     .filter(v => v.length > 0).at(-1);
 
   let tabOptions = Object.keys(optionsForTabs)
+
   if (asPathNestedRoutes === 'add') {
     tabOptions = tabOptions.slice(0, 1)
   }
@@ -136,57 +147,7 @@ const CampaignInfoGroup = () => {
     campaign_period_start: null, // Период кампании (начало)
     campaign_period_stop: null, // Период кампании (окончание)
     campaign_days_type: "daily", // Дни недели
-    days: [
-      {
-        day_num: 1,
-        name: t("pages.campaign.add.fields.campaign_days.monday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 2,
-        name: t("pages.campaign.add.fields.campaign_days.tuesday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 3,
-        name: t("pages.campaign.add.fields.campaign_days.wednesday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 4,
-        name: t("pages.campaign.add.fields.campaign_days.thursday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 5,
-        name: t("pages.campaign.add.fields.campaign_days.friday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 6,
-        name: t("pages.campaign.add.fields.campaign_days.saturday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-      {
-        day_num: 7,
-        name: t("pages.campaign.add.fields.campaign_days.sunday"),
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      },
-    ], // Дни расписания кампании
+    days: [], // Дни расписания кампании
 
     // TODO ниже запросы по умолчанию для создания компании
     playlists: [], // Плейлисты, подключенные к кампании
@@ -232,11 +193,14 @@ const CampaignInfoGroup = () => {
       })
 
     const newData = { ...data, days, project_id: project, id: domain }
-
+    console.log(newData)
     try {
       //@ts-ignore
       const response = await campaignListService().storeCampaign(newData)
-      router.push(`/domain/${domain}/project/${project}/campaign/edit/${response}`);
+
+      if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
+        router.push(`/domain/${domain}/project/${project}/campaign/edit/${response}`);
+      }
     } catch (e) {
 
     }
@@ -282,7 +246,17 @@ const CampaignInfoGroup = () => {
       try {
         const response = await campaignListService().getCampaignById(asPathNestedRoutes)
         console.log(response)
-        Object.entries(response).forEach(([key, value]) => setValue(key, value))
+        Object.entries(response).forEach(([key, value]) => {
+          if (key === 'days') {
+            const newDate = value.map(el => ({
+              ...el,
+              name: t(`pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`)
+            }))
+            setValue('days', newDate)
+          } else {
+            setValue(key as any, value)
+          }
+        })
       } catch (e) {
 
       }

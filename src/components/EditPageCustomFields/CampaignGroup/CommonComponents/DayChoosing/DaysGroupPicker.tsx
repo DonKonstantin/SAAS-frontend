@@ -24,96 +24,76 @@ export type DaysDataType = {
   days_stop_minutes: number
 }
 
-enum daysName {
-  "monday" = 1,
-  "tuesday" = 2,
-  "wednesday" = 3,
-  "thursday" = 4,
-  "friday" = 5,
-  "saturday" = 6,
-  "sunday" = 7,
-}
-
 const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameRadioButton }) => {
 
   const { t } = useTranslation()
 
-  // const [daysData, setDaysData] = useState<DaysDataType[]>([
-  //   {
-  //     day_num: 1,
-  //     name: t("pages.campaign.add.fields.campaign_days.monday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 2,
-  //     name: t("pages.campaign.add.fields.campaign_days.tuesday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 3,
-  //     name: t("pages.campaign.add.fields.campaign_days.wednesday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 4,
-  //     name: t("pages.campaign.add.fields.campaign_days.thursday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 5,
-  //     name: t("pages.campaign.add.fields.campaign_days.friday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 6,
-  //     name: t("pages.campaign.add.fields.campaign_days.saturday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 7,
-  //     name: t("pages.campaign.add.fields.campaign_days.sunday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  // ]);
+  const [daysData, setDaysData] = useState<DaysDataType[]>([
+    {
+      day_num: 1,
+      name: t("pages.campaign.add.fields.campaign_days.monday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 2,
+      name: t("pages.campaign.add.fields.campaign_days.tuesday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 3,
+      name: t("pages.campaign.add.fields.campaign_days.wednesday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 4,
+      name: t("pages.campaign.add.fields.campaign_days.thursday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 5,
+      name: t("pages.campaign.add.fields.campaign_days.friday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 6,
+      name: t("pages.campaign.add.fields.campaign_days.saturday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+    {
+      day_num: 7,
+      name: t("pages.campaign.add.fields.campaign_days.sunday"),
+      is_active: true,
+      days_start_minutes: 0,
+      days_stop_minutes: 1439
+    },
+  ]);
 
-  const { control, getValues, watch, setError, clearErrors } = useFormContext();
+  const { control, getValues, setError, clearErrors } = useFormContext();
   const { replace } = useFieldArray({
     control,
     name: nameFieldDays
   });
 
-  const daysData = getValues("days")
+  useEffect(() => {
+    const value = getValues("days")
+    if (!value.length) {
+      return
+    }
 
-  // useEffect(() => {
-  //   const value = getValues("days")
-  //   console.log('value', value)
-  //   if (!value.length) {
-  //     return
-  //   }
-  //
-  //   const newDate = value.map(el => ({
-  //     ...el,
-  //     name: t(`pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`)
-  //   }))
-  //
-  //   setDaysData(newDate)
-  //
-  //   console.log('newDate', newDate)
-  // }, [getValues("days")])
+    setDaysData(value)
+  }, [getValues("days")])
 
   //Меняет активность по клику на чекбокс по дням
   function handleSelect(id: number, is_active: boolean) {
@@ -146,6 +126,8 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
 
         newArray = daysData.map(day => ({ ...day, is_active: true, days_stop_minutes: time }))
       }
+
+      setDaysData(newArray)
       clearErrors()
       replace(newArray)
       return
@@ -169,7 +151,7 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
       }
       newArray = daysData.map(day => day.day_num === id ? { ...day, days_stop_minutes: time } : day)
     }
-
+    setDaysData(newArray)
     clearErrors()
     replace(newArray)
   }, [daysData, watchNameRadioButton])
@@ -180,7 +162,7 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
       return
     }
 
-    //Если выбрано "Ежедневно"
+    // Если выбрано "Ежедневно"
     if (watchNameRadioButton === "daily") {
       const newArray = daysData.map(day => ({
         ...day,
@@ -189,17 +171,20 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
         days_stop_minutes: 1439
       }))
       clearErrors()
+      setDaysData(newArray)
       replace(newArray)
+      return;
     }
 
-    //Если выбрано "По дням"
+    // Если выбрано "По дням"
     const newArray = daysData.map(day => ({
       ...day,
       is_active: false
     }))
     clearErrors()
+    setDaysData(newArray)
     replace(newArray)
-  }, [watchNameRadioButton, daysData])
+  }, [watchNameRadioButton])
 
   return (
     <>
