@@ -134,7 +134,6 @@ export type CampaignPlayOrder =
 
 //  Сущность дня расписания кампании проекта
 export interface CampaignDay {
-  campaign_id: string;                                //  Идентификатор кампании, к которой относится день расписания
   day_num: number;                                    //  Порядковый номер дня [от 1 до 7]
   days_start_minutes: number;                         //  Период (начало) в мин.
   days_stop_minutes: number;                          //  Период (окончание) в мин.

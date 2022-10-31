@@ -10,7 +10,7 @@ export type Campaign = CampaignBase & {
 
 //  Сущность кампании проекта
 export interface CampaignInput {
-  project_id: number;// Идентификатор проекта, к которому относится кампания
+  project_id: string;// Идентификатор проекта, к которому относится кампания
   campaign_play_tracks_quantity: number;//  Количество треков для периодического воспроизведения
   campaign_days_type: CampaignDaysType;// Дни недели
   campaign_low_priority_end_type: CampaignLowPriority;//  Кампании с меньшим приоритетом

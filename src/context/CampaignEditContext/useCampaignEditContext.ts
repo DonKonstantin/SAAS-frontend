@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { OperatorFunction } from "rxjs";
-import { campaignEditActions, campaignEditcontext$ } from ".";
+import { campaignEditActions, campaignEditcontext$ } from "./index";
 import { CampaignEditContextCommonType, CampaignEditContextTypes } from "./interface";
 
 /**

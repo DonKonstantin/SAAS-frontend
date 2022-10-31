@@ -1,35 +1,59 @@
-import React, { memo } from 'react';
+import React, { FC, memo } from 'react';
 import { Grid } from "@mui/material";
-import StringField from "../../../EditPage/Fields/StringField";
-import QueueIntField from "../../../EditPage/Fields/QueueIntField";
-import EnumField from "../../../EditPage/Fields/EnumField";
-import IntField from "../../../EditPage/Fields/IntField";
-import DateField from "../../../EditPage/Fields/DateField";
-import CampaignDaysGroup from "./CampaignDaysGroup";
-import RadioEnumButton from "../../../EditPage/Fields/RadioEnumButton";
+import DaysGroupPicker from "../CommonComponents/DayChoosing/DaysGroupPicker";
 import { useEntityEdit } from "../../../../context/EntityEditContext";
 import { distinctUntilChanged } from "rxjs";
 import { useTranslation } from "react-i18next";
 import { Box } from "@mui/system";
+import { RHFTextField } from "../../../hook-form";
+import RHFRadioGroup from "../../../hook-form/RHFRadioGroup";
+import RHFDropDown from "../../../hook-form/RHFDropDown";
+import RHFDateField from "../../../hook-form/RHFDateField";
 
-const CampaignSchedule = () => {
+
+type Props = {
+  watchTime: {
+    // campaign_type: "simple" | "mute"
+    // campaign_priority: "higher" | "background" | "low" | "normal" | "high"
+    // campaign_play_type: "periodic" | "continuous"
+    // campaign_days_type: "daily" | "daysOfTheWeek"
+    campaign_type: string
+    campaign_priority: string
+    campaign_play_type: string
+    campaign_days_type: string
+  }
+}
+
+const CampaignSchedule: FC<Props> = ({ watchTime }) => {
+
+  const { t } = useTranslation()
 
   const { entityData } = useEntityEdit(distinctUntilChanged())
+
   if (!entityData) {
     return null
   }
 
-  const { t } = useTranslation()
-
   const nameAndTypeCompany = [
     {
       name: t("pages.campaign.add.fields.name"),
-      component: <StringField fieldCode='name'/>,
+      component: <RHFTextField
+        name="name"
+      />,
       size: { spacing: 4, xs: 2.5, sx: { mb: "16px" } }
     },
     {
       name: t("pages.campaign.add.fields.campaign_type"),
-      component: <RadioEnumButton fieldCode='campaign_type'/>,
+      component: <RHFRadioGroup
+        name='campaign_type'
+        options={['simple', "mute"]}
+        getOptionLabel={
+          [
+            t("pages.campaign.edit.fields.campaign-type.simple"),
+            t("pages.campaign.edit.fields.campaign-type.mute"),
+          ]}
+        sx={{ p: "0 9px" }}
+      />,
       size: { spacing: 4, xs: 2.5, sx: { mb: entityData.values.campaign_type === "mute" ? "26.5px" : "36.5px" } }
     }
   ]
@@ -38,7 +62,7 @@ const CampaignSchedule = () => {
     {
       name: t("pages.campaign.add.fields.timeQueue.timeQueue"),
       component: <Box sx={{ display: "flex", alignItems: "center" }}>
-        <QueueIntField fieldCode='timeQueue'/>
+        <RHFTextField type='number' name='timeQueue'/>
         <Box sx={{ pl: "11px" }}>({t("pages.campaign.add.fields.timeQueue.seconds")})</Box>
       </Box>,
       size: {
@@ -49,7 +73,16 @@ const CampaignSchedule = () => {
     },
     {
       name: t("pages.campaign.add.fields.campaign_end_type"),
-      component: <RadioEnumButton fieldCode='campaign_end_type'/>,
+      component: <RHFRadioGroup
+        name='campaign_end_type'
+        options={['finish', "break"]}
+        getOptionLabel={
+          [
+            t("pages.campaign.edit.fields.campaign_end_type.finish"),
+            t("pages.campaign.edit.fields.campaign_end_type.break")
+          ]}
+        sx={{ p: "0 9px" }}
+      />,
       size: {
         container: { spacing: 4, sx: { mb: "32.5px" } },
         gridName: { xs: 2.5 },
@@ -58,7 +91,13 @@ const CampaignSchedule = () => {
     },
     {
       name: t("pages.campaign.add.fields.campaign_priority"),
-      component: <EnumField fieldCode='campaign_priority'/>,
+      component: <RHFDropDown name='campaign_priority' options={[
+        { name: 'higher', label: t("pages.campaign.list.fields.campaign-priority-enum.higher") },
+        { name: 'background', label: t("pages.campaign.list.fields.campaign-priority-enum.background") },
+        { name: 'low', label: t("pages.campaign.list.fields.campaign-priority-enum.low") },
+        { name: 'normal', label: t("pages.campaign.list.fields.campaign-priority-enum.normal") },
+        { name: 'high', label: t("pages.campaign.list.fields.campaign-priority-enum.high") },
+      ]}/>,
       size: {
         container: { spacing: 4, sx: { mb: "21px" } },
         gridName: { xs: 2.5 },
@@ -67,7 +106,16 @@ const CampaignSchedule = () => {
     },
     {
       name: t("pages.campaign.add.fields.campaign_low_priority_end_type"),
-      component: <RadioEnumButton fieldCode='campaign_low_priority_end_type'/>,
+      component: <RHFRadioGroup
+        name='campaign_low_priority_end_type'
+        options={['finish', "break"]}
+        getOptionLabel={
+          [
+            t("pages.campaign.edit.fields.campaign_low_priority_end_type.finish"),
+            t("pages.campaign.edit.fields.campaign_low_priority_end_type.break")
+          ]}
+        sx={{ p: "0 9px" }}
+      />,
       size: {
         container: { spacing: 4, sx: { mb: "28.5px" } },
         gridName: { xs: 2.5 },
@@ -77,20 +125,39 @@ const CampaignSchedule = () => {
     {
       name: t("pages.campaign.add.fields.campaign_play_type"),
       component: <>
-        <RadioEnumButton fieldCode='campaign_play_type'/>
-        {entityData.values.campaign_play_type === "periodic" &&
+        <RHFRadioGroup
+          name='campaign_play_type'
+          options={['periodic', "continuous"]}
+          getOptionLabel={
+            [
+              t("pages.campaign.edit.fields.campaign_play_type.periodic"),
+              t("pages.campaign.edit.fields.campaign_play_type.continuous")
+            ]}
+          sx={{ p: "0 9px" }}
+        />
+        {watchTime.campaign_play_type === "periodic" &&
             <Grid container alignItems="flex-start" spacing={2} sx={{ pt: "30px" }}>
                 <Grid item xs={1}>
-                    <IntField fieldCode='campaign_play_tracks_quantity'/>
+                    <RHFTextField type='number' name='campaign_play_tracks_quantity'/>
                 </Grid>
-                <Grid item xs='auto'>
+                <Grid item xs='auto' alignSelf='flex-end'>
                     Трека каждые:
                 </Grid>
                 <Grid item xs={1}>
-                    <IntField fieldCode='campaign_play_tracks_period_value'/>
+                    <RHFTextField type='number' name='campaign_play_tracks_period_value'/>
                 </Grid>
                 <Grid item xs={1}>
-                    <EnumField fieldCode='campaign_play_tracks_period_type'/>
+                    <RHFDropDown name='campaign_play_tracks_period_type' options={
+                      [
+                        {
+                          name: 'hours',
+                          label: t("pages.campaign.edit.fields.campaign_play_tracks_period_type.hours")
+                        },
+                        {
+                          name: 'minutes',
+                          label: t("pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes")
+                        },
+                      ]}/>
                 </Grid>
             </Grid>
         }
@@ -103,7 +170,7 @@ const CampaignSchedule = () => {
     },
   ]
 
-  if (entityData.values.campaign_priority === 'background') {
+  if (watchTime.campaign_priority === 'background') {
     simpleCompanyOptions = simpleCompanyOptions.filter(field => field.name !== t("pages.campaign.add.fields.campaign_low_priority_end_type"))
   }
 
@@ -125,7 +192,7 @@ const CampaignSchedule = () => {
       }
 
       {
-        entityData.values.campaign_type === "simple"
+        watchTime.campaign_type === "simple"
         &&
         simpleCompanyOptions.map(field => (
           <Grid container {...field.size.container} alignItems="flex-start" key={field.name}>
@@ -145,22 +212,21 @@ const CampaignSchedule = () => {
           {t("pages.campaign.add.fields.campaign_period")}
         </Grid>
         <Grid item xs={1.5}>
-          <DateField fieldCode='campaign_period_start'/>
+          <RHFDateField name='campaign_period_start'/>
         </Grid>
         <Grid item xs={1.5}>
-          <DateField fieldCode='campaign_period_stop'/>
+          <RHFDateField name='campaign_period_stop'/>
         </Grid>
       </Grid>
 
       <Grid container spacing={4} alignItems="flex-start">
-        <Grid item xs={2.5}>
-          {t("pages.campaign.add.fields.campaign_days.title")}
-        </Grid>
-        <Grid item xs={4}>
-          <RadioEnumButton fieldCode='campaign_days_type'/>
-          <CampaignDaysGroup fieldCode='days' valuesData={entityData.values.campaign_days_type as string}/>
-        </Grid>
+        <DaysGroupPicker
+          nameRadioButton="campaign_days_type"
+          nameFieldDays="days"
+          watchNameRadioButton={watchTime.campaign_days_type}
+        />
       </Grid>
+
     </Grid>
 
   )
