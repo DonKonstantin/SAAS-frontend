@@ -16,7 +16,7 @@ export interface CampaignInput {
   campaign_low_priority_end_type: CampaignLowPriority;//  Кампании с меньшим приоритетом
   id?: number;//  ID сущности
   campaign_play_tracks_period_value: number;//  Количество времени для периодического воспроизведения
-  playlists: CampaignPlaylistConnectInput[];// Плейлисты, подключенные к кампании
+  playlists: CampaignPlaylistConnect[];// Плейлисты, подключенные к кампании
   campaign_play_type: CampaignPlayType;// Воспроизведение
   days: CampaignDay[];// Дни расписания кампании
   campaign_type: CampaignType;//  Тип кампании

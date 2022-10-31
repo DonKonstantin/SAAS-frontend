@@ -370,6 +370,13 @@
       },
       "logs": {
         "breadcrumb": "Логи"
+      },
+      "edit-playlist": {
+        "tabs": {
+          "tracks": "Трэки",
+          "schedule": "Расписание",
+          "clips": "Ролики"
+        }
       }
     },
     "notifications_template": {

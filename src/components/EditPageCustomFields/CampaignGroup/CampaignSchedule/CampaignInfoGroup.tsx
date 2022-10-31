@@ -1,13 +1,15 @@
 import React, { FC, useState } from "react";
 import { EditFormGroupProperties } from "../../../../settings/pages/system/edit";
 import { useEntityEdit } from "../../../../context/EntityEditContext";
-import { distinctUntilChanged } from "rxjs";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
 import { Button, Grid, Paper, Tab } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import CampaignSchedule from "./CampaignSchedule";
 import { useTranslation } from "react-i18next";
 import { Channels } from "../Channels";
+import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
+import { EditPlaylist } from "../EditPlaylist";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -19,6 +21,9 @@ enum optionsForTabs {
 const CampaignInfoGroup: FC<EditFormGroupProperties> = ({ config }) => {
   const { isVisible = () => true } = config;
   const { entityData } = useEntityEdit(distinctUntilChanged());
+
+  const { playlist } = useCampaignPlaylistEditContext(distinctUntilKeyChanged('playlist'));
+
   if (!entityData) {
     return null;
   }
@@ -97,6 +102,12 @@ const CampaignInfoGroup: FC<EditFormGroupProperties> = ({ config }) => {
           </TabContext>
         </Box>
       </Grid>
+
+      //! условие появление модалки поправить
+
+      {!playlist && (
+        <EditPlaylist/>
+      )}
     </>
   );
 };
