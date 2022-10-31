@@ -1,13 +1,12 @@
-import {Checkbox, FormControlLabel, FormGroup, Grid,} from "@mui/material";
-import React, {FC, memo, useCallback, useEffect, useState} from "react";
+import { FormGroup, Grid, } from "@mui/material";
+import React, { FC, memo, useCallback, useEffect } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import TimePickerComponent from "./TimePickerComponent";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import RHFRadioGroup from "../../../../hook-form/RHFRadioGroup";
-import {useFieldArray, useFormContext} from "react-hook-form";
-import {t} from "i18next";
-import {RHFCheckbox} from "../../../../hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { RHFCheckbox } from "../../../../hook-form";
 
 dayjs.extend(duration)
 
@@ -17,30 +16,21 @@ type Props = {
   watchNameRadioButton: string
 }
 
-export type DaysDataType = {
-  id?: number
-  day_num: number
-  name?: string
-  is_active: boolean
-  days_start_minutes: number
-  days_stop_minutes: number
-}
+const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameRadioButton }) => {
 
-const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRadioButton}) => {
+  const { t } = useTranslation()
 
-  const {t} = useTranslation()
+  const { control, setError, watch, clearErrors } = useFormContext();
+  const daysData = watch(nameFieldDays)
 
-  const {control, setError,  watch ,clearErrors} = useFormContext();
-  const [daysData, setDaysData] = useState<DaysDataType[]>(watch('days'));
-
-  const {replace} = useFieldArray({
+  const { replace } = useFieldArray({
     control,
     name: nameFieldDays
   });
 
   //Меняет время в конкретном дне недели
   const handleChangeTimeValue = useCallback((id: number, time: number, field: "start" | "end") => {
-    const errorMessage = {type: 'required', message: t("pages.campaign.edit.errors.time.timeValue")}
+    const errorMessage = { type: 'required', message: t("pages.campaign.edit.errors.time.timeValue") }
     let newArray;
 
     //Логика в случае если выбрано "Ежедневно"
@@ -53,7 +43,7 @@ const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRa
           return;
         }
 
-        newArray = daysData.map(day => ({...day, is_active: true, days_start_minutes: time}))
+        newArray = daysData.map(day => ({ ...day, is_active: true, days_start_minutes: time }))
       } else {
         if (findDay.days_start_minutes >= time) {
           setError(`${nameFieldDays}[${0}].days_stop_minutes`, errorMessage)
@@ -61,10 +51,9 @@ const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRa
           return;
         }
 
-        newArray = daysData.map(day => ({...day, is_active: true, days_stop_minutes: time}))
+        newArray = daysData.map(day => ({ ...day, is_active: true, days_stop_minutes: time }))
       }
 
-      setDaysData(newArray)
       clearErrors()
       replace(newArray)
       return
@@ -79,32 +68,36 @@ const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRa
 
         return;
       }
-      newArray = daysData.map(day => day.day_num === id ? {...day, days_start_minutes: time} : day)
+
+      newArray = daysData.map(day => day.day_num === id ? { ...day, days_start_minutes: time } : day)
     } else {
       if (findDay.days_start_minutes >= time) {
         setError(`${nameFieldDays}[${id - 1}].days_stop_minutes`, errorMessage)
 
         return;
       }
-      newArray = daysData.map(day => day.day_num === id ? {...day, days_stop_minutes: time} : day)
+
+      newArray = daysData.map(day => day.day_num === id ? { ...day, days_stop_minutes: time } : day)
     }
-    setDaysData(newArray)
+
     clearErrors()
     replace(newArray)
   }, [daysData, watchNameRadioButton])
 
   // Преобразовываем данные в случае переключения в Radio button для выбора типа дней недели
   useEffect(() => {
-    console.log(222)
-    // Если выбрано "По дням"
+    if (!watchNameRadioButton) {
+      return
+    }
+
     const newArray = daysData.map(day => ({
       ...day,
       days_start_minutes: 0,
       days_stop_minutes: 1439,
       is_active: true
     }))
-    clearErrors()
 
+    clearErrors()
     replace(newArray)
   }, [watchNameRadioButton])
 
@@ -122,9 +115,9 @@ const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRa
               t("pages.campaign.edit.fields.campaign_days_type.daily"),
               t("pages.campaign.edit.fields.campaign_days_type.daysOfTheWeek")
             ]}
-          sx={{padding: "0 9px"}}
+          sx={{ padding: "0 9px" }}
         />
-        <FormGroup sx={{pt: "34px"}}>
+        <FormGroup sx={{ pt: "34px" }}>
           {
             watchNameRadioButton === "daily"
               ?
@@ -139,10 +132,10 @@ const DaysGroupPicker: FC<Props> = ({nameRadioButton, nameFieldDays, watchNameRa
               :
               <>
                 {daysData.map((day, index) => (
-                    <Grid container direction='row' alignItems="flex-start" key={day.name} sx={{pb: "17px"}}>
+                    <Grid container direction='row' alignItems="flex-start" key={day.name} sx={{ pb: "17px" }}>
                       <Grid item xs={2}>
                         <RHFCheckbox
-                          sx={{minWidth: "135px", marginRight: "33px"}}
+                          sx={{ minWidth: "135px", marginRight: "33px" }}
                           name={`${nameFieldDays}[${index}].is_active`}
                           key={day.name}
                           label={day.name}

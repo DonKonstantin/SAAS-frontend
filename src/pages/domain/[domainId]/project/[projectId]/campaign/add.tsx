@@ -1,7 +1,7 @@
 import React from 'react';
 import { NextPage } from "next";
 import CampaignInfoGroup
-  from "../../../../../../components/EditPageCustomFields/CampaignGroup/CampaignSchedule/CampaignInfoGroup";
+  from "../../../../../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
 
 // Компонент страницы создания
 const EditPageContent: NextPage = () => {

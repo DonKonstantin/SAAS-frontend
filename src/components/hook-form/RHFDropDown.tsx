@@ -3,6 +3,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 // @mui
 import { MenuItem, TextField, TextFieldProps } from '@mui/material';
 import * as React from 'react';
+import { useTranslation } from "react-i18next";
 
 // ----------------------------------------------------------------------
 
@@ -10,7 +11,7 @@ interface IProps {
   name: string;
   options: {
     name: string
-    label?: string
+    label: string
   }[];
 }
 
@@ -18,6 +19,7 @@ export default function RHFDropDown({ name,
                             options,
                             ...other }: IProps & TextFieldProps) {
   const { control } = useFormContext();
+  const { t } = useTranslation()
 
   return (
     <Controller
@@ -34,7 +36,7 @@ export default function RHFDropDown({ name,
           {...other}
         >
           {options.map(option => (
-            <MenuItem value={option.name} key={option.name}>{option.label ?? option.name}</MenuItem>
+            <MenuItem value={option.name} key={option.name}>{t(option.label) ?? option.name}</MenuItem>
           ))}
         </TextField>
       )}

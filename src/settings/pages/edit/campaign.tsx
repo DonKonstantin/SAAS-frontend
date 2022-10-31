@@ -2,7 +2,7 @@ import { EditFormGroup, EditPageConfiguration } from "../system/edit";
 import { PageUrl } from "../system/list";
 import { getCurrentState } from "../../../context/AuthorizationContext";
 import CampaignInfoGroup
-  from "../../../components/EditPageCustomFields/CampaignGroup/CampaignSchedule/CampaignInfoGroup";
+  from "../../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
 import EnumField from "../../../components/EditPage/Fields/EnumField";
 import { campaignListService } from "services/campaignListService";
 import { Logger } from "services/logger/Logger";

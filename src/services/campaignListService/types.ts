@@ -1,4 +1,12 @@
-import { CampaignPlayType, CampaignType, CampaignEndType, CampaignPeriodType, CampaignPriority, CampaignPlayOrder, CampaignDay } from './../projectPlaylistService/interfaces';
+import {
+  CampaignDay,
+  CampaignEndType,
+  CampaignPeriodType,
+  CampaignPlayOrder,
+  CampaignPlayType,
+  CampaignPriority,
+  CampaignType
+} from '../projectPlaylistService/interfaces';
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 import { CampaignBase, CampaignLowPriority, ProjectPlayListFile } from "services/projectPlaylistService/interfaces";
 
@@ -22,9 +30,9 @@ export interface CampaignInput {
   campaign_type: CampaignType;//  Тип кампании
   campaign_all_days_stop_minutes: number;// Дни недели (окончание общее) мин.
   channels: CampaignChannelInputObject[];//  Каналы, подключенные к кампании
-  campaign_period_stop: Date;// Период кампании (окончание)
+  campaign_period_stop: Date | null;// Период кампании (окончание)
   campaign_all_days_start_minutes: number;//  Дни недели (начало общее) мин.
-  campaign_period_start: Date;//  Период кампании (начало)
+  campaign_period_start: Date | null;//  Период кампании (начало)
   campaign_priority: CampaignPriority;//  Приоритет - приоритет кампании
   campaign_play_order: CampaignPlayOrder;// Тип времени для периодического воспроизведения
   name: string;// Название кампании

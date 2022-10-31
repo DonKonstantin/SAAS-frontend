@@ -45,7 +45,7 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список ID плэйлистов по списку ID кампаний
    */
   getPlaylistsIdByCampignsId: (campignsId: string[]) => Promise<string[]>;
-};
+}
 
 export type ExportedPlaylistType = {[x: string]: string[]};
 
@@ -77,7 +77,7 @@ export interface PlaylistGlobalFile {
   publisher:  string;                             //  Изготовитель фонограммы
   title:  string;                                 //  Название
   year: number;                                   //  Год создания
-};
+}
 
 //  Сущность файла из плейлиста проекта
 export interface ProjectPlayListFile {
@@ -87,7 +87,7 @@ export interface ProjectPlayListFile {
   playlist_id:  string;                           //  Идентификатор плейлиста, к которому относится файл
   volume: number;                                 //  Громкость звука файла в плейлисте
   sort: number;                                   //  Порядок сортировки
-};
+}
 
 //  Дни недели кампании
 export type CampaignDaysType = 
@@ -139,6 +139,7 @@ export interface CampaignDay {
   days_stop_minutes: number;                          //  Период (окончание) в мин.
   is_active: boolean;                                 //  Активность
   id?: string;                                        //  ID сущности
+  campaign_id?: string                                //  Идентификатор кампании, к которой относится день расписания
 }
 
 //  Сущность кампании проекта (только базовые поля)
