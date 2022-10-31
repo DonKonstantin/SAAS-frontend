@@ -35,8 +35,10 @@ enum daysName {
   "sunday" = 7,
 }
 
+type CompanyType = "simple" | "mute"
+
 export type FormValuesProps = {
-  // campaign_type: "simple" | "mute"
+  campaign_type: CompanyType
   // timeQueue: number
   // campaign_end_type: "finish" | "break"
   // campaign_priority: "higher" | "background" | "low" | "normal" | "high"
@@ -49,7 +51,7 @@ export type FormValuesProps = {
   // campaign_period_stop: any
   // campaign_days_type: "daily" | "daysOfTheWeek"
   name: string
-  campaign_type: string
+  // campaign_type: string
   timeQueue?: number
   campaign_end_type: string
   campaign_priority: string
@@ -135,7 +137,7 @@ const CampaignInfoGroup = () => {
 
   let defaultValues = {
     name: '', // Название кампании
-    campaign_type: 'mute', // Тип кампании
+    campaign_type: "mute" as CompanyType, // Тип кампании
     timeQueue: 0,  // Время ожидания в очереди TODO изменить название после добавления в запрос
     campaign_end_type: 'break', // После окончания (Режим работы после окончания)
     campaign_priority: 'higher', // Приоритет - приоритет кампании
@@ -147,7 +149,57 @@ const CampaignInfoGroup = () => {
     campaign_period_start: null, // Период кампании (начало)
     campaign_period_stop: null, // Период кампании (окончание)
     campaign_days_type: "daily", // Дни недели
-    days: [], // Дни расписания кампании
+    days: [
+      {
+        day_num: 1,
+        name: t("pages.campaign.add.fields.campaign_days.monday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 2,
+        name: t("pages.campaign.add.fields.campaign_days.tuesday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 3,
+        name: t("pages.campaign.add.fields.campaign_days.wednesday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 4,
+        name: t("pages.campaign.add.fields.campaign_days.thursday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 5,
+        name: t("pages.campaign.add.fields.campaign_days.friday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 6,
+        name: t("pages.campaign.add.fields.campaign_days.saturday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      },
+      {
+        day_num: 7,
+        name: t("pages.campaign.add.fields.campaign_days.sunday"),
+        is_active: true,
+        days_start_minutes: 0,
+        days_stop_minutes: 1439
+      }
+    ], // Дни расписания кампании
 
     // TODO ниже запросы по умолчанию для создания компании
     playlists: [], // Плейлисты, подключенные к кампании
@@ -181,6 +233,8 @@ const CampaignInfoGroup = () => {
     if (Object.keys(errors).length) {
       return
     }
+
+    debugger
 
     delete data['timeQueue'] //TODO удалить, когда будет добавлен сущность в запрос
 
