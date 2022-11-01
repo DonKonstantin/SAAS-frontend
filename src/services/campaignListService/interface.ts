@@ -14,7 +14,7 @@ export interface CampaignListServiceInterface {
    */
   storeCampaign: (
     campaign: CampaignInput
-  ) => Promise<boolean>;
+  ) => Promise<string>;
 
   /**
    * Получения списка каналов по ID проекта и части имени
@@ -53,12 +53,12 @@ export type GetCampaignByIdQueryResponse = {
   campaign: Campaign[];
 };
 
-export type StoreCampdignMutationParams = {
+export type StoreCampaignMutationParams = {
   campaign: CampaignInput;
 };
 
-export type StoreCampdignMutationResponse = {
-  storedCampaign: {
+export type StoreCampaignMutationResponse = {
+  campaignStore: {
     id: string;
   };
 };
