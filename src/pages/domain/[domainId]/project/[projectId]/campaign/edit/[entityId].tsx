@@ -1,12 +1,16 @@
 import React from 'react';
 import { NextPage } from "next";
 import CampaignInfoGroup
-  from "../../../../../../../components/EditPageCustomFields/CampaignGroup/CampaignSchedule/CampaignInfoGroup";
+  from "../../../../../../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
+import CampaignEditContextConnector
+  from "../../../../../../../context/CampaignEditContext/CampaignEditContextConnector";
 
 // Компонент страницы редактирования
 const EditPageContent: NextPage = () => {
   return (
-    <CampaignInfoGroup/>
+    <CampaignEditContextConnector>
+      <CampaignInfoGroup/>
+    </CampaignEditContextConnector>
   )
 }
 

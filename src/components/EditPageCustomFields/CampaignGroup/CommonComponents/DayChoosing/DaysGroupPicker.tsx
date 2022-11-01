@@ -1,11 +1,12 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, } from "@mui/material";
-import React, { FC, memo, useCallback, useEffect, useState } from "react";
+import { FormGroup, Grid, } from "@mui/material";
+import React, { FC, memo, useCallback, useEffect } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import TimePickerComponent from "./TimePickerComponent";
 import { useTranslation } from "react-i18next";
 import RHFRadioGroup from "../../../../hook-form/RHFRadioGroup";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { RHFCheckbox } from "../../../../hook-form";
 
 dayjs.extend(duration)
 
@@ -15,111 +16,17 @@ type Props = {
   watchNameRadioButton: string
 }
 
-export type DaysDataType = {
-  id?: number
-  day_num: number
-  name?: string
-  is_active: boolean
-  days_start_minutes: number
-  days_stop_minutes: number
-}
-
-enum daysName {
-  "monday" = 1,
-  "tuesday" = 2,
-  "wednesday" = 3,
-  "thursday" = 4,
-  "friday" = 5,
-  "saturday" = 6,
-  "sunday" = 7,
-}
-
 const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameRadioButton }) => {
 
   const { t } = useTranslation()
 
-  // const [daysData, setDaysData] = useState<DaysDataType[]>([
-  //   {
-  //     day_num: 1,
-  //     name: t("pages.campaign.add.fields.campaign_days.monday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 2,
-  //     name: t("pages.campaign.add.fields.campaign_days.tuesday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 3,
-  //     name: t("pages.campaign.add.fields.campaign_days.wednesday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 4,
-  //     name: t("pages.campaign.add.fields.campaign_days.thursday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 5,
-  //     name: t("pages.campaign.add.fields.campaign_days.friday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 6,
-  //     name: t("pages.campaign.add.fields.campaign_days.saturday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  //   {
-  //     day_num: 7,
-  //     name: t("pages.campaign.add.fields.campaign_days.sunday"),
-  //     is_active: true,
-  //     days_start_minutes: 0,
-  //     days_stop_minutes: 1439
-  //   },
-  // ]);
+  const { control, setError, watch, clearErrors } = useFormContext();
+  const daysData = watch(nameFieldDays)
 
-  const { control, getValues, watch, setError, clearErrors } = useFormContext();
   const { replace } = useFieldArray({
     control,
     name: nameFieldDays
   });
-
-  const daysData = getValues("days")
-
-  // useEffect(() => {
-  //   const value = getValues("days")
-  //   console.log('value', value)
-  //   if (!value.length) {
-  //     return
-  //   }
-  //
-  //   const newDate = value.map(el => ({
-  //     ...el,
-  //     name: t(`pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`)
-  //   }))
-  //
-  //   setDaysData(newDate)
-  //
-  //   console.log('newDate', newDate)
-  // }, [getValues("days")])
-
-  //Меняет активность по клику на чекбокс по дням
-  function handleSelect(id: number, is_active: boolean) {
-    const newArr = daysData.map(day => day.day_num === id ? { ...day, is_active: !is_active } : day)
-    replace(newArr)
-  }
 
   //Меняет время в конкретном дне недели
   const handleChangeTimeValue = useCallback((id: number, time: number, field: "start" | "end") => {
@@ -146,6 +53,7 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
 
         newArray = daysData.map(day => ({ ...day, is_active: true, days_stop_minutes: time }))
       }
+
       clearErrors()
       replace(newArray)
       return
@@ -160,6 +68,7 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
 
         return;
       }
+
       newArray = daysData.map(day => day.day_num === id ? { ...day, days_start_minutes: time } : day)
     } else {
       if (findDay.days_start_minutes >= time) {
@@ -167,6 +76,7 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
 
         return;
       }
+
       newArray = daysData.map(day => day.day_num === id ? { ...day, days_stop_minutes: time } : day)
     }
 
@@ -180,26 +90,16 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
       return
     }
 
-    //Если выбрано "Ежедневно"
-    if (watchNameRadioButton === "daily") {
-      const newArray = daysData.map(day => ({
-        ...day,
-        is_active: true,
-        days_start_minutes: 0,
-        days_stop_minutes: 1439
-      }))
-      clearErrors()
-      replace(newArray)
-    }
-
-    //Если выбрано "По дням"
     const newArray = daysData.map(day => ({
       ...day,
-      is_active: false
+      days_start_minutes: 0,
+      days_stop_minutes: 1439,
+      is_active: true
     }))
+
     clearErrors()
     replace(newArray)
-  }, [watchNameRadioButton, daysData])
+  }, [watchNameRadioButton])
 
   return (
     <>
@@ -234,14 +134,9 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
                 {daysData.map((day, index) => (
                     <Grid container direction='row' alignItems="flex-start" key={day.name} sx={{ pb: "17px" }}>
                       <Grid item xs={2}>
-                        <FormControlLabel
+                        <RHFCheckbox
                           sx={{ minWidth: "135px", marginRight: "33px" }}
-                          control={
-                            <Checkbox
-                              checked={day.is_active}
-                              onChange={() => handleSelect(day.day_num, day.is_active)}
-                            />
-                          }
+                          name={`${nameFieldDays}[${index}].is_active`}
                           key={day.name}
                           label={day.name}
                         />
@@ -261,7 +156,6 @@ const DaysGroupPicker: FC<Props> = ({ nameRadioButton, nameFieldDays, watchNameR
               </>
           }
         </FormGroup>
-
       </Grid>
     </>
   );

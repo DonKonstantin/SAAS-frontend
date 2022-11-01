@@ -66,9 +66,8 @@ export class CampaignListService implements CampaignListServiceInterface {
       const { campaignStore } = await this.client.Query<StoreCampaignMutationParams, StoreCampaignMutationResponse>(new StoreCampaignMutation(campaign), {});
       return campaignStore.id;
     } catch (error) {
-      this.logger.Debug("Ошибка получения списка каналов: ", error);
-
-      throw Error(error);
+      this.logger.Debug("Ошибка в создании компании: ", error);
+      throw error;
     }
   }
 

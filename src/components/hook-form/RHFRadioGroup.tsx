@@ -9,6 +9,7 @@ import {
   FormControlLabel, Theme,
 } from '@mui/material';
 import { SxProps } from "@mui/system";
+import { useTranslation } from "react-i18next";
 
 // ----------------------------------------------------------------------
 
@@ -26,6 +27,7 @@ export default function RHFRadioGroup({
                                         sx
                                       }: IProps & RadioGroupProps) {
   const { control } = useFormContext();
+  const { t } = useTranslation()
 
   return (
     <Controller
@@ -33,13 +35,13 @@ export default function RHFRadioGroup({
       control={control}
       render={({ field, fieldState: { error } }) => (
         <div>
-          <RadioGroup {...field} row >
+          <RadioGroup {...field} row>
             {options.map((option, index) => (
               <FormControlLabel
                 key={option}
                 value={option}
                 control={<Radio sx={sx}/>}
-                label={getOptionLabel?.length ? getOptionLabel[index] : option}
+                label={getOptionLabel?.length ? t(getOptionLabel[index]) : option}
               />
             ))}
           </RadioGroup>
