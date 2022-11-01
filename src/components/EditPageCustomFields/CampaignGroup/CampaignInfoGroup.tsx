@@ -23,6 +23,9 @@ import {
 import { CampaignDaysType, CampaignInput } from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
+import { useCampaignEditContext } from "../../../context/CampaignEditContext/useCampaignEditContext";
+import { distinctUntilChanged } from "rxjs";
+import { isEqual } from "lodash";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -53,7 +56,16 @@ const CampaignInfoGroup = () => {
     return null
   }
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    campaign,
+    isLoading,
+    campaignListErrorText,
+    loadCampaign
+  } = useCampaignEditContext(distinctUntilChanged((prev, curr) => (
+    prev.isLoading === curr.isLoading &&
+    isEqual(prev.campaign, curr.campaign)
+  )))
+
   const [showSuccessUpdate, setShowSuccessUpdate] = useState<boolean>(false);
   const [showSuccessUpdateName, setShowSuccessUpdateName] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
@@ -165,7 +177,7 @@ const CampaignInfoGroup = () => {
         }
         if (day.id) {
           return (
-            {...daysForData, id: day.id}
+            { ...daysForData, id: day.id }
           )
         }
 
@@ -220,40 +232,51 @@ const CampaignInfoGroup = () => {
     }
   }, [watchTime.campaign_priority])
 
+// Эффект отвечающий за загрузку данных компании
   useEffect(() => {
     if (!router.query.entityId) {
       return
     }
 
-    setIsLoading(true)
-
-    const asyncFunction = async () => {
-      try {
-        //@ts-ignore
-        const response = await campaignListService().getCampaignById(router.query.entityId)
-        Object.entries(response).forEach(([key, value]) => {
-          if (key === 'days') {
-            const newDate = value.map(el => ({
-              ...el,
-              name: t(`pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`)
-            }))
-            setValue(key, newDate)
-          } else {
-            setValue(key as any, value)
-          }
-        })
-      } catch (error) {
-        setErrorText(error)
-        setShowError(!!error)
-      }
-    }
-
-    asyncFunction().finally(() => setIsLoading(false))
-
+    //@ts-ignore
+    loadCampaign(router.query.entityId)
   }, [router.query.entityId])
 
-  //auto close messages
+  // Устанавливаем данные в форму, когда получаем компанию
   useEffect(() => {
+    if (!campaign || !router.query.entityId) {
+      return
+    }
+
+    Object.entries(campaign).forEach(([key, value]) => {
+      if (key === 'days') {
+        const newDate = value.map(el => ({
+          ...el,
+          name: t(`pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`)
+        }))
+        setValue(key, newDate)
+      } else {
+        setValue(key as any, value)
+      }
+    })
+
+  }, [campaign, router.query.entityId])
+
+  // Авто закрытие сообщений
+  useEffect(() => {
+    if (!campaignListErrorText) {
+      return
+    }
+
+    setShowError(!!campaignListErrorText)
+    setErrorText(campaignListErrorText)
+  }, [campaignListErrorText])
+
+  // Авто закрытие сообщений
+  useEffect(() => {
+    if (!showSuccessUpdateName || !campaignListErrorText) {
+      return
+    }
 
     const newTO = setTimeout(() => {
       setShowSuccessUpdate(false)
@@ -263,7 +286,7 @@ const CampaignInfoGroup = () => {
     return () => {
       clearTimeout(newTO)
     }
-  }, [showSuccessUpdateName, errorText])
+  }, [showSuccessUpdateName, campaignListErrorText])
 
   if (isLoading) {
     return <LoadingBlocker/>
