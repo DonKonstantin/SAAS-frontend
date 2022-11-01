@@ -23,6 +23,7 @@ import {
 import { CampaignDaysType, CampaignInput } from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
+import CampaignContent from "./CampaignContent/CampaignContent";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -329,6 +330,13 @@ const CampaignInfoGroup = () => {
                       {t("pages.campaign.add.buttons.save")}
                     </LoadingButton>
                   </Stack>
+                </TabPanel>
+                <TabPanel
+                  value={optionsForTabs.content}
+                  key={optionsForTabs.content}
+                  sx={{ p: 0 }}
+                >
+                  <CampaignContent/>
                 </TabPanel>
                 <TabPanel
                   value={optionsForTabs.channels}

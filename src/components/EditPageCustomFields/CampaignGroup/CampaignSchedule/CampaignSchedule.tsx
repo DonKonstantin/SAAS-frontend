@@ -24,21 +24,21 @@ type Props = {
 
 const nameAndTypeCompany = [
   {
-    name: "pages.campaign.add.fields.name",
+    name: "pages.campaign.add.fields.schedule.name",
     component: <RHFTextField
       name="name"
     />,
     size: { spacing: 4, xs: 2.5, sx: { mb: "16px" } }
   },
   {
-    name: "pages.campaign.add.fields.campaign_type",
+    name: "pages.campaign.add.fields.schedule.campaign_type",
     component: <RHFRadioGroup
       name='campaign_type'
       options={['simple', "mute"]}
       getOptionLabel={
         [
-          "pages.campaign.edit.fields.campaign-type.simple",
-          "pages.campaign.edit.fields.campaign-type.mute",
+          "pages.campaign.edit.fields.schedule.campaign-type.simple",
+          "pages.campaign.edit.fields.schedule.campaign-type.mute",
         ]}
       sx={{ p: "0 9px" }}
     />,
@@ -48,14 +48,14 @@ const nameAndTypeCompany = [
 
 let simpleCompanyOptionsData = [
   {
-    name: "pages.campaign.add.fields.campaign_end_type",
+    name: "pages.campaign.add.fields.schedule.campaign_end_type",
     component: <RHFRadioGroup
       name='campaign_end_type'
       options={['finish', "break"]}
       getOptionLabel={
         [
-          "pages.campaign.edit.fields.campaign_end_type.finish",
-          "pages.campaign.edit.fields.campaign_end_type.break"
+          "pages.campaign.edit.fields.schedule.campaign_end_type.finish",
+          "pages.campaign.edit.fields.schedule.campaign_end_type.break"
         ]}
       sx={{ p: "0 9px" }}
     />,
@@ -66,7 +66,7 @@ let simpleCompanyOptionsData = [
     }
   },
   {
-    name: "pages.campaign.add.fields.campaign_priority",
+    name: "pages.campaign.add.fields.schedule.campaign_priority",
     component: <RHFDropDown name='campaign_priority' options={[
       { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
       { name: 'background', label: "pages.campaign.list.fields.campaign-priority-enum.background" },
@@ -81,14 +81,14 @@ let simpleCompanyOptionsData = [
     }
   },
   {
-    name: "pages.campaign.add.fields.campaign_low_priority_end_type",
+    name: "pages.campaign.add.fields.schedule.campaign_low_priority_end_type",
     component: <RHFRadioGroup
       name='campaign_low_priority_end_type'
       options={['finish', "break"]}
       getOptionLabel={
         [
-          "pages.campaign.edit.fields.campaign_low_priority_end_type.finish",
-          "pages.campaign.edit.fields.campaign_low_priority_end_type.break"
+          "pages.campaign.edit.fields.schedule.campaign_low_priority_end_type.finish",
+          "pages.campaign.edit.fields.schedule.campaign_low_priority_end_type.break"
         ]}
       sx={{ p: "0 9px" }}
     />,
@@ -106,15 +106,15 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
 
   let simpleCompanyOptions = [...simpleCompanyOptionsData,
     {
-      name: t("pages.campaign.add.fields.campaign_play_type"),
+      name: t("pages.campaign.add.fields.schedule.campaign_play_type"),
       component: <>
         <RHFRadioGroup
           name='campaign_play_type'
           options={['periodic', "continuous"]}
           getOptionLabel={
             [
-              "pages.campaign.edit.fields.campaign_play_type.periodic",
-              "pages.campaign.edit.fields.campaign_play_type.continuous"
+              "pages.campaign.edit.fields.schedule.campaign_play_type.periodic",
+              "pages.campaign.edit.fields.schedule.campaign_play_type.continuous"
             ]}
           sx={{ p: "0 9px" }}
         />
@@ -134,11 +134,11 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
                       [
                         {
                           name: 'hours',
-                          label: "pages.campaign.edit.fields.campaign_play_tracks_period_type.hours"
+                          label: "pages.campaign.edit.fields.schedule.campaign_play_tracks_period_type.hours"
                         },
                         {
                           name: 'minutes',
-                          label: "pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes"
+                          label: "pages.campaign.edit.fields.schedule.campaign_play_tracks_period_type.minutes"
                         },
                       ]}/>
                 </Grid>
@@ -154,7 +154,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
   ]
 
   if (watchTime.campaign_priority === "background") {
-    simpleCompanyOptions = simpleCompanyOptions.filter(field => field.name !== "pages.campaign.add.fields.campaign_low_priority_end_type")
+    simpleCompanyOptions = simpleCompanyOptions.filter(field => field.name !== "pages.campaign.add.fields.schedule.campaign_low_priority_end_type")
   }
 
   return (
@@ -191,7 +191,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
 
       <Grid container spacing={4} sx={{ mb: "23px" }} alignItems="flex-start">
         <Grid item xs={2.5}>
-          {t("pages.campaign.add.fields.campaign_period")}
+          {t("pages.campaign.add.fields.schedule.campaign_period")}
         </Grid>
         <Grid item xs={1.5}>
           <RHFDateField name='campaign_period_start'/>
