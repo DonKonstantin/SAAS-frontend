@@ -34,7 +34,7 @@ export interface ProjectPlaylistServiceInterface {
   /**
    * Сохраняем изменения в плэйлисте
    */
-  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<boolean>;
+  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<ProjectPlayList>;
 
   /**
    * Получаем список ID кампаний по имени
@@ -244,9 +244,7 @@ export type StorePlaylistMutationParams = {
 };
 
 export type StorePlaylistMutationResponse = {
-  result: {
-    id: string;
-  };
+  result: ProjectPlayList;
 };
 
 export type GetCampaignsIdByNameQueryParams = {

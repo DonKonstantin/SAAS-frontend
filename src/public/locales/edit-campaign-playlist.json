@@ -1,0 +1,27 @@
+{
+  "edit-campaign-playlist": {
+    "tabs": {
+      "tracks": "Трэки",
+      "schedule": "Расписание",
+      "clips": "Ролики"
+    },
+    "button": {
+      "make-playlist-editable": "перейти к рЕДАКТИРОВАНИЮ",
+      "save-with-common-rule": "СОХРАНИТЬ с ОБЩИМИ ПРАВИЛАМИ",
+      "save-and-route-to-schedule": "СОХРАНИТЬ И перейти к расписанию"
+    },
+    "field": {
+      "playlist-name": "Название плейлиста",
+      "is-over-valume": "Общая громкость"
+    },
+    "table": {
+      "header": {
+        "track-name": "Название трека"
+      }
+    },
+    "error": {
+      "required": "Поле обязательно к заполнению",
+      "store-campaign-playlist": "Не удалось сохранить плэйлист"
+    }
+  }
+}

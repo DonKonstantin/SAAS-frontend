@@ -1,14 +1,19 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Paper, Tab } from "@mui/material";
 import { styled } from "@mui/system";
+import { Tabs } from "context/CampaignPlaylistEditContext/interface";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import React, { FC, memo, useState } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { CampaignPlaylistConnect } from "services/campaignListService/types";
 import Clips from "./Clips";
 import Schedule from "./Schedule";
-import Tracks from "./Tracks";
+import Tracks, { playlistType } from "./Tracks";
 
-interface Props {}
+interface Props {
+  storePlaylist: (id: string, type: playlistType) => void;
+  // playlist: CampaignPlaylistConnect;
+}
 
 const StyledWrapper = styled("div")({
   position: "absolute",
@@ -16,6 +21,7 @@ const StyledWrapper = styled("div")({
   height: "100%",
   background: "#FBFDFC",
   padding: "30px 36px",
+  zIndex: 1100
 });
 
 const StyledTabsWrapper = styled("div")({
@@ -36,16 +42,10 @@ const StyledTabPanel = styled(TabPanel)({
   padding: 0,
 });
 
-enum Tabs {
-  "tracks" = "tracks",
-  "schedule" = "schedule",
-  "clips" = "clips",
-}
-
-const EditPlaylist: FC<Props> = ({}) => {
+const EditPlaylist: FC<Props> = ({  storePlaylist }) => {
   const { t } = useTranslation();
 
-  const { isTabsAvailable } = useCampaignPlaylistEditContext();
+  const { playlist, availableTabs, setPlaylist, setAvailableTabs } = useCampaignPlaylistEditContext();
 
   const [currentTab, setCurrentTab] = useState<Tabs>(Tabs.tracks);
 
@@ -53,28 +53,43 @@ const EditPlaylist: FC<Props> = ({}) => {
     setCurrentTab(newValue);
   };
 
+  useEffect(() => {
+    // setPlaylist(playlist);
+
+    if (
+      !!playlist?.projectPlaylist?.files.length ||
+      !!playlist?.campaignPlaylist?.files.length
+    ) {
+      return
+    }
+
+    setAvailableTabs([Tabs.tracks, Tabs.clips]);
+
+    setCurrentTab(Tabs.clips);
+  }, []);
+
   return (
     <StyledWrapper>
       <TabContext value={currentTab}>
         <StyledTabsWrapper>
           <TabList onChange={changeCurrentTab} aria-label={"campaign-create"}>
-            {Object.keys(Tabs).map((permission) => (
+            {Object.keys(Tabs).map((tabName) => (
               <Tab
                 sx={{ minHeight: "51px", minWidth: "168px" }}
-                label={t(`pages.campaign.edit-playlist.tabs.${permission}`)}
-                value={permission}
-                key={permission}
-                disabled={!isTabsAvailable && permission !== "tracks"}
+                label={t(`edit-campaign-playlist.tabs.${tabName}`)}
+                value={tabName}
+                key={tabName}
+                // disabled={availableTabs.every(tab => tab !== tabName)}
               />
             ))}
           </TabList>
         </StyledTabsWrapper>
-        <StyledTabPanel value={Tabs.tracks} key={Tabs.tracks} sx={{ p: 0 }}>
+        <StyledTabPanel value={Tabs.schedule} key={Tabs.tracks} sx={{ p: 0 }}>
           <StyledPaper>
-            <Tracks />
+            <Tracks storePlaylist={() => {}} setTab={setCurrentTab}/>
           </StyledPaper>
         </StyledTabPanel>
-        <StyledTabPanel value={Tabs.schedule} key={Tabs.schedule} sx={{ p: 0 }}>
+        <StyledTabPanel value={Tabs.tracks} key={Tabs.schedule} sx={{ p: 0 }}>
           <StyledPaper>
             <Schedule />
           </StyledPaper>
