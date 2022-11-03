@@ -12,8 +12,8 @@ interface Props {
 
 /**
  * Компонент пагинации листинга треков на странице редактирования плейлиста кампании
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const Pagination: FC<Props> = ({
   count,

@@ -8,20 +8,41 @@
     "button": {
       "make-playlist-editable": "перейти к рЕДАКТИРОВАНИЮ",
       "save-with-common-rule": "СОХРАНИТЬ с ОБЩИМИ ПРАВИЛАМИ",
-      "save-and-route-to-schedule": "СОХРАНИТЬ И перейти к расписанию"
+      "save-and-route-to-schedule": "СОХРАНИТЬ И перейти к расписанию",
+      "save": "Сохранить",
+      "add-to-playlist": "ДОБАВИТЬ В ПЛЕЙЛИСТ"
     },
     "field": {
       "playlist-name": "Название плейлиста",
-      "is-over-valume": "Общая громкость"
+      "is-over-valume": "Общая громкость",
+      "campaign-period": "Период компании",
+      "is-campaign-schedule": "Установленно расписание как у компании",
+      "campaign-days": {
+        "0": "Понедельник",
+        "1": "Вторник",
+        "2": "Среда",
+        "3": "Четверг",
+        "4": "Пятница",
+        "5": "Суббота",
+        "6": "Воскресенье"
+      }
     },
     "table": {
       "header": {
-        "track-name": "Название трека"
-      }
+        "track-name": "Название трека",
+        "clips-header": "Загруженные"
+      },
+      "empty-uploaded-track-row": "Нет загруженных треков",
+      "empty-track-row": "В плэйлисте еще нет треков"
     },
     "error": {
       "required": "Поле обязательно к заполнению",
-      "store-campaign-playlist": "Не удалось сохранить плэйлист"
+      "store-campaign-playlist": "Не удалось сохранить плэйлист",
+      "upload": "Не удалось загрузить клип",
+      "uploads": "Не удалось загрузить клипы"
+    },
+    "drop-zone": {
+      "input-text": "Переместите файлы для загрузки"
     }
   }
 }

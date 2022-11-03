@@ -83,10 +83,23 @@ export const InitCampaignEditContext = () => {
   return () => subscriber.unsubscribe();
 };
 
+/**
+ * Запрашивает компанию по ID
+ * @param campaignId 
+ */
 const loadCampaign: CampaignEditContextActionsTypes['loadCampaign'] = campaignId => {
   campaignId$.next(campaignId);
 }
 
+/**
+ * Записывает сущьность кампании в контекст
+ * @param campaign 
+ */
+const setCampaign: CampaignEditContextActionsTypes['setCampaign'] = campaign => {
+  campaign$.next(campaign);
+}
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
+  setCampaign,
 };

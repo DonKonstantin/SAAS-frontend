@@ -1,19 +1,15 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Paper, Tab } from "@mui/material";
+import { Paper, Tab, Box } from "@mui/material";
 import { styled } from "@mui/system";
+import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
 import { Tabs } from "context/CampaignPlaylistEditContext/interface";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import React, { FC, memo, useEffect, useState } from "react";
+import React, { FC, memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CampaignPlaylistConnect } from "services/campaignListService/types";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
 import Clips from "./Clips";
 import Schedule from "./Schedule";
-import Tracks, { playlistType } from "./Tracks";
-
-interface Props {
-  storePlaylist: (id: string, type: playlistType) => void;
-  // playlist: CampaignPlaylistConnect;
-}
+import Tracks from "./Tracks";
 
 const StyledWrapper = styled("div")({
   position: "absolute",
@@ -21,7 +17,7 @@ const StyledWrapper = styled("div")({
   height: "100%",
   background: "#FBFDFC",
   padding: "30px 36px",
-  zIndex: 1100
+  zIndex: 1100,
 });
 
 const StyledTabsWrapper = styled("div")({
@@ -31,21 +27,36 @@ const StyledTabsWrapper = styled("div")({
 
 const StyledPaper = styled(Paper)({
   padding: "30px 40px",
-  border: '1px solid #E5E5E5'
+  border: "1px solid #E5E5E5",
 });
 
 StyledPaper.defaultProps = {
-  elevation: 0
+  elevation: 0,
 };
 
 const StyledTabPanel = styled(TabPanel)({
   padding: 0,
 });
 
-const EditPlaylist: FC<Props> = ({  storePlaylist }) => {
+const StyledTab = styled(Tab)({
+  minHeight: "51px",
+  minWidth: "168px",
+});
+
+/**
+ * Копонент редактирования\добавления плэйлиста на странице редактирования кампании
+ * @returns 
+ */
+const EditPlaylist: FC = () => {
   const { t } = useTranslation();
 
-  const { playlist, availableTabs, setPlaylist, setAvailableTabs } = useCampaignPlaylistEditContext();
+  const { availableTabs } = useCampaignPlaylistEditContext(
+    distinctUntilKeyChanged("availableTabs")
+  );
+
+  const {  } = useCampaignEditContext(
+    distinctUntilChanged(() => true)
+  );
 
   const [currentTab, setCurrentTab] = useState<Tabs>(Tabs.tracks);
 
@@ -53,48 +64,36 @@ const EditPlaylist: FC<Props> = ({  storePlaylist }) => {
     setCurrentTab(newValue);
   };
 
-  useEffect(() => {
-    // setPlaylist(playlist);
-
-    if (
-      !!playlist?.projectPlaylist?.files.length ||
-      !!playlist?.campaignPlaylist?.files.length
-    ) {
-      return
-    }
-
-    setAvailableTabs([Tabs.tracks, Tabs.clips]);
-
-    setCurrentTab(Tabs.clips);
-  }, []);
-
   return (
     <StyledWrapper>
       <TabContext value={currentTab}>
         <StyledTabsWrapper>
-          <TabList onChange={changeCurrentTab} aria-label={"campaign-create"}>
+          <TabList onChange={changeCurrentTab}>
             {Object.keys(Tabs).map((tabName) => (
-              <Tab
-                sx={{ minHeight: "51px", minWidth: "168px" }}
-                label={t(`edit-campaign-playlist.tabs.${tabName}`)}
+              <StyledTab
+                label={
+                  <Box sx={{ textTransform: "capitalize" }}>
+                    {t(`edit-campaign-playlist.tabs.${tabName}`)}
+                  </Box>
+                }
                 value={tabName}
                 key={tabName}
-                // disabled={availableTabs.every(tab => tab !== tabName)}
+                disabled={availableTabs.every((tab) => tab !== tabName)}
               />
             ))}
           </TabList>
         </StyledTabsWrapper>
-        <StyledTabPanel value={Tabs.schedule} key={Tabs.tracks} sx={{ p: 0 }}>
+        <StyledTabPanel value={Tabs.tracks} key={Tabs.tracks}>
           <StyledPaper>
-            <Tracks storePlaylist={() => {}} setTab={setCurrentTab}/>
+            <Tracks storePlaylist={() => {}} setTab={setCurrentTab} />
           </StyledPaper>
         </StyledTabPanel>
-        <StyledTabPanel value={Tabs.tracks} key={Tabs.schedule} sx={{ p: 0 }}>
+        <StyledTabPanel value={Tabs.schedule} key={Tabs.schedule}>
           <StyledPaper>
-            <Schedule />
+            <Schedule storePlaylist={() => {}} />
           </StyledPaper>
         </StyledTabPanel>
-        <StyledTabPanel value={Tabs.clips} key={Tabs.clips} sx={{ p: 0 }}>
+        <StyledTabPanel value={Tabs.clips} key={Tabs.clips}>
           <StyledPaper>
             <Clips />
           </StyledPaper>

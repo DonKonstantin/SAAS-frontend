@@ -17,14 +17,16 @@ interface IProps {
   name: string;
   options: string[];
   getOptionLabel?: string[];
-  sx?: SxProps<Theme>
+  sx?: SxProps<Theme>;
+  disabled?: boolean;
 }
 
 export default function RHFRadioGroup({
                                         name,
                                         options,
                                         getOptionLabel,
-                                        sx
+                                        sx,
+                                        disabled,
                                       }: IProps & RadioGroupProps) {
   const { control } = useFormContext();
   const { t } = useTranslation()
@@ -40,7 +42,7 @@ export default function RHFRadioGroup({
               <FormControlLabel
                 key={option}
                 value={option}
-                control={<Radio sx={sx}/>}
+                control={<Radio sx={sx} disabled={disabled}/>}
                 label={getOptionLabel?.length ? t(getOptionLabel[index]) : option}
               />
             ))}

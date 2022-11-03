@@ -1,212 +1,101 @@
 import { CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs } from './interface';
-import { BehaviorSubject, combineLatest, map, Observable, Subject } from "rxjs";
-import { CampaignPlaylistConnect } from 'services/campaignListService/types';
+import { BehaviorSubject, combineLatest, filter, interval, map, Observable, Subject, switchMap } from "rxjs";
+import { CampaignPlaylistConnect, CampaignPlayListFileType } from 'services/campaignListService/types';
+import { fileService } from 'services/FileService';
+import { getCurrentState } from 'context/AuthorizationContext';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
-  playlist: CampaignPlaylistConnect | undefined = {
-    allDaysStartMinutes: 0,
-    allDaysStopMinutes: 0,
-    campaignId: "12",
-    campaignPlaylist: {
-      id: "35",
-      campaign_id: '',
-      duration: 0,
-      files: [
-        {
-          campaign_id: "12",
-          duration: 10,
-          file_id: "1",
-          is_overall_volume: true,
-          name: "",
-          overall_volume: 100,
-          playlist_id: "1",
-          project_id: "13",
-          volume: 100,
-          sort: 1,
-          files: [],
-          file: {
-            duration: 10,
-            composer: "",
-            file_name: "",
-            hash_sum:  "",
-            last_change_date: new Date(),
-            mime_type:  "",
-            origin_name:  "",
-            player_file_id: "10",
-            title:  "First track",
-          }
-        },
-        {
-          campaign_id: "12",
-          duration: 10,
-          file_id: "2",
-          is_overall_volume: true,
-          name: "",
-          overall_volume: 100,
-          playlist_id: "1",
-          project_id: "13",
-          volume: 100,
-          sort: 2,
-          files: [],
-          file: {
-            duration: 10,
-            composer: "",
-            file_name: "",
-            hash_sum:  "",
-            last_change_date: new Date(),
-            mime_type:  "",
-            origin_name:  "",
-            player_file_id: "10",
-            title:  "Second track",
-          }
-        },
-        {
-          campaign_id: "12",
-          duration: 10,
-          file_id: "3",
-          is_overall_volume: true,
-          name: "",
-          overall_volume: 100,
-          playlist_id: "1",
-          project_id: "13",
-          volume: 100,
-          sort: 3,
-          files: [],
-          file: {
-            duration: 10,
-            composer: "",
-            file_name: "",
-            hash_sum:  "",
-            last_change_date: new Date(),
-            mime_type:  "",
-            origin_name:  "",
-            player_file_id: "10",
-            title:  "Third track",
-          }
-        }
-      ],
-      is_overall_volume: true,
-      name: '',
-      overall_volume: 100,
-      project_id: "13",
-    },
-    days: [],
-    daysType: 'daily',
-    isCampaignTimetable: false,
-    periodStart: new Date(),
-    periodStop: new Date(),
-    playCounter: 0,
-    shuffle: false,
-    sortOrder: 1,
-  };
+  playlist: CampaignPlaylistConnect | undefined = undefined;
   availableTabs: Tabs[] = [Tabs.tracks];
   isEdit: boolean = false;
   projectId: string = "";
+  loadedClips: CampaignPlayListFileType[] = [];
+  uploadedClips: string[] = [];
+  isLoading: boolean = false;
 };
 
 export const campaignPlaylistEditContext$ = new BehaviorSubject<CampaignPlaylistEditContextTypes>(new DefaultContextData());
 
-const playlist$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>({
-  allDaysStartMinutes: 0,
-  allDaysStopMinutes: 0,
-  campaignId: "59",
-  campaignPlaylist: {
-    campaign_id: '59',
-    duration: 0,
-    files: [
-      {
-        campaign_id: "59",
-        duration: 10,
-        file_id: "470",
-        is_overall_volume: true,
-        name: "",
-        overall_volume: 100,
-        playlist_id: "1",
-        project_id: "13",
-        volume: 100,
-        sort: 1,
-        files: [],
-        file: {
-          duration: 10,
-          composer: "",
-          file_name: "",
-          hash_sum:  "",
-          last_change_date: new Date(),
-          mime_type:  "",
-          origin_name:  "",
-          player_file_id: "10",
-          title:  "First track",
-        }
-      },
-      {
-        campaign_id: "59",
-        duration: 10,
-        file_id: "469",
-        is_overall_volume: true,
-        name: "",
-        overall_volume: 100,
-        playlist_id: "1",
-        project_id: "13",
-        volume: 100,
-        sort: 2,
-        files: [],
-        file: {
-          duration: 10,
-          composer: "",
-          file_name: "",
-          hash_sum:  "",
-          last_change_date: new Date(),
-          mime_type:  "",
-          origin_name:  "",
-          player_file_id: "10",
-          title:  "Second track",
-        }
-      },
-      {
-        campaign_id: "59",
-        duration: 10,
-        file_id: "468",
-        is_overall_volume: true,
-        name: "",
-        overall_volume: 100,
-        playlist_id: "1",
-        project_id: "13",
-        volume: 100,
-        sort: 3,
-        files: [],
-        file: {
-          duration: 10,
-          composer: "",
-          file_name: "",
-          hash_sum:  "",
-          last_change_date: new Date(),
-          mime_type:  "",
-          origin_name:  "",
-          player_file_id: "10",
-          title:  "Third track",
-        }
-      }
-    ],
-    is_overall_volume: true,
-    name: '',
-    overall_volume: 100,
-    project_id: "13",
-  },
-  days: [],
-  daysType: 'daily',
-  isCampaignTimetable: false,
-  periodStart: new Date(),
-  periodStop: new Date(),
-  playCounter: 0,
-  shuffle: false,
-  sortOrder: 1,
-});
+const playlist$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(undefined);
 const availableTabs$ = new BehaviorSubject<Tabs[]>([Tabs.tracks]);
 const isEdit$ = new BehaviorSubject<boolean>(false);
 const moveTrack$ = new Subject<{fileId: string, direction: 'up' | 'down'}>();
 const removeTrack$ = new Subject<string>();
 const projectId$ = new BehaviorSubject<string>("13");
+const loadedClips$ = new BehaviorSubject<CampaignPlayListFileType[]>([]);
+const removeLoadedFile$ = new Subject<string[]>();
+const addLoadedToPlaylist$ = new Subject<string[]>();
+const uploadedClips$ = new BehaviorSubject<string[]>([]);
+const isLoading$ = new BehaviorSubject<boolean>(false);
 
+//  шина проверки доступности в графе выгруженных клипов
+const checkUploadedFilesBus$ = combineLatest([interval(1000), uploadedClips$]).pipe(
+  filter(incomingData => !!incomingData[1].length),
+  map(incomingData => incomingData[1]),
+  switchMap(async uploadedClips => {
+    try {
+      return await fileService().getFilesListByFileIds(uploadedClips);
+    } catch (error) {
+      throw error;
+    }
+  }),
+  filter(files => !!files.length),
+);
+
+//  шина добавления загруженного клипа в плейлист
+const addLoadedToPlaylistBus$ = addLoadedToPlaylist$.pipe(
+  filter(ids => !!ids.length),
+  map(ids => {
+    const loadedClips = loadedClips$.getValue();
+
+    removeLoadedFile$.next(ids);
+
+    const filteredLoadedClips = loadedClips.filter(clip => ids.some(i => i === clip.file_id));
+
+    return filteredLoadedClips;
+  }),
+  map(loadedClips => {
+    const playlist = playlist$.getValue();
+
+    if (!playlist) {
+      return undefined;
+    }
+
+    const existsFiles = playlist.campaignPlaylist?.files;
+
+    if (!existsFiles) {
+      return undefined;
+    }
+
+    return {
+      ...playlist,
+      campaignPlaylist: {
+        ...playlist.campaignPlaylist,
+        campaign_id: playlist.campaignPlaylist?.campaign_id || '',
+        duration: playlist.campaignPlaylist?.duration || 0,
+        is_overall_volume: playlist.campaignPlaylist?.is_overall_volume || true,
+        overall_volume: playlist.campaignPlaylist?.overall_volume || 100,
+        name: playlist.campaignPlaylist?.name || '',
+        project_id: playlist.campaignPlaylist?.project_id || '',
+        files: [...existsFiles, ...loadedClips],
+        sort: playlist.campaignPlaylist?.sort || 0,
+      }
+    };
+  }),
+  filter(playlist => !!playlist),
+);
+
+//  шина удаления загруженного клипа из списка доступных
+const removeLoadedFileBus$ = removeLoadedFile$.pipe(
+  filter(ids => !!ids.length),
+  map(ids => {
+    const loadedClips = loadedClips$.getValue();
+
+    return loadedClips.filter(clip => !ids.some(i => i === clip.file_id));
+  }),
+);
+
+//  шина удаления трека в плейлисте
 const removeTrackBus$ = removeTrack$.pipe(
   map(fileId => {
     const playlist = campaignPlaylistEditContext$.getValue().playlist!;
@@ -236,6 +125,7 @@ const removeTrackBus$ = removeTrack$.pipe(
   }),
 )
 
+//  шина изменения позиции воспроизведения трека в плейлисте
 const moveTrackBus$ = moveTrack$.pipe(
   map(({ fileId, direction }) => {
     const playlist = campaignPlaylistEditContext$.getValue().playlist!;
@@ -297,12 +187,18 @@ Pick<
   | 'availableTabs'
   | 'isEdit'
   | 'projectId'
+  | 'loadedClips'
+  | 'uploadedClips'
+  | 'isLoading'
 >
 > = combineLatest([
   playlist$,
   availableTabs$,
   isEdit$,
   projectId$,
+  loadedClips$,
+  uploadedClips$,
+  isLoading$,
 ]).pipe(
   map(
     ([
@@ -310,11 +206,17 @@ Pick<
       availableTabs,
       isEdit,
       projectId,
+      loadedClips,
+      uploadedClips,
+      isLoading,
     ]) => ({
       playlist,
       availableTabs,
       isEdit,
       projectId,
+      loadedClips,
+      uploadedClips,
+      isLoading,
     })
   )
 );
@@ -334,16 +236,61 @@ export const InitCampaignEditContext = () => {
   );
 
   subscriber.add(
-    moveTrackBus$.subscribe(
-      sortedData => playlist$.next(sortedData)
-    )
+    moveTrackBus$.subscribe(playlist$)
   );
 
   subscriber.add(
-    removeTrackBus$.subscribe(
-      sortedData => playlist$.next(sortedData)
-    )
+    removeTrackBus$.subscribe(playlist$)
   );
+
+  subscriber.add(
+    removeLoadedFileBus$.subscribe(loadedClips$)
+  );
+
+  subscriber.add(
+    addLoadedToPlaylistBus$.subscribe(playlist$)
+  );
+
+  subscriber.add(checkUploadedFilesBus$.subscribe(
+    clips => {
+      const ids = clips.map(clip => clip.id);
+
+      const { project } = getCurrentState();
+
+      const playlist = playlist$.getValue();
+
+      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!);
+
+      const preparedClips: CampaignPlayListFileType[] = clips.map((clip, index) => ({
+        file: {
+          composer: clip.composer,
+          file_name: clip.file_name,
+          last_change_date: new Date(clip.last_change_date),
+          duration: clip.duration,
+          hash_sum: clip.hash_sum,
+          mime_type: clip.mime_type,
+          origin_name: clip.origin_name,
+          player_file_id: "",
+          title: clip.title,
+          id: clip.id,
+          project_id: project,
+        },
+        file_id: clip.id,
+        id: "",
+        playlist_id: "",
+        sort: lastSortNumber + index + 1,
+        volume: 100,
+      }));
+
+      const loadedClips = loadedClips$.getValue();
+
+      loadedClips$.next([...loadedClips, ...preparedClips]);
+
+      const uploadedClips = uploadedClips$.getValue();
+
+      uploadedClips$.next(uploadedClips.filter(clip => !ids.some(id => id === clip)));
+    }
+  ));
 
   return () => subscriber.unsubscribe();
 };
@@ -353,33 +300,47 @@ export const InitCampaignEditContext = () => {
  * @param campaign 
  */
 const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = campaign => {
+  const { project } = getCurrentState();
+
+  projectId$.next(project);
+
   playlist$.next(campaign);
 };
 
 /**
  * Очистка контекста
  */
- const clearContext: CampaignPlaylistEditContextActionsTypes['clearContext'] = () => {
+const clearContext: CampaignPlaylistEditContextActionsTypes['clearContext'] = () => {
   playlist$.next(undefined);
+
+  availableTabs$.next([Tabs.tracks]);
+
+  isEdit$.next(false);
+
+  projectId$.next("");
 };
 
 /**
  * Записывает флаг доступности дополнительных табов табов
  * @param value 
  */
- const setAvailableTabs: CampaignPlaylistEditContextActionsTypes['setAvailableTabs'] = (value) => {
+const setAvailableTabs: CampaignPlaylistEditContextActionsTypes['setAvailableTabs'] = (value) => {
   availableTabs$.next(value);
 };
 
 /**
  * Записывает чистый объект плэйлиста в контекст
- * @param projectId 
+ * @param sortOrder
  */
- const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (projectId) => {
+ const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (sortOrder) => {
+  const { project, domain } = getCurrentState();
+
+  projectId$.next(project);
+
   playlist$.next({
     allDaysStartMinutes: 0,
     allDaysStopMinutes: 0,
-    campaignId: "",
+    campaignId: domain,
     campaignPlaylist: {
       campaign_id: '',
       duration: 0,
@@ -387,7 +348,8 @@ const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = camp
       is_overall_volume: true,
       name: '',
       overall_volume: 100,
-      project_id: projectId,
+      project_id: project,
+      sort: sortOrder,
     },
     days: [],
     daysType: 'daily',
@@ -396,21 +358,22 @@ const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = camp
     periodStop: new Date(),
     playCounter: 0,
     shuffle: false,
-    sortOrder: 1,
+    sortOrder: sortOrder,
   });
 };
 
 /**
  * Устанавливает флаг редактирования true
  */
- const setIsEditable: CampaignPlaylistEditContextActionsTypes['setIsEditable'] = () => {
+const setIsEditable: CampaignPlaylistEditContextActionsTypes['setIsEditable'] = () => {
   isEdit$.next(true);
 };
 
 /**
  * Двигает трэк в вверх по очереди
+ * @param fileId 
  */
- const moveTrackUp: CampaignPlaylistEditContextActionsTypes['moveTrackUp'] = fileId => {
+const moveTrackUp: CampaignPlaylistEditContextActionsTypes['moveTrackUp'] = fileId => {
   moveTrack$.next({
     fileId,
     direction: 'up',
@@ -419,8 +382,9 @@ const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = camp
 
 /**
  * Двигает трэк в вниз по очереди
+ * @param fileId 
  */
- const moveTrackDown: CampaignPlaylistEditContextActionsTypes['moveTrackDown'] = fileId => {
+const moveTrackDown: CampaignPlaylistEditContextActionsTypes['moveTrackDown'] = fileId => {
   moveTrack$.next({
     fileId,
     direction: 'down',
@@ -429,16 +393,53 @@ const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = camp
 
 /**
  * Удаляет трэк из списка
+ * @param fileId 
  */
- const removeTrack: CampaignPlaylistEditContextActionsTypes['removeTrack'] = fileId => {
+const removeTrack: CampaignPlaylistEditContextActionsTypes['removeTrack'] = fileId => {
   removeTrack$.next(fileId);
 };
 
 /**
  * Удаляет трэк из списка
+ * @param projectId 
  */
- const setProjectId: CampaignPlaylistEditContextActionsTypes['setProjectId'] = projectId => {
+const setProjectId: CampaignPlaylistEditContextActionsTypes['setProjectId'] = projectId => {
   projectId$.next(projectId);
+};
+
+/**
+ * Удаляет загруженный ролик из списка доступных для добавления к плэйлисту
+ * @param fileIds 
+ */
+const removeLoadedFile: CampaignPlaylistEditContextActionsTypes['removeLoadedFile'] = fileIds => {
+  removeLoadedFile$.next(fileIds);
+};
+
+/**
+ * Добавляем загруженные файлы к плэйлисту
+ * @param fileIds 
+ */
+const addLoadedToPlaylist: CampaignPlaylistEditContextActionsTypes['addLoadedToPlaylist'] = fileIds => {
+  addLoadedToPlaylist$.next(fileIds);
+};
+
+/**
+ * Добавляем список загруженных файлов
+ * @param fileIds 
+ */
+const addFilesToUpload: CampaignPlaylistEditContextActionsTypes['addFilesToUpload'] = fileIds => {
+  uploadedClips$.next([
+    ...uploadedClips$.getValue(), 
+    ...fileIds
+  ]);
+};
+
+/**
+ * Добавляем загруженные файлы к плэйлисту
+ * @param isLoading 
+ */
+const setIsLoading: CampaignPlaylistEditContextActionsTypes['setIsLoading'] = isLoading => {
+  isLoading$.next(isLoading);
 };
 
 export const campaignEditActions: CampaignPlaylistEditContextActionsTypes = {
@@ -451,4 +452,8 @@ export const campaignEditActions: CampaignPlaylistEditContextActionsTypes = {
   moveTrackUp,
   removeTrack,
   setProjectId,
+  removeLoadedFile,
+  addLoadedToPlaylist,
+  addFilesToUpload,
+  setIsLoading,
 };

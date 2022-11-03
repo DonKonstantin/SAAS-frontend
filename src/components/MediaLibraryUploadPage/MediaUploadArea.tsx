@@ -84,6 +84,6 @@ const MediaUploadArea: FC = () => {
             />
         </>
     );
-}
+} 
 
 export default MediaUploadArea;

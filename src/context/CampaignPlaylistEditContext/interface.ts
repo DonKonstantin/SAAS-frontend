@@ -1,10 +1,13 @@
-import { CampaignPlaylistConnect } from "services/campaignListService/types";
+import { CampaignPlaylistConnect, CampaignPlayListFileType } from "services/campaignListService/types";
 
 export interface CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined;
   availableTabs: Tabs[];
   isEdit: boolean;
   projectId: string;
+  loadedClips: CampaignPlayListFileType[];
+  uploadedClips: string[];
+  isLoading: boolean;
 };
 
 export interface CampaignPlaylistEditContextActionsTypes {
@@ -21,7 +24,7 @@ export interface CampaignPlaylistEditContextActionsTypes {
   /**
    * Записывает чистый объект плэйлиста в контекст
    */
-  setNewPlaylist: (projectId: string) => void;
+  setNewPlaylist: (sortOrder: number) => void;
 
   /**
    * Записывает флаг доступности дополнительных табов табов
@@ -52,6 +55,26 @@ export interface CampaignPlaylistEditContextActionsTypes {
     * Записывает значение projectId
     */
    setProjectId: (projectId: string) => void;
+
+   /**
+    * Удаляет загруженный ролик из списка доступных для добавления к плэйлисту
+    */
+   removeLoadedFile: (fileIds: string[]) => void;
+
+   /**
+    * Добавляем загруженные файлы к плэйлисту
+    */
+   addLoadedToPlaylist: (fileIds: string[]) => void;
+
+   /**
+    * Добавляем список загруженных файлов
+    */
+   addFilesToUpload: (fileIds: string[]) => void;
+
+   /**
+    * Записывает флаг загрузки
+    */
+   setIsLoading: (isLoading: boolean) => void;
 };
 
 

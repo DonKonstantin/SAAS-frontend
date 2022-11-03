@@ -1,17 +1,22 @@
 import { Table, TableContainer } from "@mui/material";
 import React, { FC, memo } from "react";
-import { CampaignPlayListFile } from "services/campaignListService/types";
+import { CampaignPlayListFileType } from "services/campaignListService/types";
 import { ProjectPlayListFile } from "services/projectPlaylistService/interfaces";
 import TableBodyComponent from "./TableBodyComponent";
 import TableHeader from "./TableHeader";
 
 interface Props {
   isEditable: boolean;
-  rows: ProjectPlayListFile[] | CampaignPlayListFile[];
+  rows: ProjectPlayListFile[] | CampaignPlayListFileType[];
   limit: number;
   offset: number;
 };
 
+/**
+ * Компонент таблицы треков плэйлиста
+ * @param props 
+ * @returns 
+ */
 const TracksTable: FC<Props> = props => {
   const {
     isEditable,

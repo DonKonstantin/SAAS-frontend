@@ -11,6 +11,12 @@ export interface CampaignEditContextActionsTypes {
    * Запрашивает компанию по ID
    */
   loadCampaign: (campaignId: string) => void;
+
+  /**
+   * Записывает сущьность кампании в контекст
+   * @param campaign 
+   */
+  setCampaign: (campaign: Campaign) => void;
 };
 
 

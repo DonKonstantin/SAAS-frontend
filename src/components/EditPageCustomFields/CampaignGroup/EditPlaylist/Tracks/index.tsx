@@ -12,11 +12,7 @@ import { isEqual } from "lodash";
 import TracksTable from "./TracksTable";
 import Pagination from "./Pagination";
 import { Tabs } from "context/CampaignPlaylistEditContext/interface";
-import {
-  CampaignPlaylistConnect,
-  CampaignPlaylistConnectDayInput,
-  CampaignPlaylistConnectInput,
-} from "services/campaignListService/types";
+import { CampaignPlaylistConnect } from "services/campaignListService/types";
 import { notificationsDispatcher } from "services/notifications";
 import OveralValue from "./OveralValue";
 import { CampaignPlayListInput } from "services/campaignPlaylistService/interfaces";
@@ -25,7 +21,7 @@ import campaignPlaylistService from "services/campaignPlaylistService";
 export type playlistType = "projectPlaylist" | "campaignPlaylist";
 
 interface Props {
-  storePlaylist: (playlist: CampaignPlaylistConnectInput) => void;
+  storePlaylist: (playlist: CampaignPlaylistConnect) => void;
   setTab: (tab: Tabs) => void;
 }
 
@@ -54,10 +50,14 @@ const StyledPaginationGrid = styled(Grid)({
   alignItems: "center",
 });
 
+const StyledGrid = styled(Grid)({
+  paddingTop: 20,
+});
+
 /**
  * Вкладка трэков для плэйлиста кампании
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
   const { t } = useTranslation();
@@ -67,8 +67,8 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     isEdit,
     projectId,
     setIsEditable,
-    setPlaylist,
     setAvailableTabs,
+    clearContext,
   } = useCampaignPlaylistEditContext(
     distinctUntilChanged(
       (prev, curr) =>
@@ -81,6 +81,10 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
   const [limit, setLimit] = useState<number>(10);
 
   const [offset, setOffset] = useState<number>(0);
+
+  if (!playlist) {
+    return null;
+  }
 
   const messanger = notificationsDispatcher();
 
@@ -95,8 +99,8 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
 
   let defaultValues = {
     playlistName: currentPlaylist?.name || "",
-    isOverallVolume: true,
-    overallVolume: 100,
+    isOverallVolume: currentPlaylist?.is_overall_volume || true,
+    overallVolume: currentPlaylist?.overall_volume || 100,
   };
 
   const methods = useForm<CampaignPlaylistEditFormFieldsType>({
@@ -112,17 +116,16 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
 
   const onSave = async (
     playlist: CampaignPlaylistConnect,
-    formData: CampaignPlaylistEditFormFieldsType
+    formData: CampaignPlaylistEditFormFieldsType,
+    isCampaignTimetable?: boolean
   ) => {
     const playlistType = !!playlist.campaignPlaylist
       ? "campaignPlaylist"
       : "projectPlaylist";
 
-    const preparedPlaylist: CampaignPlaylistConnectInput = {
+    const preparedPlaylist: CampaignPlaylistConnect = {
       ...playlist,
-      days: playlist.days as CampaignPlaylistConnectDayInput[],
-      id: Number(playlist.id),
-      isCampaignTimetable: true,
+      isCampaignTimetable: isCampaignTimetable || playlist.isCampaignTimetable,
     };
 
     if (playlistType === "projectPlaylist") {
@@ -152,7 +155,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
         preparedToStorePlaylist
       );
 
-      storePlaylist({ ...preparedPlaylist, id: Number(response.id) });
+      storePlaylist({ ...preparedPlaylist, id: response.id });
 
       return true;
     } catch (error) {
@@ -174,13 +177,18 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       return;
     }
 
-    const saveResult = await onSave(playlist, data);
+    const saveResult = await onSave(playlist, data, true);
 
     if (!saveResult) {
       return;
     }
 
-    setPlaylist(undefined);
+    storePlaylist({
+      ...playlist,
+      isCampaignTimetable: true,
+    });
+
+    clearContext();
   };
 
   const onSaveAndRouteToSchedule = async () => {
@@ -201,25 +209,25 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     setTab(Tabs.schedule);
   };
 
-  if (!!playlist?.projectPlaylist) {
+  if (!!playlist?.campaignPlaylist && !isEdit) {
     setIsEditable();
   }
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container>
-        <Grid item xs={3}>
+        <StyledGrid item xs={3}>
           <Typography>
             {t("edit-campaign-playlist.field.playlist-name")}
           </Typography>
-        </Grid>
-        <Grid item xs={5}>
+        </StyledGrid>
+        <StyledGrid item xs={5}>
           <RHFTextField name="playlistName" />
-        </Grid>
-        <Grid item xs={12}>
+        </StyledGrid>
+        <StyledGrid item xs={12}>
           <OveralValue />
-        </Grid>
-        <Grid item xs={12}>
+        </StyledGrid>
+        <Grid item xs={12} sx={{ pt: 1.5 }}>
           <TracksTable
             isEditable={isEdit}
             limit={limit}

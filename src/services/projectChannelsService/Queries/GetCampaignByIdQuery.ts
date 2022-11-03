@@ -1,6 +1,6 @@
 import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { GetCampaignByIdQueryParams } from "../interface";
+import { GetCampaignByIdQueryParams } from "services/campaignListService/interface";
 
 /**
  * Запрос кампании по ее ID
