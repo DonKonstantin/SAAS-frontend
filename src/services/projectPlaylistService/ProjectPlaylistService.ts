@@ -60,7 +60,7 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем сведения о файлах плэйлистов по ИД плэйлистов
-   * @param playlistsIDs
+   * @param playlistsId
    * @returns
    */
   async getFiles(
@@ -90,7 +90,7 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем сведения о файлах плэйлистов по ИД плэйлистов
-   * @param playlistsIDs
+   * @param playlistIds
    * @returns
    */
    async getFilesByPlaylistIds(
