@@ -23,6 +23,7 @@ import {
   GetCampaignsIdByNameQueryResponse,
   GetPlaylistsIdByCampaignsIdQueryParams,
   GetPlaylistsIdByCampaignsIdQueryResponse,
+  ProjectPlayList,
 } from "./interfaces";
 import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
@@ -213,7 +214,7 @@ export default class ProjectPlaylistService
 
       this.logger.Debug("Ответ на запрос проектов для плэйлистов: ", "");
 
-      return response.map((item) => item.result.id);
+      return response.map((item) => item.result.id!);
     } catch (error) {
       this.logger.Error(
         "Ошибка мутации создания плейлистов плэйлистов: ",
@@ -250,7 +251,7 @@ export default class ProjectPlaylistService
 
       this.logger.Debug("Ответ на мутации копирования плэйлистов: ", response);
 
-      return response.map((res) => res.result.id);
+      return response.map((res) => res.result.id!);
     } catch (error) {
       this.logger.Error("Ошибка мутации копирования плэйлистов: ", error);
 
@@ -267,7 +268,7 @@ export default class ProjectPlaylistService
    * @param playlist 
    * @returns 
    */
-  async storePlaylistChanges(playlist: ProjectPlayListInputObject): Promise<boolean> {
+  async storePlaylistChanges(playlist: ProjectPlayListInputObject): Promise<ProjectPlayList> {
     this.logger.Debug("Данные плэйлиста для сохранения: ", playlist);
 
     try {
@@ -278,11 +279,15 @@ export default class ProjectPlaylistService
 
       this.logger.Debug("Ответ на мутацию сохранения плэйлиста: ", response);
 
-      return !!response.result.id;
+      return response.result;
     } catch (error) {
       this.logger.Error("Ошибка мутации сохранения плэйлиста: ", error);
 
-      return false;
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
     }
   };
 

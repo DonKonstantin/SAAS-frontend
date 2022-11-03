@@ -13,12 +13,6 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
             schema: "campaign",
             title: "pages.campaign.list.filters.name"
         },
-        version: {
-            field: "version",
-            filterType: "Switch",
-            schema: "campaign",
-            title: "pages.campaign.list.filters.version"
-        },
         campaign_priority: {
             field: "campaign_priority",
             filterType: "EnumSelector",

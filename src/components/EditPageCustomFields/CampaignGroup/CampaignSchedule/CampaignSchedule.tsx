@@ -194,10 +194,10 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
           {t("pages.campaign.add.fields.schedule.campaign_period")}
         </Grid>
         <Grid item xs={1.5}>
-          <RHFDateField name='campaign_period_start'/>
+          <RHFDateField name='campaign_period_start' inputFormat='дд/мм/гггг'/>
         </Grid>
         <Grid item xs={1.5}>
-          <RHFDateField name='campaign_period_stop'/>
+          <RHFDateField name='campaign_period_stop' inputFormat='дд/мм/гггг'/>
         </Grid>
       </Grid>
 

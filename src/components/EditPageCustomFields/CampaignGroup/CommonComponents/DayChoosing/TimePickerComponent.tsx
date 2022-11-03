@@ -1,5 +1,5 @@
 import React, { FC, memo } from 'react';
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import RHFTimeField from "../../../../hook-form/RHFTimeField";
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   arrayFieldIndex: number
   days_start_minutes: number
   days_stop_minutes: number
+  disabled?: boolean
   handleChangeTimeValue(id: number, time: any, field: "start" | "end"): void
 }
 
@@ -19,11 +20,12 @@ const TimePickerComponent: FC<Props> = (props) => {
     arrayFieldIndex,
     days_start_minutes,
     days_stop_minutes,
+    disabled,
     handleChangeTimeValue
   } = props
 
   return (
-    <Grid item xs={3} sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box sx={{ display: "flex", justifyContent: "flex-start", columnGap: '14px' }}>
       <RHFTimeField
         name={`${nameFieldDays}[${arrayFieldIndex}].days_start_minutes`}
         day_num={day_num}
@@ -31,6 +33,7 @@ const TimePickerComponent: FC<Props> = (props) => {
         handleChangeTimeValue={handleChangeTimeValue}
         fieldType="start"
         sx={{ maxWidth: "99px" }}
+        disabled={disabled}
       />
       <Box sx={{ maxWidth: "4px", width: "100%", alignSelf: "center" }}>-</Box>
       <RHFTimeField
@@ -40,8 +43,9 @@ const TimePickerComponent: FC<Props> = (props) => {
         handleChangeTimeValue={handleChangeTimeValue}
         fieldType="end"
         sx={{ maxWidth: "99px" }}
+        disabled={disabled}
       />
-    </Grid>
+    </Box>
   )
 }
 

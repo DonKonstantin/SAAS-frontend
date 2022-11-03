@@ -2,13 +2,21 @@ import { Campaign } from "services/campaignListService/types";
 
 export interface CampaignEditContextTypes {
   campaign: Campaign | undefined;
+  isLoading: boolean
+  campaignListErrorText: string | undefined
 };
 
 export interface CampaignEditContextActionsTypes {
   /**
-   * Записываем кампанию в контекст
+   * Запрашивает компанию по ID
    */
-  setCampaign: (campaig: Campaign) => void;
+  loadCampaign: (campaignId: string) => void;
+
+  /**
+   * Записывает сущьность кампании в контекст
+   * @param campaign 
+   */
+  setCampaign: (campaign: Campaign) => void;
 };
 
 

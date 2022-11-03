@@ -6,7 +6,7 @@ import {getMainFileApiLink} from "./helpers";
 
 
 
-// Factory for job with files
+// Factory for job with files 
 const mediaFileClient: { (): MediaFileClientInterface } = () => {
     const token = getAuthorizationToken();
 

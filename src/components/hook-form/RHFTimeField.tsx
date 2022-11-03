@@ -15,6 +15,7 @@ interface IProps {
   day_num: number
   timeValue: number
   fieldType: "start" | "end"
+  disabled?: boolean
   handleChangeTimeValue(day_num: number, dayTime: number, field: "start" | "end"): void
 }
 
@@ -23,6 +24,7 @@ export default function RHFTimeField({
                                        day_num,
                                        timeValue,
                                        fieldType,
+                                       disabled,
                                        handleChangeTimeValue,
                                        ...other
                                      }: IProps & TextFieldProps) {
@@ -39,6 +41,7 @@ export default function RHFTimeField({
           <DesktopTimePicker
             {...otherFields}
             value={new Date(timeValueStart)}
+            disabled={disabled}
             ampm={false}
             onChange={(value: any) => handleChangeTimeValue(day_num, timeConverter(dayjs(value).format("HH:mm")), fieldType)}
             renderInput={(params) => (
