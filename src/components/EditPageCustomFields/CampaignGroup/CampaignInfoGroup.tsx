@@ -1,7 +1,7 @@
-import { distinctUntilKeyChanged } from "rxjs";
-import { Alert, Collapse, Grid, Paper, Tab, Box } from "@mui/material";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
+import { Alert, Box, Collapse, Grid, Paper, Stack, Tab } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { useTranslation } from "react-i18next";
 import { FormProvider } from "../../hook-form";
 import { useForm } from "react-hook-form";
@@ -10,11 +10,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getCurrentState } from "../../../context/AuthorizationContext";
 import { useRouter } from "next/router";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import CampaignPlaylistEditContextConnector from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
+import CampaignPlaylistEditContextConnector
+  from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
 import { Channels } from "./Channels";
 import { campaignListService } from "../../../services/campaignListService";
 import {
-  CampaignDay,
   CampaignEndType,
   CampaignLowPriority,
   CampaignPeriodType,
@@ -23,18 +23,13 @@ import {
   CampaignPriority,
   CampaignType,
 } from "../../../services/projectPlaylistService/interfaces";
-import {
-  CampaignDaysType,
-  CampaignChannelInputObject,
-  CampaignPlaylistConnectInput,
-} from "../../../services/campaignListService/types";
+import { CampaignDaysType, CampaignInput, } from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import { useCampaignEditContext } from "../../../context/CampaignEditContext/useCampaignEditContext";
-import { distinctUntilChanged } from "rxjs";
 import { isEqual } from "lodash";
-import { EditPlaylist } from "./EditPlaylist";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
+import { EditPlaylist } from "./EditPlaylist";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -162,7 +157,7 @@ const CampaignInfoGroup = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const watchTime = {
@@ -171,30 +166,6 @@ const CampaignInfoGroup = () => {
     campaign_play_type: watch("campaign_play_type"),
     campaign_days_type: watch("campaign_days_type"),
   };
-
-  // const storePlaylist = (playlist: CampaignPlaylistConnect) => {
-  //   const currentPlaylists = getValues().playlists;
-
-  //   const storedPlaylist = {
-  //     projectPlaylistId: playlist.projectPlaylistId,
-  //     days: playlist.days,
-  //     playCounter: playlist.playCounter,
-  //     periodStop: playlist.periodStop,
-  //     shuffle: playlist.shuffle,
-  //     periodStart: playlist.periodStart,
-  //     daysType: playlist.daysType,
-  //     sortOrder: playlist.sortOrder,
-  //     id: playlist.id,
-  //     isCampaignTimetable: playlist.isCampaignTimetable,
-  //     allDaysStartMinutes: playlist.allDaysStartMinutes,
-  //     allDaysStopMinutes: playlist.allDaysStopMinutes,
-  //     campaignPlaylistId: playlist.campaignPlaylistId,
-  //   };
-
-  //   if (!playlist.id) {
-  //     // setValue('playlists', [...currentPlaylists, playlist]);
-  //   }
-  // };
 
   const onSubmit = async (data: FormValuesProps) => {
     setShowError(false);
@@ -331,13 +302,13 @@ const CampaignInfoGroup = () => {
   }, [showSuccessUpdateName, campaignListErrorText]);
 
   if (isLoading) {
-    return <LoadingBlocker />;
+    return <LoadingBlocker/>;
   }
 
   return (
     <>
       <CampaignPlaylistEditContextConnector>
-        {!!playlist && <EditPlaylist />}
+        {!!playlist && <EditPlaylist/>}
         <Grid item xs={12}>
           <Box sx={{ width: "100%" }}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

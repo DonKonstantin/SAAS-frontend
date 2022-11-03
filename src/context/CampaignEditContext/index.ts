@@ -1,6 +1,6 @@
 import { CampaignEditContextActionsTypes, CampaignEditContextTypes } from './interface';
 import { BehaviorSubject, combineLatest, filter, map, Observable, switchMap, tap } from "rxjs";
-import { Campaign } from 'services/campaignListService/types';
+import { Campaign, CampaignPlaylistConnectInput } from 'services/campaignListService/types';
 import { campaignListService } from "../../services/campaignListService";
 
 class DefaultContextData implements CampaignEditContextTypes {
@@ -18,6 +18,10 @@ const campaignId$ = new BehaviorSubject<string | undefined>('');
 const campaignListErrorText$ = new BehaviorSubject<string | undefined>(undefined);
 //  Флаг для процесса загрузки
 const isLoading$ = new BehaviorSubject<boolean>(false);
+// Сущность нового плейлиста
+const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnectInput | undefined>(undefined)
+// ID для удаления плейлиста
+const deletePlaylistId$ = new BehaviorSubject<string | undefined>(undefined)
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -41,6 +45,52 @@ const loadCampaign$ = campaignId$.pipe(
   tap((response) => campaign$.next(response)),
   tap(() => isLoading$.next(false)),
   tap(() => campaignId$.next(undefined))
+)
+
+const setNewPlaylistForCampaign$ = newPlayList$.pipe(
+  filter((newPlayList) => !!newPlayList),
+  map((newPlaylist) => {
+    if (!newPlaylist) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    const findPlaylist = getCampaign.playlists.find(playlist => playlist.id === newPlaylist.id)
+    if (findPlaylist) {
+
+      return getCampaign.playlists.map(playlist => playlist.id === newPlaylist.id ? newPlaylist : playlist)
+    }
+
+    return { ...getCampaign, playlists: [...getCampaign.playlists, newPlaylist] }
+
+  }),
+  //@ts-ignore
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => newPlayList$.next(undefined))
+)
+
+const deletePlaylistFromProject$ = deletePlaylistId$.pipe(
+  filter((playlistId) => !!playlistId),
+  map((playlistId) => {
+    if (!playlistId) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    return { ...getCampaign, playlists: getCampaign.playlists.filter(playlist => playlist.id !== playlistId) }
+
+  }),
+  //@ts-ignore
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => deletePlaylistId$.next(undefined))
 )
 
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
@@ -79,13 +129,15 @@ export const InitCampaignEditContext = () => {
   );
 
   subscriber.add(loadCampaign$.subscribe());
+  subscriber.add(setNewPlaylistForCampaign$.subscribe());
+  subscriber.add(deletePlaylistFromProject$.subscribe());
 
   return () => subscriber.unsubscribe();
 };
 
 /**
  * Запрашивает компанию по ID
- * @param campaignId 
+ * @param campaignId
  */
 const loadCampaign: CampaignEditContextActionsTypes['loadCampaign'] = campaignId => {
   campaignId$.next(campaignId);
@@ -93,13 +145,30 @@ const loadCampaign: CampaignEditContextActionsTypes['loadCampaign'] = campaignId
 
 /**
  * Записывает сущьность кампании в контекст
- * @param campaign 
+ * @param campaign
  */
 const setCampaign: CampaignEditContextActionsTypes['setCampaign'] = campaign => {
   campaign$.next(campaign);
 }
 
+/**
+ * Записывает сущьность плейлиста в компанию
+ * @param playlist
+ */
+const storeCampaignPlaylist: CampaignEditContextActionsTypes['storeCampaignPlaylist'] = playlist => {
+  newPlayList$.next(playlist);
+}
+/**
+ * Удаляет плейлист с проекта
+ * @param playlistId
+ */
+const deleteCampaignPlaylist: CampaignEditContextActionsTypes['deleteCampaignPlaylist'] = playlistId => {
+  deletePlaylistId$.next(playlistId);
+}
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
+  storeCampaignPlaylist,
+  deleteCampaignPlaylist,
   setCampaign,
 };

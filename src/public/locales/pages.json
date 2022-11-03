@@ -362,8 +362,29 @@
           },
           "content": {
             "campaign_play_order": {
+              "title": "Порядок воспроизведения",
               "mix": "Перемешать",
               "byOrder": "Подряд"
+            },
+            "continues": "Длительность",
+            "trackCount": "Количество треков",
+            "playlist": {
+              "title": "Добавить существующий плейлист",
+              "noOptions": "Нет совпадений",
+              "buttons": {
+                "add": "Добавить",
+                "create": "Создать плейлист"
+              },
+              "table": {
+                "headCells": {
+                  "name": "Название",
+                  "trackCount": "Количество треков",
+                  "files": "Продолжительность",
+                  "shuffle": "Перемешать",
+                  "count": "Счетчик"
+                },
+                "addPlaylist": "Плейлист {{name}} успешно добавлен"
+              }
             }
           },
           "campaign_days_type": {

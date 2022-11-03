@@ -168,7 +168,7 @@ const DaysGroupPicker: FC<Props> = ({
                   sx={{ pb: "17px" }}
                 >
                   <RHFCheckbox
-                    sx={{ minWidth: "135px", marginRight: "33px" }}
+                    sx={{ minWidth: "145px", marginRight: "33px" }}
                     name={`${nameFieldDays}[${index}].is_active`}
                     key={day.name}
                     label={day.name}

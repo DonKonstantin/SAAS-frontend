@@ -5,27 +5,29 @@ import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 import { makeInputPlaylists } from "./helpers";
 import {
   ExportedPlaylistType,
-  ProjectPlaylistServiceInterface,
+  GetCampaignsByPlaylistIDsQueryParams,
+  GetCampaignsByPlaylistIDsQueryResponse,
+  GetCampaignsIdByNameQueryParams,
+  GetCampaignsIdByNameQueryResponse,
+  GetPlaylistFilesByPlaylistIdQueryParams,
+  GetPlaylistFilesByPlaylistIdQueryResponse,
+  GetPlaylistFilesByPlaylistIdsQueryParams,
+  GetPlaylistFilesByPlaylistIdsQueryResponse,
+  GetPlaylistsCampaignByNameParams,
+  GetPlaylistsCampaignByNameResponse,
+  GetPlaylistsIdByCampaignsIdQueryParams,
+  GetPlaylistsIdByCampaignsIdQueryResponse,
+  PlaylistCampaignsNameType,
+  PlaylistsResponseType,
+  ProjectPlayList,
+  ProjectPlayListFile,
   ProjectPlayListInputObject,
+  ProjectPlaylistServiceInterface,
   RefreshCampaignsMutationParams,
   RefreshCampaignsMutationResponse,
   StorePlaylistMutationParams,
   StorePlaylistMutationResponse,
-  ProjectPlayListFile,
-  GetPlaylistFilesByPlaylistIdQueryParams,
-  GetPlaylistFilesByPlaylistIdQueryResponse,
-  GetCampaignsByPlaylistIDsQueryParams,
-  GetCampaignsByPlaylistIDsQueryResponse,
-  PlaylistCampaignsNameType,
-  GetPlaylistFilesByPlaylistIdsQueryParams,
-  GetPlaylistFilesByPlaylistIdsQueryResponse,
-  GetCampaignsIdByNameQueryParams,
-  GetCampaignsIdByNameQueryResponse,
-  GetPlaylistsIdByCampaignsIdQueryParams,
-  GetPlaylistsIdByCampaignsIdQueryResponse,
-  ProjectPlayList,
 } from "./interfaces";
-import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
 import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
@@ -33,6 +35,7 @@ import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByPlaylists
 import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
 import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
 import { StorePlaylistMutation } from "./Mutations/storePlaylist";
+import { GetCampaignsProjectPlaylistQuery } from "./Querys/getProjectPlaylist";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -338,6 +341,62 @@ export default class ProjectPlaylistService
       return response.campaignsId;
     } catch (error) {
       this.logger.Error("Ошибка запроса массива ID кампаний по имени массиву ID кампаний: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
+   * Получаем список плейлистов по названию
+   * @param playlistName
+   */
+  async getPlaylistsByName(playlistName: string): Promise<PlaylistsResponseType[]> {
+    this.logger.Debug("Список плейлистов по названию: ", playlistName);
+
+    try {
+      const response = await this.client.Query<GetPlaylistsCampaignByNameParams,
+        GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistQuery(playlistName), {});
+
+      this.logger.Debug("Ответ на запрос плэйлистов: ", response);
+
+      return (
+        [
+          {
+            duration: 123,
+            files: [],
+            id: '123',
+            is_overall_volume: false,
+            name: 'string',
+            overall_volume: 10,
+            project_id: "12",
+          },
+          {
+            duration: 12,
+            files: [],
+            id: '12',
+            is_overall_volume: true,
+            name: 'string123',
+            overall_volume: 30,
+            project_id: "12",
+          },
+          {
+            duration: 12222,
+            files: [],
+            id: '121',
+            is_overall_volume: true,
+            name: 'string2222',
+            overall_volume: 50,
+            project_id: "12",
+          }
+        ])
+
+      // return response;
+    } catch (error) {
+      this.logger.Error("Ошибка запроса плэйлистов: ", error);
 
       if (!error.errors) {
         throw error;

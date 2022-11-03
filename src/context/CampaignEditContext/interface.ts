@@ -1,4 +1,4 @@
-import { Campaign } from "services/campaignListService/types";
+import { Campaign, CampaignPlaylistConnectInput } from "services/campaignListService/types";
 
 export interface CampaignEditContextTypes {
   campaign: Campaign | undefined;
@@ -11,6 +11,18 @@ export interface CampaignEditContextActionsTypes {
    * Запрашивает компанию по ID
    */
   loadCampaign: (campaignId: string) => void;
+
+  /**
+   * Записывает сущьность плейлиста в компанию
+   * @param campaign
+   */
+  storeCampaignPlaylist: (playlist: CampaignPlaylistConnectInput) => void;
+
+  /**
+   * Удаляет плейлист с проекта
+   * @param campaign
+   */
+  deleteCampaignPlaylist: (playlistId: string) => void;
 
   /**
    * Записывает сущьность кампании в контекст
