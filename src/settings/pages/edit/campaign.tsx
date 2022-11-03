@@ -15,15 +15,8 @@ import { MinimalLengthValidator } from "../../../services/validation/validators/
 import StringField from "../../../components/EditPage/Fields/StringField";
 import QueueIntField from "components/EditPage/Fields/QueueIntField";
 import { ValueExistsValidator } from "../../../services/validation/validators/valueExists";
-import { campaignListService } from "services/campaignListService";
-import { Logger } from "services/logger/Logger";
-import { loggerFactory } from "services/logger";
-
-
 
 export class CampaignEditPageConfig implements EditPageConfiguration<"campaign"> {
-  private readonly logger: Logger = loggerFactory().make('CampaignEditPageConfig');
-
   groups: EditFormGroup<"campaign">[] = [
     {
       sizes: { xs: 12 },
@@ -156,26 +149,6 @@ export class CampaignEditPageConfig implements EditPageConfiguration<"campaign">
           defaultValue: [],
           validation: [],
           component: EnumField,
-          additionData: async (_, primaryKey) => {
-            const { project } = getCurrentState();
-
-            this.logger.Debug("primaryKey: ", primaryKey);
-            this.logger.Debug("project ID: ", project);
-
-            if (!project || !primaryKey) {
-              return {};
-            }
-
-            try {
-              const channels = await campaignListService().getChannelsForCampaign(project, primaryKey);
-
-              return {
-                channels
-              }
-            } catch (error) {
-              return {};
-            }
-          },
         },
       ]
     },
