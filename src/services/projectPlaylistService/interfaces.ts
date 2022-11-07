@@ -34,7 +34,7 @@ export interface ProjectPlaylistServiceInterface {
   /**
    * Сохраняем изменения в плэйлисте
    */
-  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<boolean>;
+  storePlaylistChanges: (playlist: ProjectPlayListInputObject) => Promise<ProjectPlayList>;
 
   /**
    * Получаем список ID кампаний по имени
@@ -45,7 +45,7 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список ID плэйлистов по списку ID кампаний
    */
   getPlaylistsIdByCampignsId: (campignsId: string[]) => Promise<string[]>;
-};
+}
 
 export type ExportedPlaylistType = {[x: string]: string[]};
 
@@ -77,7 +77,7 @@ export interface PlaylistGlobalFile {
   publisher:  string;                             //  Изготовитель фонограммы
   title:  string;                                 //  Название
   year: number;                                   //  Год создания
-};
+}
 
 //  Сущность файла из плейлиста проекта
 export interface ProjectPlayListFile {
@@ -87,7 +87,7 @@ export interface ProjectPlayListFile {
   playlist_id:  string;                           //  Идентификатор плейлиста, к которому относится файл
   volume: number;                                 //  Громкость звука файла в плейлисте
   sort: number;                                   //  Порядок сортировки
-};
+}
 
 //  Дни недели кампании
 export type CampaignDaysType = 
@@ -134,12 +134,12 @@ export type CampaignPlayOrder =
 
 //  Сущность дня расписания кампании проекта
 export interface CampaignDay {
-  campaign_id: string;                                //  Идентификатор кампании, к которой относится день расписания
   day_num: number;                                    //  Порядковый номер дня [от 1 до 7]
   days_start_minutes: number;                         //  Период (начало) в мин.
   days_stop_minutes: number;                          //  Период (окончание) в мин.
   is_active: boolean;                                 //  Активность
   id?: string;                                        //  ID сущности
+  campaign_id?: string                                //  Идентификатор кампании, к которой относится день расписания
 }
 
 //  Сущность кампании проекта (только базовые поля)
@@ -245,9 +245,7 @@ export type StorePlaylistMutationParams = {
 };
 
 export type StorePlaylistMutationResponse = {
-  result: {
-    id: string;
-  };
+  result: ProjectPlayList;
 };
 
 export type GetCampaignsIdByNameQueryParams = {
