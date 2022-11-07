@@ -50,6 +50,11 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список плейлистов по названию
    */
   getPlaylistsByName: (name: string) => Promise<PlaylistsResponseType[]>;
+
+  /**
+   * Создание плейлиста по загрузке файла
+   */
+  storePlaylistByFile: (name: string) => Promise<PlaylistsResponseType[]>;
 }
 
 export type ExportedPlaylistType = { [x: string]: string[] };
@@ -274,7 +279,7 @@ export type GetPlaylistsIdByCampaignsIdQueryResponse = {
 
 export type PlaylistsResponseType = {
   duration: number
-  files: []
+  files: any[]
   id: string
   is_overall_volume: boolean
   name: string

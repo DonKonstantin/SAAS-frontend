@@ -1,7 +1,8 @@
 import { CampaignEditContextActionsTypes, CampaignEditContextTypes } from './interface';
-import { BehaviorSubject, combineLatest, filter, map, Observable, switchMap, tap } from "rxjs";
+import { BehaviorSubject, combineLatest, filter, interval, map, Observable, switchMap, tap } from "rxjs";
 import { Campaign, CampaignPlaylistConnectInput } from 'services/campaignListService/types';
 import { campaignListService } from "../../services/campaignListService";
+import { fileService } from "../../services/FileService";
 
 class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
@@ -22,6 +23,12 @@ const isLoading$ = new BehaviorSubject<boolean>(false);
 const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnectInput | undefined>(undefined)
 // ID для удаления плейлиста
 const deletePlaylistId$ = new BehaviorSubject<string | undefined>(undefined)
+// ID и состояние "перемешать" для плейлиста
+const shufflePlaylist$ = new BehaviorSubject<{ playlistId: string, shuffle: boolean } | undefined>(undefined)
+// Делает сортировку плейлиста
+const movePlaylist$ = new BehaviorSubject<{ playlistId: string, direction: 'up' | 'down' } | undefined>(undefined);
+// Для загруженных треков по Drop Zone
+const uploadedTracksToPlaylist$ = new BehaviorSubject<string[]>([]);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -85,13 +92,111 @@ const deletePlaylistFromProject$ = deletePlaylistId$.pipe(
       return
     }
 
-    return { ...getCampaign, playlists: getCampaign.playlists.filter(playlist => playlist.id !== playlistId) }
+    const filteredPlaylists = getCampaign.playlists.filter(playlist => playlist.id !== playlistId)
+    const newSortablePlaylist = filteredPlaylists.map((playlist, index) => ({ ...playlist, sortOrder: index + 1 }))
+    return { ...getCampaign, playlists: newSortablePlaylist }
 
   }),
   //@ts-ignore
   tap((campaign) => campaign$.next(campaign)),
   tap(() => deletePlaylistId$.next(undefined))
 )
+
+const shuffleCampaignPlaylist$ = shufflePlaylist$.pipe(
+  filter((shufflePlaylist) => !!shufflePlaylist),
+  map((shufflePlaylist) => {
+    if (!shufflePlaylist) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    const shufflePlaylistById = getCampaign.playlists.map(playlist => playlist.id === shufflePlaylist.playlistId
+      ? {
+        ...playlist,
+        shuffle: shufflePlaylist.shuffle
+      } : playlist)
+
+    return { ...getCampaign, playlists: shufflePlaylistById }
+
+  }),
+  //@ts-ignore
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => shufflePlaylist$.next(undefined))
+)
+
+//  шина изменения позиции воспроизведения трека в плейлисте
+const movePlaylistBus$ = movePlaylist$.pipe(
+  filter((sortPlaylists) => !!sortPlaylists),
+  map((sortPlaylists) => {
+    if (!sortPlaylists) {
+      return
+    }
+
+    const { playlistId, direction } = sortPlaylists
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+
+      return;
+    }
+
+    const findIndexOfCurrentPlaylist = getCampaign.playlists.findIndex(playlist => playlist.id === playlistId)
+
+    if (findIndexOfCurrentPlaylist === -1) {
+
+      return getCampaign;
+    }
+
+    if (direction === 'up' && findIndexOfCurrentPlaylist === 0) {
+
+      return getCampaign;
+    }
+
+    if (direction === 'down' && findIndexOfCurrentPlaylist === getCampaign.playlists.length - 1) {
+
+      return getCampaign;
+    }
+
+    const findCurrentPlaylist = getCampaign.playlists[findIndexOfCurrentPlaylist]
+    const findChangeableIndexPlaylist = direction === 'up' ? findIndexOfCurrentPlaylist - 1 : findIndexOfCurrentPlaylist + 1
+    const findChangeablePlaylist = getCampaign.playlists[findChangeableIndexPlaylist]
+
+    getCampaign.playlists[findIndexOfCurrentPlaylist] = {
+      ...findChangeablePlaylist,
+      sortOrder: findCurrentPlaylist.sortOrder
+    }
+
+    getCampaign.playlists[findChangeableIndexPlaylist] = {
+      ...findCurrentPlaylist,
+      sortOrder: findChangeablePlaylist.sortOrder
+    }
+
+    return { ...getCampaign }
+
+
+  }),
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => movePlaylist$.next(undefined))
+);
+
+//  шина проверки доступности в графе выгруженных плейлистов
+const checkUploadedFilesBus$ = combineLatest([interval(1000), uploadedTracksToPlaylist$]).pipe(
+  filter(incomingData => !!incomingData[1].length),
+  map(incomingData => incomingData[1]),
+  switchMap(async uploadedClips => {
+    try {
+      return await fileService().getFilesListByFileIds(uploadedClips);
+    } catch (error) {
+      throw error;
+    }
+  }),
+  filter(files => !!files.length),
+  tap((data) => console.log(data))
+);
 
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
   'campaign'
@@ -131,6 +236,9 @@ export const InitCampaignEditContext = () => {
   subscriber.add(loadCampaign$.subscribe());
   subscriber.add(setNewPlaylistForCampaign$.subscribe());
   subscriber.add(deletePlaylistFromProject$.subscribe());
+  subscriber.add(shuffleCampaignPlaylist$.subscribe());
+  subscriber.add(movePlaylistBus$.subscribe());
+  subscriber.add(checkUploadedFilesBus$.subscribe());
 
   return () => subscriber.unsubscribe();
 };
@@ -166,9 +274,44 @@ const deleteCampaignPlaylist: CampaignEditContextActionsTypes['deleteCampaignPla
   deletePlaylistId$.next(playlistId);
 }
 
+/**
+ * Изменяет параметр перемешать для плейлиста
+ * @param playlistId
+ * @param shuffle
+ */
+const shuffleCampaignPlaylist: CampaignEditContextActionsTypes['shuffleCampaignPlaylist'] = (playlistId, shuffle) => {
+  shufflePlaylist$.next({ playlistId, shuffle });
+}
+
+/**
+ * Изменяет сортировку плейлиста
+ * @param playlistId
+ * @param direction
+ */
+const movePlaylistCampaign: CampaignEditContextActionsTypes['movePlaylistCampaign'] = (playlistId, direction) => {
+  movePlaylist$.next({
+    playlistId,
+    direction
+  });
+}
+
+/**
+ * Проверяем загруженный файл и создаем плейлист
+ * @param fileIds
+ */
+const addFilesToUploadPlaylist: CampaignEditContextActionsTypes['addFilesToUploadPlaylist'] = fileIds => {
+  uploadedTracksToPlaylist$.next([
+    ...uploadedTracksToPlaylist$.getValue(),
+    ...fileIds
+  ]);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
   deleteCampaignPlaylist,
+  shuffleCampaignPlaylist,
+  movePlaylistCampaign,
+  addFilesToUploadPlaylist,
   setCampaign,
 };

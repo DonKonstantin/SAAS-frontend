@@ -121,7 +121,7 @@ const CampaignPlayListContent = () => {
     <Grid container alignItems="center">
       <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={closeSnackBarHandle}>
         <Alert onClose={closeSnackBarHandle} severity="success" sx={{ width: '100%' }}>
-          {t("pages.campaign.edit.fields.content.playlist.table.addPlaylist", { name: playlistName })}
+          {t("pages.campaign.edit.fields.content.playlist.table.snackbar.addPlaylist", { name: playlistName })}
         </Alert>
       </Snackbar>
       <Grid item xs={3.5}>

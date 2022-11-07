@@ -1,24 +1,23 @@
-import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { GetPlaylistsCampaignByNameParams } from "../interfaces";
+import { GraphQLQuery } from "services/graphQLClient/GraphQLClient";
+import { ProjectPlayListInputObject, StorePlaylistMutationParams } from "../interfaces";
 
 /**
- * Запрос плейлистов по имени
+ * Мутация создания плейлиста
  */
-export class GetCampaignsProjectPlaylistQuery
-  implements GraphQLQuery<GetPlaylistsCampaignByNameParams>
+export class StorePlaylistByFileMutation
+  implements GraphQLQuery<StorePlaylistMutationParams>
 {
   readonly query: any;
-  readonly variables: GetPlaylistsCampaignByNameParams;
+  readonly variables: StorePlaylistMutationParams;
 
-  constructor(playlistName: string) {
-    this.variables = {
-      playlistName,
-    };
-
-    this.query = gql(`
-      query __GET_CAMPAIGNS_PLAYLIST__($playlistName: String!){
-        playlists: project_playlist_list(where: {name: {_like: $playlistName}}){
+  constructor(playList: ProjectPlayListInputObject) {
+    this.variables = { playList };
+    this.query = gql`
+      mutation StorePlaylist(
+        $playList: ProjectPlayListInputObject!
+      ) {
+        result: projectPlayListStore(playList: $playList) {
           duration
           id
           is_overall_volume
@@ -87,6 +86,7 @@ export class GetCampaignsProjectPlaylistQuery
             version
           }
         }
-      }`);
+      }
+    `;
   }
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,15 +9,15 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableHead from "@mui/material/TableHead";
 import { useTranslation } from "react-i18next";
-import { RHFCheckbox } from "../../../../hook-form";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { IconButton, styled } from "@mui/material";
+import { Checkbox, IconButton, styled } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCampaignEditContext } from "../../../../../context/CampaignEditContext/useCampaignEditContext";
 import { distinctUntilChanged } from "rxjs";
-import { isEqual } from "lodash";
+import { timeConverterNumberForTime } from "../../../../timeConverter";
+import DeleteDialogPlaylist from "./DeletePlaylist";
 
 export type ContentTableHeadType = {
   sort: string
@@ -97,100 +97,123 @@ const CampaignContentTable = () => {
 
   const {
     campaign,
-    deleteCampaignPlaylist
+    shuffleCampaignPlaylist,
+    movePlaylistCampaign
   } =
     useCampaignEditContext(
       distinctUntilChanged(
         (prev, curr) =>
-          isEqual(prev.campaign, curr.campaign)
+          prev.campaign === curr.campaign
       )
     );
 
   const { t } = useTranslation()
+  const [openDialogDeletePlaylist, setOpenDialogDeletePlaylist] = useState<boolean>(false);
+  const [currentPlaylistForDelete, setCurrentPlaylistForDelete] = useState<{ playlistId: string, name: string } | undefined>(undefined);
 
   if (!campaign) {
     return <></>
   }
 
-  console.log(campaign.playlists)
+  const onOpenDialogPlaylist = (id: string, name: string) => {
+    setCurrentPlaylistForDelete({ playlistId: id, name })
+    setOpenDialogDeletePlaylist(true)
+  }
+
+  const closeDialogDeletePlaylist = () => {
+    setOpenDialogDeletePlaylist(false)
+    setCurrentPlaylistForDelete(undefined)
+  }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-          >
-            <TableHead>
-              <TableRow>
-                {headCells.map((headCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    align={'left'}
-                    padding={headCell.disablePadding ? 'none' : 'normal'}
-                    style={{ minWidth: headCell.minWidth }}
-                  >
-                    {t(headCell.label)}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {campaign.playlists
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      role="checkbox"
-                      tabIndex={-1}
-                      //@ts-ignore
-                      key={row.name}
+    <>
+      {
+        currentPlaylistForDelete &&
+          <DeleteDialogPlaylist
+              open={openDialogDeletePlaylist}
+              onClose={closeDialogDeletePlaylist}
+              currentPlaylistForDelete={currentPlaylistForDelete}
+          />
+      }
+      <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+            >
+              <TableHead>
+                <TableRow>
+                  {headCells.map((headCell) => (
+                    <TableCell
+                      key={headCell.id}
+                      align={'left'}
+                      padding={headCell.disablePadding ? 'none' : 'normal'}
+                      style={{ minWidth: headCell.minWidth }}
                     >
-                      <TableCell
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
+                      {t(headCell.label)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {campaign.playlists
+                  .map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    const playlistTimeDuration = timeConverterNumberForTime(row.duration)
+                    return (
+                      <TableRow
+                        role="checkbox"
+                        tabIndex={-1}
+                        //@ts-ignore
+                        key={row.name}
                       >
-                        <StyledIconButton onClick={() => {
-                        }}>
-                          <ArrowUpwardIcon sx={{ width: 16 }}/>
-                        </StyledIconButton>
-                        <StyledIconButton onClick={() => {
-                        }}>
-                          <ArrowDownwardIcon sx={{ width: 16 }}/>
-                        </StyledIconButton>
-                      </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
-                      <TableCell align="left">{row.files.length}</TableCell>
-                      <TableCell align="left">{row.duration}</TableCell>
-                      <TableCell align="left">
-                        <RHFCheckbox name={`playlists[${index}].shuffle`} label=''/>
-                      </TableCell>
-                      <TableCell align="left">{row.playCounter}</TableCell>
-                      <TableCell align="right">
-                        <StyledIconButton
-                          size="small"
-                          onClick={() => {
-                        }}>
-                          <EditIcon fontSize="medium" sx={{ mr: "12px" }}/>
-                        </StyledIconButton>
-                        <StyledIconButton
-                          size="small"
-                          onClick={() => deleteCampaignPlaylist(row.id)}
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                          align="center"
                         >
-                          <DeleteIcon fontSize="medium"/>
-                        </StyledIconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id, "up")}>
+                            <ArrowUpwardIcon sx={{ width: 16 }}/>
+                          </StyledIconButton>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id, "down")}>
+                            <ArrowDownwardIcon sx={{ width: 16 }}/>
+                          </StyledIconButton>
+                        </TableCell>
+                        <TableCell align="left">{row.name}</TableCell>
+                        <TableCell align="left">{row.files.length}</TableCell>
+                        <TableCell align="left">{playlistTimeDuration}</TableCell>
+                        <TableCell align="left">
+                          <Checkbox
+                            checked={row.shuffle}
+                            onChange={(e) => shuffleCampaignPlaylist(row.id, e.currentTarget.checked)}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{row.playCounter}</TableCell>
+                        <TableCell align="right">
+                          <StyledIconButton
+                            size="small"
+                            onClick={() => {
+                            }}>
+                            <EditIcon fontSize="medium" sx={{ mr: "12px" }}/>
+                          </StyledIconButton>
+                          <StyledIconButton
+                            size="small"
+                            onClick={() => onOpenDialogPlaylist(row.id, row.name)}
+                          >
+                            <DeleteIcon fontSize="medium"/>
+                          </StyledIconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+    </>
   );
 }
 

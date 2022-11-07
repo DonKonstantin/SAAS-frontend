@@ -175,7 +175,7 @@ const DaysGroupPicker: FC<Props> = ({
                     disabled={disabled}
                   />
                   <TimePickerComponent
-                    key={day.name}
+                    key={index}
                     day_num={day.day_num}
                     nameFieldDays={nameFieldDays}
                     arrayFieldIndex={index}
