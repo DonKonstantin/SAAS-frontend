@@ -69,6 +69,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     setIsEditable,
     setAvailableTabs,
     clearContext,
+    setPlaylist,
   } = useCampaignPlaylistEditContext(
     distinctUntilChanged(
       (prev, curr) =>
@@ -183,11 +184,6 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       return;
     }
 
-    storePlaylist({
-      ...playlist,
-      isCampaignTimetable: true,
-    });
-
     clearContext();
   };
 
@@ -200,9 +196,21 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
 
     const saveResult = await onSave(playlist, values);
 
-    if (!saveResult) {
+    const campaignPlaylist = playlist.campaignPlaylist;
+
+    if (!saveResult || !campaignPlaylist) {
       return;
     }
+
+    setPlaylist({
+      ...playlist,
+      campaignPlaylist: {
+        ...campaignPlaylist,
+        name: values.playlistName,
+        is_overall_volume: values.isOverallVolume,
+        overall_volume: values.overallVolume,
+      },
+    });
 
     setAvailableTabs([...Object.values(Tabs)]);
 

@@ -106,16 +106,16 @@ const Schedule: FC<Props> = ({ storePlaylist }) => {
         isActive: day.is_active,
       })) as CampaignPlaylistConnectDay[],
     });
+
+    clearContext();
   };
 
   useEffect(() => {
-    if (!playlist.isCampaignTimetable) {
+    if (!playlist.isCampaignTimetable || !!playlist.projectPlaylist) {
       return;
     }
 
     setDisableForm(true);
-
-    clearContext();
   }, []);
 
   return (

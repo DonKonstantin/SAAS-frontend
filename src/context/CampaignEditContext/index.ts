@@ -1,6 +1,6 @@
 import { CampaignEditContextActionsTypes, CampaignEditContextTypes } from './interface';
 import { BehaviorSubject, combineLatest, filter, map, Observable, switchMap, tap } from "rxjs";
-import { Campaign } from 'services/campaignListService/types';
+import { Campaign, CampaignPlaylistConnect } from 'services/campaignListService/types';
 import { campaignListService } from "../../services/campaignListService";
 
 class DefaultContextData implements CampaignEditContextTypes {
@@ -18,6 +18,8 @@ const campaignId$ = new BehaviorSubject<string | undefined>('');
 const campaignListErrorText$ = new BehaviorSubject<string | undefined>(undefined);
 //  Флаг для процесса загрузки
 const isLoading$ = new BehaviorSubject<boolean>(false);
+// Сущность нового плейлиста
+const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(undefined);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -99,7 +101,12 @@ const setCampaign: CampaignEditContextActionsTypes['setCampaign'] = campaign => 
   campaign$.next(campaign);
 }
 
+const storeCampaignPlaylist: CampaignEditContextActionsTypes['storeCampaignPlaylist'] = playlist => {
+  newPlayList$.next(playlist);
+}
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   setCampaign,
+  storeCampaignPlaylist,
 };
