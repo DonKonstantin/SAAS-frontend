@@ -368,7 +368,7 @@ const CampaignInfoGroup = () => {
   return (
     <>
       <CampaignPlaylistEditContextConnector>
-        {!!playlist && <EditPlaylist />}
+        {!playlist && <EditPlaylist />}
         <Grid item xs={12}>
           <Box sx={{ width: "100%" }}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

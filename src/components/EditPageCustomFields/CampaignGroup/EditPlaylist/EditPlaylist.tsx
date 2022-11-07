@@ -54,7 +54,7 @@ const EditPlaylist: FC = () => {
     distinctUntilKeyChanged("availableTabs")
   );
 
-  const {  } = useCampaignEditContext(
+  const { storeCampaignPlaylist } = useCampaignEditContext(
     distinctUntilChanged(() => true)
   );
 
@@ -85,12 +85,12 @@ const EditPlaylist: FC = () => {
         </StyledTabsWrapper>
         <StyledTabPanel value={Tabs.tracks} key={Tabs.tracks}>
           <StyledPaper>
-            <Tracks storePlaylist={() => {}} setTab={setCurrentTab} />
+            <Tracks storePlaylist={storeCampaignPlaylist} setTab={setCurrentTab} />
           </StyledPaper>
         </StyledTabPanel>
         <StyledTabPanel value={Tabs.schedule} key={Tabs.schedule}>
           <StyledPaper>
-            <Schedule storePlaylist={() => {}} />
+            <Schedule storePlaylist={storeCampaignPlaylist} />
           </StyledPaper>
         </StyledTabPanel>
         <StyledTabPanel value={Tabs.clips} key={Tabs.clips}>
