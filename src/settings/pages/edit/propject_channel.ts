@@ -16,23 +16,33 @@ export class ProjectChannelEditPageConfig implements EditPageConfiguration<"proj
                 {
                     field: "name",
                     title: "pages.project_channel.edit.fields.name",
-                    size:{xs: 12, md: 2.6},
+                    size:{xs: 12},
                     defaultValue: "",
                     validation: [
                         MinimalLengthValidator({minimalLength: 3}),
                         UniqueValueInColumnValidator({schema: "project_channel", field: "name"}),
                     ],
                     component: StringFieldWithoutLabel,
-                    onAfterSave: async () => {
-                    }
                 },
                 {
                     field: "is_active",
                     title: "pages.project_channel.edit.fields.is_active",
-                    size: {xs: 12, md: 2.6},
+                    size: {xs: 12},
                     defaultValue: true,
                     validation: [],
                     component: ProjectStatusField
+                },
+                {
+                    field: "project_id",
+                    title: "pages.project_channel.edit.fields.project_id",
+                    size: {xs: 12},
+                    defaultValue: async () => {
+                        const {project} = getCurrentState();
+
+                        return project
+                    },
+                    validation: [],
+                    component: StringFieldWithoutLabel,
                 },
             ]
         },
