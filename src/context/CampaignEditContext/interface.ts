@@ -46,7 +46,7 @@ export interface CampaignEditContextActionsTypes {
 
   /**
    * Записывает сущьность кампании в контекст
-   * @param campaign
+   * @param campaign 
    */
   setCampaign: (campaign: Campaign) => void;
 };

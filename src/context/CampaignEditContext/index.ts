@@ -350,5 +350,5 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   shuffleCampaignPlaylist,
   movePlaylistCampaign,
   addFilesToUploadPlaylist,
-  setCampaign,
+  setCampaign
 };

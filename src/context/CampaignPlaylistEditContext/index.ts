@@ -6,7 +6,7 @@ import { getCurrentState } from 'context/AuthorizationContext';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
-  availableTabs: Tabs[] = [Tabs.tracks];
+  availableTabs: Tabs[] = [Tabs.tracks, Tabs.clips];
   isEdit: boolean = false;
   projectId: string = "";
   loadedClips: CampaignPlayListFileType[] = [];
@@ -17,7 +17,7 @@ class DefaultContextData implements CampaignPlaylistEditContextTypes {
 export const campaignPlaylistEditContext$ = new BehaviorSubject<CampaignPlaylistEditContextTypes>(new DefaultContextData());
 
 const playlist$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(undefined);
-const availableTabs$ = new BehaviorSubject<Tabs[]>([Tabs.tracks]);
+const availableTabs$ = new BehaviorSubject<Tabs[]>([Tabs.tracks, Tabs.clips]);
 const isEdit$ = new BehaviorSubject<boolean>(false);
 const moveTrack$ = new Subject<{fileId: string, direction: 'up' | 'down'}>();
 const removeTrack$ = new Subject<string>();
@@ -29,7 +29,7 @@ const uploadedClips$ = new BehaviorSubject<string[]>([]);
 const isLoading$ = new BehaviorSubject<boolean>(false);
 
 //  шина проверки доступности в графе выгруженных клипов
-const checkUploadedFilesBus$ = combineLatest([interval(1000), uploadedClips$]).pipe(
+const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedClips$]).pipe(
   filter(incomingData => !!incomingData[1].length),
   map(incomingData => incomingData[1]),
   switchMap(async uploadedClips => {
