@@ -1,16 +1,16 @@
 import { GraphQLQuery } from "../../graphQLClient/GraphQLClient";
 import gql from "graphql-tag";
-import { StoreCampdignMutationParams } from "../interface";
+import { StoreCampaignMutationParams } from "../interface";
 import { CampaignInput } from "../types";
 
 /**
  * Мутация создания\сохранения сущьности кампании
  */
-export class StoreCampdignMutation
-  implements GraphQLQuery<StoreCampdignMutationParams>
+export class StoreCampaignMutation
+  implements GraphQLQuery<StoreCampaignMutationParams>
 {
   readonly query: any;
-  readonly variables: StoreCampdignMutationParams;
+  readonly variables: StoreCampaignMutationParams;
 
   constructor(campaign: CampaignInput) {
     this.variables = {

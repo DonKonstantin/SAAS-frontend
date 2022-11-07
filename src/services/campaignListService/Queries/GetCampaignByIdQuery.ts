@@ -17,8 +17,8 @@ export class GetCampaignByIdQuery
     };
 
     this.query = gql(`
-    query __GET_CHANNELS__($campaign: CampaignInput!){
-      campaignStoreResul: campaignStore(where: { project_id: { _equals: $campaignId } } ){
+    query __GET_CAMPAIGN__($campaignId: ID){
+    campaign: campaign_list(where: { id: { _equals: $campaignId } } ){
     campaign_all_days_start_minutes
     campaign_all_days_stop_minutes
     campaign_days_type

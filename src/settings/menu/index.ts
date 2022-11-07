@@ -217,7 +217,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             const {domain, project} = getCurrentState();
 
             return {
-                href: "/domain/[domainId]/project/[projectId]/object-passport",
+                href: "/domain/[domainId]/project/[projectId]/object-passports",
                 as: `/domain/${domain}/project/${project}/object-passport`,
             };
         },
@@ -235,19 +235,6 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "player-list.left-menu.title",
-    },
-    {
-        link: () => {
-            const {domain, project} = getCurrentState();
-
-            return {
-                href: "/domain/[domainId]/project/[projectId]/object-passports",
-                as: `/domain/${domain}/project/${project}/object-passports`,
-            }
-        },
-        title: "objects-passport-list.left-menu-title",
-        permission: "READ_OBJECT_PASSPORT",
-        level: "project",
     },
     {
         link: () => {

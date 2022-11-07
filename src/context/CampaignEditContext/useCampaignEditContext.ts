@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { OperatorFunction } from "rxjs";
-import { campaignEditActions, campaignEditcontext$ } from ".";
+import { campaignEditActions, campaignEditContext$ } from "./index";
 import { CampaignEditContextCommonType, CampaignEditContextTypes } from "./interface";
 
 /**
  * хук жоступа к контексту редактирования кампании
- * @param pipeModificators
+ * @param pipeModification
  * @returns 
  */
  export const useCampaignEditContext = (
-  ...pipeModificators: OperatorFunction<CampaignEditContextTypes, any>[]
+  ...pipeModification: OperatorFunction<CampaignEditContextTypes, any>[]
 ): CampaignEditContextCommonType => {
   const [contextData, setContextData] = useState<CampaignEditContextTypes>(
-    campaignEditcontext$.getValue()
+    campaignEditContext$.getValue()
   );
 
   useEffect(() => {
-    const subscription = campaignEditcontext$
+    const subscription = campaignEditContext$
       //@ts-ignore
-      .pipe(...pipeModificators)
+      .pipe(...pipeModification)
       .subscribe({
         next: data => setContextData(data),
       });

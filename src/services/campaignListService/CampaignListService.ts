@@ -7,14 +7,12 @@ import {
   GetAvailableChannelsQueryQueryParams,
   GetAvailableChannelsQueryQueryResponse,
   GetCampaignByIdQueryParams,
-  GetCampaignByIdQueryResponse,
-  StoreCampdignMutationParams,
-  StoreCampdignMutationResponse,
+  GetCampaignByIdQueryResponse, StoreCampaignMutationParams, StoreCampaignMutationResponse,
 } from "./interface";
-import { StoreCampdignMutation } from "./mutations/StoreCampdignMutation";
 import { GetAvailableChannelsQuery } from "./Queries/GetAvailableChannelsQuery";
 import { GetCampaignByIdQuery } from "./Queries/GetCampaignByIdQuery";
 import { Campaign, CampaignInput } from "./types";
+import { StoreCampaignMutation } from "./mutations/StoreCampaignMutation";
 
 /**
  * Сервис авторизации пользователя
@@ -37,18 +35,15 @@ export class CampaignListService implements CampaignListServiceInterface {
 
   /**
    * Получаем сущьность кампании по ее ID
-   * @param campaignId 
-   * @returns 
+   * @param campaignId
+   * @returns
    */
   async getCampaignById(campaignId: string): Promise<Campaign> {
     this.logger.Debug("ID кампании: ", campaignId);
 
     try {
-      const { campaign } = await this.client.Query<
-        GetCampaignByIdQueryParams,
-        GetCampaignByIdQueryResponse
-      >(new GetCampaignByIdQuery(campaignId), {});
-
+      const { campaign } = await this.client.Query<GetCampaignByIdQueryParams,
+        GetCampaignByIdQueryResponse>(new GetCampaignByIdQuery(campaignId), {});
       return campaign[0];
     } catch (error) {
       this.logger.Debug("Ошибка получения списка каналов: ", error);
@@ -59,25 +54,20 @@ export class CampaignListService implements CampaignListServiceInterface {
 
   /**
    * Создает\сохраняет сущьность кампании
-   * @param campaign 
-   * @returns 
+   * @param campaign
+   * @returns
    */
   async storeCampaign(
     campaign: CampaignInput
-  ): Promise<boolean> {
-    this.logger.Debug("Сущьность кампании: ", campaign);
+  ): Promise<string> {
+    this.logger.Debug("Сущность кампании: ", campaign);
 
     try {
-      const { storedCampaign } = await this.client.Query<
-        StoreCampdignMutationParams,
-        StoreCampdignMutationResponse
-      >(new StoreCampdignMutation(campaign), {});
-
-      return !!storedCampaign.id;
+      const { campaignStore } = await this.client.Query<StoreCampaignMutationParams, StoreCampaignMutationResponse>(new StoreCampaignMutation(campaign), {});
+      return campaignStore.id;
     } catch (error) {
-      this.logger.Debug("Ошибка получения списка каналов: ", error);
-
-      throw Error(error);
+      this.logger.Debug("Ошибка в создании компании: ", error);
+      throw error;
     }
   }
 
@@ -95,10 +85,8 @@ export class CampaignListService implements CampaignListServiceInterface {
     this.logger.Debug("Имя канала: ", name);
 
     try {
-      const { channels } = await this.client.Query<
-        GetAvailableChannelsQueryQueryParams,
-        GetAvailableChannelsQueryQueryResponse
-      >(new GetAvailableChannelsQuery(projectId, name), {});
+      const { channels } = await this.client.Query<GetAvailableChannelsQueryQueryParams,
+        GetAvailableChannelsQueryQueryResponse>(new GetAvailableChannelsQuery(projectId, name), {});
 
       this.logger.Debug("Полученный спискок каналов: ", channels);
 
