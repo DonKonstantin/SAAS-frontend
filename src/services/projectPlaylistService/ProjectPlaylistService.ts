@@ -390,7 +390,6 @@ export default class ProjectPlaylistService
 
   /**
    * Создание плейлиста по загрузке файла
-   * @param playlists
    * @param playlistFiles
    * @param projectId
    * @returns

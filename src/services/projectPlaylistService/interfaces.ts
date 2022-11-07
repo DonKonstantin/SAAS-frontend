@@ -54,7 +54,7 @@ export interface ProjectPlaylistServiceInterface {
   /**
    * Создание плейлиста по загрузке файла
    */
-  storePlaylistByFile: (name: string) => Promise<PlaylistsResponseType[]>;
+  storePlaylistByFile: (playlistFiles: MediaFilesDoubles[], projectId: number) => Promise<ProjectPlayList>;
 }
 
 export type ExportedPlaylistType = { [x: string]: string[] };

@@ -64,7 +64,6 @@ export interface CampaignPlaylistConnectInput {
   allDaysStartMinutes: number;                              //  Общий период (начало) в мин.
   allDaysStopMinutes: number;                               // Общий период (окончание) в мин.
   campaignPlaylistId?: string;                              //  Идентификатор плейлиста кампании
-  name: string                                              //TODO добавить в запрос
 }
 
 //  Сущность дня расписания подключенного плейлиста кампании

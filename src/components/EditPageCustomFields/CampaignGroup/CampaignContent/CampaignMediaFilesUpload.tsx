@@ -65,6 +65,9 @@ const CampaignMediaFilesUpload = () => {
           .map((res) => JSON.parse(res.data))
           .map((file) => file.file.id);
 
+        console.log(response
+          .map((res) => JSON.parse(res.data)))
+
         addFilesToUploadPlaylist(filesId);
       } catch (error) {
         messanger.dispatch({

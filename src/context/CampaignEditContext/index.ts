@@ -54,6 +54,42 @@ const loadCampaign$ = campaignId$.pipe(
   tap(() => campaignId$.next(undefined))
 )
 
+const refactor$ = loadCampaign$.pipe(
+  filter((data) => !!data),
+  map((data) => {
+    if (!data) {
+      return
+    }
+
+    const dataaa = data.playlists.map(playlist => {
+
+      let playlistForTable;
+      if (Object.keys(playlist.campaignPlaylist).length !== 0) {
+        playlistForTable = playlist.campaignPlaylist
+      } else {
+        playlistForTable = playlist.projectPlaylist
+      }
+
+      return ({
+        daysType: playlist.daysType,
+        projectPlaylistId: playlist.projectPlaylistId,
+        days: playlist.days,
+        playCounter: playlist.playCounter,
+        periodStop: playlist.periodStop,
+        shuffle: playlist.shuffle,
+        periodStart: playlist.periodStart,
+        campaignPlaylistId: playlist.campaignPlaylistId,
+        sortOrder: playlist.sortOrder,
+        id: playlist.id,
+        isCampaignTimetable: playlist.isCampaignTimetable,
+        allDaysStartMinutes: playlist.allDaysStartMinutes,
+        allDaysStopMinutes: playlist.allDaysStopMinutes,
+        playlist: playlistForTable
+      })
+    })
+  })
+)
+
 const setNewPlaylistForCampaign$ = newPlayList$.pipe(
   filter((newPlayList) => !!newPlayList),
   map((newPlaylist) => {
@@ -184,18 +220,19 @@ const movePlaylistBus$ = movePlaylist$.pipe(
 );
 
 //  шина проверки доступности в графе выгруженных плейлистов
-const checkUploadedFilesBus$ = combineLatest([interval(1000), uploadedTracksToPlaylist$]).pipe(
+const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPlaylist$]).pipe(
   filter(incomingData => !!incomingData[1].length),
   map(incomingData => incomingData[1]),
-  switchMap(async uploadedClips => {
+  switchMap(async uploadedTracks => {
+    console.log('uploadedTracks', uploadedTracks)
+
     try {
-      return await fileService().getFilesListByFileIds(uploadedClips);
+      return await fileService().getFilesListByFileIds(uploadedTracks)
     } catch (error) {
       throw error;
     }
   }),
   filter(files => !!files.length),
-  tap((data) => console.log(data))
 );
 
 const collectBus$: Observable<Pick<CampaignEditContextTypes,

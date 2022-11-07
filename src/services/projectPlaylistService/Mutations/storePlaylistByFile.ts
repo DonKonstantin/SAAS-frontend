@@ -14,10 +14,10 @@ export class StorePlaylistByFileMutation
   constructor(playList: ProjectPlayListInputObject) {
     this.variables = { playList };
     this.query = gql`
-      mutation StorePlaylist(
-        $playList: ProjectPlayListInputObject!
+      mutation CampaignPlayListStore(
+        $playList: Campaign_PlayList_Input!
       ) {
-        result: projectPlayListStore(playList: $playList) {
+        result: campaignPlayListStore(playList: $playList) {
           duration
           id
           is_overall_volume
