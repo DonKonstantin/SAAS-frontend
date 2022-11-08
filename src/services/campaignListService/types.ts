@@ -51,7 +51,7 @@ export type CampaignChannelInputObject = {
 
 //  Сущность подключенного плейлиста кампании
 export interface CampaignPlaylistConnectInput {
-  projectPlaylistId?: string;                               // Идентификатор плейлиста проекта
+  projectPlaylistId?: number;                               // Идентификатор плейлиста проекта
   days: CampaignPlaylistConnectDayInput[];                  // Дни расписания плейлиста
   playCounter: number;                                      //  Счетчик количества воспроизведений
   periodStop: Date;                                         // Период трансляции плейлиста: (окончание)
@@ -59,11 +59,11 @@ export interface CampaignPlaylistConnectInput {
   periodStart: Date;                                        //  Период трансляции плейлиста: (начало)
   daysType: CampaignDaysType;                               // Дни недели
   sortOrder: number;                                        //  Порядок сортировки плейлиста
-  id?: string;                                              //  ID сущности
+  id?: number;                                              //  ID сущности
   isCampaignTimetable: boolean;                             // Расписание, как у кампании
   allDaysStartMinutes: number;                              //  Общий период (начало) в мин.
   allDaysStopMinutes: number;                               // Общий период (окончание) в мин.
-  campaignPlaylistId?: string;                              //  Идентификатор плейлиста кампании
+  campaignPlaylistId?: number;                              //  Идентификатор плейлиста кампании
 }
 
 //  Сущность дня расписания подключенного плейлиста кампании
@@ -84,7 +84,7 @@ export interface CampaignPlaylistConnect {
   campaignPlaylistId?: number;                              //  Идентификатор плейлиста кампании
   days: CampaignPlaylistConnectDay[];                       // Дни расписания плейлиста
   daysType: CampaignDaysType;                               // Дни недели
-  id: string;                                              //  ID сущности
+  id?: string;                                              //  ID сущности
   isCampaignTimetable: boolean;                             // Расписание, как у кампании
   periodStart: Date;                                        //  Период трансляции плейлиста: (начало)
   periodStop: Date;                                         // Период трансляции плейлиста: (окончание)
@@ -95,7 +95,7 @@ export interface CampaignPlaylistConnect {
   sortOrder: number;                                        //  Порядок сортировки плейлиста
 }
 
-//  Сущность плейлиста кампании 
+//  Сущность плейлиста кампании
 export interface CampaignPlayList {
   campaign_id: string;                                        //  Идентификатор кампании, к которой относится плейлист
   duration: number;                                           // Общая длительность плейлиста

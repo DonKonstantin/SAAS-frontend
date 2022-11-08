@@ -383,6 +383,15 @@ const CampaignInfoGroup = () => {
                     sx={{ p: 0 }}
                   >
                     <CampaignContent/>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <LoadingButton
+                        variant="outlined"
+                        color="success"
+                        sx={{ m: "18px 21px 18px 0" }}
+                      >
+                        {t("pages.campaign.add.buttons.save")}
+                      </LoadingButton>
+                    </Stack>
                   </TabPanel>
                   <TabPanel
                     value={optionsForTabs.channels}

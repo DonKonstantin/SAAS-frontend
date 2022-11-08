@@ -4,6 +4,7 @@ import { ListFieldsConfiguration, } from "../../../services/listDataLoader/listL
 // import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import { getCurrentState } from "../../../context/AuthorizationContext";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
+import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
     filter: FilterFieldsConfiguration<"campaign"> = {
@@ -67,7 +68,8 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
                 isEnabled: true,
                 fieldType: {
                     config: undefined,
-                    type: "Simple"
+                    type: "Simple",
+                    customComponent: CampaignDataField
                 }
             },
             campaign_period_stop: {
@@ -76,7 +78,8 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
                 isEnabled: true,
                 fieldType: {
                     config: undefined,
-                    type: "Simple"
+                    type: "Simple",
+                    customComponent: CampaignDataField
                 }
             },
         },

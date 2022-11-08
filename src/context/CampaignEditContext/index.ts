@@ -1,8 +1,14 @@
 import { CampaignEditContextActionsTypes, CampaignEditContextTypes } from './interface';
-import { BehaviorSubject, combineLatest, filter, interval, map, Observable, switchMap, tap } from "rxjs";
-import { Campaign, CampaignPlaylistConnectInput } from 'services/campaignListService/types';
+import { auditTime, BehaviorSubject, combineLatest, filter, interval, map, Observable, switchMap, tap } from "rxjs";
+import {
+  Campaign,
+  CampaignDaysType,
+  CampaignPlayList,
+  CampaignPlaylistConnect
+} from 'services/campaignListService/types';
 import { campaignListService } from "../../services/campaignListService";
 import { fileService } from "../../services/FileService";
+import campaignPlaylistService from "../../services/campaignPlaylistService";
 
 class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
@@ -20,7 +26,7 @@ const campaignListErrorText$ = new BehaviorSubject<string | undefined>(undefined
 //  Флаг для процесса загрузки
 const isLoading$ = new BehaviorSubject<boolean>(false);
 // Сущность нового плейлиста
-const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnectInput | undefined>(undefined)
+const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(undefined)
 // ID для удаления плейлиста
 const deletePlaylistId$ = new BehaviorSubject<string | undefined>(undefined)
 // ID и состояние "перемешать" для плейлиста
@@ -49,45 +55,48 @@ const loadCampaign$ = campaignId$.pipe(
     }
   }),
   filter((result) => !!result),
-  tap((response) => campaign$.next(response)),
-  tap(() => isLoading$.next(false)),
-  tap(() => campaignId$.next(undefined))
-)
-
-const refactor$ = loadCampaign$.pipe(
-  filter((data) => !!data),
-  map((data) => {
-    if (!data) {
+  map((response) => {
+    if (!response) {
       return
     }
 
-    const dataaa = data.playlists.map(playlist => {
+    const refactorPlaylists = response.playlists.map(playlist => {
 
       let playlistForTable;
-      if (Object.keys(playlist.campaignPlaylist).length !== 0) {
-        playlistForTable = playlist.campaignPlaylist
+
+      if (playlist.campaignPlaylistId) {
+        playlistForTable = {
+          name: playlist.campaignPlaylist?.name,
+          campaignPlaylist: playlist.campaignPlaylist,
+          campaignPlaylistId: playlist.campaignPlaylistId,
+          duration: playlist.campaignPlaylist?.duration,
+          files: playlist.campaignPlaylist?.files
+        }
       } else {
-        playlistForTable = playlist.projectPlaylist
+        playlistForTable = {
+          name: playlist.projectPlaylist?.name,
+          projectPlaylist: playlist.projectPlaylist,
+          projectPlaylistId: playlist.projectPlaylistId,
+          duration: playlist.projectPlaylist?.duration,
+          files: playlist.projectPlaylist?.files
+        }
       }
 
       return ({
-        daysType: playlist.daysType,
-        projectPlaylistId: playlist.projectPlaylistId,
-        days: playlist.days,
-        playCounter: playlist.playCounter,
-        periodStop: playlist.periodStop,
-        shuffle: playlist.shuffle,
-        periodStart: playlist.periodStart,
-        campaignPlaylistId: playlist.campaignPlaylistId,
-        sortOrder: playlist.sortOrder,
-        id: playlist.id,
-        isCampaignTimetable: playlist.isCampaignTimetable,
-        allDaysStartMinutes: playlist.allDaysStartMinutes,
-        allDaysStopMinutes: playlist.allDaysStopMinutes,
-        playlist: playlistForTable
+        ...playlist,
+        ...playlistForTable
       })
     })
-  })
+
+    return ({
+      ...response,
+      playlists: refactorPlaylists
+    })
+
+  }),
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => isLoading$.next(false)),
+  tap(() => campaignId$.next(undefined))
 )
 
 const setNewPlaylistForCampaign$ = newPlayList$.pipe(
@@ -111,6 +120,7 @@ const setNewPlaylistForCampaign$ = newPlayList$.pipe(
     return { ...getCampaign, playlists: [...getCampaign.playlists, newPlaylist] }
 
   }),
+  filter((result) => !!result),
   //@ts-ignore
   tap((campaign) => campaign$.next(campaign)),
   tap(() => newPlayList$.next(undefined))
@@ -212,8 +222,6 @@ const movePlaylistBus$ = movePlaylist$.pipe(
     }
 
     return { ...getCampaign }
-
-
   }),
   tap((campaign) => campaign$.next(campaign)),
   tap(() => movePlaylist$.next(undefined))
@@ -221,18 +229,65 @@ const movePlaylistBus$ = movePlaylist$.pipe(
 
 //  шина проверки доступности в графе выгруженных плейлистов
 const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPlaylist$]).pipe(
-  filter(incomingData => !!incomingData[1].length),
+  filter(incomingData => !!incomingData[1]?.length),
   map(incomingData => incomingData[1]),
   switchMap(async uploadedTracks => {
-    console.log('uploadedTracks', uploadedTracks)
+    if (!uploadedTracks) {
+      return
+    }
 
     try {
-      return await fileService().getFilesListByFileIds(uploadedTracks)
+      return await fileService().getProjectFilesListByFileIds(uploadedTracks)
     } catch (error) {
-      throw error;
+      return undefined
     }
   }),
-  filter(files => !!files.length),
+  filter((files) => !!files?.length),
+  map((fileResponse) => {
+
+    if (!fileResponse) {
+      return
+    }
+
+    const { id, project_id } = campaign$.getValue()!
+    if (!id && !project_id) {
+      return
+    }
+
+    return {
+      campaignId: Number(id),
+      name: fileResponse[0].origin_name,
+      isOverallVolume: true,
+      overallVolume: 100,
+      files: fileResponse.map(file => (
+        {
+          volume: 100,
+          fileId: file.id!,
+          sort: 1
+        }
+      )),
+      projectId: Number(project_id)
+    }
+
+  }),
+  auditTime(5000),
+  switchMap(async data => {
+    if (!data) {
+      return
+    }
+
+    let response;
+
+    while (!response) {
+      try {
+        response = await campaignPlaylistService().storeCampaignPlaylist(data)
+      } catch (error) {
+        return
+      }
+    }
+
+    return response as CampaignPlayList
+  })
 );
 
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
@@ -275,7 +330,42 @@ export const InitCampaignEditContext = () => {
   subscriber.add(deletePlaylistFromProject$.subscribe());
   subscriber.add(shuffleCampaignPlaylist$.subscribe());
   subscriber.add(movePlaylistBus$.subscribe());
-  subscriber.add(checkUploadedFilesBus$.subscribe());
+  subscriber.add(checkUploadedFilesBus$.subscribe((newCampaignPlaylist) => {
+
+    if (!newCampaignPlaylist) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    const newPlaylist = {
+      id: newCampaignPlaylist.id,
+      playCounter: 1,
+      periodStop: new Date(),
+      shuffle: false,
+      periodStart: new Date(),
+      daysType: 'daily' as CampaignDaysType,
+      days: [],
+      isCampaignTimetable: false,
+      allDaysStartMinutes: 0,
+      allDaysStopMinutes: 0,
+      campaignPlaylistId: newCampaignPlaylist.id,
+      sortOrder: getCampaign.playlists.length + 1,
+      name: newCampaignPlaylist.name,
+      duration: newCampaignPlaylist.duration,
+      files: newCampaignPlaylist.files
+    }
+
+    //@ts-ignore
+    campaign$.next({ ...getCampaign, playlists: [...getCampaign.playlists, newPlaylist] })
+
+    const playlistFiles = newCampaignPlaylist?.files.map(file => Number(file.id))
+    const filesValues = uploadedTracksToPlaylist$.getValue()
+    uploadedTracksToPlaylist$.next(filesValues.filter(file => playlistFiles.some(playlistFile => Number(playlistFile) === Number(file))))
+  }));
 
   return () => subscriber.unsubscribe();
 };

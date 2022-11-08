@@ -6,8 +6,7 @@ import { GetProjectFilesListByFileIdsQueryParams } from "../interfaces";
  * Запрос получениясписка файлов по масиву ID
  */
 class GetProjectFilesListByFileIdsQuery
-  implements GraphQLQuery<GetProjectFilesListByFileIdsQueryParams>
-{
+  implements GraphQLQuery<GetProjectFilesListByFileIdsQueryParams> {
   readonly query: any;
   readonly variables: GetProjectFilesListByFileIdsQueryParams;
 

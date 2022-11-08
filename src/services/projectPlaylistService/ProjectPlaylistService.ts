@@ -36,7 +36,6 @@ import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
 import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
 import { StorePlaylistMutation } from "./Mutations/storePlaylist";
 import { GetCampaignsProjectPlaylistQuery } from "./Querys/getProjectPlaylist";
-import { StorePlaylistByFileMutation } from "./Mutations/storePlaylistByFile";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -335,100 +334,20 @@ export default class ProjectPlaylistService
   /**
    * Получаем список плейлистов по названию
    * @param playlistName
+   * @param projectId
    */
-  async getPlaylistsByName(playlistName: string): Promise<PlaylistsResponseType[]> {
+  async getPlaylistsByName(playlistName: string, projectId: number): Promise<PlaylistsResponseType[]> {
     this.logger.Debug("Список плейлистов по названию: ", playlistName);
 
     try {
       const response = await this.client.Query<GetPlaylistsCampaignByNameParams,
-        GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistQuery(playlistName), {});
+        GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistQuery(playlistName, projectId), {});
 
       this.logger.Debug("Ответ на запрос плэйлистов: ", response);
 
-      return (
-        [
-          {
-            duration: 123,
-            files: [{}, {}, {}],
-            id: '123',
-            is_overall_volume: false,
-            name: 'string',
-            overall_volume: 10,
-            project_id: "12",
-          },
-          {
-            duration: 12,
-            files: [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-            id: '12',
-            is_overall_volume: true,
-            name: 'string123',
-            overall_volume: 30,
-            project_id: "12",
-          },
-          {
-            duration: 12222,
-            files: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-            id: '121',
-            is_overall_volume: true,
-            name: 'string2222',
-            overall_volume: 50,
-            project_id: "12",
-          }
-        ])
-
-      // return response;
+      return response.playlists;
     } catch (error) {
       this.logger.Error("Ошибка запроса плэйлистов: ", error);
-
-      if (!error.errors) {
-        throw error;
-      }
-
-      throw error.errors;
-    }
-  };
-
-  /**
-   * Создание плейлиста по загрузке файла
-   * @param playlistFiles
-   * @param projectId
-   * @returns
-   */
-  async storePlaylistByFile(
-    playlistFiles: MediaFilesDoubles[],
-    projectId: number
-  ): Promise<ProjectPlayList> {
-    this.logger.Debug(
-      "Список файлов для экспортируемых плэйлистов: ",
-      // playlists
-    );
-    this.logger.Debug(
-      "Список файлов доступных для добавления в плэйлисты: ",
-      playlistFiles
-    );
-    this.logger.Debug("ID проекта: ", projectId);
-
-    try {
-
-      const playlist = {
-        files: [],
-        projectId: projectId,
-        name: playlistFiles[0].fileName,
-        isOverallVolume: true,
-        overallVolume: 100
-      }
-
-      const response = await this.client.Mutation<StorePlaylistMutationParams,
-        StorePlaylistMutationResponse>(new StorePlaylistByFileMutation(playlist), {});
-
-      this.logger.Debug("Ответ на запрос проектов для плэйлистов: ", "");
-
-      return response.result;
-    } catch (error) {
-      this.logger.Error(
-        "Ошибка мутации создания плейлистов плэйлистов: ",
-        error
-      );
 
       if (!error.errors) {
         throw error;

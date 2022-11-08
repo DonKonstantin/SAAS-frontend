@@ -49,12 +49,7 @@ export interface ProjectPlaylistServiceInterface {
   /**
    * Получаем список плейлистов по названию
    */
-  getPlaylistsByName: (name: string) => Promise<PlaylistsResponseType[]>;
-
-  /**
-   * Создание плейлиста по загрузке файла
-   */
-  storePlaylistByFile: (playlistFiles: MediaFilesDoubles[], projectId: number) => Promise<ProjectPlayList>;
+  getPlaylistsByName: (name: string, projectId: number) => Promise<PlaylistsResponseType[]>;
 }
 
 export type ExportedPlaylistType = { [x: string]: string[] };
@@ -289,6 +284,7 @@ export type PlaylistsResponseType = {
 
 export type GetPlaylistsCampaignByNameParams = {
   playlistName: string;
+  projectId: number
 };
 
 export type GetPlaylistsCampaignByNameResponse = {

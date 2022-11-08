@@ -7,6 +7,7 @@ import { PlaylistsResponseType } from "../../../../services/projectPlaylistServi
 import { CampaignDaysType } from "../../../../services/campaignListService/types";
 import { useCampaignEditContext } from "../../../../context/CampaignEditContext/useCampaignEditContext";
 import { isEqual } from "lodash";
+import { getCurrentState } from "../../../../context/AuthorizationContext";
 
 const CampaignPlayListContent = () => {
 
@@ -18,6 +19,8 @@ const CampaignPlayListContent = () => {
   );
 
   const { t } = useTranslation()
+
+  const { project } = getCurrentState();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -40,23 +43,21 @@ const CampaignPlayListContent = () => {
 
     const playlistForCompany = {
       name: currentPlaylist.name,
-      projectPlaylistId: currentPlaylist.project_id,
-      files: currentPlaylist.files,
-      id: currentPlaylist.id,
       duration: currentPlaylist.duration,
       isCampaignTimetable: false,
       allDaysStartMinutes: 0,
       allDaysStopMinutes: 0,
-      campaignPlaylistId: '',
       sortOrder: campaign.playlists.length + 1,
       periodStop: new Date(),
       shuffle: false,
       periodStart: new Date(),
       daysType: 'daily' as CampaignDaysType,
       playCounter: 1, //TODO имзенить когда добавят в запрос
-      days: []
+      days: [],
+      files: currentPlaylist.files
     }
 
+    //@ts-ignore
     storeCampaignPlaylist(playlistForCompany)
     setOptions([])
     setInputValue('')
@@ -100,7 +101,7 @@ const CampaignPlayListContent = () => {
         filter((searchParam) => searchParam.name.length >= 3),
         switchMap(async ({ name }) => {
           try {
-            return await projectPlaylistService().getPlaylistsByName(name);
+            return await projectPlaylistService().getPlaylistsByName(name, Number(project));
           } catch (error) {
             return undefined;
           }
@@ -115,7 +116,7 @@ const CampaignPlayListContent = () => {
 
       setOptions(response);
     })
-  }, []);
+  }, [project]);
 
   return (
     <Grid container alignItems="center">

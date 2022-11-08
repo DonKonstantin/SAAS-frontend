@@ -65,8 +65,8 @@ const CampaignMediaFilesUpload = () => {
           .map((res) => JSON.parse(res.data))
           .map((file) => file.file.id);
 
-        console.log(response
-          .map((res) => JSON.parse(res.data)))
+        // console.log(response
+        //   .map((res) => JSON.parse(res.data)))
 
         addFilesToUploadPlaylist(filesId);
       } catch (error) {
@@ -107,11 +107,12 @@ const CampaignMediaFilesUpload = () => {
             iconSize={18}
             dropZonePadding={22}
             messagePadding="15px 15px 10px"
+            maxFiles={5}
           />
 
           {uploading < 100 && (
             <Box sx={{ width: "100%" }}>
-              <LinearProgress variant="determinate" value={uploading} />
+              <LinearProgress variant="determinate" value={uploading}/>
             </Box>
           )}
         </Paper>

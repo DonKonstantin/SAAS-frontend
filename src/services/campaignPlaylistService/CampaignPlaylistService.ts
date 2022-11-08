@@ -2,7 +2,12 @@ import { CampaignPlayList } from "services/campaignListService/types";
 import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
 import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
-import { CampaignPlayListInput, CampaignPlaylistServiceInterface, StoreCampaignPlaylistMutationParams, StoreCampaignPlaylistMutationResponse } from "./interfaces";
+import {
+  CampaignPlayListInput,
+  CampaignPlaylistServiceInterface,
+  StoreCampaignPlaylistMutationParams,
+  StoreCampaignPlaylistMutationResponse
+} from "./interfaces";
 import { StorePlaylistMutation } from "./Mutations/storePlaylist";
 
 /**

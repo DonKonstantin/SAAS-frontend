@@ -18,6 +18,7 @@ import { useCampaignEditContext } from "../../../../../context/CampaignEditConte
 import { distinctUntilChanged } from "rxjs";
 import { timeConverterNumberForTime } from "../../../../timeConverter";
 import DeleteDialogPlaylist from "./DeletePlaylist";
+import { CampaignPlaylistConnect } from "../../../../../services/campaignListService/types";
 
 export type ContentTableHeadType = {
   sort: string
@@ -125,6 +126,8 @@ const CampaignContentTable = () => {
     setCurrentPlaylistForDelete(undefined)
   }
 
+  console.log(campaign)
+
   return (
     <>
       {
@@ -158,14 +161,13 @@ const CampaignContentTable = () => {
               </TableHead>
               <TableBody>
                 {campaign.playlists
-                  .map((row, index) => {
+                  .map((row: CampaignPlaylistConnect & { name: string, files: [], duration: number, shuffle: boolean }, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
                     const playlistTimeDuration = timeConverterNumberForTime(row.duration)
                     return (
                       <TableRow
                         role="checkbox"
                         tabIndex={-1}
-                        //@ts-ignore
                         key={row.name}
                       >
                         <TableCell
@@ -174,20 +176,27 @@ const CampaignContentTable = () => {
                           padding="none"
                           align="center"
                         >
-                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id, "up")}>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id!, "up")}>
                             <ArrowUpwardIcon sx={{ width: 16 }}/>
                           </StyledIconButton>
-                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id, "down")}>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id!, "down")}>
                             <ArrowDownwardIcon sx={{ width: 16 }}/>
                           </StyledIconButton>
                         </TableCell>
-                        <TableCell align="left">{row.name}</TableCell>
-                        <TableCell align="left">{row.files.length}</TableCell>
-                        <TableCell align="left">{playlistTimeDuration}</TableCell>
+
+                        <TableCell align="left">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="left">
+                          {row.files.length}
+                        </TableCell>
+                        <TableCell align="left">
+                          {playlistTimeDuration}
+                        </TableCell>
                         <TableCell align="left">
                           <Checkbox
                             checked={row.shuffle}
-                            onChange={(e) => shuffleCampaignPlaylist(row.id, e.currentTarget.checked)}
+                            onChange={(e) => shuffleCampaignPlaylist(row.id!, e.currentTarget.checked)}
                           />
                         </TableCell>
                         <TableCell align="left">{row.playCounter}</TableCell>
@@ -200,7 +209,7 @@ const CampaignContentTable = () => {
                           </StyledIconButton>
                           <StyledIconButton
                             size="small"
-                            onClick={() => onOpenDialogPlaylist(row.id, row.name)}
+                            onClick={() => onOpenDialogPlaylist(row.id!, row.name)}
                           >
                             <DeleteIcon fontSize="medium"/>
                           </StyledIconButton>

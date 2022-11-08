@@ -11,14 +11,15 @@ export class GetCampaignsProjectPlaylistQuery
   readonly query: any;
   readonly variables: GetPlaylistsCampaignByNameParams;
 
-  constructor(playlistName: string) {
+  constructor(playlistName: string, projectId: number) {
     this.variables = {
       playlistName,
+      projectId
     };
 
     this.query = gql(`
-      query __GET_CAMPAIGNS_PLAYLIST__($playlistName: String!){
-        playlists: project_playlist_list(where: {name: {_like: $playlistName}}){
+      query __GET_CAMPAIGNS_PLAYLIST__($playlistName: String!, $projectId: ID){
+        playlists: project_playlist_list(where: { _and: { name: {_like: $playlistName}, project_id: {_equals: $projectId}}}){
           duration
           id
           is_overall_volume

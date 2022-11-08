@@ -10,6 +10,7 @@ import { useCampaignEditContext } from "../../../../context/CampaignEditContext/
 import { distinctUntilChanged } from "rxjs";
 import { isEqual } from "lodash";
 import { timeConverterNumberForTime } from "../../../timeConverter";
+import { CampaignPlaylistConnect } from "../../../../services/campaignListService/types";
 
 const CampaignContent = () => {
 
@@ -26,9 +27,9 @@ const CampaignContent = () => {
     return <></>
   }
 
-  const countTimePlaylists = campaign.playlists.reduce((acc, playlist) => acc + playlist.duration, 0)
+  const countTimePlaylists = campaign.playlists.reduce((acc, playlist: CampaignPlaylistConnect & { duration: number }) => acc + playlist.duration, 0)
   const formatTime = timeConverterNumberForTime(countTimePlaylists)
-  const countTracks = campaign.playlists.reduce((acc, playlist) => acc + playlist.files.length, 0)
+  const countTracks = campaign.playlists.reduce((acc, playlist: CampaignPlaylistConnect & { files: [] }) => acc + playlist.files.length, 0)
 
 
   const nameAndTypeCompany = [
