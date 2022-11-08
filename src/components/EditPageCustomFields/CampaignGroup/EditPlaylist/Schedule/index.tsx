@@ -16,6 +16,7 @@ import { CampaignDay } from "services/projectPlaylistService/interfaces";
 import { styled } from "@mui/system";
 import { LoadingButton } from "@mui/lab";
 import { distinctUntilKeyChanged } from "rxjs";
+import { notificationsDispatcher } from "services/notifications";
 
 interface Props {
   storePlaylist: (playlist: CampaignPlaylistConnect) => void;
@@ -54,6 +55,8 @@ const Schedule: FC<Props> = ({ storePlaylist }) => {
   );
 
   const [disableForm, setDisableForm] = useState<boolean>(false);
+
+  const messanger = notificationsDispatcher();
 
   const RegisterScheme = Yup.object().shape({});
 
@@ -105,6 +108,11 @@ const Schedule: FC<Props> = ({ storePlaylist }) => {
         daysStopMinutes: day.days_stop_minutes,
         isActive: day.is_active,
       })) as CampaignPlaylistConnectDay[],
+    });
+
+    messanger.dispatch({
+      message: t("edit-campaign-playlist.success.store-campaign-playlist"),
+      type: "success",
     });
 
     clearContext();
