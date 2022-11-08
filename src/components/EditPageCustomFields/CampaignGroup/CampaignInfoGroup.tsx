@@ -203,30 +203,6 @@ const CampaignInfoGroup = () => {
     campaign_days_type: watch("campaign_days_type"),
   };
 
-  // const storePlaylist = (playlist: CampaignPlaylistConnect) => {
-  //   const currentPlaylists = getValues().playlists;
-
-  //   const storedPlaylist = {
-  //     projectPlaylistId: playlist.projectPlaylistId,
-  //     days: playlist.days,
-  //     playCounter: playlist.playCounter,
-  //     periodStop: playlist.periodStop,
-  //     shuffle: playlist.shuffle,
-  //     periodStart: playlist.periodStart,
-  //     daysType: playlist.daysType,
-  //     sortOrder: playlist.sortOrder,
-  //     id: playlist.id,
-  //     isCampaignTimetable: playlist.isCampaignTimetable,
-  //     allDaysStartMinutes: playlist.allDaysStartMinutes,
-  //     allDaysStopMinutes: playlist.allDaysStopMinutes,
-  //     campaignPlaylistId: playlist.campaignPlaylistId,
-  //   };
-
-  //   if (!playlist.id) {
-  //     // setValue('playlists', [...currentPlaylists, playlist]);
-  //   }
-  // };
-
   const onSubmit = async (data: FormValuesProps) => {
     setShowError(false);
     if (Object.keys(errors).length) {

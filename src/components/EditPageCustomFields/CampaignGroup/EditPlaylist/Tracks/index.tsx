@@ -184,6 +184,11 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       return;
     }
 
+    messanger.dispatch({
+      message: t("edit-campaign-playlist.success.store-campaign-playlist"),
+      type: "success",
+    });
+
     clearContext();
   };
 

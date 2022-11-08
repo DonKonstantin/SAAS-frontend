@@ -34,7 +34,7 @@ const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedClips$]).p
   map(incomingData => incomingData[1]),
   switchMap(async uploadedClips => {
     try {
-      return await fileService().getFilesListByFileIds(uploadedClips);
+      return await fileService().getProjectFilesListByFileIds(uploadedClips);
     } catch (error) {
       throw error;
     }
@@ -253,7 +253,7 @@ export const InitCampaignEditContext = () => {
 
   subscriber.add(checkUploadedFilesBus$.subscribe(
     clips => {
-      const ids = clips.map(clip => clip.id);
+      const ids = clips.map(clip => String(clip.id));
 
       const { project } = getCurrentState();
 
@@ -263,19 +263,13 @@ export const InitCampaignEditContext = () => {
 
       const preparedClips: CampaignPlayListFileType[] = clips.map((clip, index) => ({
         file: {
-          composer: clip.composer,
-          file_name: clip.file_name,
+          ...clip,
           last_change_date: new Date(clip.last_change_date),
-          duration: clip.duration,
-          hash_sum: clip.hash_sum,
-          mime_type: clip.mime_type,
-          origin_name: clip.origin_name,
           player_file_id: "",
-          title: clip.title,
-          id: clip.id,
+          id: String(clip.id),
           project_id: project,
         },
-        file_id: clip.id,
+        file_id: String(clip.id),
         id: "",
         playlist_id: "",
         sort: lastSortNumber + index + 1,
@@ -288,7 +282,7 @@ export const InitCampaignEditContext = () => {
 
       const uploadedClips = uploadedClips$.getValue();
 
-      uploadedClips$.next(uploadedClips.filter(clip => !ids.some(id => id === clip)));
+      uploadedClips$.next(uploadedClips.filter(clip => ids.some(id => id === clip)));
     }
   ));
 

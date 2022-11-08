@@ -11,6 +11,7 @@ import TrackTable from "./TrackTable";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 import { distinctUntilKeyChanged } from "rxjs";
 import { styled } from "@mui/system";
+import { notificationsDispatcher } from "services/notifications";
 
 const StyledHeaderWrapper = styled('div')({
   display: 'flex',
@@ -36,6 +37,8 @@ const Clips: FC = () => {
 
   const [selected, setSelected] = useState<string[]>([]);
 
+  const messanger = notificationsDispatcher();
+
   const onDeleteTrackHandler = () => {
     removeLoadedFile(selected);
 
@@ -44,6 +47,11 @@ const Clips: FC = () => {
 
   const onAddClick = () => {
     addLoadedToPlaylist(selected);
+
+    messanger.dispatch({
+      message: t("edit-campaign-playlist.success.clip-added-to-campaign-playlist"),
+      type: "success",
+    });
 
     setSelected([]);
   };
