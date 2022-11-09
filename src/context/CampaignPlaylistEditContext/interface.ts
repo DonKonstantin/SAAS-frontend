@@ -34,47 +34,47 @@ export interface CampaignPlaylistEditContextActionsTypes {
   /**
    * Устанавливает флаг редактирования true
    */
-   setIsEditable: VoidFunction;
+  setIsEditable: VoidFunction;
 
-   /**
-    * Двигает трэк в вверх по очереди
-    */
-   moveTrackUp: (fileId: string) => void;
+  /**
+   * Двигает трэк в вверх по очереди
+   */
+  moveTrackUp: (fileId: string) => void;
 
-   /**
-    * Двигает трэк в вниз по очереди
-    */
-   moveTrackDown: (fileId: string) => void;
+  /**
+   * Двигает трэк в вниз по очереди
+   */
+  moveTrackDown: (fileId: string) => void;
 
-   /**
-    * Удаляет трэк из списка
-    */
-   removeTrack: (fileId: string) => void;
+  /**
+   * Удаляет трэк из списка
+   */
+  removeTrack: (fileId: string) => void;
 
-   /**
-    * Записывает значение projectId
-    */
-   setProjectId: (projectId: string) => void;
+  /**
+   * Записывает значение projectId
+   */
+  setProjectId: (projectId: string) => void;
 
-   /**
-    * Удаляет загруженный ролик из списка доступных для добавления к плэйлисту
-    */
-   removeLoadedFile: (fileIds: string[]) => void;
+  /**
+   * Удаляет загруженный ролик из списка доступных для добавления к плэйлисту
+   */
+  removeLoadedFile: (fileIds: string[]) => void;
 
-   /**
-    * Добавляем загруженные файлы к плэйлисту
-    */
-   addLoadedToPlaylist: (fileIds: string[]) => void;
+  /**
+   * Добавляем загруженные файлы к плэйлисту
+   */
+  addLoadedToPlaylist: (fileIds: string[]) => void;
 
-   /**
-    * Добавляем список загруженных файлов
-    */
-   addFilesToUpload: (fileIds: string[]) => void;
+  /**
+   * Добавляем список загруженных файлов
+   */
+  addFilesToUpload: (fileIds: string[]) => void;
 
-   /**
-    * Записывает флаг загрузки
-    */
-   setIsLoading: (isLoading: boolean) => void;
+  /**
+   * Записывает флаг загрузки
+   */
+  setIsLoading: (isLoading: boolean) => void;
 };
 
 

@@ -105,15 +105,15 @@ const removeTrackBus$ = removeTrack$.pipe(
     const playlistData = playlist[playlistType];
 
     const files = playlistData?.files
-    //@ts-ignore
-    .filter(file => file.file_id !== fileId)
-    .sort((a, b) => {
-      const aValue = Number(a.sort);
-      const bValue = Number(b.sort);
-  
-      return aValue - bValue;
-    })
-    .map((file, index) => ({...file, sort: index + 1}));
+      //@ts-ignore
+      .filter(file => file.file_id !== fileId)
+      .sort((a, b) => {
+        const aValue = Number(a.sort);
+        const bValue = Number(b.sort);
+
+        return aValue - bValue;
+      })
+      .map((file, index) => ({...file, sort: index + 1}));
 
     return {
       ...playlist,
@@ -181,17 +181,17 @@ const moveTrackBus$ = moveTrack$.pipe(
 );
 
 const collectBus$: Observable<
-Pick<
-  CampaignPlaylistEditContextTypes,
-  'playlist'
-  | 'availableTabs'
-  | 'isEdit'
-  | 'projectId'
-  | 'loadedClips'
-  | 'uploadedClips'
-  | 'isLoading'
->
-> = combineLatest([
+  Pick<
+    CampaignPlaylistEditContextTypes,
+    'playlist'
+    | 'availableTabs'
+    | 'isEdit'
+    | 'projectId'
+    | 'loadedClips'
+    | 'uploadedClips'
+    | 'isLoading'
+    >
+  > = combineLatest([
   playlist$,
   availableTabs$,
   isEdit$,
@@ -202,14 +202,14 @@ Pick<
 ]).pipe(
   map(
     ([
-      playlist,
-      availableTabs,
-      isEdit,
-      projectId,
-      loadedClips,
-      uploadedClips,
-      isLoading,
-    ]) => ({
+       playlist,
+       availableTabs,
+       isEdit,
+       projectId,
+       loadedClips,
+       uploadedClips,
+       isLoading,
+     ]) => ({
       playlist,
       availableTabs,
       isEdit,
@@ -291,7 +291,7 @@ export const InitCampaignEditContext = () => {
 
 /**
  * Записываем плэйлист в контекст
- * @param campaign 
+ * @param campaign
  */
 const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = campaign => {
   const { project } = getCurrentState();
@@ -316,7 +316,7 @@ const clearContext: CampaignPlaylistEditContextActionsTypes['clearContext'] = ()
 
 /**
  * Записывает флаг доступности дополнительных табов табов
- * @param value 
+ * @param value
  */
 const setAvailableTabs: CampaignPlaylistEditContextActionsTypes['setAvailableTabs'] = (value) => {
   availableTabs$.next(value);
@@ -326,7 +326,7 @@ const setAvailableTabs: CampaignPlaylistEditContextActionsTypes['setAvailableTab
  * Записывает чистый объект плэйлиста в контекст
  * @param sortOrder
  */
- const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (sortOrder) => {
+const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (sortOrder) => {
   const { project, domain } = getCurrentState();
 
   projectId$.next(project);
@@ -365,7 +365,7 @@ const setIsEditable: CampaignPlaylistEditContextActionsTypes['setIsEditable'] = 
 
 /**
  * Двигает трэк в вверх по очереди
- * @param fileId 
+ * @param fileId
  */
 const moveTrackUp: CampaignPlaylistEditContextActionsTypes['moveTrackUp'] = fileId => {
   moveTrack$.next({
@@ -376,7 +376,7 @@ const moveTrackUp: CampaignPlaylistEditContextActionsTypes['moveTrackUp'] = file
 
 /**
  * Двигает трэк в вниз по очереди
- * @param fileId 
+ * @param fileId
  */
 const moveTrackDown: CampaignPlaylistEditContextActionsTypes['moveTrackDown'] = fileId => {
   moveTrack$.next({
@@ -387,7 +387,7 @@ const moveTrackDown: CampaignPlaylistEditContextActionsTypes['moveTrackDown'] = 
 
 /**
  * Удаляет трэк из списка
- * @param fileId 
+ * @param fileId
  */
 const removeTrack: CampaignPlaylistEditContextActionsTypes['removeTrack'] = fileId => {
   removeTrack$.next(fileId);
@@ -395,7 +395,7 @@ const removeTrack: CampaignPlaylistEditContextActionsTypes['removeTrack'] = file
 
 /**
  * Удаляет трэк из списка
- * @param projectId 
+ * @param projectId
  */
 const setProjectId: CampaignPlaylistEditContextActionsTypes['setProjectId'] = projectId => {
   projectId$.next(projectId);
@@ -403,7 +403,7 @@ const setProjectId: CampaignPlaylistEditContextActionsTypes['setProjectId'] = pr
 
 /**
  * Удаляет загруженный ролик из списка доступных для добавления к плэйлисту
- * @param fileIds 
+ * @param fileIds
  */
 const removeLoadedFile: CampaignPlaylistEditContextActionsTypes['removeLoadedFile'] = fileIds => {
   removeLoadedFile$.next(fileIds);
@@ -411,7 +411,7 @@ const removeLoadedFile: CampaignPlaylistEditContextActionsTypes['removeLoadedFil
 
 /**
  * Добавляем загруженные файлы к плэйлисту
- * @param fileIds 
+ * @param fileIds
  */
 const addLoadedToPlaylist: CampaignPlaylistEditContextActionsTypes['addLoadedToPlaylist'] = fileIds => {
   addLoadedToPlaylist$.next(fileIds);
@@ -419,18 +419,18 @@ const addLoadedToPlaylist: CampaignPlaylistEditContextActionsTypes['addLoadedToP
 
 /**
  * Добавляем список загруженных файлов
- * @param fileIds 
+ * @param fileIds
  */
 const addFilesToUpload: CampaignPlaylistEditContextActionsTypes['addFilesToUpload'] = fileIds => {
   uploadedClips$.next([
-    ...uploadedClips$.getValue(), 
+    ...uploadedClips$.getValue(),
     ...fileIds
   ]);
 };
 
 /**
  * Добавляем загруженные файлы к плэйлисту
- * @param isLoading 
+ * @param isLoading
  */
 const setIsLoading: CampaignPlaylistEditContextActionsTypes['setIsLoading'] = isLoading => {
   isLoading$.next(isLoading);

@@ -6,7 +6,7 @@ import * as React from 'react';
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { DesktopTimePicker, LocalizationProvider } from "@mui/lab";
 import dayjs from "dayjs";
-import { timeConverter } from 'components/timeConverter';
+import { timeConverter, timeConverterNumberForTime } from 'components/timeConverter';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ export default function RHFTimeField({
                                      }: IProps & TextFieldProps) {
   const { control } = useFormContext();
 
-  const timeValueStart = dayjs(new Date()).format("YYYY-MM-DD") + "T" + dayjs.duration(timeValue, 'm').format("HH:mm");
+  const timeValueStart = dayjs(new Date()).format("YYYY-MM-DD") + "T" + timeConverterNumberForTime(timeValue);
 
   return (
     <Controller

@@ -5,27 +5,29 @@ import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 import { makeInputPlaylists } from "./helpers";
 import {
   ExportedPlaylistType,
-  ProjectPlaylistServiceInterface,
+  GetCampaignsByPlaylistIDsQueryParams,
+  GetCampaignsByPlaylistIDsQueryResponse,
+  GetCampaignsIdByNameQueryParams,
+  GetCampaignsIdByNameQueryResponse,
+  GetPlaylistFilesByPlaylistIdQueryParams,
+  GetPlaylistFilesByPlaylistIdQueryResponse,
+  GetPlaylistFilesByPlaylistIdsQueryParams,
+  GetPlaylistFilesByPlaylistIdsQueryResponse,
+  GetPlaylistsCampaignByNameParams,
+  GetPlaylistsCampaignByNameResponse,
+  GetPlaylistsIdByCampaignsIdQueryParams,
+  GetPlaylistsIdByCampaignsIdQueryResponse,
+  PlaylistCampaignsNameType,
+  PlaylistsResponseType,
+  ProjectPlayList,
+  ProjectPlayListFile,
   ProjectPlayListInputObject,
+  ProjectPlaylistServiceInterface,
   RefreshCampaignsMutationParams,
   RefreshCampaignsMutationResponse,
   StorePlaylistMutationParams,
   StorePlaylistMutationResponse,
-  ProjectPlayListFile,
-  GetPlaylistFilesByPlaylistIdQueryParams,
-  GetPlaylistFilesByPlaylistIdQueryResponse,
-  GetCampaignsByPlaylistIDsQueryParams,
-  GetCampaignsByPlaylistIDsQueryResponse,
-  PlaylistCampaignsNameType,
-  GetPlaylistFilesByPlaylistIdsQueryParams,
-  GetPlaylistFilesByPlaylistIdsQueryResponse,
-  GetCampaignsIdByNameQueryParams,
-  GetCampaignsIdByNameQueryResponse,
-  GetPlaylistsIdByCampaignsIdQueryParams,
-  GetPlaylistsIdByCampaignsIdQueryResponse,
-  ProjectPlayList,
 } from "./interfaces";
-import {} from "./interfaces";
 import { GetPlaylistFilesByPlaylistIdQuery } from "./Querys/getFiles";
 import { GetCampaignsByPlaylistIDsQuery } from "./Querys/getCampaigns";
 import { RefreshCampaignsMutation } from "./Mutations/refreshCampaigns";
@@ -33,13 +35,13 @@ import { GetPlaylistFilesByPlaylistIdsQuery } from "./Querys/getFilesByPlaylists
 import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
 import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
 import { StorePlaylistMutation } from "./Mutations/storePlaylist";
+import { GetCampaignsProjectPlaylistQuery } from "./Querys/getProjectPlaylist";
 
 /**
  * Сервис для работы со списком плэйлистов
  */
 export default class ProjectPlaylistService
-  implements ProjectPlaylistServiceInterface
-{
+  implements ProjectPlaylistServiceInterface {
   // Клиент GraphQL API
   private readonly client: GraphQLClient;
 
@@ -57,7 +59,7 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем сведения о файлах плэйлистов по ИД плэйлистов
-   * @param playlistsIDs
+   * @param playlistsId
    * @returns
    */
   async getFiles(
@@ -66,10 +68,8 @@ export default class ProjectPlaylistService
     this.logger.Debug("ID плэйлистов: ", playlistsId);
 
     try {
-      const response = await this.client.Query<
-        GetPlaylistFilesByPlaylistIdQueryParams,
-        GetPlaylistFilesByPlaylistIdQueryResponse
-      >(new GetPlaylistFilesByPlaylistIdQuery(playlistsId), {});
+      const response = await this.client.Query<GetPlaylistFilesByPlaylistIdQueryParams,
+        GetPlaylistFilesByPlaylistIdQueryResponse>(new GetPlaylistFilesByPlaylistIdQuery(playlistsId), {});
 
       this.logger.Debug("Ответ на запрос файлов для плэйлистов: ", response);
 
@@ -87,19 +87,17 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем сведения о файлах плэйлистов по ИД плэйлистов
-   * @param playlistsIDs
+   * @param playlistIds
    * @returns
    */
-   async getFilesByPlaylistIds(
+  async getFilesByPlaylistIds(
     playlistIds: string[]
   ): Promise<GetPlaylistFilesByPlaylistIdsQueryResponse> {
     this.logger.Debug("ID плэйлистов: ", playlistIds);
 
     try {
-      const response = await this.client.Query<
-        GetPlaylistFilesByPlaylistIdsQueryParams,
-        GetPlaylistFilesByPlaylistIdsQueryResponse
-      >(new GetPlaylistFilesByPlaylistIdsQuery(playlistIds), {});
+      const response = await this.client.Query<GetPlaylistFilesByPlaylistIdsQueryParams,
+        GetPlaylistFilesByPlaylistIdsQueryResponse>(new GetPlaylistFilesByPlaylistIdsQuery(playlistIds), {});
 
       this.logger.Debug("Ответ на запрос файлов для плэйлистов: ", response);
 
@@ -124,10 +122,8 @@ export default class ProjectPlaylistService
     this.logger.Debug("ID плэйлистов: ", playlistsIDs);
 
     try {
-      const response = await this.client.Query<
-        GetCampaignsByPlaylistIDsQueryParams,
-        GetCampaignsByPlaylistIDsQueryResponse
-      >(new GetCampaignsByPlaylistIDsQuery(playlistsIDs), {});
+      const response = await this.client.Query<GetCampaignsByPlaylistIDsQueryParams,
+        GetCampaignsByPlaylistIDsQueryResponse>(new GetCampaignsByPlaylistIDsQuery(playlistsIDs), {});
 
       this.logger.Debug("Ответ на запрос проектов для плэйлистов: ", response);
 
@@ -152,10 +148,8 @@ export default class ProjectPlaylistService
     this.logger.Debug("ID плэйлистов: ", playlistIds);
 
     try {
-      const response = await this.client.Query<
-        RefreshCampaignsMutationParams,
-        RefreshCampaignsMutationResponse
-      >(new RefreshCampaignsMutation(playlistIds), {});
+      const response = await this.client.Query<RefreshCampaignsMutationParams,
+        RefreshCampaignsMutationResponse>(new RefreshCampaignsMutation(playlistIds), {});
 
       this.logger.Debug(
         "Ответ мутации обновления связных компаний: ",
@@ -205,10 +199,8 @@ export default class ProjectPlaylistService
 
       const response = await Promise.all(
         preparedPlaylists.map(async (playlist) => {
-          return await this.client.Mutation<
-            StorePlaylistMutationParams,
-            StorePlaylistMutationResponse
-          >(new StorePlaylistMutation(playlist!), {});
+          return await this.client.Mutation<StorePlaylistMutationParams,
+            StorePlaylistMutationResponse>(new StorePlaylistMutation(playlist!), {});
         })
       );
 
@@ -242,10 +234,8 @@ export default class ProjectPlaylistService
     try {
       const response = await Promise.all(
         playlists.map(async (playlist) => {
-          return await this.client.Mutation<
-            StorePlaylistMutationParams,
-            StorePlaylistMutationResponse
-          >(new StorePlaylistMutation(playlist!), {});
+          return await this.client.Mutation<StorePlaylistMutationParams,
+            StorePlaylistMutationResponse>(new StorePlaylistMutation(playlist!), {});
         })
       );
 
@@ -265,17 +255,15 @@ export default class ProjectPlaylistService
 
   /**
    * Сохраняем изменения в плэйлисте
-   * @param playlist 
-   * @returns 
+   * @param playlist
+   * @returns
    */
   async storePlaylistChanges(playlist: ProjectPlayListInputObject): Promise<ProjectPlayList> {
     this.logger.Debug("Данные плэйлиста для сохранения: ", playlist);
 
     try {
-      const response = await this.client.Mutation<
-            StorePlaylistMutationParams,
-            StorePlaylistMutationResponse
-          >(new StorePlaylistMutation(playlist), {});
+      const response = await this.client.Mutation<StorePlaylistMutationParams,
+        StorePlaylistMutationResponse>(new StorePlaylistMutation(playlist), {});
 
       this.logger.Debug("Ответ на мутацию сохранения плэйлиста: ", response);
 
@@ -293,18 +281,16 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем список ID кампаний по имени
-   * @param campaignName 
-   * @param projectId 
-   * @returns 
+   * @param campaignName
+   * @param projectId
+   * @returns
    */
   async getCampaignsIdByName(campaignName: string, projectId: string): Promise<any> {
     this.logger.Debug("Имя кампании: ", campaignName);
 
     try {
-      const response = await this.client.Mutation<
-          GetCampaignsIdByNameQueryParams,
-          GetCampaignsIdByNameQueryResponse
-        >(new GetCampaignsIdByNameQuery(campaignName, projectId), {});
+      const response = await this.client.Mutation<GetCampaignsIdByNameQueryParams,
+        GetCampaignsIdByNameQueryResponse>(new GetCampaignsIdByNameQuery(campaignName, projectId), {});
 
       this.logger.Debug("Ответ на запрос массива ID кампаний по имени: ", response);
 
@@ -322,16 +308,14 @@ export default class ProjectPlaylistService
 
   /**
    * Получаем список ID плэйлистов по списку ID кампаний
-   * @param campignsId 
+   * @param campignsId
    */
   async getPlaylistsIdByCampignsId(campignsId: string[]): Promise<string[]> {
     this.logger.Debug("Список ID кампаний: ", campignsId);
 
     try {
-      const response = await this.client.Mutation<
-          GetPlaylistsIdByCampaignsIdQueryParams,
-          GetPlaylistsIdByCampaignsIdQueryResponse
-        >(new GetPlaylistsIdByCampaignsIdQuery(campignsId), {});
+      const response = await this.client.Mutation<GetPlaylistsIdByCampaignsIdQueryParams,
+        GetPlaylistsIdByCampaignsIdQueryResponse>(new GetPlaylistsIdByCampaignsIdQuery(campignsId), {});
 
       this.logger.Debug("Ответ на запрос массива ID плэйлистов по массиву ID кампаний: ", response);
 
@@ -346,4 +330,31 @@ export default class ProjectPlaylistService
       throw error.errors;
     }
   };
+
+  /**
+   * Получаем список плейлистов по названию
+   * @param playlistName
+   * @param projectId
+   */
+  async getPlaylistsByName(playlistName: string, projectId: number): Promise<PlaylistsResponseType[]> {
+    this.logger.Debug("Список плейлистов по названию: ", playlistName);
+
+    try {
+      const response = await this.client.Query<GetPlaylistsCampaignByNameParams,
+        GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistQuery(playlistName, projectId), {});
+
+      this.logger.Debug("Ответ на запрос плэйлистов: ", response);
+
+      return response.playlists;
+    } catch (error) {
+      this.logger.Error("Ошибка запроса плэйлистов: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
 }

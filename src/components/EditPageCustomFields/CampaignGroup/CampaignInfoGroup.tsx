@@ -1,7 +1,7 @@
-import { distinctUntilKeyChanged } from "rxjs";
-import { Alert, Collapse, Grid, Paper, Tab, Box } from "@mui/material";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
+import { Alert, Box, Collapse, Grid, Paper, Stack, Tab } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { useTranslation } from "react-i18next";
 import { FormProvider } from "../../hook-form";
 import { useForm } from "react-hook-form";
@@ -10,11 +10,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getCurrentState } from "../../../context/AuthorizationContext";
 import { useRouter } from "next/router";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import CampaignPlaylistEditContextConnector from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
+import CampaignPlaylistEditContextConnector
+  from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
 import { Channels } from "./Channels";
 import { campaignListService } from "../../../services/campaignListService";
 import {
-  CampaignDay,
   CampaignEndType,
   CampaignLowPriority,
   CampaignPeriodType,
@@ -23,15 +23,12 @@ import {
   CampaignPriority,
   CampaignType,
 } from "../../../services/projectPlaylistService/interfaces";
-import {
-  CampaignDaysType,
-  CampaignChannelInputObject,
-  CampaignPlaylistConnectInput,
-} from "../../../services/campaignListService/types";
+import { CampaignDaysType, CampaignInput, } from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import { useCampaignEditContext } from "../../../context/CampaignEditContext/useCampaignEditContext";
-import { distinctUntilChanged } from "rxjs";
 import { isEqual } from "lodash";
+import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
+import CampaignContent from "./CampaignContent/CampaignContent";
 import { EditPlaylist } from "./EditPlaylist";
 
 enum optionsForTabs {
@@ -40,41 +37,6 @@ enum optionsForTabs {
   "channels" = "channels",
 }
 
-export type FormValuesProps = {
-  // campaign_type: "simple" | "mute"
-  // timeQueue: number
-  // campaign_end_type: "finish" | "break"
-  // campaign_priority: "higher" | "background" | "low" | "normal" | "high"
-  // campaign_low_priority_end_type?: "finish" | "break"
-  // campaign_play_type: "periodic" | "continuous"
-  // campaign_play_tracks_quantity: number
-  // campaign_play_tracks_period_value: number
-  // campaign_play_tracks_period_type: "hours" | "minutes"
-  // campaign_period_start: any
-  // campaign_period_stop: any
-  // campaign_days_type: "daily" | "daysOfTheWeek"
-  name: string;
-  campaign_type: string;
-  timeQueue?: number;
-  campaign_end_type: string;
-  campaign_priority: string;
-  campaign_low_priority_end_type: string;
-  campaign_play_type: string;
-  campaign_play_tracks_quantity: number;
-  campaign_play_tracks_period_value: number;
-  campaign_play_tracks_period_type: string;
-  campaign_period_start: Date | null;
-  campaign_period_stop: Date | null;
-  campaign_days_type: string;
-  days: CampaignDay[];
-  playlists: CampaignPlaylistConnectInput[];
-  project_id: string;
-  // id: number
-  campaign_play_order: string;
-  campaign_all_days_stop_minutes: number;
-  channels: CampaignChannelInputObject[];
-  campaign_all_days_start_minutes: number;
-};
 enum daysName {
   "monday" = 1,
   "tuesday" = 2,
@@ -82,8 +44,10 @@ enum daysName {
   "thursday" = 4,
   "friday" = 5,
   "saturday" = 6,
-  "sunday" = 7,
+  "sunday" = 7
 }
+
+export type FormValuesProps = CampaignInput
 
 // Компонент вывода группы создания компании
 const CampaignInfoGroup = () => {
@@ -193,7 +157,7 @@ const CampaignInfoGroup = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const watchTime = {
@@ -338,13 +302,13 @@ const CampaignInfoGroup = () => {
   }, [showSuccessUpdateName, campaignListErrorText]);
 
   if (isLoading) {
-    return <LoadingBlocker />;
+    return <LoadingBlocker/>;
   }
 
   return (
     <>
       <CampaignPlaylistEditContextConnector>
-        {!!playlist && <EditPlaylist />}
+        {!!playlist && <EditPlaylist/>}
         <Grid item xs={12}>
           <Box sx={{ width: "100%" }}>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -400,14 +364,41 @@ const CampaignInfoGroup = () => {
                     key={optionsForTabs.schedule}
                     sx={{ p: 0 }}
                   >
-                    {t("pages.campaign.add.buttons.save")}
+                    <CampaignSchedule watchTime={watchTime}/>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <LoadingButton
+                        variant="outlined"
+                        color="success"
+                        type="submit"
+                        sx={{ m: "18px 21px 18px 0" }}
+                        loading={isSubmitting}
+                      >
+                        {t("pages.campaign.add.buttons.save")}
+                      </LoadingButton>
+                    </Stack>
+                  </TabPanel>
+                  <TabPanel
+                    value={optionsForTabs.content}
+                    key={optionsForTabs.content}
+                    sx={{ p: 0 }}
+                  >
+                    <CampaignContent/>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <LoadingButton
+                        variant="outlined"
+                        color="success"
+                        sx={{ m: "18px 21px 18px 0" }}
+                      >
+                        {t("pages.campaign.add.buttons.save")}
+                      </LoadingButton>
+                    </Stack>
                   </TabPanel>
                   <TabPanel
                     value={optionsForTabs.channels}
                     key={optionsForTabs.channels}
                     sx={{ p: 0 }}
                   >
-                    <Channels />
+                    <Channels/>
                   </TabPanel>
                 </Paper>
               </TabContext>

@@ -300,17 +300,15 @@
         "header": "Создать компанию",
         "breadcrumb": "Создать компанию",
         "fields": {
-          "name": "Название",
-          "campaign_type": "Тип компании:",
-          "timeQueue": {
-            "timeQueue": "Время ожидания в очереди:",
-            "seconds": "секунды"
+          "schedule": {
+            "name": "Название",
+            "campaign_type": "Тип компании:",
+            "campaign_end_type": "После окончания:",
+            "campaign_priority": "Приоритет:",
+            "campaign_low_priority_end_type": "Компании с меньшим приоритетом:",
+            "campaign_play_type": "Воспроизведение",
+            "campaign_period": "Период компании"
           },
-          "campaign_end_type": "После окончания:",
-          "campaign_priority": "Приоритет:",
-          "campaign_low_priority_end_type": "Компании с меньшим приоритетом:",
-          "campaign_play_type": "Воспроизведение",
-          "campaign_period": "Период компании",
           "campaign_days": {
             "title": "Дни недели:",
             "monday": "Понедельник",
@@ -338,28 +336,72 @@
           "channels": "Каналы"
         },
         "fields": {
-          "campaign-priority-enum": {
-            "priority-enum-error": "Необходимо выбрать хотя бы один приоритет"
+          "schedule": {
+            "campaign-priority-enum": {
+              "priority-enum-error": "Необходимо выбрать хотя бы один приоритет"
+            },
+            "campaign-type": {
+              "simple": "Обычная",
+              "mute": "Mute"
+            },
+            "campaign_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_low_priority_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_play_type": {
+              "periodic": "Периодичное",
+              "continuous": "Непрерывное"
+            },
+            "campaign_play_tracks_period_type": {
+              "hours": "часы",
+              "minutes": "минут"
+            }
           },
-          "campaign-type": {
-            "simple": "Обычная",
-            "mute": "Mute"
-          },
-          "campaign_end_type": {
-            "finish": "Закончить трек",
-            "break": "Прервать немедленно"
-          },
-          "campaign_low_priority_end_type": {
-            "finish": "Закончить трек",
-            "break": "Прервать немедленно"
-          },
-          "campaign_play_type": {
-            "periodic": "Периодичное",
-            "continuous": "Непрерывное"
-          },
-          "campaign_play_tracks_period_type": {
-            "hours": "часы",
-            "minutes": "минут"
+          "content": {
+            "campaign_play_order": {
+              "title": "Порядок воспроизведения",
+              "mix": "Перемешать",
+              "byOrder": "Подряд"
+            },
+            "continues": "Длительность",
+            "trackCount": "Количество треков",
+            "playlist": {
+              "title": "Добавить существующий плейлист",
+              "noOptions": "Нет совпадений",
+              "buttons": {
+                "add": "Добавить",
+                "create": "Создать плейлист"
+              },
+              "drop-zone": {
+                "title": "Переместите файлы для загрузки"
+              },
+              "table": {
+                "headCells": {
+                  "name": "Название",
+                  "trackCount": "Количество треков",
+                  "files": "Продолжительность",
+                  "shuffle": "Перемешать",
+                  "count": "Счетчик"
+                },
+                "snackbar": {
+                  "addPlaylist": "Плейлист {{name}} успешно добавлен"
+                },
+                "deleteDialog": {
+                  "header": "Удаление плейлиста {{name}}",
+                  "title": "Вы действиетльно хотите удалить плейлист {{name}}??",
+                  "buttons": {
+                    "tooltip-cancel": "Отменить удаление плейлиста",
+                    "tooltip-delete": "Подтвердить удаление плейлиста",
+                    "cancel": "Отмена",
+                    "delete": "Удалить"
+                  }
+                }
+              }
+            }
           },
           "campaign_days_type": {
             "daily": "Ежедневно",

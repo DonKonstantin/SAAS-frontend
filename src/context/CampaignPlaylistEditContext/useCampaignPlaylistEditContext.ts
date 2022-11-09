@@ -6,9 +6,9 @@ import { CampaignPlaylistEditContextCommonType, CampaignPlaylistEditContextTypes
 /**
  * хук жоступа к контексту редактирования плэйлиста кампании
  * @param pipeModificators
- * @returns 
+ * @returns
  */
- export const useCampaignPlaylistEditContext = (
+export const useCampaignPlaylistEditContext = (
   ...pipeModificators: OperatorFunction<CampaignPlaylistEditContextTypes, any>[]
 ): CampaignPlaylistEditContextCommonType => {
   const [contextData, setContextData] = useState<CampaignPlaylistEditContextTypes>(

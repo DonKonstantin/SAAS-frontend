@@ -95,7 +95,7 @@ export interface CampaignPlaylistConnect {
   sortOrder: number;                                        //  Порядок сортировки плейлиста
 }
 
-//  Сущность плейлиста кампании 
+//  Сущность плейлиста кампании
 export interface CampaignPlayList {
   campaign_id: string;                                        //  Идентификатор кампании, к которой относится плейлист
   duration: number;                                           // Общая длительность плейлиста
