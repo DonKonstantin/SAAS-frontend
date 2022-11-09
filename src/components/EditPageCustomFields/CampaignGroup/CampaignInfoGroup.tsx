@@ -63,11 +63,12 @@ const CampaignInfoGroup = () => {
     return null;
   }
 
-  const { campaign, isLoading, campaignListErrorText, loadCampaign } =
+  const { campaign, isInitialized, campaignListErrorText, successCreatedPlaylist, loadCampaign, clearAddedCampaign } =
     useCampaignEditContext(
       distinctUntilChanged(
         (prev, curr) =>
-          prev.isLoading === curr.isLoading &&
+          prev.isInitialized === curr.isInitialized &&
+          prev.successCreatedPlaylist === curr.successCreatedPlaylist &&
           isEqual(prev.campaign, curr.campaign)
       )
     );
@@ -77,6 +78,14 @@ const CampaignInfoGroup = () => {
     useState<string>("");
   const [showError, setShowError] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
+  const [isLoadingButton, setIsLoadingButton] = useState<boolean>(false);
+
+  //Выбор контетной табы
+  const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
+
+  const changeCurrentTab = (_event: React.SyntheticEvent, newValue: any) => {
+    setCurrentActionTab(newValue);
+  };
 
   const asPathWithoutQuery = router.asPath.split("?")[0];
   const asPathNestedRoutes = asPathWithoutQuery
@@ -157,6 +166,7 @@ const CampaignInfoGroup = () => {
     handleSubmit,
     watch,
     setValue,
+    getValues,
     formState: { isSubmitting, errors },
   } = methods;
 
@@ -182,6 +192,7 @@ const CampaignInfoGroup = () => {
         days_stop_minutes: day.days_stop_minutes,
         is_active: day.is_active,
       };
+
       if (day.id) {
         return { ...daysForData, id: day.id };
       }
@@ -220,12 +231,72 @@ const CampaignInfoGroup = () => {
     }
   };
 
-  //Выбор контетной табы
-  const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
+  const onSave = async () => {
+    if (!campaign) {
+      return
+    }
 
-  const changeCurrentTab = (_event: React.SyntheticEvent, newValue: any) => {
-    setCurrentActionTab(newValue);
-  };
+    const playlistInput = campaign.playlists.map(playlist => {
+
+      let projectOrCampaignPlaylistId;
+      if (playlist.campaignPlaylistId) {
+        projectOrCampaignPlaylistId = { campaignPlaylistId: playlist.campaignPlaylistId }
+      } else {
+        projectOrCampaignPlaylistId = { projectPlaylistId: playlist.campaignPlaylistId }
+      }
+
+      return (
+        {
+          playCounter: playlist.playCounter,
+          periodStop: playlist.periodStop,
+          shuffle: playlist.shuffle,
+          periodStart: playlist.periodStart,
+          daysType: playlist.daysType,
+          days: playlist.days,
+          id: playlist.id,
+          isCampaignTimetable: playlist.isCampaignTimetable,
+          allDaysStartMinutes: playlist.allDaysStartMinutes,
+          allDaysStopMinutes: playlist.allDaysStopMinutes,
+          sortOrder: playlist.sortOrder,
+          ...projectOrCampaignPlaylistId
+        }
+      )
+    })
+    const daysForCampaign = campaign.days.map(day => ({
+      day_num: day.day_num,
+      days_start_minutes: day.days_start_minutes,
+      days_stop_minutes: day.days_stop_minutes,
+      is_active: day.is_active,
+      id: day.id
+    }))
+
+    setValue('playlists', playlistInput)
+    setValue('days', daysForCampaign)
+    const data = getValues()
+    delete data["version"];
+
+    setIsLoadingButton(true)
+
+    try {
+      await campaignListService().storeCampaign(data)
+      !successCreatedPlaylist && setCurrentActionTab("channels")
+    } catch (error) {
+      setErrorText(error);
+      setShowError(!!error);
+    }
+  }
+
+  // Автосохранение компании при добавлении музыки
+  useEffect(() => {
+    if (!campaign || !successCreatedPlaylist) {
+      return
+    }
+
+    onSave().finally(() => {
+      setIsLoadingButton(false)
+      clearAddedCampaign()
+    })
+  }, [campaign, successCreatedPlaylist])
 
   // Устанавливает значения по умолчанию если Тип компании выбран "Mute"
   useEffect(() => {
@@ -301,7 +372,7 @@ const CampaignInfoGroup = () => {
     };
   }, [showSuccessUpdateName, campaignListErrorText]);
 
-  if (isLoading) {
+  if (isInitialized) {
     return <LoadingBlocker/>;
   }
 
@@ -365,7 +436,32 @@ const CampaignInfoGroup = () => {
                     sx={{ p: 0 }}
                   >
                     <CampaignSchedule watchTime={watchTime}/>
-                    <Stack direction="row" justifyContent="flex-end">
+                  </TabPanel>
+                  <TabPanel
+                    value={optionsForTabs.content}
+                    key={optionsForTabs.content}
+                    sx={{ p: 0 }}
+                  >
+                    <CampaignContent/>
+                  </TabPanel>
+                  <TabPanel
+                    value={optionsForTabs.channels}
+                    key={optionsForTabs.channels}
+                    sx={{ p: 0 }}
+                  >
+                    <Channels/>
+                  </TabPanel>
+                  <Stack direction="row" justifyContent="flex-end">
+                    {router.query.entityId ?
+                      <LoadingButton
+                        variant="outlined"
+                        color="success"
+                        sx={{ m: "18px 21px 18px 0" }}
+                        onClick={onSave || isLoadingButton}
+                      >
+                        {t("pages.campaign.add.buttons.save")}
+                      </LoadingButton>
+                      :
                       <LoadingButton
                         variant="outlined"
                         color="success"
@@ -375,31 +471,8 @@ const CampaignInfoGroup = () => {
                       >
                         {t("pages.campaign.add.buttons.save")}
                       </LoadingButton>
-                    </Stack>
-                  </TabPanel>
-                  <TabPanel
-                    value={optionsForTabs.content}
-                    key={optionsForTabs.content}
-                    sx={{ p: 0 }}
-                  >
-                    <CampaignContent/>
-                    <Stack direction="row" justifyContent="flex-end">
-                      <LoadingButton
-                        variant="outlined"
-                        color="success"
-                        sx={{ m: "18px 21px 18px 0" }}
-                      >
-                        {t("pages.campaign.add.buttons.save")}
-                      </LoadingButton>
-                    </Stack>
-                  </TabPanel>
-                  <TabPanel
-                    value={optionsForTabs.channels}
-                    key={optionsForTabs.channels}
-                    sx={{ p: 0 }}
-                  >
-                    <Channels/>
-                  </TabPanel>
+                    }
+                  </Stack>
                 </Paper>
               </TabContext>
             </FormProvider>

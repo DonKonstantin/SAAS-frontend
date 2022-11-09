@@ -1,6 +1,6 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { DropzoneOptions, useDropzone } from "react-dropzone";
+import { DropzoneOptions, FileRejection, useDropzone } from "react-dropzone";
 import { Box, Typography } from "@mui/material";
 
 type Props = {
@@ -10,6 +10,7 @@ type Props = {
   height?: number;
   dropZonePadding?: number;
   messagePadding?: string;
+  reverseCallbackErrors?(error: FileRejection[]): void
 } & DropzoneOptions;
 
 const baseStyle = {
@@ -61,10 +62,11 @@ const DropZoneArea: FC<Props> = (props) => {
     height = 300,
     dropZonePadding = 40,
     messagePadding = "20px 24px 24px",
+    reverseCallbackErrors,
     ...other
   } = props;
 
-  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
+  const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject, fileRejections } =
     useDropzone(other);
 
   const style = useMemo(
@@ -79,6 +81,10 @@ const DropZoneArea: FC<Props> = (props) => {
     }),
     [isFocused, isDragAccept, isDragReject, active, height, dropZonePadding]
   );
+
+  useEffect(() => {
+    reverseCallbackErrors && reverseCallbackErrors(fileRejections)
+  }, [reverseCallbackErrors, fileRejections])
 
   return (
     // @ts-ignore
@@ -97,7 +103,7 @@ const DropZoneArea: FC<Props> = (props) => {
         }}
       >
         <Box sx={{ height: iconSize }}>
-          <CloudUploadIcon color={"primary"} sx={{ fontSize: iconSize }} />
+          <CloudUploadIcon color={"primary"} sx={{ fontSize: iconSize }}/>
         </Box>
         <Typography color={"primary"}>
           {!!customInputText?.length

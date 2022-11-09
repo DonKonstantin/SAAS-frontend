@@ -126,8 +126,6 @@ const CampaignContentTable = () => {
     setCurrentPlaylistForDelete(undefined)
   }
 
-  console.log(campaign)
-
   return (
     <>
       {
@@ -168,7 +166,7 @@ const CampaignContentTable = () => {
                       <TableRow
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.id}
                       >
                         <TableCell
                           id={labelId}
