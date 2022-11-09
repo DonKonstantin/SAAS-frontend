@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import React, { ReactNode } from "react";
 import LoadingBlocker from "../../../../LoadingBlocker";
 
-const RootStyle = styled(Box)<{ loading?: boolean }>(({ loading }) => ({
+const RootStyle = styled(Box)<{ loading: number }>(({ loading }) => ({
   position: 'relative',
   width: "100%",
   ['& .blur-on-loading-content']: {
@@ -21,17 +21,17 @@ const RootStyle = styled(Box)<{ loading?: boolean }>(({ loading }) => ({
 
 // ----------------------------------------------------------------------
 type Props = {
-  isInitialized: boolean
+  isLoading: boolean
   children: ReactNode
 }
 
-export default function LoadingBlurEffect({ isInitialized, children }: Props) {
+export default function LoadingBlurEffect({ isLoading, children }: Props) {
 
   return (
 
-    <RootStyle loading={isInitialized}>
+    <RootStyle loading={isLoading ? 1 : 0}>
       {
-        isInitialized && <div style={{
+        isLoading && <div style={{
           position: "absolute",
           top: "50%",
           left: "50%",

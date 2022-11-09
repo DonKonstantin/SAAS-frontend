@@ -93,7 +93,7 @@ const CampaignContent = () => {
         ))
       }
 
-      <LoadingBlurEffect isInitialized={isLoading}>
+      <LoadingBlurEffect isLoading={isLoading}>
         <PlayListContent/>
         <CampaignMediaFilesUpload/>
         <CampaignContentTable/>
