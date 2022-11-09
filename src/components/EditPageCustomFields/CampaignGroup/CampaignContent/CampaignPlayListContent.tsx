@@ -117,8 +117,6 @@ const CampaignPlayListContent = () => {
     })
   }, [project]);
 
-  console.log(!!currentPlaylist)
-
   return (
     <Grid container alignItems="center">
       <Grid item xs={3.5}>
