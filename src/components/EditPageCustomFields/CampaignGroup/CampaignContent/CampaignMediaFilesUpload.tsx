@@ -9,6 +9,7 @@ import { ProgressUploadStatusByFile } from 'components/MediaLibraryUploadPage/Me
 import { notificationsDispatcher } from "../../../../services/notifications";
 import { useCampaignEditContext } from "../../../../context/CampaignEditContext/useCampaignEditContext";
 import { distinctUntilChanged } from "rxjs";
+import { FileRejection } from "react-dropzone";
 
 const CampaignMediaFilesUpload = () => {
 
@@ -22,6 +23,11 @@ const CampaignMediaFilesUpload = () => {
     useState<ProgressUploadStatusByFile>({});
 
   const [uploading, setUploading] = useState<number>(100);
+  const [errorInDrag, setErrorInDrag] = useState<FileRejection[]>([]);
+
+  const getErrors = useCallback((data: FileRejection[]) => {
+    setErrorInDrag(data)
+  }, [])
 
   const messanger = notificationsDispatcher();
 
@@ -65,9 +71,6 @@ const CampaignMediaFilesUpload = () => {
           .map((res) => JSON.parse(res.data))
           .map((file) => file.file.id);
 
-        // console.log(response
-        //   .map((res) => JSON.parse(res.data)))
-
         addFilesToUploadPlaylist(filesId);
       } catch (error) {
         messanger.dispatch({
@@ -98,6 +101,15 @@ const CampaignMediaFilesUpload = () => {
     <Grid container>
       <Grid item xs={12}>
         <Paper sx={{ p: "14.5px 0 28px 0" }}>
+          {
+            errorInDrag.length > 0
+              ? <Box
+                sx={{ color: "red", fontSize: "20px", mb: "5px" }}
+              >
+                {t(`pages.campaign.edit.fields.content.playlist.drop-zone.error.${errorInDrag[0].errors[0].message}`, { count: 5 })}
+              </Box>
+              : null
+          }
           <DropZoneArea
             onDrop={onDrop}
             accept={"audio/*"}
@@ -108,6 +120,7 @@ const CampaignMediaFilesUpload = () => {
             dropZonePadding={22}
             messagePadding="15px 15px 10px"
             maxFiles={5}
+            reverseCallbackErrors={getErrors}
           />
 
           {uploading < 100 && (

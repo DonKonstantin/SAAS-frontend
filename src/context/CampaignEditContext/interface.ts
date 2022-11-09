@@ -4,6 +4,8 @@ export interface CampaignEditContextTypes {
   campaign: Campaign | undefined;
   isLoading: boolean
   campaignListErrorText: string | undefined
+  isInitialized: boolean
+  successCreatedPlaylist: boolean
 };
 
 export interface CampaignEditContextActionsTypes {
@@ -43,6 +45,12 @@ export interface CampaignEditContextActionsTypes {
    * @param fileIds
    */
   addFilesToUploadPlaylist: (fileIds: string[]) => void;
+
+  /**
+   * Изменяет сортировку плейлиста
+   * @param nextSave
+   */
+  clearAddedCampaign: () => void;
 
   /**
    * Записывает сущьность кампании в контекст

@@ -35,7 +35,7 @@ const TimePickerComponent: FC<Props> = (props) => {
         sx={{ maxWidth: "99px" }}
         disabled={disabled}
       />
-      <Box sx={{ maxWidth: "4px", width: "100%", alignSelf: "center" }}>-</Box>
+      <Box sx={{ maxWidth: "4px", width: "100%", alignSelf: "flex-start", mt: "3px" }}>-</Box>
       <RHFTimeField
         name={`${nameFieldDays}[${arrayFieldIndex}].days_stop_minutes`}
         day_num={day_num}

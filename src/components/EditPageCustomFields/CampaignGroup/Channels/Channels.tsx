@@ -74,7 +74,7 @@ const Channels: FC = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12}>
+      <Grid item xs={5}>
         <AddChannel />
       </Grid>
       <Grid item xs={12}>

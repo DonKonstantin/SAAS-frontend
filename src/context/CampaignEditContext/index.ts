@@ -14,6 +14,8 @@ class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
   isLoading: boolean = false
   campaignListErrorText: string | undefined = undefined
+  isInitialized: boolean = false
+  successCreatedPlaylist: boolean = false
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());
@@ -23,8 +25,6 @@ const campaign$ = new BehaviorSubject<Campaign | undefined>(undefined);
 const campaignId$ = new BehaviorSubject<string | undefined>('');
 // Стрим для хранения ошибок
 const campaignListErrorText$ = new BehaviorSubject<string | undefined>(undefined);
-//  Флаг для процесса загрузки
-const isLoading$ = new BehaviorSubject<boolean>(false);
 // Сущность нового плейлиста
 const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(undefined)
 // ID для удаления плейлиста
@@ -35,10 +35,16 @@ const shufflePlaylist$ = new BehaviorSubject<{ playlistId: string, shuffle: bool
 const movePlaylist$ = new BehaviorSubject<{ playlistId: string, direction: 'up' | 'down' } | undefined>(undefined);
 // Для загруженных треков по Drop Zone
 const uploadedTracksToPlaylist$ = new BehaviorSubject<string[]>([]);
+// Первоначальная загрузка компании
+const isInitialized$ = new BehaviorSubject<boolean>(false)
+//  Флаг для процесса загрузки
+const isLoading$ = new BehaviorSubject<boolean>(false);
+//  Флаг для автосохранения плейлиста при добавлении музыки
+const successCreatedPlaylist$ = new BehaviorSubject<boolean>(false);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
-  tap(() => isLoading$.next(true)),
+  tap(() => isInitialized$.next(true)),
   tap(() => campaignListErrorText$.next(undefined)),
   switchMap(async (campaignId) => {
     if (!campaignId) {
@@ -95,7 +101,7 @@ const loadCampaign$ = campaignId$.pipe(
 
   }),
   tap((campaign) => campaign$.next(campaign)),
-  tap(() => isLoading$.next(false)),
+  tap(() => isInitialized$.next(false)),
   tap(() => campaignId$.next(undefined))
 )
 
@@ -231,6 +237,7 @@ const movePlaylistBus$ = movePlaylist$.pipe(
 const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPlaylist$]).pipe(
   filter(incomingData => !!incomingData[1]?.length),
   map(incomingData => incomingData[1]),
+  tap(() => successCreatedPlaylist$.next(false)),
   switchMap(async uploadedTracks => {
     if (!uploadedTracks) {
       return
@@ -244,19 +251,18 @@ const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPl
   }),
   filter((files) => !!files?.length),
   map((fileResponse) => {
-
     if (!fileResponse) {
       return
     }
 
-    const { id, project_id } = campaign$.getValue()!
+    const { id, project_id, playlists } = campaign$.getValue()!
     if (!id && !project_id) {
       return
     }
 
     return {
       campaignId: Number(id),
-      name: fileResponse[0].origin_name,
+      name: "Плейлист компании № " + (playlists.length + 1),
       isOverallVolume: true,
       overallVolume: 100,
       files: fileResponse.map(file => (
@@ -268,8 +274,8 @@ const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPl
       )),
       projectId: Number(project_id)
     }
-
   }),
+  tap(() => isLoading$.next(true)),
   auditTime(5000),
   switchMap(async data => {
     if (!data) {
@@ -296,17 +302,23 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   | 'campaignListErrorText'>> = combineLatest([
   campaign$,
   isLoading$,
-  campaignListErrorText$
+  campaignListErrorText$,
+  isInitialized$,
+  successCreatedPlaylist$
 ]).pipe(
   map(
     ([
        campaign,
        isLoading,
-       campaignListErrorText
+       campaignListErrorText,
+       isInitialized,
+       successCreatedPlaylist
      ]) => ({
       campaign,
       isLoading,
-      campaignListErrorText
+      campaignListErrorText,
+      isInitialized,
+      successCreatedPlaylist
     })
   )
 );
@@ -330,7 +342,7 @@ export const InitCampaignEditContext = () => {
   subscriber.add(deletePlaylistFromProject$.subscribe());
   subscriber.add(shuffleCampaignPlaylist$.subscribe());
   subscriber.add(movePlaylistBus$.subscribe());
-  subscriber.add(checkUploadedFilesBus$.subscribe((newCampaignPlaylist) => {
+  subscriber.add(checkUploadedFilesBus$.subscribe(async (newCampaignPlaylist) => {
 
     if (!newCampaignPlaylist) {
       return
@@ -365,6 +377,8 @@ export const InitCampaignEditContext = () => {
     const playlistFiles = newCampaignPlaylist?.files.map(file => Number(file.id))
     const filesValues = uploadedTracksToPlaylist$.getValue()
     uploadedTracksToPlaylist$.next(filesValues.filter(file => playlistFiles.some(playlistFile => Number(playlistFile) === Number(file))))
+    isLoading$.next(false)
+    successCreatedPlaylist$.next(true)
   }));
 
   return () => subscriber.unsubscribe();
@@ -433,6 +447,13 @@ const addFilesToUploadPlaylist: CampaignEditContextActionsTypes['addFilesToUploa
   ]);
 };
 
+/**
+ * Устанавливаем флаг успешной сохранении компании при автосохранении компании
+ */
+const clearAddedCampaign: CampaignEditContextActionsTypes['clearAddedCampaign'] = () => {
+  successCreatedPlaylist$.next(false);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
@@ -440,5 +461,6 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   shuffleCampaignPlaylist,
   movePlaylistCampaign,
   addFilesToUploadPlaylist,
+  clearAddedCampaign,
   setCampaign
 };

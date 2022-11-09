@@ -11,14 +11,16 @@ import { distinctUntilChanged } from "rxjs";
 import { isEqual } from "lodash";
 import { timeConverterNumberForTime } from "../../../timeConverter";
 import { CampaignPlaylistConnect } from "../../../../services/campaignListService/types";
+import LoadingBlurEffect from "../CommonComponents/LoadingBlurEffect/LoadingBlurEffect";
 
 const CampaignContent = () => {
 
   const { t } = useTranslation()
 
-  const { campaign } = useCampaignEditContext(
+  const { campaign, isLoading } = useCampaignEditContext(
     distinctUntilChanged(
       (prev, curr) =>
+        prev.isLoading === curr.isLoading &&
         isEqual(prev.campaign, curr.campaign)
     )
   );
@@ -75,6 +77,7 @@ const CampaignContent = () => {
       size: { spacing: 4, xs: 2.5, sx: { mb: "50px" } }
     }
   ]
+
   return (
     <Grid container>
       {
@@ -90,11 +93,11 @@ const CampaignContent = () => {
         ))
       }
 
-      <PlayListContent/>
-
-      <CampaignMediaFilesUpload/>
-
-      <CampaignContentTable/>
+      <LoadingBlurEffect isInitialized={isLoading}>
+        <PlayListContent/>
+        <CampaignMediaFilesUpload/>
+        <CampaignContentTable/>
+      </LoadingBlurEffect>
     </Grid>
 
   )

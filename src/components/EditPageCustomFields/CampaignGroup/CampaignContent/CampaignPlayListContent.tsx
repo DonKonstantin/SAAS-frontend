@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Autocomplete, Button, Grid, Snackbar, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, Stack, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { debounceTime, distinctUntilChanged, filter, fromEvent, map, switchMap, tap } from "rxjs";
 import projectPlaylistService from "../../../../services/projectPlaylistService";
@@ -8,6 +8,7 @@ import { CampaignDaysType } from "../../../../services/campaignListService/types
 import { useCampaignEditContext } from "../../../../context/CampaignEditContext/useCampaignEditContext";
 import { isEqual } from "lodash";
 import { getCurrentState } from "../../../../context/AuthorizationContext";
+import { notificationsDispatcher } from "../../../../services/notifications";
 
 const CampaignPlayListContent = () => {
 
@@ -22,9 +23,10 @@ const CampaignPlayListContent = () => {
 
   const { project } = getCurrentState();
 
+  const messanger = notificationsDispatcher();
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
   const [playlistName, setPlaylistName] = useState<string>('');
   const [isLoadingAutocomplete, setIsLoadingAutocomplete] = useState<boolean>(false);
   const [options, setOptions] = useState<PlaylistsResponseType[]>([]);
@@ -54,7 +56,8 @@ const CampaignPlayListContent = () => {
       daysType: 'daily' as CampaignDaysType,
       playCounter: 1, //TODO имзенить когда добавят в запрос
       days: [],
-      files: currentPlaylist.files
+      files: currentPlaylist.files,
+      projectPlaylistId: currentPlaylist.id
     }
 
     //@ts-ignore
@@ -63,25 +66,21 @@ const CampaignPlayListContent = () => {
     setInputValue('')
     setPlaylistName(currentPlaylist.name)
     setCurrentPlaylist(undefined)
-    setOpenSnackBar(true)
+
+    messanger.dispatch({
+      message: t("pages.campaign.edit.fields.content.playlist.table.snackbar.addPlaylist", { name: playlistName }),
+      type: "success",
+    });
+
   }
 
   const onSelectHandler = (_: any, value: PlaylistsResponseType) => {
     setCurrentPlaylist(value);
   };
 
-
   const onInputValueHandler = (_: any, value: string,) => {
     setCurrentPlaylist(undefined);
     setInputValue(value);
-  };
-
-  const closeSnackBarHandle = (_: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpenSnackBar(false);
   };
 
   useEffect(() => {
@@ -118,13 +117,10 @@ const CampaignPlayListContent = () => {
     })
   }, [project]);
 
+  console.log(!!currentPlaylist)
+
   return (
     <Grid container alignItems="center">
-      <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={closeSnackBarHandle}>
-        <Alert onClose={closeSnackBarHandle} severity="success" sx={{ width: '100%' }}>
-          {t("pages.campaign.edit.fields.content.playlist.table.snackbar.addPlaylist", { name: playlistName })}
-        </Alert>
-      </Snackbar>
       <Grid item xs={3.5}>
         <Autocomplete
           id="controllable-campaign-playlist"
@@ -155,6 +151,7 @@ const CampaignPlayListContent = () => {
             sx={{ minWidth: "155px" }}
             variant="outlined"
             onClick={addPlaylistHandle}
+            disabled={!(!!currentPlaylist)}
           >
             {t("pages.campaign.edit.fields.content.playlist.buttons.add")}
           </Button>
