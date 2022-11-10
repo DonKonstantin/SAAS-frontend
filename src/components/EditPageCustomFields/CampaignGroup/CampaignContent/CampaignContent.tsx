@@ -33,7 +33,6 @@ const CampaignContent = () => {
   const formatTime = timeConverterNumberForTime(countTimePlaylists)
   const countTracks = campaign.playlists.reduce((acc, playlist: CampaignPlaylistConnect & { files: [] }) => acc + playlist.files.length, 0)
 
-
   const nameAndTypeCompany = [
     {
       name: "pages.campaign.edit.fields.content.campaign_play_order.title",

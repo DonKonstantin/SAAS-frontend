@@ -78,7 +78,7 @@ const loadCampaign$ = campaignId$.pipe(
           duration: playlist.campaignPlaylist?.duration,
           files: playlist.campaignPlaylist?.files
         }
-      } else {
+      } else if (playlist.projectPlaylistId) {
         playlistForTable = {
           name: playlist.projectPlaylist?.name,
           projectPlaylist: playlist.projectPlaylist,
@@ -86,6 +86,8 @@ const loadCampaign$ = campaignId$.pipe(
           duration: playlist.projectPlaylist?.duration,
           files: playlist.projectPlaylist?.files
         }
+      } else {
+        return false
       }
 
       return ({
@@ -96,7 +98,7 @@ const loadCampaign$ = campaignId$.pipe(
 
     return ({
       ...response,
-      playlists: refactorPlaylists
+      playlists: refactorPlaylists.filter(playlist => !!playlist)
     })
 
   }),
@@ -255,14 +257,14 @@ const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedTracksToPl
       return
     }
 
-    const { id, project_id, playlists } = campaign$.getValue()!
+    const { id, project_id } = campaign$.getValue()!
     if (!id && !project_id) {
       return
     }
 
     return {
       campaignId: Number(id),
-      name: "Плейлист компании № " + (playlists.length + 1),
+      name: "Новый плейлист",
       isOverallVolume: true,
       overallVolume: 100,
       files: fileResponse.map(file => (
@@ -364,11 +366,12 @@ export const InitCampaignEditContext = () => {
       isCampaignTimetable: false,
       allDaysStartMinutes: 0,
       allDaysStopMinutes: 0,
-      campaignPlaylistId: newCampaignPlaylist.id,
       sortOrder: getCampaign.playlists.length + 1,
       name: newCampaignPlaylist.name,
       duration: newCampaignPlaylist.duration,
-      files: newCampaignPlaylist.files
+      files: newCampaignPlaylist.files,
+      campaignPlaylistId: newCampaignPlaylist.id,
+      campaignPlaylist: newCampaignPlaylist
     }
 
     //@ts-ignore

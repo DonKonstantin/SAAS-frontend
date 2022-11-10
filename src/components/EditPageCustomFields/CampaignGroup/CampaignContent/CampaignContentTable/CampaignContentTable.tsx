@@ -19,6 +19,9 @@ import { distinctUntilChanged } from "rxjs";
 import { timeConverterNumberForTime } from "../../../../timeConverter";
 import DeleteDialogPlaylist from "./DeletePlaylist";
 import { CampaignPlaylistConnect } from "../../../../../services/campaignListService/types";
+import {
+  useCampaignPlaylistEditContext
+} from "../../../../../context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 
 export type ContentTableHeadType = {
   sort: string
@@ -107,6 +110,8 @@ const CampaignContentTable = () => {
           prev.campaign === curr.campaign
       )
     );
+
+  const { setPlaylist } = useCampaignPlaylistEditContext();
 
   const { t } = useTranslation()
   const [openDialogDeletePlaylist, setOpenDialogDeletePlaylist] = useState<boolean>(false);
@@ -201,8 +206,7 @@ const CampaignContentTable = () => {
                         <TableCell align="right">
                           <StyledIconButton
                             size="small"
-                            onClick={() => {
-                            }}>
+                            onClick={() => setPlaylist(row)}>
                             <EditIcon fontSize="medium" sx={{ mr: "12px" }}/>
                           </StyledIconButton>
                           <StyledIconButton

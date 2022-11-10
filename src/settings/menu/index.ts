@@ -218,7 +218,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
 
             return {
                 href: "/domain/[domainId]/project/[projectId]/object-passports",
-                as: `/domain/${domain}/project/${project}/object-passport`,
+                as: `/domain/${domain}/project/${project}/object-passports`,
             };
         },
         title: "objects-passport-list.left-menu-title",
