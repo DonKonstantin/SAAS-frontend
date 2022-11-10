@@ -1,4 +1,10 @@
 import { ReportType } from "components/ProjectReports/types";
+import {
+  ChannelPlayInfoStatistic,
+  GlobalFilePlayInfoStatistic,
+  PlayerPlayInfoStatistic,
+  PlayInfoStatisticQueryParams, ProjectFilePlayInfoStatistic
+} from "./types";
 
 export interface ProjectReportsServiceInterface {
   /**
@@ -9,7 +15,14 @@ export interface ProjectReportsServiceInterface {
   /**
    * Запрос отчета
    */
-  getReports: (project: string, reportType: keyof ReportType, dateFrom: Date, dateTo: Date, primaryKeys: string[]) => Promise<Blob | undefined>;
+  getReports: (project: string, reportType: ReportType, dateFrom: Date, dateTo: Date, primaryKeys: string[]) => Promise<Blob | undefined>;
+
+
+  getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]>;
+
+  getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]>;
+
+  getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;
 }
 
 export interface GetPlayerLogsReportParams {

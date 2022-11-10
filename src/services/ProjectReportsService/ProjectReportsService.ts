@@ -1,13 +1,14 @@
-import { Axios, AxiosRequestConfig } from "axios";
-import { ReportType } from "components/ProjectReports/types";
-import { getAuthorizationToken } from "context/AuthorizationContext";
-import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
-import { loggerFactory } from "services/logger";
-import { Logger } from "services/logger/Logger";
-import { ProjectReportsServiceInterface } from "./interface";
-import { playerLogsResponse } from "./Mocks/playerLogs";
+import {Axios, AxiosRequestConfig} from "axios";
+import {ReportType} from "components/ProjectReports/types";
+import {getAuthorizationToken} from "context/AuthorizationContext";
+import {GraphQLClient} from "services/graphQLClient/GraphQLClient";
+import {loggerFactory} from "services/logger";
+import {Logger} from "services/logger/Logger";
+import {ProjectReportsServiceInterface} from "./interface";
+import {playerLogsResponse} from "./Mocks/playerLogs";
 import {
-  ChannelPlayInfoStatistic, GlobalFilePlayInfoStatistic,
+  ChannelPlayInfoStatistic,
+  GlobalFilePlayInfoStatistic,
   PlayerPlayInfoStatistic,
   PlayInfoStatisticQueryParams,
   ProjectFilePlayInfoStatistic
@@ -21,15 +22,13 @@ import {GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse} from "
 import {
   GetFilesPlayInfoStatistic,
   GetFilesPlayInfoStatisticResponse,
-  GetFilesPlayInfoStatisticResponseDTOFactory
 } from "./Queryes/GetFilesPlayInfoStatistic";
+
 
 /**
  * Сервис отчетов проекта
  */
-export default class ProjectReportsService
-  implements ProjectReportsServiceInterface
-{
+export default class ProjectReportsService  implements ProjectReportsServiceInterface {
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
 
@@ -116,7 +115,7 @@ export default class ProjectReportsService
   }
 
 
-  async FilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
+  async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
@@ -126,8 +125,8 @@ export default class ProjectReportsService
       );
 
       return [
-          ...response.globalFiles,
-          ...GetFilesPlayInfoStatisticResponseDTOFactory(response.projectFiles),
+        ...response.globalFiles,
+        ...response.projectFiles,
       ];
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
