@@ -19,7 +19,7 @@ ListingPage.getInitialProps = async ({ query }): Promise<PageWithEntityList> => 
         entityListSchema: "campaign",
         permissionCheckPermission: "READ_CAMPAIGNS",
         // permissionCheckCreatePermission: "CREATE_CAMPAIGNS",
-        // permissionCheckEditPermission: "EDIT_CAMPAIGNS",
+        permissionCheckEditPermission: "EDIT_CAMPAIGNS",
         // permissionCheckDeletePermission: "DELETE_CAMPAIGNS",
         pageMenuType: "project",
         permissionCheckLevel: "project",

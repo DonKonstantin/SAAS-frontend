@@ -1,5 +1,5 @@
 import { FormGroup, Grid, Stack } from "@mui/material";
-import React, { FC, memo, useCallback, useEffect } from "react";
+import React, { FC, memo, useCallback } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import TimePickerComponent from "./TimePickerComponent";
@@ -18,11 +18,11 @@ type Props = {
 };
 
 const DaysGroupPicker: FC<Props> = ({
-  nameRadioButton,
-  nameFieldDays,
-  watchNameRadioButton,
-  disabled,
-}) => {
+                                      nameRadioButton,
+                                      nameFieldDays,
+                                      watchNameRadioButton,
+                                      disabled,
+                                    }) => {
   const { t } = useTranslation();
 
   const { control, setError, watch, clearErrors } = useFormContext();
@@ -36,18 +36,28 @@ const DaysGroupPicker: FC<Props> = ({
   //Меняет время в конкретном дне недели
   const handleChangeTimeValue = useCallback(
     (id: number, time: number, field: "start" | "end") => {
+
       const errorMessage = {
         type: "required",
         message: t("pages.campaign.edit.errors.time.timeValue"),
       };
+
       let newArray;
 
       //Логика в случае если выбрано "Ежедневно"
       if (watchNameRadioButton === "daily") {
+
         //Определяем будут выбраны ли все поля дней недели
         const findDay = daysData[0];
         if (field === "start") {
           if (findDay.days_stop_minutes <= time) {
+            setError(`${nameFieldDays}[${0}].days_start_minutes`, errorMessage);
+
+            return;
+          }
+
+          // Проверяем корректное время
+          if (isNaN(time)) {
             setError(`${nameFieldDays}[${0}].days_start_minutes`, errorMessage);
 
             return;
@@ -60,6 +70,13 @@ const DaysGroupPicker: FC<Props> = ({
           }));
         } else {
           if (findDay.days_start_minutes >= time) {
+            setError(`${nameFieldDays}[${0}].days_stop_minutes`, errorMessage);
+
+            return;
+          }
+
+          // Проверяем корректное время
+          if (isNaN(time)) {
             setError(`${nameFieldDays}[${0}].days_stop_minutes`, errorMessage);
 
             return;
@@ -78,12 +95,20 @@ const DaysGroupPicker: FC<Props> = ({
       }
 
       //Логика в случае если выбрано "По дням"
-      const findDay = daysData[id - 1];
+      const currentIdForSetError = id - 1
+      const findDay = daysData[currentIdForSetError];
+
+      // Проверяем корректное время
+      if (isNaN(time)) {
+        setError(`${nameFieldDays}[${currentIdForSetError}].days_start_minutes`, errorMessage);
+
+        return;
+      }
 
       if (field === "start") {
         if (findDay.days_stop_minutes <= time) {
           setError(
-            `${nameFieldDays}[${id - 1}].days_start_minutes`,
+            `${nameFieldDays}[${currentIdForSetError}].days_start_minutes`,
             errorMessage
           );
 
@@ -96,7 +121,7 @@ const DaysGroupPicker: FC<Props> = ({
       } else {
         if (findDay.days_start_minutes >= time) {
           setError(
-            `${nameFieldDays}[${id - 1}].days_stop_minutes`,
+            `${nameFieldDays}[${currentIdForSetError}].days_stop_minutes`,
             errorMessage
           );
 
@@ -113,23 +138,6 @@ const DaysGroupPicker: FC<Props> = ({
     },
     [daysData, watchNameRadioButton]
   );
-
-  // Преобразовываем данные в случае переключения в Radio button для выбора типа дней недели
-  useEffect(() => {
-    if (!watchNameRadioButton) {
-      return;
-    }
-
-    const newArray = daysData.map((day) => ({
-      ...day,
-      days_start_minutes: 0,
-      days_stop_minutes: 1439,
-      is_active: true,
-    }));
-
-    clearErrors();
-    replace(newArray);
-  }, [watchNameRadioButton]);
 
   return (
     <>
@@ -164,18 +172,16 @@ const DaysGroupPicker: FC<Props> = ({
                 <Stack
                   direction="row"
                   alignItems="flex-start"
-                  key={day.name}
+                  key={day.day_num}
                   sx={{ pb: "17px" }}
                 >
                   <RHFCheckbox
                     sx={{ minWidth: "145px", marginRight: "33px" }}
                     name={`${nameFieldDays}[${index}].is_active`}
-                    key={day.name}
-                    label={day.name}
+                    label={t(`pages.campaign.add.fields.campaign_days.${index}`)}
                     disabled={disabled}
                   />
                   <TimePickerComponent
-                    key={index}
                     day_num={day.day_num}
                     nameFieldDays={nameFieldDays}
                     arrayFieldIndex={index}

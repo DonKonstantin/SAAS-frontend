@@ -53,7 +53,7 @@ const TrackRow: FC<Props> = ({ row, isEditable }) => {
           </Stack>
         )}
       </TableCell>
-      <TableCell sx={{ fontSize: 13 }}>{row.file.title}</TableCell>
+      <TableCell sx={{ fontSize: 13 }}>{row.file.title.length ? row.file.title : row.file.origin_name}</TableCell>
       <TableCell>
         <PlayAudioButton
           fileName={row.file.file_name}

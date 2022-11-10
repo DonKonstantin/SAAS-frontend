@@ -9,6 +9,9 @@ import { useCampaignEditContext } from "../../../../context/CampaignEditContext/
 import { isEqual } from "lodash";
 import { getCurrentState } from "../../../../context/AuthorizationContext";
 import { notificationsDispatcher } from "../../../../services/notifications";
+import {
+  useCampaignPlaylistEditContext
+} from "../../../../context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 
 const CampaignPlayListContent = () => {
 
@@ -18,6 +21,8 @@ const CampaignPlayListContent = () => {
         isEqual(prev.campaign, curr.campaign)
     )
   );
+
+  const { setNewPlaylist } = useCampaignPlaylistEditContext();
 
   const { t } = useTranslation()
 
@@ -117,6 +122,10 @@ const CampaignPlayListContent = () => {
     })
   }, [project]);
 
+  if (!campaign) {
+    return <></>
+  }
+
   return (
     <Grid container alignItems="center">
       <Grid item xs={3.5}>
@@ -156,6 +165,7 @@ const CampaignPlayListContent = () => {
           <Button
             sx={{ minWidth: "200px" }}
             variant="outlined"
+            onClick={() => setNewPlaylist(campaign.playlists.length + 1)}
           >
             {t("pages.campaign.edit.fields.content.playlist.buttons.create")}
           </Button>

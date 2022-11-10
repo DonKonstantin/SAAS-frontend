@@ -30,6 +30,7 @@ import { isEqual } from "lodash";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
 import { EditPlaylist } from "./EditPlaylist";
+import dayjs from "dayjs";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -38,13 +39,13 @@ enum optionsForTabs {
 }
 
 enum daysName {
-  "monday" = 1,
-  "tuesday" = 2,
-  "wednesday" = 3,
-  "thursday" = 4,
-  "friday" = 5,
-  "saturday" = 6,
-  "sunday" = 7
+  "monday" = "monday",
+  "tuesday" = "monday",
+  "wednesday" = "monday",
+  "thursday" = "monday",
+  "friday" = "monday",
+  "saturday" = "monday",
+  "sunday" = "monday"
 }
 
 export type FormValuesProps = CampaignInput
@@ -73,12 +74,13 @@ const CampaignInfoGroup = () => {
       )
     );
 
+  const { clearContext } = useCampaignPlaylistEditContext();
+
   const [showSuccessUpdate, setShowSuccessUpdate] = useState<boolean>(false);
   const [showSuccessUpdateName, setShowSuccessUpdateName] =
     useState<string>("");
   const [showError, setShowError] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
-  const [isLoadingButton, setIsLoadingButton] = useState<boolean>(false);
 
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
@@ -102,14 +104,18 @@ const CampaignInfoGroup = () => {
     name: Yup.string().required(t("pages.campaign.edit.errors.required")),
     campaign_period_start: Yup.date()
       .required(t("pages.campaign.edit.errors.required"))
-      .nullable(),
+      .nullable()
+      .test('test_day_start_type', t("pages.campaign.edit.errors.date.check-date"), async (value) => dayjs(value).isValid())
+      .typeError(t("pages.campaign.edit.errors.date.check-date")),
     campaign_period_stop: Yup.date()
       .required(t("pages.campaign.edit.errors.required"))
       .nullable()
       .min(
         Yup.ref("campaign_period_start"),
-        t("pages.campaign.edit.errors.date.dateValue")
-      ),
+        t("pages.campaign.edit.errors.date.minDate")
+      )
+      .test('test_day_stop_type', t("pages.campaign.edit.errors.date.check-date"), async (value) => dayjs(value).isValid())
+      .typeError(t("pages.campaign.edit.errors.date.check-date")),
     campaign_play_tracks_quantity: Yup.number().when("campaign_play_type", {
       is: "periodic",
       then: Yup.number()
@@ -142,10 +148,8 @@ const CampaignInfoGroup = () => {
     campaign_period_stop: null, // Период кампании (окончание)
     campaign_days_type: "daily" as CampaignDaysType, // Дни недели
     days: Object.keys(daysName)
-      .slice(7)
-      .map((day, index) => ({
+      .map((_, index) => ({
         day_num: index + 1,
-        name: t(`pages.campaign.add.fields.campaign_days.${day}`),
         is_active: true,
         days_start_minutes: 0,
         days_stop_minutes: 1439,
@@ -177,61 +181,59 @@ const CampaignInfoGroup = () => {
     campaign_days_type: watch("campaign_days_type"),
   };
 
-  const onSubmit = async (data: FormValuesProps) => {
+  const onSubmit = async (data?: FormValuesProps) => {
     setShowError(false);
     if (Object.keys(errors).length) {
       return;
     }
 
-    let newData;
+    const campaignDaysType = getValues('campaign_days_type')
 
-    const days = data.days.map((day) => {
-      let daysForData = {
-        day_num: day.day_num,
-        days_start_minutes: day.days_start_minutes,
-        days_stop_minutes: day.days_stop_minutes,
-        is_active: day.is_active,
-      };
+    if (!router.query.entityId && data) {
 
-      if (day.id) {
-        return { ...daysForData, id: day.id };
-      }
+      const days = data.days.map((day) => {
+        if (campaignDaysType === 'daily') {
+          const getDayForTime = data.days[0]
 
-      return daysForData;
-    });
+          return ({
+            ...day,
+            days_start_minutes: getDayForTime.days_start_minutes,
+            days_stop_minutes: getDayForTime.days_stop_minutes,
+            is_active: true,
+          })
+        }
 
-    delete data["version"];
+        return day
+      });
 
-    if (router.query.entityId) {
-      newData = {
+      delete data["version"];
+
+      const newData = {
         ...data,
         days,
-        project_id: project,
-        id: router.query.entityId,
-      };
-    } else {
-      newData = { ...data, days, project_id: project };
-    }
-
-    try {
-      const response = await campaignListService().storeCampaign(newData);
-
-      if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
-        router.push(
-          `/domain/${domain}/project/${project}/campaign/edit/${response}`
-        );
-        return;
+        project_id: project
       }
 
-      setShowSuccessUpdate(true);
-      setShowSuccessUpdateName(data.name);
-    } catch (error) {
-      setErrorText(error);
-      setShowError(!!error);
-    }
-  };
+      try {
+        const response = await campaignListService().storeCampaign(newData);
 
-  const onSave = async () => {
+        if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
+          router.push(
+            `/domain/${domain}/project/${project}/campaign/edit/${response}`
+          );
+          return;
+        }
+
+        setShowSuccessUpdate(true);
+        setShowSuccessUpdateName(data.name);
+      } catch (error) {
+        setErrorText(error);
+        setShowError(!!error);
+      }
+
+      return
+    }
+
     if (!campaign) {
       return
     }
@@ -262,29 +264,42 @@ const CampaignInfoGroup = () => {
         }
       )
     })
-    const daysForCampaign = campaign.days.map(day => ({
-      day_num: day.day_num,
-      days_start_minutes: day.days_start_minutes,
-      days_stop_minutes: day.days_stop_minutes,
-      is_active: day.is_active,
-      id: day.id
-    }))
 
-    setValue('playlists', playlistInput)
-    setValue('days', daysForCampaign)
-    const data = getValues()
-    delete data["version"];
+    const getDaysFromForm = getValues('days')
 
-    setIsLoadingButton(true)
+    const days = getDaysFromForm.map((day) => {
+      if (campaignDaysType === 'daily') {
+        const getDayForTime = getDaysFromForm[0]
+
+        return ({
+          day_num: day.day_num,
+          days_start_minutes: getDayForTime.days_start_minutes,
+          days_stop_minutes: getDayForTime.days_stop_minutes,
+          is_active: true,
+          id: day.id
+        })
+      }
+
+      delete day['campaign_id']
+
+      return day
+    });
+
+    const inputData = getValues()
+
+    inputData['playlists'] = playlistInput
+    inputData['days'] = days
+
+    delete inputData["version"];
 
     try {
-      await campaignListService().storeCampaign(data)
+      await campaignListService().storeCampaign(inputData)
       !successCreatedPlaylist && setCurrentActionTab("channels")
     } catch (error) {
       setErrorText(error);
       setShowError(!!error);
     }
-  }
+  };
 
   // Автосохранение компании при добавлении музыки
   useEffect(() => {
@@ -292,10 +307,7 @@ const CampaignInfoGroup = () => {
       return
     }
 
-    onSave().finally(() => {
-      setIsLoadingButton(false)
-      clearAddedCampaign()
-    })
+    onSubmit().finally(() => clearAddedCampaign())
   }, [campaign, successCreatedPlaylist])
 
   // Устанавливает значения по умолчанию если Тип компании выбран "Mute"
@@ -332,17 +344,7 @@ const CampaignInfoGroup = () => {
     }
 
     Object.entries(campaign).forEach(([key, value]) => {
-      if (key === "days") {
-        const newDate = value.map((el) => ({
-          ...el,
-          name: t(
-            `pages.campaign.add.fields.campaign_days.${daysName[el.day_num]}`
-          ),
-        }));
-        setValue(key, newDate);
-      } else {
-        setValue(key as any, value);
-      }
+      setValue(key as any, value);
     });
   }, [campaign, router.query.entityId]);
 
@@ -371,6 +373,11 @@ const CampaignInfoGroup = () => {
       clearTimeout(newTO);
     };
   }, [showSuccessUpdateName, campaignListErrorText]);
+
+  //При закрытии редактирования компани очищяем контекст
+  useEffect(() => {
+    return () => clearContext()
+  }, [])
 
   if (isInitialized) {
     return <LoadingBlocker/>;
@@ -452,26 +459,15 @@ const CampaignInfoGroup = () => {
                     <Channels/>
                   </TabPanel>
                   <Stack direction="row" justifyContent="flex-end">
-                    {router.query.entityId ?
-                      <LoadingButton
-                        variant="outlined"
-                        color="success"
-                        sx={{ m: "18px 21px 18px 0" }}
-                        onClick={onSave || isLoadingButton}
-                      >
-                        {t("pages.campaign.add.buttons.save")}
-                      </LoadingButton>
-                      :
-                      <LoadingButton
-                        variant="outlined"
-                        color="success"
-                        type="submit"
-                        sx={{ m: "18px 21px 18px 0" }}
-                        loading={isSubmitting}
-                      >
-                        {t("pages.campaign.add.buttons.save")}
-                      </LoadingButton>
-                    }
+                    <LoadingButton
+                      variant="outlined"
+                      color="success"
+                      type="submit"
+                      sx={{ m: "18px 21px 18px 0" }}
+                      loading={isSubmitting}
+                    >
+                      {t("pages.campaign.add.buttons.save")}
+                    </LoadingButton>
                   </Stack>
                 </Paper>
               </TabContext>
