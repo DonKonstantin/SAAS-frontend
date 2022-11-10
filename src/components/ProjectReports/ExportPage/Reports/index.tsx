@@ -8,10 +8,10 @@ import PlayerLogs from "./PlayerLogs";
 import ReportRAO from "./ReportRAO";
 
 interface Props {
-  reportType: keyof ReportType | undefined;
+  reportType: ReportType | undefined;
   dateFrom: Date;
   dateTo: Date;
-};
+}
 
 /**
  * Фабрика выведения страницы выбранного отчета

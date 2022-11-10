@@ -3,7 +3,7 @@ import { ReportType } from "components/ProjectReports/types";
 export interface ProjectReportPageContextTypes {
   dateFrom: Date;
   dateTo: Date;
-  reportType: keyof ReportType | undefined;
+  reportType: ReportType | undefined;
   selected: string[];
   reportsList: any[];
 };
@@ -22,7 +22,7 @@ export interface ProjectReportPageContextActionsTypes {
    /**
     * Устанавливает тип отчета
     */
-   setReportType: (reportType: keyof ReportType) => void;
+   setReportType: (reportType: ReportType) => void;
 
    /**
     * Записывает выбранные строки

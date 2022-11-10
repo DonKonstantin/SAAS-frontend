@@ -1,7 +1,8 @@
 import { ReportProps } from "components/ProjectReports/types";
 import { useProjectReportPageContext } from "context/ProjectReportPageContext";
-import React, { FC, memo } from "react";
+import React, {FC, memo, useState} from "react";
 import ReportsTable from "../../ReportsTable";
+import {TextField} from "@mui/material";
 
 const headers = [
   {
@@ -26,6 +27,8 @@ export interface PlayerLogsListType {
 const PlayerLogs: FC<ReportProps> = () => {
   const { reportsList } = useProjectReportPageContext();
 
+  const [checked, setChecked] = useState<string[]>([]);
+
   const tableData = reportsList.map((item: PlayerLogsListType) => {
     return {
       primaryKey: item.id,
@@ -35,7 +38,8 @@ const PlayerLogs: FC<ReportProps> = () => {
 
   return (
     <>
-      <ReportsTable headers={headers} rows={tableData}/>
+      <TextField variant="standard"/>
+      <ReportsTable headers={headers} rows={tableData} onSelect={setChecked}/>
     </>
   );
 };

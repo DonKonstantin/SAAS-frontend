@@ -7,26 +7,8 @@ import {
 } from "../types";
 
 export type GetFilesPlayInfoStatisticResponse = {
-    projectFiles: (
-     Omit<ProjectFilePlayInfoStatistic, 'file'> & {
-         file: Omit<ProjectFilePlayInfoStatistic['file'], "last_change_date"> & {
-             last_change_date: string
-         }
-    }
-    )[]
+    projectFiles:ProjectFilePlayInfoStatistic[]
     globalFiles: GlobalFilePlayInfoStatistic[]
-}
-
-export const GetFilesPlayInfoStatisticResponseDTOFactory = (data: GetFilesPlayInfoStatisticResponse["projectFiles"]): ProjectFilePlayInfoStatistic[] => {
-    return data.map(({file, ...rest}) => {
-        return {
-            ...rest,
-            file: {
-                ...file,
-                last_change_date: new Date(file.last_change_date),
-            }
-        }
-    })
 }
 
 export class GetFilesPlayInfoStatistic implements GraphQLQuery<PlayInfoStatisticQueryParams> {
@@ -42,30 +24,12 @@ export class GetFilesPlayInfoStatistic implements GraphQLQuery<PlayInfoStatistic
             id
             name
             played
-            file {
-                id
-                is_active
-                name
-                project_id
-            }
         }
         projectFiles: projectFilePlayInfoStatistic(projectId: $projectId, from: $from, to: $to) {
-        id
-        name
-        played
-        file {
-            composer
-            duration
-            file_name
-            hash_sum
             id
-            last_change_date
-            mime_type
-            origin_name
-            project_id
-            title
-        }
-      }
+            name
+            played
+       }
     }`);
     }
 }

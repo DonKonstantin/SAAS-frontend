@@ -21,12 +21,7 @@ export type ChannelPlayInfoStatistic = PlayInfoStatistic & {
 
 
 export type GlobalFilePlayInfoStatistic = PlayInfoStatistic & {
-    file: {
-        id: string
-        is_active: boolean
-        name: string
-        project_id: string
-    }
+
 }
 
 /**
@@ -62,18 +57,7 @@ export type PlayerPlayInfoStatistic = PlayInfoStatistic & {
  * Статистика по файлам проекта
  */
 export type ProjectFilePlayInfoStatistic = PlayInfoStatistic & {
-    file: {
-        composer: string
-        duration: number
-        file_name: string
-        hash_sum: string
-        id?: string
-        last_change_date: Date
-        mime_type: string
-        origin_name: string
-        project_id?: string
-        title: string
-    }
+
 }
 
 /**

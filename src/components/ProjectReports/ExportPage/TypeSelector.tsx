@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { ReportType } from "../types";
 
 interface Props {
-  selected: keyof ReportType | undefined;
-  setSelected: (selected: keyof ReportType) => void;
+  selected: ReportType | undefined;
+  setSelected: (selected: ReportType) => void;
 };
 
 /**
@@ -17,7 +17,7 @@ const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
   const { t } = useTranslation();
 
   const handleChange = (event: SelectChangeEvent<keyof ReportType>) => {
-    const value = event.target.value as keyof ReportType;
+    const value = event.target.value as ReportType;
 
     setSelected(value);
   };
@@ -34,7 +34,7 @@ const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
               return "Не выбрано";
           }
 
-          return selected;
+          return t(`reports.field.report-type.${selected.toString()}`);
       }}
 
       MenuProps={{
