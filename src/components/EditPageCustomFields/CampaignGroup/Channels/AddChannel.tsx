@@ -16,6 +16,7 @@ const StyledWrapper = styled(Box)({
 /**
  * Компонент добавления канала
  */
+
 const AddChannel: FC = () => {
   const { t } = useTranslation();
 
@@ -35,11 +36,10 @@ const AddChannel: FC = () => {
 
   const onInputValueHandler = (_: any, value: string) => {
     setNewChannel(undefined);
-
     setInputValue(value);
   };
 
-  const onAddChannelHandler = () => {
+  const onAddChannelHandler = async () => {
     if (!campaign || !newChannel) {
       return
     }
@@ -47,10 +47,14 @@ const AddChannel: FC = () => {
     setCampaign({
       ...campaign,
       channels: [
+        //@ts-ignore
         ...campaign?.channels,
+        //@ts-ignore
         newChannel
       ]
     });
+    setInputValue('')
+    setNewChannel(undefined);
   };
 
   useEffect(() => {
@@ -72,7 +76,7 @@ const AddChannel: FC = () => {
         filter((searchParam) => searchParam.name.length >= 3),
         switchMap(async ({ name, project }) => {
           try {
-            await projectChannelsService().getChannelsByName(project, name);
+            return await projectChannelsService().getChannelsByName(project, name);
           } catch (error) {
             return undefined;
           }
@@ -94,9 +98,13 @@ const AddChannel: FC = () => {
           disablePortal
           options={options}
           fullWidth
+          freeSolo
+          clearIcon={false}
+          filterOptions={(option) => option.filter(({ id }) => !campaign?.channels.some(channel => channel.id === id))}
+          noOptionsText={t("pages.campaign.edit.fields.content.playlist.noOptions")}
           getOptionLabel={(option: ProjectChannel) => option.name}
           renderInput={(params) => (
-            <TextField ref={inputRef} {...params} variant="standard" />
+            <TextField ref={inputRef} {...params} variant="standard"/>
           )}
           renderOption={(props, option) => (
             <Box component="li" {...props}>

@@ -4,15 +4,20 @@ import { Logger } from "services/logger/Logger";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 import {
   CampaignListServiceInterface,
+  CampaignPublishQueryParams,
+  CampaignPublishQueryResponse,
   GetAvailableChannelsQueryQueryParams,
   GetAvailableChannelsQueryQueryResponse,
   GetCampaignByIdQueryParams,
-  GetCampaignByIdQueryResponse, StoreCampaignMutationParams, StoreCampaignMutationResponse,
+  GetCampaignByIdQueryResponse,
+  StoreCampaignMutationParams,
+  StoreCampaignMutationResponse,
 } from "./interface";
 import { GetAvailableChannelsQuery } from "./Queries/GetAvailableChannelsQuery";
 import { GetCampaignByIdQuery } from "./Queries/GetCampaignByIdQuery";
 import { Campaign, CampaignInput } from "./types";
 import { StoreCampaignMutation } from "./mutations/StoreCampaignMutation";
+import { CampaignPublish } from "./mutations/CampaignPublish";
 
 /**
  * Сервис авторизации пользователя
@@ -97,4 +102,32 @@ export class CampaignListService implements CampaignListServiceInterface {
       throw Error(error);
     }
   }
+
+  /**
+   * Публикует кампанию
+   * @param campaignPublishInput
+   * @returns
+   */
+  async publishCampaign(
+    campaignPublishInput: CampaignPublishQueryParams,
+  ): Promise<boolean> {
+    this.logger.Debug("Параметры публикации кампании: ", campaignPublishInput);
+
+    const { campaignId, channelIds } = campaignPublishInput
+
+    try {
+      const { campaignPublish } = await this.client.Mutation<CampaignPublishQueryParams,
+        CampaignPublishQueryResponse>(new CampaignPublish(campaignId, channelIds), {});
+
+      this.logger.Debug("Компания успешно опубликована: ", campaignPublish);
+
+      return campaignPublish;
+    } catch (error) {
+      this.logger.Debug("Ошибка при публикации компании: ", error);
+
+      throw Error(error);
+    }
+  }
+
+
 }

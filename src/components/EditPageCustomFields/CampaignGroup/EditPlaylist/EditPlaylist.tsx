@@ -1,15 +1,17 @@
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Paper, Tab, Box } from "@mui/material";
-import { styled } from "@mui/system";
-import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
-import { Tabs } from "context/CampaignPlaylistEditContext/interface";
-import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import React, { FC, memo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
+import {TabContext, TabList, TabPanel} from "@mui/lab";
+import {Box, Paper, Tab} from "@mui/material";
+import {styled} from "@mui/system";
+import {useCampaignEditContext} from "context/CampaignEditContext/useCampaignEditContext";
+import {Tabs} from "context/CampaignPlaylistEditContext/interface";
+import {useCampaignPlaylistEditContext} from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
+import React, {FC, memo, useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {distinctUntilChanged} from "rxjs";
 import Clips from "./Clips";
 import Schedule from "./Schedule";
 import Tracks from "./Tracks";
+import LoadingBlurEffect from "../CommonComponents/LoadingBlurEffect/LoadingBlurEffect";
+import {isEqual} from "lodash";
 
 const StyledWrapper = styled("div")({
   position: "absolute",
@@ -45,13 +47,22 @@ const StyledTab = styled(Tab)({
 
 /**
  * Копонент редактирования\добавления плэйлиста на странице редактирования кампании
- * @returns 
+ * @returns
  */
-const EditPlaylist: FC = () => {
+
+type Props = {
+  onSubmitCampaign(): void
+}
+
+const EditPlaylist: FC<Props> = ({ onSubmitCampaign }) => {
   const { t } = useTranslation();
 
-  const { availableTabs } = useCampaignPlaylistEditContext(
-    distinctUntilKeyChanged("availableTabs")
+  const { playlist, isLoading, availableTabs, setAvailableTabs } = useCampaignPlaylistEditContext(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev.isLoading === curr.isLoading &&
+        isEqual(prev.playlist, curr.playlist)
+    )
   );
 
   const { storeCampaignPlaylist } = useCampaignEditContext(
@@ -64,12 +75,30 @@ const EditPlaylist: FC = () => {
     setCurrentTab(newValue);
   };
 
+
+  let availableTabsList = Object.values(Tabs)
+
+  if (playlist?.projectPlaylistId) {
+    availableTabsList = availableTabsList.filter(tab => tab !== "clips")
+  }
+
+  useEffect(() => {
+    if (!playlist) {
+      return
+    }
+
+    if (playlist.campaignPlaylistId || playlist.projectPlaylistId) {
+      setAvailableTabs(Object.values(Tabs))
+    }
+
+  }, [playlist])
+
   return (
     <StyledWrapper>
       <TabContext value={currentTab}>
         <StyledTabsWrapper>
           <TabList onChange={changeCurrentTab}>
-            {Object.keys(Tabs).map((tabName) => (
+            {availableTabsList.map(tabName => (
               <StyledTab
                 label={
                   <Box sx={{ textTransform: "capitalize" }}>
@@ -78,24 +107,26 @@ const EditPlaylist: FC = () => {
                 }
                 value={tabName}
                 key={tabName}
-                disabled={availableTabs.every((tab) => tab !== tabName)}
+                disabled={!availableTabs.includes(tabName)}
               />
             ))}
           </TabList>
         </StyledTabsWrapper>
         <StyledTabPanel value={Tabs.tracks} key={Tabs.tracks}>
           <StyledPaper>
-            <Tracks storePlaylist={storeCampaignPlaylist} setTab={setCurrentTab} />
+            <Tracks storePlaylist={storeCampaignPlaylist} setTab={setCurrentTab} onSubmitCampaign={onSubmitCampaign}/>
           </StyledPaper>
         </StyledTabPanel>
         <StyledTabPanel value={Tabs.schedule} key={Tabs.schedule}>
           <StyledPaper>
-            <Schedule storePlaylist={storeCampaignPlaylist} />
+            <Schedule storePlaylist={storeCampaignPlaylist} onSubmitCampaign={onSubmitCampaign}/>
           </StyledPaper>
         </StyledTabPanel>
         <StyledTabPanel value={Tabs.clips} key={Tabs.clips}>
           <StyledPaper>
-            <Clips />
+            <LoadingBlurEffect isLoading={isLoading}>
+              <Clips/>
+            </LoadingBlurEffect>
           </StyledPaper>
         </StyledTabPanel>
       </TabContext>

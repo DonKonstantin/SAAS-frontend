@@ -14,7 +14,7 @@ export class GetChannelsByNameQuery
   constructor(projectId: string, name: string) {
     this.variables = {
       projectId,
-      name,
+      name: `%${name}%`,
     };
 
     this.query = gql(`

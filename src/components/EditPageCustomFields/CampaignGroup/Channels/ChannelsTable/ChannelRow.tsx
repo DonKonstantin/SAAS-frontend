@@ -43,7 +43,7 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
   const isActive = row.is_active;
 
   const onToggleItemCheckedState = () => {
-    if (!!isChecked) {
+    if (isChecked) {
       onChangeCheckedItems(checkedItems.filter((i) => i !== row.id));
 
       return;

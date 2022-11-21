@@ -7,12 +7,12 @@ import {
   CampaignPriority,
   CampaignType
 } from '../projectPlaylistService/interfaces';
-import { ProjectChannel } from "services/playerCodeService/interfaces";
+import { CampaignChannels } from "services/playerCodeService/interfaces";
 import { CampaignBase, CampaignLowPriority, ProjectPlayListFile } from "services/projectPlaylistService/interfaces";
 
 //  Сущность кампании проекта
 export type Campaign = CampaignBase & {
-  channels: ProjectChannel[];
+  channels: CampaignChannels[];
   playlists: CampaignPlaylistConnect[];
 }
 

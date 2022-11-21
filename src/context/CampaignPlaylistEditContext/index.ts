@@ -1,11 +1,13 @@
-import { CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs } from './interface';
-import { BehaviorSubject, combineLatest, filter, interval, map, Observable, Subject, switchMap } from "rxjs";
-import { CampaignPlaylistConnect, CampaignPlayListFileType } from 'services/campaignListService/types';
-import { fileService } from 'services/FileService';
-import { getCurrentState } from 'context/AuthorizationContext';
+import {CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs} from './interface';
+import {BehaviorSubject, combineLatest, filter, interval, map, Observable, Subject, switchMap, tap} from "rxjs";
+import {CampaignPlaylistConnect, CampaignPlayListFileType} from 'services/campaignListService/types';
+import {fileService} from 'services/FileService';
+import {getCurrentState} from 'context/AuthorizationContext';
+import {daysName} from "../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
+  // availableTabs: Tabs[] = [Tabs.tracks, Tabs.clips];
   availableTabs: Tabs[] = [Tabs.tracks, Tabs.clips];
   isEdit: boolean = false;
   projectId: string = "";
@@ -21,7 +23,7 @@ const availableTabs$ = new BehaviorSubject<Tabs[]>([Tabs.tracks, Tabs.clips]);
 const isEdit$ = new BehaviorSubject<boolean>(false);
 const moveTrack$ = new Subject<{fileId: string, direction: 'up' | 'down'}>();
 const removeTrack$ = new Subject<string>();
-const projectId$ = new BehaviorSubject<string>("13");
+const projectId$ = new Subject<string>();
 const loadedClips$ = new BehaviorSubject<CampaignPlayListFileType[]>([]);
 const removeLoadedFile$ = new Subject<string[]>();
 const addLoadedToPlaylist$ = new Subject<string[]>();
@@ -32,6 +34,7 @@ const isLoading$ = new BehaviorSubject<boolean>(false);
 const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedClips$]).pipe(
   filter(incomingData => !!incomingData[1].length),
   map(incomingData => incomingData[1]),
+  tap(() => isLoading$.next(true)),
   switchMap(async uploadedClips => {
     try {
       return await fileService().getProjectFilesListByFileIds(uploadedClips);
@@ -50,9 +53,7 @@ const addLoadedToPlaylistBus$ = addLoadedToPlaylist$.pipe(
 
     removeLoadedFile$.next(ids);
 
-    const filteredLoadedClips = loadedClips.filter(clip => ids.some(i => i === clip.file_id));
-
-    return filteredLoadedClips;
+    return loadedClips.filter(clip => ids.some(i => i === clip.file_id));
   }),
   map(loadedClips => {
     const playlist = playlist$.getValue();
@@ -83,6 +84,7 @@ const addLoadedToPlaylistBus$ = addLoadedToPlaylist$.pipe(
     };
   }),
   filter(playlist => !!playlist),
+  tap((playlist) => playlist$.next(playlist))
 );
 
 //  шина удаления загруженного клипа из списка доступных
@@ -113,7 +115,7 @@ const removeTrackBus$ = removeTrack$.pipe(
 
         return aValue - bValue;
       })
-      .map((file, index) => ({...file, sort: index + 1}));
+      .map((file, index) => ({ ...file, sort: index + 1 }));
 
     return {
       ...playlist,
@@ -134,7 +136,11 @@ const moveTrackBus$ = moveTrack$.pipe(
 
     const playlistData = playlist[playlistType];
 
-    //@ts-ignore
+    if (!playlistData) {
+      return playlist
+    }
+
+    // @ts-ignore
     const sortingFile = playlistData.files.find(file => file.file_id === fileId);
 
     if (direction === 'up' && sortingFile.sort === 1) {
@@ -176,22 +182,18 @@ const moveTrackBus$ = moveTrack$.pipe(
         ...playlistData,
         files,
       }
-    };
-  }),
+    }
+  })
 );
 
-const collectBus$: Observable<
-  Pick<
-    CampaignPlaylistEditContextTypes,
-    'playlist'
-    | 'availableTabs'
-    | 'isEdit'
-    | 'projectId'
-    | 'loadedClips'
-    | 'uploadedClips'
-    | 'isLoading'
-    >
-  > = combineLatest([
+const collectBus$: Observable<Pick<CampaignPlaylistEditContextTypes,
+  'playlist'
+  | 'availableTabs'
+  | 'isEdit'
+  | 'projectId'
+  | 'loadedClips'
+  | 'uploadedClips'
+  | 'isLoading'>> = combineLatest([
   playlist$,
   availableTabs$,
   isEdit$,
@@ -235,9 +237,7 @@ export const InitCampaignEditContext = () => {
     })
   );
 
-  subscriber.add(
-    moveTrackBus$.subscribe(playlist$)
-  );
+  subscriber.add(moveTrackBus$.subscribe(playlist$));
 
   subscriber.add(
     removeTrackBus$.subscribe(playlist$)
@@ -248,7 +248,7 @@ export const InitCampaignEditContext = () => {
   );
 
   subscriber.add(
-    addLoadedToPlaylistBus$.subscribe(playlist$)
+    addLoadedToPlaylistBus$.subscribe()
   );
 
   subscriber.add(checkUploadedFilesBus$.subscribe(
@@ -259,7 +259,11 @@ export const InitCampaignEditContext = () => {
 
       const playlist = playlist$.getValue();
 
-      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!);
+      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!)
+
+      const checkLastNumberForFinite = isFinite(lastSortNumber);
+
+      const finalLastSortNumber = checkLastNumberForFinite ? lastSortNumber : 0
 
       const preparedClips: CampaignPlayListFileType[] = clips.map((clip, index) => ({
         file: {
@@ -272,7 +276,7 @@ export const InitCampaignEditContext = () => {
         file_id: String(clip.id),
         id: "",
         playlist_id: "",
-        sort: lastSortNumber + index + 1,
+        sort: finalLastSortNumber + index + 1,
         volume: 100,
       }));
 
@@ -283,6 +287,7 @@ export const InitCampaignEditContext = () => {
       const uploadedClips = uploadedClips$.getValue();
 
       uploadedClips$.next(uploadedClips.filter(clip => ids.some(id => id === clip)));
+      isLoading$.next(false)
     }
   ));
 
@@ -307,7 +312,7 @@ const setPlaylist: CampaignPlaylistEditContextActionsTypes['setPlaylist'] = camp
 const clearContext: CampaignPlaylistEditContextActionsTypes['clearContext'] = () => {
   playlist$.next(undefined);
 
-  availableTabs$.next([Tabs.tracks]);
+  availableTabs$.next([Tabs.tracks, Tabs.clips]);
 
   isEdit$.next(false);
 
@@ -324,19 +329,20 @@ const setAvailableTabs: CampaignPlaylistEditContextActionsTypes['setAvailableTab
 
 /**
  * Записывает чистый объект плэйлиста в контекст
+ * @param campaignId
  * @param sortOrder
  */
-const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (sortOrder) => {
-  const { project, domain } = getCurrentState();
+const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] = (campaignId, sortOrder) => {
+  const { project } = getCurrentState();
 
   projectId$.next(project);
 
   playlist$.next({
     allDaysStartMinutes: 0,
     allDaysStopMinutes: 0,
-    campaignId: domain,
+    campaignId: campaignId,
     campaignPlaylist: {
-      campaign_id: '',
+      campaign_id: campaignId,
       duration: 0,
       files: [],
       is_overall_volume: true,
@@ -345,12 +351,19 @@ const setNewPlaylist: CampaignPlaylistEditContextActionsTypes['setNewPlaylist'] 
       project_id: project,
       sort: sortOrder,
     },
-    days: [],
+    //@ts-ignore
+    days: Object.keys(daysName)
+      .map((_, index) => ({
+        dayNum: index + 1,
+        isActive: true,
+        daysStartMinutes: 0,
+        daysStopMinutes: 1439,
+      })),
     daysType: 'daily',
-    isCampaignTimetable: false,
+    isCampaignTimetable: true,
     periodStart: new Date(),
     periodStop: new Date(),
-    playCounter: 0,
+    playCounter: 1,
     shuffle: false,
     sortOrder: sortOrder,
   });
@@ -364,24 +377,14 @@ const setIsEditable: CampaignPlaylistEditContextActionsTypes['setIsEditable'] = 
 };
 
 /**
- * Двигает трэк в вверх по очереди
+ * Двигает трэк в зависимости от направления
  * @param fileId
+ * @param direction
  */
-const moveTrackUp: CampaignPlaylistEditContextActionsTypes['moveTrackUp'] = fileId => {
+const moveTrack: CampaignPlaylistEditContextActionsTypes['moveTrack'] = (fileId, direction) => {
   moveTrack$.next({
     fileId,
-    direction: 'up',
-  });
-};
-
-/**
- * Двигает трэк в вниз по очереди
- * @param fileId
- */
-const moveTrackDown: CampaignPlaylistEditContextActionsTypes['moveTrackDown'] = fileId => {
-  moveTrack$.next({
-    fileId,
-    direction: 'down',
+    direction
   });
 };
 
@@ -442,8 +445,7 @@ export const campaignEditActions: CampaignPlaylistEditContextActionsTypes = {
   setNewPlaylist,
   setAvailableTabs,
   setIsEditable,
-  moveTrackDown,
-  moveTrackUp,
+  moveTrack,
   removeTrack,
   setProjectId,
   removeLoadedFile,

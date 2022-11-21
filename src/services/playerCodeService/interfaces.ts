@@ -48,3 +48,11 @@ export interface ProjectChannel {
   project_id: string; //  Идентификатор проекта, к которому относится канал
   players?: PlayerWithoutRelations[]; //  Плееры, относящиеся к каналу
 }
+
+export interface CampaignChannels {
+  campaign_id: string
+  channel: ProjectChannel
+  channel_id: string
+  id?: string
+  version: number
+}

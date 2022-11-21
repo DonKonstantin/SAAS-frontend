@@ -62,7 +62,8 @@ const CampaignPlayListContent = () => {
       playCounter: 1, //TODO имзенить когда добавят в запрос
       days: [],
       files: currentPlaylist.files,
-      projectPlaylistId: currentPlaylist.id
+      projectPlaylistId: currentPlaylist.id,
+      projectPlaylist: currentPlaylist
     }
 
     //@ts-ignore
@@ -165,7 +166,7 @@ const CampaignPlayListContent = () => {
           <Button
             sx={{ minWidth: "200px" }}
             variant="outlined"
-            onClick={() => setNewPlaylist(campaign.playlists.length + 1)}
+            onClick={() => setNewPlaylist(campaign.id, campaign.playlists.length + 1)}
           >
             {t("pages.campaign.edit.fields.content.playlist.buttons.create")}
           </Button>

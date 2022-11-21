@@ -121,7 +121,7 @@ const CampaignContentTable = () => {
     return <></>
   }
 
-  const onOpenDialogPlaylist = (id: string, name: string) => {
+  const onOpenDeleteDialogPlaylist = (id: string, name: string) => {
     setCurrentPlaylistForDelete({ playlistId: id, name })
     setOpenDialogDeletePlaylist(true)
   }
@@ -164,14 +164,15 @@ const CampaignContentTable = () => {
               </TableHead>
               <TableBody>
                 {campaign.playlists
-                  .map((row: CampaignPlaylistConnect & { name: string, files: [], duration: number, shuffle: boolean }, index) => {
+                  .sort((a, b) => Number(a.sortOrder) - Number(b.sortOrder))
+                  .map((playlist: CampaignPlaylistConnect & { name: string, files: [], duration: number, shuffle: boolean }, index) => {
                     const labelId = `enhanced-table-checkbox-${index}`;
-                    const playlistTimeDuration = timeConverterNumberForTime(row.duration)
+                    const playlistTimeDuration = timeConverterNumberForTime(playlist.duration)
                     return (
                       <TableRow
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.id}
+                        key={playlist.id}
                       >
                         <TableCell
                           id={labelId}
@@ -179,42 +180,41 @@ const CampaignContentTable = () => {
                           padding="none"
                           align="center"
                         >
-                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id!, "up")}>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(playlist.id!, "up")}>
                             <ArrowUpwardIcon sx={{ width: 16 }}/>
                           </StyledIconButton>
-                          <StyledIconButton onClick={() => movePlaylistCampaign(row.id!, "down")}>
+                          <StyledIconButton onClick={() => movePlaylistCampaign(playlist.id!, "down")}>
                             <ArrowDownwardIcon sx={{ width: 16 }}/>
                           </StyledIconButton>
                         </TableCell>
-
                         <TableCell align="left">
-                          {row.name}
+                          {playlist.name}
                         </TableCell>
                         <TableCell align="left">
-                          {row.files.length}
+                          {playlist.files.length}
                         </TableCell>
                         <TableCell align="left">
                           {playlistTimeDuration}
                         </TableCell>
                         <TableCell align="left">
                           <Checkbox
-                            checked={row.shuffle}
-                            onChange={(e) => shuffleCampaignPlaylist(row.id!, e.currentTarget.checked)}
+                            checked={playlist.shuffle}
+                            onChange={(e) => shuffleCampaignPlaylist(playlist.id!, e.currentTarget.checked)}
                           />
                         </TableCell>
-                        <TableCell align="left">{row.playCounter}</TableCell>
+                        <TableCell align="left">{playlist.playCounter}</TableCell>
                         <TableCell align="right">
-                          <StyledIconButton
+                          <IconButton
                             size="small"
-                            onClick={() => setPlaylist(row)}>
-                            <EditIcon fontSize="medium" sx={{ mr: "12px" }}/>
-                          </StyledIconButton>
-                          <StyledIconButton
+                            onClick={() => setPlaylist(playlist)}>
+                            <EditIcon fontSize="medium"/>
+                          </IconButton>
+                          <IconButton
                             size="small"
-                            onClick={() => onOpenDialogPlaylist(row.id!, row.name)}
+                            onClick={() => onOpenDeleteDialogPlaylist(playlist.id!, playlist.name)}
                           >
                             <DeleteIcon fontSize="medium"/>
-                          </StyledIconButton>
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     );

@@ -47,10 +47,10 @@ export interface CampaignEditContextActionsTypes {
   addFilesToUploadPlaylist: (fileIds: string[]) => void;
 
   /**
-   * Изменяет сортировку плейлиста
-   * @param nextSave
+   * Устанавливает флаг для добавления плейлиста
+   * @param addNewPlaylist
    */
-  clearAddedCampaign: () => void;
+  newAddedCampaignPlaylist: (addNewPlaylist: boolean) => void;
 
   /**
    * Записывает сущьность кампании в контекст

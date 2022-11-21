@@ -1,19 +1,19 @@
-import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
-import { Alert, Box, Collapse, Grid, Paper, Stack, Tab } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
-import { useTranslation } from "react-i18next";
-import { FormProvider } from "../../hook-form";
-import { useForm } from "react-hook-form";
+import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
+import {Box, Grid, Paper, Stack, Tab} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {LoadingButton, TabContext, TabList, TabPanel} from "@mui/lab";
+import {useTranslation} from "react-i18next";
+import {FormProvider} from "../../hook-form";
+import {useForm} from "react-hook-form";
 import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { getCurrentState } from "../../../context/AuthorizationContext";
-import { useRouter } from "next/router";
-import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {getCurrentState} from "../../../context/AuthorizationContext";
+import {useRouter} from "next/router";
+import {useCampaignPlaylistEditContext} from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 import CampaignPlaylistEditContextConnector
   from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
-import { Channels } from "./Channels";
-import { campaignListService } from "../../../services/campaignListService";
+import {Channels} from "./Channels";
+import {campaignListService} from "../../../services/campaignListService";
 import {
   CampaignEndType,
   CampaignLowPriority,
@@ -23,14 +23,15 @@ import {
   CampaignPriority,
   CampaignType,
 } from "../../../services/projectPlaylistService/interfaces";
-import { CampaignDaysType, CampaignInput, } from "../../../services/campaignListService/types";
+import {CampaignDaysType, CampaignInput,} from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
-import { useCampaignEditContext } from "../../../context/CampaignEditContext/useCampaignEditContext";
-import { isEqual } from "lodash";
+import {useCampaignEditContext} from "../../../context/CampaignEditContext/useCampaignEditContext";
+import {isEqual} from "lodash";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
-import { EditPlaylist } from "./EditPlaylist";
+import {EditPlaylist} from "./EditPlaylist";
 import dayjs from "dayjs";
+import {notificationsDispatcher} from "services/notifications";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -38,7 +39,7 @@ enum optionsForTabs {
   "channels" = "channels",
 }
 
-enum daysName {
+export enum daysName {
   "monday" = "monday",
   "tuesday" = "monday",
   "wednesday" = "monday",
@@ -64,7 +65,14 @@ const CampaignInfoGroup = () => {
     return null;
   }
 
-  const { campaign, isInitialized, campaignListErrorText, successCreatedPlaylist, loadCampaign, clearAddedCampaign } =
+  const {
+    campaign,
+    isInitialized,
+    campaignListErrorText,
+    successCreatedPlaylist,
+    loadCampaign,
+    newAddedCampaignPlaylist,
+  } =
     useCampaignEditContext(
       distinctUntilChanged(
         (prev, curr) =>
@@ -76,14 +84,14 @@ const CampaignInfoGroup = () => {
 
   const { clearContext } = useCampaignPlaylistEditContext();
 
-  const [showSuccessUpdate, setShowSuccessUpdate] = useState<boolean>(false);
-  const [showSuccessUpdateName, setShowSuccessUpdateName] =
-    useState<string>("");
-  const [showError, setShowError] = useState<boolean>(false);
-  const [errorText, setErrorText] = useState<string>("");
-
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
+
+  const [saveCampaign, setSaveCampaign] = useState<boolean>(false);
+
+  const addPlaylist = () => {
+    setSaveCampaign(true)
+  }
 
   const changeCurrentTab = (_event: React.SyntheticEvent, newValue: any) => {
     setCurrentActionTab(newValue);
@@ -99,6 +107,8 @@ const CampaignInfoGroup = () => {
   if (asPathNestedRoutes === "add") {
     tabOptions = tabOptions.slice(0, 1);
   }
+
+  const messanger = notificationsDispatcher();
 
   const RegisterScheme = Yup.object().shape({
     name: Yup.string().required(t("pages.campaign.edit.errors.required")),
@@ -182,7 +192,6 @@ const CampaignInfoGroup = () => {
   };
 
   const onSubmit = async (data?: FormValuesProps) => {
-    setShowError(false);
     if (Object.keys(errors).length) {
       return;
     }
@@ -224,11 +233,17 @@ const CampaignInfoGroup = () => {
           return;
         }
 
-        setShowSuccessUpdate(true);
-        setShowSuccessUpdateName(data.name);
+        messanger.dispatch({
+          message: t("pages.campaign.edit.successMessages.updateName", {
+            name: data.name,
+          }),
+          type: "success",
+        });
       } catch (error) {
-        setErrorText(error);
-        setShowError(!!error);
+        messanger.dispatch({
+          message: error,
+          type: "error",
+        });
       }
 
       return
@@ -244,7 +259,7 @@ const CampaignInfoGroup = () => {
       if (playlist.campaignPlaylistId) {
         projectOrCampaignPlaylistId = { campaignPlaylistId: playlist.campaignPlaylistId }
       } else {
-        projectOrCampaignPlaylistId = { projectPlaylistId: playlist.campaignPlaylistId }
+        projectOrCampaignPlaylistId = { projectPlaylistId: playlist.projectPlaylistId }
       }
 
       return (
@@ -285,10 +300,19 @@ const CampaignInfoGroup = () => {
       return day
     });
 
-    const inputData = getValues()
+    const channels = campaign.channels.map(channel => {
+      if (channel.channel_id) {
 
-    inputData['playlists'] = playlistInput
-    inputData['days'] = days
+        return { channel_id: Number(channel.channel_id), id: Number(channel.id) }
+      }
+
+      return { channel_id: Number(channel.id) }
+    })
+
+    setValue('days', days)
+    setValue('playlists', playlistInput)
+    setValue('channels', channels)
+    const inputData = getValues()
 
     delete inputData["version"];
 
@@ -296,8 +320,10 @@ const CampaignInfoGroup = () => {
       await campaignListService().storeCampaign(inputData)
       !successCreatedPlaylist && setCurrentActionTab("channels")
     } catch (error) {
-      setErrorText(error);
-      setShowError(!!error);
+      messanger.dispatch({
+        message: error,
+        type: "error",
+      });
     }
   };
 
@@ -307,7 +333,10 @@ const CampaignInfoGroup = () => {
       return
     }
 
-    onSubmit().finally(() => clearAddedCampaign())
+    onSubmit().finally(() => {
+      newAddedCampaignPlaylist(false)
+      setSaveCampaign(false)
+    })
   }, [campaign, successCreatedPlaylist])
 
   // Устанавливает значения по умолчанию если Тип компании выбран "Mute"
@@ -354,30 +383,47 @@ const CampaignInfoGroup = () => {
       return;
     }
 
-    setShowError(!!campaignListErrorText);
-    setErrorText(campaignListErrorText);
+    messanger.dispatch({
+      message: campaignListErrorText,
+      type: "error",
+    });
   }, [campaignListErrorText]);
-
-  // Авто закрытие сообщений
-  useEffect(() => {
-    if (!showSuccessUpdateName || !campaignListErrorText) {
-      return;
-    }
-
-    const newTO = setTimeout(() => {
-      setShowSuccessUpdate(false);
-      setShowError(false);
-    }, 6000);
-
-    return () => {
-      clearTimeout(newTO);
-    };
-  }, [showSuccessUpdateName, campaignListErrorText]);
 
   //При закрытии редактирования компани очищяем контекст
   useEffect(() => {
     return () => clearContext()
   }, [])
+
+  useEffect(() => {
+    if (!playlist || !campaign) {
+      return
+    }
+
+    if (!saveCampaign) {
+      return
+    }
+
+    const saveCompany = async () => {
+      try {
+        await onSubmit()
+        clearContext()
+      } catch (error) {
+        messanger.dispatch({
+          message: error,
+          type: "error",
+        });
+      }
+    }
+
+    saveCompany().finally(() => {
+      setSaveCampaign(false)
+      messanger.dispatch({
+        message: t("edit-campaign-playlist.success.store-campaign-playlist"),
+        type: "success",
+      });
+    })
+
+  }, [saveCampaign, campaign, playlist])
 
   if (isInitialized) {
     return <LoadingBlocker/>;
@@ -386,94 +432,78 @@ const CampaignInfoGroup = () => {
   return (
     <>
       <CampaignPlaylistEditContextConnector>
-        {!!playlist && <EditPlaylist/>}
-        <Grid item xs={12}>
-          <Box sx={{ width: "100%" }}>
-            <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-              <TabContext value={currentActionTab}>
-                <Box
-                  sx={{
-                    borderBottom: 1,
-                    borderColor: "divider",
-                    backgroundColor: "#F5F5F5",
-                    mb: "13px",
-                  }}
-                >
-                  <TabList
-                    onChange={changeCurrentTab}
-                    aria-label={"campaign-create"}
+        {!!playlist
+          ? <EditPlaylist onSubmitCampaign={addPlaylist}/>
+          :
+          <Grid item xs={12}>
+            <Box sx={{ width: "100%" }}>
+              <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+                <TabContext value={currentActionTab}>
+                  <Box
+                    sx={{
+                      borderBottom: 1,
+                      borderColor: "divider",
+                      backgroundColor: "#F5F5F5",
+                      mb: "13px",
+                    }}
                   >
-                    {tabOptions.map((permission) => (
-                      <Tab
-                        sx={{ minHeight: "51px", minWidth: "168px" }}
-                        label={t(`pages.campaign.edit.tabs.${permission}`)}
-                        value={permission}
-                        key={permission}
-                      />
-                    ))}
-                  </TabList>
-                </Box>
-
-                <Paper sx={{ width: "100%", p: "30px 40px" }}>
-                  <Collapse in={showSuccessUpdate}>
-                    <Alert
-                      severity="info"
-                      sx={{ mb: 3 }}
-                      onClose={() => setShowSuccessUpdate(false)}
+                    <TabList
+                      onChange={changeCurrentTab}
+                      aria-label={"campaign-create"}
                     >
-                      {t("pages.campaign.edit.successMessages.updateName", {
-                        name: showSuccessUpdateName,
-                      })}
-                    </Alert>
-                  </Collapse>
-
-                  <Collapse in={showError}>
-                    <Alert
-                      severity="error"
-                      sx={{ mb: 3 }}
-                      onClose={() => setShowError(false)}
+                      {tabOptions.map((permission) => (
+                        <Tab
+                          sx={{ minHeight: "51px", minWidth: "168px" }}
+                          label={t(`pages.campaign.edit.tabs.${permission}`)}
+                          value={permission}
+                          key={permission}
+                        />
+                      ))}
+                    </TabList>
+                  </Box>
+                  <Paper sx={{ width: "100%", p: "30px 40px" }}>
+                    <TabPanel
+                      value={optionsForTabs.schedule}
+                      key={optionsForTabs.schedule}
+                      sx={{ p: 0 }}
                     >
-                      {errorText}
-                    </Alert>
-                  </Collapse>
-
-                  <TabPanel
-                    value={optionsForTabs.schedule}
-                    key={optionsForTabs.schedule}
-                    sx={{ p: 0 }}
-                  >
-                    <CampaignSchedule watchTime={watchTime}/>
-                  </TabPanel>
-                  <TabPanel
-                    value={optionsForTabs.content}
-                    key={optionsForTabs.content}
-                    sx={{ p: 0 }}
-                  >
-                    <CampaignContent/>
-                  </TabPanel>
-                  <TabPanel
-                    value={optionsForTabs.channels}
-                    key={optionsForTabs.channels}
-                    sx={{ p: 0 }}
-                  >
-                    <Channels/>
-                  </TabPanel>
-                  <Stack direction="row" justifyContent="flex-end">
-                    <LoadingButton
-                      variant="outlined"
-                      color="success"
-                      type="submit"
-                      sx={{ m: "18px 21px 18px 0" }}
-                      loading={isSubmitting}
+                      <CampaignSchedule watchTime={watchTime}/>
+                    </TabPanel>
+                    <TabPanel
+                      value={optionsForTabs.content}
+                      key={optionsForTabs.content}
+                      sx={{ p: 0 }}
                     >
-                      {t("pages.campaign.add.buttons.save")}
-                    </LoadingButton>
-                  </Stack>
-                </Paper>
-              </TabContext>
-            </FormProvider>
-          </Box>
-        </Grid>
+                      <CampaignContent/>
+                    </TabPanel>
+                    <TabPanel
+                      value={optionsForTabs.channels}
+                      key={optionsForTabs.channels}
+                      sx={{ p: 0 }}
+                    >
+                      <Channels/>
+                    </TabPanel>
+                    <Stack direction="row" justifyContent="flex-end">
+                      {
+                        currentActionTab !== optionsForTabs.channels &&
+                          <LoadingButton
+                              variant="outlined"
+                              color="success"
+                              type="submit"
+                              sx={{ m: "18px 21px 18px 0" }}
+                              loading={isSubmitting}
+                          >
+                            {t("pages.campaign.add.buttons.save")}
+                          </LoadingButton>
+                      }
+                    </Stack>
+                  </Paper>
+                </TabContext>
+              </FormProvider>
+            </Box>
+          </Grid>
+        }
+
       </CampaignPlaylistEditContextConnector>
     </>
   );

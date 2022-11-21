@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
-import React, { FC, memo, useEffect, useState, useMemo } from "react";
+import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { distinctUntilKeyChanged } from "rxjs";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 import ActionButtons from "./ActionButtons";
@@ -11,11 +11,12 @@ import { SortType } from "./types";
 
 /**
  * Страница добавления каналов при редактировании кампании
- * @returns 
+ * @returns
  */
+
 const Channels: FC = () => {
   const { campaign } = useCampaignEditContext(distinctUntilKeyChanged('campaign'));
-  
+
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
 
   const [preparedRows, setPreparedRows] = useState<ProjectChannel[]>([]);
@@ -24,7 +25,7 @@ const Channels: FC = () => {
 
   const [offset, setOffset] = useState<number>(0);
 
-  const [sort, setSort] = useState<SortType>({column: 'name', direction: 'asc'});
+  const [sort, setSort] = useState<SortType>({ column: 'name', direction: 'asc' });
 
   if (!campaign) {
     return null;
@@ -36,7 +37,7 @@ const Channels: FC = () => {
     let localRows: ProjectChannel[] = [];
 
     if (sort.column === 'name') {
-        localRows = rows
+      localRows = rows
         .sort((a, b) => {
           const aValue = a.name;
           const bValue = b.name;
@@ -47,22 +48,22 @@ const Channels: FC = () => {
 
     if (sort.column === 'isActive') {
       localRows = rows
-      .sort((a, b) => {
-        const aValue = a.is_active;
-        const bValue = b.is_active;
+        .sort((a, b) => {
+          const aValue = a.is_active;
+          const bValue = b.is_active;
 
-        return (aValue === bValue)? 0 : aValue? -1 : 1;
-      });
+          return (aValue === bValue) ? 0 : aValue ? -1 : 1;
+        });
     }
 
     if (sort.column === 'playersCount') {
       localRows = rows
-      .sort((a, b) => {
-        const aValue = a.players?.length!;
-        const bValue = b.players?.length!;
+        .sort((a, b) => {
+          const aValue = a.players?.length!;
+          const bValue = b.players?.length!;
 
-        return aValue - bValue;
-      });
+          return aValue - bValue;
+        });
     }
 
     setPreparedRows(sort.direction === 'asc' ? localRows.reverse() : localRows);
@@ -78,7 +79,7 @@ const Channels: FC = () => {
         <AddChannel />
       </Grid>
       <Grid item xs={12}>
-        <ChannelsTable 
+        <ChannelsTable
           sort={sort}
           setSort={setSort}
           limit={limit}
@@ -98,7 +99,7 @@ const Channels: FC = () => {
         />
       </Grid>
       <Grid item xs={6}>
-        <ActionButtons checkedItems={checkedItems} />
+        <ActionButtons checkedItems={checkedItems}/>
       </Grid>
     </Grid>
   );

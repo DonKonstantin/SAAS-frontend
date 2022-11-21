@@ -16,7 +16,7 @@ import { ProgressUploadStatusByFile } from "components/MediaLibraryUploadPage/Me
 const DropDownBlock: FC = () => {
   const { t } = useTranslation();
 
-  const { addFilesToUpload, setIsLoading } = useCampaignPlaylistEditContext(
+  const { addFilesToUpload } = useCampaignPlaylistEditContext(
     distinctUntilChanged(() => true)
   );
 
@@ -52,8 +52,6 @@ const DropDownBlock: FC = () => {
         acceptedFiles.map((file) => makeMediaFileInfo(file))
       );
 
-      setIsLoading(true);
-
       try {
         const response = await Promise.all(
           newFiles.map((file) =>
@@ -77,8 +75,6 @@ const DropDownBlock: FC = () => {
           }`,
           type: "error",
         });
-
-        setIsLoading(false);
       }
     },
     [makeMediaFileInfo]
