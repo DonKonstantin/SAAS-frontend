@@ -23,6 +23,13 @@ export interface CampaignListServiceInterface {
     projectId: string,
     name: string
   ) => Promise<ProjectChannel[]>;
+
+  /**
+   * Публикация компании
+   */
+  publishCampaign: (
+    campaignPublishInput: CampaignPublishQueryParams
+  ) => Promise<boolean>;
 }
 
 export type GetAvailableChannelsQueryQueryParams = {
@@ -61,4 +68,13 @@ export type StoreCampaignMutationResponse = {
   campaignStore: {
     id: string;
   };
+};
+
+export type CampaignPublishQueryParams = {
+  campaignId: number
+  channelIds: number[]
+};
+
+export type CampaignPublishQueryResponse = {
+  campaignPublish: boolean
 };

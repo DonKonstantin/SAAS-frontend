@@ -14,9 +14,7 @@ export class StorePlaylistMutation
   constructor(playList: ProjectPlayListInputObject) {
     this.variables = { playList };
     this.query = gql`
-      mutation StorePlaylist(
-        $playList: ProjectPlayListInputObject!
-      ) {
+      mutation StorePlaylist($playList: ProjectPlayListInputObject!) {
         result: projectPlayListStore(playList: $playList) {
           id
         }

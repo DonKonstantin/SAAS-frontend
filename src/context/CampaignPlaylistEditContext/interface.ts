@@ -19,12 +19,12 @@ export interface CampaignPlaylistEditContextActionsTypes {
   /**
    * Очистка контекста
    */
-  clearContext: VoidFunction;
+  clearContext: () => void;
 
   /**
    * Записывает чистый объект плэйлиста в контекст
    */
-  setNewPlaylist: (sortOrder: number) => void;
+  setNewPlaylist: (campaignId: string, sortOrder: number) => void;
 
   /**
    * Записывает флаг доступности дополнительных табов табов
@@ -37,14 +37,9 @@ export interface CampaignPlaylistEditContextActionsTypes {
   setIsEditable: VoidFunction;
 
   /**
-   * Двигает трэк в вверх по очереди
+   * Двигает трэк в зависимости от направления
    */
-  moveTrackUp: (fileId: string) => void;
-
-  /**
-   * Двигает трэк в вниз по очереди
-   */
-  moveTrackDown: (fileId: string) => void;
+  moveTrack: (fileId: string, direction: "up" | "down") => void;
 
   /**
    * Удаляет трэк из списка

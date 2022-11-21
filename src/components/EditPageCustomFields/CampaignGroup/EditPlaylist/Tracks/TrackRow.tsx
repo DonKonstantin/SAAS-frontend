@@ -24,16 +24,8 @@ const StyledIconButton = styled(IconButton)({
  * @returns
  */
 const TrackRow: FC<Props> = ({ row, isEditable }) => {
-  const { moveTrackUp, moveTrackDown, removeTrack } =
+  const { moveTrack, removeTrack } =
     useCampaignPlaylistEditContext(distinctUntilChanged(() => true));
-
-  const onMoveTrackUpHandler = () => {
-    moveTrackUp(row.file_id);
-  };
-
-  const onMoveTrackDownHandler = () => {
-    moveTrackDown(row.file_id);
-  };
 
   const onDeleteTrackHandler = () => {
     removeTrack(row.file_id);
@@ -44,11 +36,11 @@ const TrackRow: FC<Props> = ({ row, isEditable }) => {
       <TableCell>
         {isEditable && (
           <Stack direction="row">
-            <StyledIconButton onClick={onMoveTrackUpHandler}>
-              <ArrowUpwardIcon sx={{ width: 16 }} />
+            <StyledIconButton onClick={() => moveTrack(row.file_id, "up")}>
+              <ArrowUpwardIcon sx={{ width: 16 }}/>
             </StyledIconButton>
-            <StyledIconButton onClick={onMoveTrackDownHandler}>
-              <ArrowDownwardIcon sx={{ width: 16 }} />
+            <StyledIconButton onClick={() => moveTrack(row.file_id, "down")}>
+              <ArrowDownwardIcon sx={{ width: 16 }}/>
             </StyledIconButton>
           </Stack>
         )}
@@ -63,7 +55,7 @@ const TrackRow: FC<Props> = ({ row, isEditable }) => {
       <TableCell>
         {isEditable && (
           <StyledIconButton onClick={onDeleteTrackHandler}>
-            <DeleteIcon />
+            <DeleteIcon/>
           </StyledIconButton>
         )}
       </TableCell>

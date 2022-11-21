@@ -1,21 +1,22 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Grid, Typography } from "@mui/material";
-import { FormProvider, RHFTextField } from "components/hook-form";
-import React, { FC, memo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {Button, Grid, Typography} from "@mui/material";
+import {FormProvider, RHFTextField} from "components/hook-form";
+import React, {FC, memo, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useForm} from "react-hook-form";
 import * as Yup from "yup";
-import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
-import { styled } from "@mui/system";
-import { distinctUntilChanged } from "rxjs";
-import { isEqual } from "lodash";
+import {useCampaignPlaylistEditContext} from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
+import {styled} from "@mui/system";
+import {distinctUntilChanged} from "rxjs";
+import {isEqual} from "lodash";
 import TracksTable from "./TracksTable";
 import Pagination from "./Pagination";
-import { Tabs } from "context/CampaignPlaylistEditContext/interface";
-import { CampaignPlaylistConnect } from "services/campaignListService/types";
-import { notificationsDispatcher } from "services/notifications";
+import {Tabs} from "context/CampaignPlaylistEditContext/interface";
+import {CampaignPlaylistConnect} from "services/campaignListService/types";
+import {notificationsDispatcher} from "services/notifications";
 import OveralValue from "./OveralValue";
-import { CampaignPlayListInput } from "services/campaignPlaylistService/interfaces";
+import {useCampaignEditContext} from "../../../../../context/CampaignEditContext/useCampaignEditContext";
+import {CampaignPlayListInput} from "services/campaignPlaylistService/interfaces";
 import campaignPlaylistService from "services/campaignPlaylistService";
 
 export type playlistType = "projectPlaylist" | "campaignPlaylist";
@@ -23,10 +24,12 @@ export type playlistType = "projectPlaylist" | "campaignPlaylist";
 interface Props {
   storePlaylist: (playlist: CampaignPlaylistConnect) => void;
   setTab: (tab: Tabs) => void;
+
+  onSubmitCampaign(): void
 }
 
 interface CampaignPlaylistEditFormFieldsType {
-  playlistName: string;
+  name: string;
   isOverallVolume: boolean;
   overallVolume: number;
 }
@@ -59,7 +62,7 @@ const StyledGrid = styled(Grid)({
  * @param param0
  * @returns
  */
-const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
+const Tracks: FC<Props> = ({ storePlaylist, setTab, onSubmitCampaign }) => {
   const { t } = useTranslation();
 
   const {
@@ -68,7 +71,6 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     projectId,
     setIsEditable,
     setAvailableTabs,
-    clearContext,
     setPlaylist,
   } = useCampaignPlaylistEditContext(
     distinctUntilChanged(
@@ -79,27 +81,33 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     )
   );
 
+  const { campaign } = useCampaignEditContext(
+    distinctUntilChanged(
+      (prev, curr) =>
+        isEqual(prev.campaign, curr.campaign)
+    )
+  );
+
   const [limit, setLimit] = useState<number>(10);
 
   const [offset, setOffset] = useState<number>(0);
 
-  if (!playlist) {
+  if (!playlist || !campaign) {
     return null;
   }
 
   const messanger = notificationsDispatcher();
 
   const RegisterScheme = Yup.object().shape({
-    playlistName: Yup.string().required(
+    name: Yup.string().required(
       t("edit-campaign-playlist.error.required")
-    ),
-  });
+    )
+  })
 
-  const currentPlaylist =
-    playlist?.projectPlaylist || playlist?.campaignPlaylist;
+  const currentPlaylist = playlist?.projectPlaylist || playlist?.campaignPlaylist;
 
   let defaultValues = {
-    playlistName: currentPlaylist?.name || "",
+    name: currentPlaylist?.name || "",
     isOverallVolume: currentPlaylist?.is_overall_volume || true,
     overallVolume: currentPlaylist?.overall_volume || 100,
   };
@@ -112,32 +120,24 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
   const {
     getValues,
     handleSubmit,
+    setError,
     formState: { errors },
   } = methods;
 
-  const onSave = async (
-    playlist: CampaignPlaylistConnect,
-    formData: CampaignPlaylistEditFormFieldsType,
-    isCampaignTimetable?: boolean
-  ) => {
+  const onSavePlaylist = async (dataForPlaylist: CampaignPlaylistConnect, formData: CampaignPlaylistEditFormFieldsType) => {
+
     const playlistType = !!playlist.campaignPlaylist
       ? "campaignPlaylist"
       : "projectPlaylist";
 
-    const preparedPlaylist: CampaignPlaylistConnect = {
-      ...playlist,
-      isCampaignTimetable: isCampaignTimetable || playlist.isCampaignTimetable,
-    };
-
     if (playlistType === "projectPlaylist") {
-      storePlaylist(preparedPlaylist);
+      storePlaylist(playlist);
 
       return true;
     }
 
     try {
-      const preparedToStorePlaylist: CampaignPlayListInput = {
-        id: Number(playlist[playlistType]?.id),
+      let preparedToStorePlaylist: CampaignPlayListInput = {
         files:
           playlist[playlistType]?.files.map((file) => ({
             id: Number(file.id),
@@ -146,20 +146,28 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
             sort: file.sort,
           })) || [],
         projectId: Number(projectId),
-        name: formData.playlistName,
+        name: formData.name,
         isOverallVolume: formData.isOverallVolume,
         overallVolume: formData.overallVolume,
-        campaignId: Number(playlist[playlistType]?.campaign_id!),
+        campaignId: Number(campaign.id),
       };
 
-      const response = await campaignPlaylistService().storeCampaignPlaylist(
-        preparedToStorePlaylist
-      );
+      if (playlist[playlistType]?.id) {
+        preparedToStorePlaylist = { ...preparedToStorePlaylist, id: Number(playlist[playlistType]?.id) }
+      }
 
-      storePlaylist({ ...preparedPlaylist, id: response.id });
-
-      return true;
-    } catch (error) {
+      const response = await campaignPlaylistService().storeCampaignPlaylist(preparedToStorePlaylist);
+      storePlaylist({
+        ...dataForPlaylist,
+        campaignPlaylistId: Number(response.id),
+        campaignPlaylist: response,
+        //@ts-ignore
+        files: response.files,
+        duration: response.duration,
+        id: response.id,
+      })
+      return true
+    } catch (e) {
       messanger.dispatch({
         message: t("edit-campaign-playlist.error.store-campaign-playlist"),
         type: "error",
@@ -167,7 +175,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
 
       return false;
     }
-  };
+  }
 
   const onSubmit = async (data: CampaignPlaylistEditFormFieldsType) => {
     if (Object.keys(errors).length) {
@@ -178,19 +186,33 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       return;
     }
 
-    const saveResult = await onSave(playlist, data, true);
+    const preparedPlaylist = {
+      ...playlist,
+      ...data,
+      isCampaignTimetable: true,
+      days: campaign.days.map(day => {
+        delete day['campaign_id']
+        return {
+          id: day.id,
+          dayNum: day.day_num,
+          isActive: day.is_active,
+          daysStartMinutes: day.days_start_minutes,
+          daysStopMinutes: day.days_stop_minutes,
+        }
+      }),
+      periodStart: campaign.campaign_period_start,
+      periodStop: campaign.campaign_period_stop
+    }
 
+    //@ts-ignore
+    const saveResult = await onSavePlaylist(preparedPlaylist, data)
     if (!saveResult) {
       return;
     }
 
-    messanger.dispatch({
-      message: t("edit-campaign-playlist.success.store-campaign-playlist"),
-      type: "success",
-    });
+    onSubmitCampaign()
+  }
 
-    clearContext();
-  };
 
   const onSaveAndRouteToSchedule = async () => {
     const values = getValues();
@@ -199,8 +221,20 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       return;
     }
 
-    const saveResult = await onSave(playlist, values);
+    if (playlist.projectPlaylist) {
+      setTab(Tabs.schedule);
+      return
+    }
 
+    if (values.name.length === 0) {
+      setError('name', {
+        type: "required",
+        message: t("edit-campaign-playlist.error.required"),
+      })
+      return
+    }
+
+    const saveResult = await onSavePlaylist(playlist, values);
     const campaignPlaylist = playlist.campaignPlaylist;
 
     if (!saveResult || !campaignPlaylist) {
@@ -211,7 +245,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
       ...playlist,
       campaignPlaylist: {
         ...campaignPlaylist,
-        name: values.playlistName,
+        name: values.name,
         is_overall_volume: values.isOverallVolume,
         overall_volume: values.overallVolume,
       },
@@ -220,7 +254,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
     setAvailableTabs([...Object.values(Tabs)]);
 
     setTab(Tabs.schedule);
-  };
+  }
 
   if (!!playlist?.campaignPlaylist && !isEdit) {
     setIsEditable();
@@ -235,10 +269,10 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
           </Typography>
         </StyledGrid>
         <StyledGrid item xs={5}>
-          <RHFTextField name="playlistName" />
+          <RHFTextField name="name" disabled={!!playlist.projectPlaylistId}/>
         </StyledGrid>
         <StyledGrid item xs={12}>
-          <OveralValue />
+          {!!playlist?.campaignPlaylist && <OveralValue/>}
         </StyledGrid>
         <Grid item xs={12} sx={{ pt: 1.5 }}>
           <TracksTable
@@ -258,11 +292,19 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab }) => {
           />
         </StyledPaginationGrid>
         <StyledActionsGrid item xs={6}>
-          <StyledButton variant="outlined" type="submit">
+          <StyledButton variant="outlined" type="submit"
+                        disabled={!currentPlaylist?.files.length}
+          >
             {t("edit-campaign-playlist.button.save-with-common-rule")}
           </StyledButton>
-          <StyledButton variant="outlined" onClick={onSaveAndRouteToSchedule}>
-            {t("edit-campaign-playlist.button.save-and-route-to-schedule")}
+          <StyledButton variant="outlined" onClick={onSaveAndRouteToSchedule}
+                        disabled={!currentPlaylist?.files.length}
+          >
+            {
+              playlist.campaignPlaylist
+                ? t("edit-campaign-playlist.button.save-and-route-to-schedule")
+                : t("edit-campaign-playlist.button.route-to-schedule")
+            }
           </StyledButton>
         </StyledActionsGrid>
       </Grid>

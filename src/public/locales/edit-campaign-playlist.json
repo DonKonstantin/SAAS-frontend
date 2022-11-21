@@ -6,17 +6,23 @@
       "clips": "Ролики"
     },
     "button": {
-      "make-playlist-editable": "перейти к рЕДАКТИРОВАНИЮ",
-      "save-with-common-rule": "СОХРАНИТЬ с ОБЩИМИ ПРАВИЛАМИ",
-      "save-and-route-to-schedule": "СОХРАНИТЬ И перейти к расписанию",
+      "make-playlist-editable": "Перейти к редактированию",
+      "save-with-common-rule": "Сохранить с общими правилами",
+      "save-and-route-to-schedule": "Сохранить и перейти к расписанию",
+      "route-to-schedule": "Перейти к расписанию",
       "save": "Сохранить",
-      "add-to-playlist": "ДОБАВИТЬ В ПЛЕЙЛИСТ"
+      "add-to-playlist": "Добавить в плейлист"
     },
     "field": {
       "playlist-name": "Название плейлиста",
       "is-over-valume": "Общая громкость",
       "campaign-period": "Период компании",
-      "is-campaign-schedule": "Установленно расписание как у компании",
+      "schedule": {
+        "is-campaign-schedule": "Расписание как у кампании",
+        "yes": "Да",
+        "no": "Нет"
+      },
+
       "campaign-days": {
         "0": "Понедельник",
         "1": "Вторник",

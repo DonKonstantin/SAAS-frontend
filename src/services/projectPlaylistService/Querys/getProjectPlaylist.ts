@@ -13,7 +13,7 @@ export class GetCampaignsProjectPlaylistQuery
 
   constructor(playlistName: string, projectId: number) {
     this.variables = {
-      playlistName,
+      playlistName: `%${playlistName}%`,
       projectId
     };
 

@@ -26,7 +26,7 @@ const ClipsTableRow: FC<Props> = ({ row, selected, setSelected }) => {
   const isChecked = selected.includes(row.file_id!);
 
   const onToggleItemCheckedState = () => {
-    if (!!isChecked) {
+    if (isChecked) {
       setSelected(selected.filter((i) => i !== row.file_id));
 
       return;
@@ -42,7 +42,7 @@ const ClipsTableRow: FC<Props> = ({ row, selected, setSelected }) => {
   return (
     <TableRow>
       <CheckBoxCell checked={isChecked} onClick={onToggleItemCheckedState} />
-      <TableCell>{row.file.title}</TableCell>
+      <TableCell>{row.file.title.length ? row.file.title : row.file.origin_name}</TableCell>
       <TableCell>
         <PlayAudioButton
           fileName={row.file.file_name}
