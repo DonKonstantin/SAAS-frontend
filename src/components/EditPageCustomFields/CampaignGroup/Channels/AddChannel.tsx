@@ -2,7 +2,7 @@ import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { styled } from "@mui/system";
 import { getCurrentState } from "context/AuthorizationContext";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
-import React, { FC, memo, useEffect, useRef, useState } from "react";
+import React, {FC, memo, useEffect, useLayoutEffect, useRef, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { debounceTime, distinctUntilKeyChanged, filter, fromEvent, map, switchMap } from "rxjs";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
@@ -39,6 +39,17 @@ const AddChannel: FC = () => {
     setInputValue(value);
   };
 
+  // Load channel on mounted component
+  useEffect(() => {
+    const { project } = getCurrentState();
+
+    projectChannelsService().getChannelsByName(project, "").then(options => {
+      setOptions(options);
+    }).catch(() => {
+      setOptions([]);
+    })
+  }, [])
+
   const onAddChannelHandler = async () => {
     if (!campaign || !newChannel) {
       return
@@ -57,7 +68,7 @@ const AddChannel: FC = () => {
     setNewChannel(undefined);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!inputRef.current) {
       return;
     }
