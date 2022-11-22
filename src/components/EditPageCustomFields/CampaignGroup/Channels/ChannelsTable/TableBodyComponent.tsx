@@ -1,10 +1,10 @@
 import React, { FC, memo } from "react";
 import { TableBody } from "@mui/material";
 import ChannelRow from "./ChannelRow";
-import { ProjectChannel } from "services/playerCodeService/interfaces";
+import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
 
 interface Props {
-  rows: ProjectChannel[];
+  rows: ProjectChannel[] | CampaignChannels[];
   checkedItems: string[];
   onChangeCheckedItems: (checkedItems: string[]) => void;
 }

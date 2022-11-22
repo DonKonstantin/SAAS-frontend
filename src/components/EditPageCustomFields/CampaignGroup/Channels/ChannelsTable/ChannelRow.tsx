@@ -3,10 +3,10 @@ import { styled } from "@mui/system";
 import CheckBoxCell from "components/ListPageParts/List/CheckBoxCell";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
-import { ProjectChannel } from "services/playerCodeService/interfaces";
+import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
 
 interface Props {
-  row: ProjectChannel;
+  row: ProjectChannel & CampaignChannels;
   checkedItems: string[];
   onChangeCheckedItems: (checkedItems: string[]) => void;
 }
@@ -38,18 +38,18 @@ const StyledTypography = styled("span")({
 const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
   const { t } = useTranslation();
 
-  const isChecked = checkedItems.includes(row.id!);
+  const isChecked = checkedItems.includes(row.channel_id ?? row.id);
 
   const isActive = row.is_active;
 
   const onToggleItemCheckedState = () => {
     if (isChecked) {
-      onChangeCheckedItems(checkedItems.filter((i) => i !== row.id));
+      onChangeCheckedItems(checkedItems.filter((i) => i !== row.channel_id ?? row.id));
 
       return;
     }
 
-    onChangeCheckedItems([...checkedItems, row.id!]);
+    onChangeCheckedItems([...checkedItems, row.channel_id ?? row.id]);
   };
 
   return (

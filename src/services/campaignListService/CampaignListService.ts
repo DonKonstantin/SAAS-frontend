@@ -1,23 +1,24 @@
-import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
-import { loggerFactory } from "services/logger";
-import { Logger } from "services/logger/Logger";
-import { ProjectChannel } from "services/playerCodeService/interfaces";
+import {GraphQLClient} from "services/graphQLClient/GraphQLClient";
+import {loggerFactory} from "services/logger";
+import {Logger} from "services/logger/Logger";
+import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
 import {
   CampaignListServiceInterface,
   CampaignPublishQueryParams,
   CampaignPublishQueryResponse,
   GetAvailableChannelsQueryQueryParams,
-  GetAvailableChannelsQueryQueryResponse,
+  GetAvailableChannelsQueryQueryResponse, GetCampaignByArrayIdQueryParams, GetCampaignByArrayIdResponse,
   GetCampaignByIdQueryParams,
   GetCampaignByIdQueryResponse,
   StoreCampaignMutationParams,
   StoreCampaignMutationResponse,
 } from "./interface";
-import { GetAvailableChannelsQuery } from "./Queries/GetAvailableChannelsQuery";
-import { GetCampaignByIdQuery } from "./Queries/GetCampaignByIdQuery";
-import { Campaign, CampaignInput } from "./types";
-import { StoreCampaignMutation } from "./mutations/StoreCampaignMutation";
-import { CampaignPublish } from "./mutations/CampaignPublish";
+import {GetAvailableChannelsQuery} from "./Queries/GetAvailableChannelsQuery";
+import {GetCampaignByIdQuery} from "./Queries/GetCampaignByIdQuery";
+import {Campaign, CampaignInput} from "./types";
+import {StoreCampaignMutation} from "./mutations/StoreCampaignMutation";
+import {CampaignPublish} from "./mutations/CampaignPublish";
+import {GetCampaignsByArrayId} from "./Queries/GetCampaignsByArrayId";
 
 /**
  * Сервис авторизации пользователя
@@ -52,6 +53,25 @@ export class CampaignListService implements CampaignListServiceInterface {
       return campaign[0];
     } catch (error) {
       this.logger.Debug("Ошибка получения списка каналов: ", error);
+
+      throw Error(error);
+    }
+  };
+
+  /**
+   * Получаем каналы компании по массиву ID
+   * @param campaignArrayId
+   * @returns
+   */
+  async getCampaignByArrayId(campaignArrayId: string[]): Promise<CampaignChannels[]> {
+    this.logger.Debug("Массив ID кампании: ", campaignArrayId);
+
+    try {
+      const { campaignChannels } = await this.client.Query<GetCampaignByArrayIdQueryParams,
+        GetCampaignByArrayIdResponse>(new GetCampaignsByArrayId(campaignArrayId), {});
+      return campaignChannels;
+    } catch (error) {
+      this.logger.Debug("Ошибка получения списка компаний по массиву ID : ", error);
 
       throw Error(error);
     }
