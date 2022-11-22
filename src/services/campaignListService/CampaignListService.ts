@@ -71,7 +71,7 @@ export class CampaignListService implements CampaignListServiceInterface {
         GetCampaignByArrayIdResponse>(new GetCampaignsByArrayId(campaignArrayId), {});
       return campaignChannels;
     } catch (error) {
-      this.logger.Debug("Ошибка получения списка каналов: ", error);
+      this.logger.Debug("Ошибка получения списка компаний по массиву ID : ", error);
 
       throw Error(error);
     }
