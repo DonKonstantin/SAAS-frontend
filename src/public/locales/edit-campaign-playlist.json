@@ -49,6 +49,7 @@
     },
     "success": {
       "store-campaign-playlist": "Плэйлист был успешно сохранен",
+      "publish-campaign": "Компания успешно опубликована",
       "clip-added-to-campaign-playlist": "Клип добавлен к списку воспроизведения плэйлиста"
     },
     "drop-zone": {

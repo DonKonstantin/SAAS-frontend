@@ -111,11 +111,11 @@ const AddChannel: FC = () => {
           fullWidth
           freeSolo
           clearIcon={false}
-          filterOptions={(option) => option.filter(({ id }) => !campaign?.channels.some(channel => channel.id === id))}
+          filterOptions={(option) => option.filter(({ id }) => !campaign?.channels.some(channel => (channel.channel_id ?? channel.id) === id))}
           noOptionsText={t("pages.campaign.edit.fields.content.playlist.noOptions")}
           getOptionLabel={(option: ProjectChannel) => option.name}
           renderInput={(params) => (
-            <TextField ref={inputRef} {...params} variant="standard"/>
+            <TextField ref={inputRef} {...params} variant="standard" />
           )}
           renderOption={(props, option) => (
             <Box component="li" {...props}>

@@ -53,6 +53,10 @@ const ActionButtons: FC<Props> = ({ checkedItems }) => {
 
     try {
       await campaignListService().publishCampaign(campaignPublishData)
+      messanger.dispatch({
+        message: t("edit-campaign-playlist.success.publish-campaign"),
+        type: "success",
+      });
     } catch (error) {
       messanger.dispatch({
         message: error,
@@ -72,7 +76,6 @@ const ActionButtons: FC<Props> = ({ checkedItems }) => {
       </Button>
       <Button
         variant="outlined"
-        // disabled={disableSaveButton}
         type='submit'
       >
         {t("pages.campaign.add.buttons.save")}

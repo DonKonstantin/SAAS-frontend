@@ -173,7 +173,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             const {domain, project} = getCurrentState();
 
             return {
-                href: "/domain/[domainId]/project/[projectId]/campaign ",
+                href: "/domain/[domainId]/project/[projectId]/campaign",
                 as: `/domain/${domain}/project/${project}/campaign`,
             };
         },

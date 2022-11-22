@@ -1,4 +1,4 @@
-import { ProjectChannel } from "services/playerCodeService/interfaces";
+import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
 import { Campaign, CampaignInput } from "./types";
 
 export interface CampaignListServiceInterface {
@@ -8,6 +8,13 @@ export interface CampaignListServiceInterface {
   getCampaignById: (
     campaignId: string
   ) => Promise<Campaign>;
+
+  /**
+   * Получаем каналы компании по массиву ID
+   */
+  getCampaignByArrayId: (
+    campaignArrayId: string[]
+  ) => Promise<CampaignChannels[]>;
 
   /**
    * Создает\сохраняет сущьность кампании
@@ -77,4 +84,12 @@ export type CampaignPublishQueryParams = {
 
 export type CampaignPublishQueryResponse = {
   campaignPublish: boolean
+};
+
+export type GetCampaignByArrayIdQueryParams = {
+  campaignArrayId: string[];
+};
+
+export type GetCampaignByArrayIdResponse = {
+  campaignChannels: CampaignChannels[]
 };
