@@ -43,9 +43,9 @@ export const onDropHandler = async (
     return;
   }
 
-  const availableInStock = checkResul.filter((item) => !item.doubles.length);
+  const availableInStock = checkResul.filter((item) => !!item.doubles.length);
 
-  const noAvailableInStock = checkResul.filter((item) => !!item.doubles.length);
+  const noAvailableInStock = checkResul.filter((item) => !item.doubles.length);
 
   setNotAvailables(noAvailableInStock.map((item) => item.fileName));
 

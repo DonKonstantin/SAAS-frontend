@@ -25,7 +25,7 @@ const ExportResultBlock: FC<Props> = ({
   const playlistList = Object.keys(dropedPlaylistList)
     .map((key) => {
       const trackList = dropedPlaylistList[key].filter((track) =>
-        notAvailables.every((item) => item !== track)
+        notAvailables.every((item) => item === track)
       );
 
       if (!trackList.length) {
