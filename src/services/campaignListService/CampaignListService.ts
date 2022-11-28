@@ -7,9 +7,12 @@ import {
   CampaignPublishQueryParams,
   CampaignPublishQueryResponse,
   GetAvailableChannelsQueryQueryParams,
-  GetAvailableChannelsQueryQueryResponse, GetCampaignByArrayIdQueryParams, GetCampaignByArrayIdResponse,
+  GetAvailableChannelsQueryQueryResponse,
+  GetCampaignByArrayIdQueryParams,
+  GetCampaignByArrayIdResponse,
   GetCampaignByIdQueryParams,
   GetCampaignByIdQueryResponse,
+  GetCampaignTimetableValidationResponse,
   StoreCampaignMutationParams,
   StoreCampaignMutationResponse,
 } from "./interface";
@@ -19,6 +22,7 @@ import {Campaign, CampaignInput} from "./types";
 import {StoreCampaignMutation} from "./mutations/StoreCampaignMutation";
 import {CampaignPublish} from "./mutations/CampaignPublish";
 import {GetCampaignsByArrayId} from "./Queries/GetCampaignsByArrayId";
+import {GetCampaignTimetableValidation} from "./Queries/GetCampaignTimetableValidation";
 
 /**
  * Сервис авторизации пользователя
@@ -71,11 +75,31 @@ export class CampaignListService implements CampaignListServiceInterface {
         GetCampaignByArrayIdResponse>(new GetCampaignsByArrayId(campaignArrayId), {});
       return campaignChannels;
     } catch (error) {
-      this.logger.Debug("Ошибка получения списка компаний по массиву ID : ", error);
+      this.logger.Debug("Ошибка получения списка кампаний по массиву ID : ", error);
 
       throw Error(error);
     }
   };
+
+
+  /**
+   * Проверка валидации расписания компании
+   * @param campaign
+   * @returns
+   */
+  async campaignValidation(
+    campaign: CampaignInput
+  ): Promise<boolean> {
+    this.logger.Debug("Сущность кампании: ", campaign);
+
+    try {
+      const response = await this.client.Query<StoreCampaignMutationParams, GetCampaignTimetableValidationResponse>(new GetCampaignTimetableValidation(campaign), {});
+      return response.campaignTimetableValidation
+    } catch (error) {
+      this.logger.Debug("Ошибка в проверке кампании: ", error);
+      throw error;
+    }
+  }
 
   /**
    * Создает\сохраняет сущьность кампании
@@ -91,7 +115,7 @@ export class CampaignListService implements CampaignListServiceInterface {
       const { campaignStore } = await this.client.Query<StoreCampaignMutationParams, StoreCampaignMutationResponse>(new StoreCampaignMutation(campaign), {});
       return campaignStore.id;
     } catch (error) {
-      this.logger.Debug("Ошибка в создании компании: ", error);
+      this.logger.Debug("Ошибка в создании кампании: ", error);
       throw error;
     }
   }
@@ -139,11 +163,11 @@ export class CampaignListService implements CampaignListServiceInterface {
       const { campaignPublish } = await this.client.Mutation<CampaignPublishQueryParams,
         CampaignPublishQueryResponse>(new CampaignPublish(campaignId, channelIds), {});
 
-      this.logger.Debug("Компания успешно опубликована: ", campaignPublish);
+      this.logger.Debug("Кампания успешно опубликована: ", campaignPublish);
 
       return campaignPublish;
     } catch (error) {
-      this.logger.Debug("Ошибка при публикации компании: ", error);
+      this.logger.Debug("Ошибка при публикации кампании: ", error);
 
       throw Error(error);
     }

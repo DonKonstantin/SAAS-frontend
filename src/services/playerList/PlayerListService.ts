@@ -33,11 +33,11 @@ export class PlayerListService implements PlayerListServiceInterface {
           {}
         );
 
-        this.logger.Debug("Ответ на запрос компаний для листинга плееров: ", players);
+        this.logger.Debug("Ответ на запрос кампаний для листинга плееров: ", players);
 
         return players;
       } catch (error) {
-        this.logger.Error("Ошибка запроса компаний для листинга плееров: ", error);
+        this.logger.Error("Ошибка запроса кампаний для листинга плееров: ", error);
 
         throw error;
       }
