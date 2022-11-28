@@ -16,7 +16,7 @@
     "field": {
       "playlist-name": "Название плейлиста",
       "is-over-valume": "Общая громкость",
-      "campaign-period": "Период компании",
+      "campaign-period": "Период трансляции плейлиста:",
       "schedule": {
         "is-campaign-schedule": "Расписание как у кампании",
         "yes": "Да",
@@ -49,7 +49,7 @@
     },
     "success": {
       "store-campaign-playlist": "Плэйлист был успешно сохранен",
-      "publish-campaign": "Компания успешно опубликована",
+      "publish-campaign": "Кампания успешно опубликована",
       "clip-added-to-campaign-playlist": "Клип добавлен к списку воспроизведения плэйлиста"
     },
     "drop-zone": {

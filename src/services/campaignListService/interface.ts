@@ -17,6 +17,13 @@ export interface CampaignListServiceInterface {
   ) => Promise<CampaignChannels[]>;
 
   /**
+   * Проверка валидации расписания компании
+   */
+  campaignValidation: (
+    campaign: CampaignInput
+  ) => Promise<boolean>;
+
+  /**
    * Создает\сохраняет сущьность кампании
    */
   storeCampaign: (
@@ -92,4 +99,8 @@ export type GetCampaignByArrayIdQueryParams = {
 
 export type GetCampaignByArrayIdResponse = {
   campaignChannels: CampaignChannels[]
+};
+
+export type GetCampaignTimetableValidationResponse = {
+  campaignTimetableValidation: boolean
 };
