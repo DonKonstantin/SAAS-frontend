@@ -24,7 +24,12 @@ import { PlayersListingConfiguration } from "./list/player";
 import { PlayerEditPageConfiguration } from "./edit/player";
 import { PlayerCodeListingConfiguration } from "./list/player_code";
 import { PlaylistListingConfiguration } from "./list/project_playlist";
+import { ProjectPlaylistEditPageConfig } from "./edit/project_playlist";
 import { PlayerCodeEditPageConfig } from "./edit/player_code";
+import { CampaignListingConfiguration } from "./list/campaign";
+import {ProjectChannelListingConfiguration} from "./list/project_channel";
+import {ProjectChannelEditPageConfig} from "./edit/propject_channel";
+import { CampaignEditPageConfig } from "./edit/campaign";
 
 // Параметры конфигурации листинга сущностей
 export type ListSchemaConfiguration = {
@@ -44,9 +49,11 @@ export const listSchemaConfiguration: {
     notifications_template: new NotificationsTemplateListingConfiguration(),
     notification_config: new NotificationConfigListingConfiguration(),
     object_passport: new ObjectsPassportListingConfiguration(),
-    project_playlist: new PlaylistListingConfiguration,
-    player: new PlayersListingConfiguration(),
     player_code: new PlayerCodeListingConfiguration(),
+    project_playlist: new PlaylistListingConfiguration(),
+    player: new PlayersListingConfiguration(),
+    campaign: new CampaignListingConfiguration(),
+    project_channel: new ProjectChannelListingConfiguration()
   };
 };
 
@@ -67,7 +74,10 @@ export const editSchemaConfiguration: {
     notifications_template: new NotificationsTemplateEditPageConfig(),
     notification_config: new NotificationConfigEditPageConfig(),
     object_passport: new ObjectPassportEditPageConfig(),
+    project_playlist: new ProjectPlaylistEditPageConfig(),
     player: new PlayerEditPageConfiguration(),
     player_code: new PlayerCodeEditPageConfig(),
+    project_channel: new ProjectChannelEditPageConfig(),
+    campaign: new CampaignEditPageConfig(),
   };
 };

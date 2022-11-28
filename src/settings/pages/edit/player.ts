@@ -44,12 +44,12 @@ export class PlayerEditPageConfiguration
             this.logger.Debug("ID проекта: ", project);
 
             const platerObjectPassport =
-              await playerListService().loadPlayerObjectPasport(
+              await playerListService().loadPlayerObjectPassport(
                 data.id as string
               );
 
             const playerObjectPassports =
-              await playerListService().loadPlayerObjectPasports(project);
+              await playerListService().loadPlayerObjectPassports(project);
 
             this.logger.Debug(
               "Паспорт привязанный к плееру: ",

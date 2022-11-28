@@ -13,7 +13,7 @@ type ListProps = {
 const List: FC<ListProps> = props => {
     return (
         <TableContainer>
-            <Table>
+            <Table sx={{tableLayout: 'fixed'}}>
                 <ListHeader {...props} />
                 <ListBody {...props} />
             </Table>

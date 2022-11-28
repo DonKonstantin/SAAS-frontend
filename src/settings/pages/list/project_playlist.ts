@@ -10,9 +10,10 @@ import { ListFieldsConfiguration } from "services/listDataLoader/listLoader/type
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import { loggerFactory } from "services/logger";
 import projectPlaylistService from "services/projectPlaylistService";
-import PlaylistProjectCell from "components/ListPageCustom/PlaylistProjectCell";
+import PlaylistCampaignsCell from "components/ListPageCustom/PlaylistCampaignsCell";
 import PlaylistHeaderActions from "components/ListPageCustom/PlaylistHeaderActions";
 import PlaylistActions from "components/ListPageCustom/PlaylistActions";
+import PlailistCampignsField from "components/ListPageParts/Filter/PlailistCampignsField";
 
 /**
  * Конфигурация листинга плейлистов
@@ -25,7 +26,14 @@ export class PlaylistListingConfiguration
       field: "name",
       filterType: "Like",
       schema: "project_playlist",
-      title: "project-playlists.list.header.name"
+      title: "project-playlists.list.filter.name",
+    },
+    id: {
+      field: "id",
+      filterType: "VariantsSelectorFloat",
+      schema: "project_playlist",
+      title: "project-playlists.list.filter.campaign",
+      customComponent: PlailistCampignsField,
     },
   };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
@@ -40,15 +48,15 @@ export class PlaylistListingConfiguration
           type: "Simple",
         },
       },
-      project_id: {
-        field: "project_id",
-        title: "project-playlists.list.header.project",
+      id: {
+        field: "id",
+        title: "project-playlists.list.header.campaign",
         isEnabled: true,
         isHidden: false,
         fieldType: {
           config: undefined,
           type: "Simple",
-          customComponent: PlaylistProjectCell
+          customComponent: PlaylistCampaignsCell,
         },
       },
       duration: {
@@ -61,8 +69,8 @@ export class PlaylistListingConfiguration
           type: "Simple",
         },
       },
-      id: {
-        field: "id",
+      project_id: {
+        field: "project_id",
         title: "",
         isEnabled: true,
         isHidden: true,
@@ -96,18 +104,23 @@ export class PlaylistListingConfiguration
     additionDataLoader: async (rows) => {
       const logger = loggerFactory().make("Playlist listing additional data");
 
+      //@ts-ignore
+      const playlistsId = rows.map(
+        (row) => row.columnValues.id.value
+      ) as string[];
+
+      if (!playlistsId.length) {
+        return null;
+      }
+
       try {
-        //@ts-ignore
-        const projectIds = rows.map(row => row.columnValues.project_id.value) as string[];
-
-        const playlistProjects = await projectPlaylistService().getProjects(projectIds);
-
-        logger.Debug(
-          "Playlist listing projects response: ",
-          playlistProjects
+        const playlistCampaigns = await projectPlaylistService().getCampaigns(
+          playlistsId
         );
 
-        return {playlistProjects};
+        logger.Debug("Playlist listing projects response: ", playlistCampaigns);
+
+        return { playlistCampaigns };
       } catch (error) {
         logger.Error("Playlist listing additional data error: ", error);
 

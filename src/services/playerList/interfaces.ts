@@ -1,3 +1,5 @@
+import {PlayerWithoutRelations} from "../playerCodeService/interfaces";
+
 export interface PlayerListServiceInterface {
   /**
    * Запрос о компаниях для листинга плееров
@@ -10,20 +12,27 @@ export interface PlayerListServiceInterface {
    * Запрос паспорта объекта привязанного к плееру
    * @param playerId 
    */
-  loadPlayerObjectPasport(playerId: string): Promise<ObjectPassport>;
+  loadPlayerObjectPassport(playerId: string): Promise<ObjectPassport>;
 
   /**
    * Запрос паспортов объектов доступных плееру
    * @param projectId 
    */
-  loadPlayerObjectPasports(projectId: string): Promise<ObjectPassport[]>;
+  loadPlayerObjectPassports(projectId: string): Promise<ObjectPassport[]>;
 
   /**
    * Мутация сохранения плеера
    * @param playerId 
-   * @param objectPasportId 
+   * @param objectPassportId
    */
-  savePlayer(playerId: string, objectPasportId: string): Promise<boolean>;
+  savePlayer(playerId: string, objectPassportId: string): Promise<boolean>;
+
+  /**
+   * Получение списка плееров по ид проекта и ид коналов
+   * @param projectId
+   * @param channels
+   */
+  getPlayersByChannels(projectId: string, channels: string[]): Promise<PlayerWithoutRelations[]>
 }
 
 export interface Channel {

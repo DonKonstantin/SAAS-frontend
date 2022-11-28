@@ -82,7 +82,7 @@ export class RelationFieldsParser<G extends "Relation" | "MultipleRelation"> imp
             return defaultRows
         }
 
-        const query = `query __LIST_REL_DATA__ {rel_data: ${fieldSchema.relation.schema}_list(where: {${String(fieldSchema.relation.target)}: {_in: ["${itemIds.join(`", "`)}"]}}, limit: ${itemIds.length}) {${String(fieldSchema.relation.target)}, ${config.fieldType.config?.relatedFields.join(", ")}}}`;
+        const query = `query __LIST_REL_DATA__ {rel_data: ${fieldSchema.relation.schema}_list(where: {${fieldSchema.relation.target.toString()}: {_in: ["${itemIds.join(`", "`)}"]}}, limit: ${itemIds.length}) {${fieldSchema.relation.target.toString()}, ${config.fieldType.config?.relatedFields.join(", ")}}}`;
         try {
             const response = await this.client.Query<null, any>(new class implements GraphQLQuery<null> {
                 readonly query: any = gql`${query}`;

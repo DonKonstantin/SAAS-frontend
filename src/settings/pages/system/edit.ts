@@ -5,7 +5,7 @@ import {OverridableComponent} from "@mui/types";
 import {SvgIconTypeMap} from "@mui/material";
 
 // Тип, описывающий размеры группы
-export type Size = 'auto' | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type Size = 'auto' | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | number
 
 interface SizeGroup {
     xl?: Size     // +1920px @media

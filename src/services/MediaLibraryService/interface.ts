@@ -38,6 +38,21 @@ export type MediaFile = {
 
 export type MediaFileTags = keyof MediaFile;
 
+// File of Media library
+export type ProjectMediaFile = {
+    composer: string
+    duration: number
+    file_name: string
+    hash_sum: string
+    id?: number
+    last_change_date: Date
+    mime_type: string
+    origin_name: string
+    project_id?: number
+    title: string
+    player_file_id: number
+}
+
 /**
  * Результат процента заполненности тегов файла
  */
