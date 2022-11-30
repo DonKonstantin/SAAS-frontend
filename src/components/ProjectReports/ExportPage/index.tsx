@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,11 +24,6 @@ const StyledFieldHeader = styled(Typography)({
   letterSpacing: 0.44,
 });
 
-const StyledButtonWrapper = styled(Box)({
-  textAlign: "right", 
-  paddingTop: 20,
-});
-
 /**
  * Компонент страницы таба экспорта на странице отчетов
  * @param param0
@@ -44,10 +39,6 @@ const ExportPage: FC<Props> = ({}) => {
       prev.reportType === curr.reportType
     )
   );
-
-  const onGenerateHandler = () => {
-    generateReport(["1"]);
-  }
 
   return (
     <Box>
@@ -75,12 +66,6 @@ const ExportPage: FC<Props> = ({}) => {
             dateFrom={dateFrom}
             dateTo={dateTo}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <Divider />
-          <StyledButtonWrapper>
-            <Button variant="outlined" onClick={onGenerateHandler}>{t("reports.button.generate")}</Button>
-          </StyledButtonWrapper>
         </Grid>
       </Grid>
     </Box>

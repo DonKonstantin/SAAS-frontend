@@ -2,7 +2,9 @@ import { ReportProps } from "components/ProjectReports/types";
 import { useProjectReportPageContext } from "context/ProjectReportPageContext";
 import React, {FC, memo, useState} from "react";
 import ReportsTable from "../../ReportsTable";
-import {TextField} from "@mui/material";
+import {Box, Button, Divider, TextField} from "@mui/material";
+import {styled} from "@mui/system";
+import {useTranslation} from "react-i18next";
 
 const headers = [
   {
@@ -12,6 +14,11 @@ const headers = [
     title: "reports.preview-table.logs.header.number-of-plays"
   },
 ];
+
+const StyledButtonWrapper = styled(Box)({
+  textAlign: "right",
+  paddingTop: 20,
+});
 
 export interface PlayerLogsListType {
   id: string;
@@ -26,6 +33,7 @@ export interface PlayerLogsListType {
  */
 const PlayerLogs: FC<ReportProps> = () => {
   const { reportsList } = useProjectReportPageContext();
+  const { t } = useTranslation();
 
   const [checked, setChecked] = useState<string[]>([]);
 
@@ -40,6 +48,10 @@ const PlayerLogs: FC<ReportProps> = () => {
     <>
       <TextField variant="standard"/>
       <ReportsTable headers={headers} rows={tableData} onSelect={setChecked}/>
+      <Divider />
+      <StyledButtonWrapper>
+        <Button variant="outlined" onClick={console.log}>{t("reports.button.generate")}</Button>
+      </StyledButtonWrapper>
     </>
   );
 };
