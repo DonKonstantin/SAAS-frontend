@@ -4,9 +4,11 @@ stages:
 
 # Инициализация Werf
 .werf_init:
-  image: ghcr.io/werf/werf:1.2-ea
+  image: registry.werf.io/werf/werf:1.2-rock-solid
   before_script:
     - source $(werf ci-env gitlab --as-file)
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git config --global --add safe.directory '*'
 
 ### Базовый скрипт деплоя на площадку
 .base_deploy:
