@@ -3,10 +3,11 @@ import {EntityData} from "../entityGetterService/interface";
 
 // Параметры сохранения сущности
 export interface EntityStoreParameters {
-    primaryKey: any,
-    isNeedCopy: boolean,
-    schema: keyof Schemas,
-    data: EntityData<keyof Schemas>
+    primaryKey: any;
+    isNeedCopy: boolean;
+    schema: keyof Schemas;
+    data: EntityData<keyof Schemas>;
+    isSaveEnabled: boolean;
 }
 
 /**

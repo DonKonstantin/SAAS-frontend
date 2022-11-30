@@ -23,6 +23,16 @@ export class ProjectListingConfiguration implements ListPageConfiguration<"proje
     };
     listFields: ListFieldsConfiguration<"project"> = {
         fields: {
+            id: {
+                field: "id",
+                title: "pages.project.list.fields.id",
+                isEnabled: true,
+                width: 100,
+                fieldType: {
+                    config: undefined,
+                    type: "Simple",
+                }
+            },
             name: {
                 field: "name",
                 title: "pages.project.list.fields.name",

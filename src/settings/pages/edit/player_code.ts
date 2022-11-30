@@ -114,8 +114,8 @@ export class PlayerCodeEditPageConfig
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/player-codes/",
-      as: `/domain/${domain}/project/${project}/player-codes/`,
+      href: "/domain/[domainId]/project/[projectId]/player-code/",
+      as: `/domain/${domain}/project/${project}/player-code/`,
     };
   };
   isCopyEnabled: boolean = true;
@@ -125,8 +125,8 @@ export class PlayerCodeEditPageConfig
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/player-codes/edit/[entityId]",
-      as: `/domain/${domain}/project/${project}/player-codes/edit/${pk}`,
+      href: "/domain/[domainId]/project/[projectId]/player-code/edit/[entityId]",
+      as: `/domain/${domain}/project/${project}/player-code/edit/${pk}`,
     };
   };
 }

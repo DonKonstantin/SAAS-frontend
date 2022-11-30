@@ -17,7 +17,6 @@ PlaylistListingPage.getInitialProps = async ({
   entityListSchema: "project_playlist",
   permissionCheckPermission: "READ_PROJECT_PLAYLISTS",
   permissionCheckEditPermission: "EDIT_PROJECT_PLAYLISTS",
-  permissionCheckCreatePermission: "EDIT_PROJECT_PLAYLISTS",
   permissionCheckDeletePermission: "EDIT_PROJECT_PLAYLISTS",
   permissionCheckLevel: "project",
   pageMenuType: "project",

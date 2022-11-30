@@ -31,7 +31,7 @@ type EntityEditHocActions<T extends keyof Schemas = keyof Schemas> = {
     onResetFieldValue: { <K extends keyof Schemas[T]['fields']>(field: K): void }
 
     // Обработка сохранения сущности
-    onSave: { (isNeedCopy?: boolean): Promise<string | undefined> }
+    onSave: { (isNeedCopy?: boolean, isSaveEnabled?: boolean): Promise<string | undefined> }
 
     // Обработка изменения дополнительных данных формы редактирования
     onChangeAdditionData: {(callback: {(data: EntityData<T>['additionData']): EntityData<T>['additionData']}): void}
@@ -83,7 +83,7 @@ const validateEntity = async (data: EntityData): Promise<ValidationResults> => {
  * Обработка сохранения сущности
  * @param isNeedCopy
  */
-const onSave: EntityEditHocActions['onSave'] = async (isNeedCopy = false) => {
+const onSave: EntityEditHocActions['onSave'] = async (isNeedCopy = false, isSaveEnabled: boolean = true) => {
     const {entityData} = context$.getValue()
     if (!entityData) {
         return
@@ -115,6 +115,7 @@ const onSave: EntityEditHocActions['onSave'] = async (isNeedCopy = false) => {
             primaryKey: primaryKey,
             isNeedCopy: isNeedCopy,
             data: entityData,
+            isSaveEnabled,
         })
 
         notificationsDispatcher().dispatch({

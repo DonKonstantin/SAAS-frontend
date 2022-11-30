@@ -5,6 +5,7 @@ import {RelationValue} from "./listValues/RelationValue";
 import {ListLoadingParameters} from "./interfaces";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
 import {EnumValue} from "./listValues/EnumValue";
+import {SchemaValues} from "./listValues/SchemaValues";
 
 // Свойства полей листинга сущностей
 export interface ListFieldProperties<T> {
@@ -25,12 +26,17 @@ export class ListFieldValueTypes {
     MultipleRelation: RelationValue[];
     Enum: EnumValue;
     Hidden: SimpleValues;
+    Schema: SchemaValues<keyof Schemas, any>
 }
 
 // Настройки отношения
 export type RelationConfig<T extends keyof Schemas> = {
     relatedFields: FieldOfSchema<T>[]
     joinSymbol?: string,
+}
+
+export type SchemeConfig<T extends keyof Schemas> = {
+    relatedScheme: T
 }
 
 // Конфигурация поля
@@ -40,6 +46,7 @@ export type FieldOfSchema<T extends keyof Schemas> = keyof Schemas[T]['fields']
 export class DefinedListFieldTypesConfig<T extends keyof Schemas> implements ListFieldTypesConfig {
     MultipleRelation: RelationConfig<T>;
     Relation: RelationConfig<T>;
+    Schema: SchemeConfig<T>;
     Simple: undefined;
     Enum: undefined;
     Hidden: undefined;

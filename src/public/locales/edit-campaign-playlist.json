@@ -1,0 +1,59 @@
+{
+  "edit-campaign-playlist": {
+    "tabs": {
+      "tracks": "Трэки",
+      "schedule": "Расписание",
+      "clips": "Ролики"
+    },
+    "button": {
+      "make-playlist-editable": "Перейти к редактированию",
+      "save-with-common-rule": "Сохранить с общими правилами",
+      "save-and-route-to-schedule": "Сохранить и перейти к расписанию",
+      "route-to-schedule": "Перейти к расписанию",
+      "save": "Сохранить",
+      "add-to-playlist": "Добавить в плейлист"
+    },
+    "field": {
+      "playlist-name": "Название плейлиста",
+      "is-over-valume": "Общая громкость",
+      "campaign-period": "Период трансляции плейлиста:",
+      "schedule": {
+        "is-campaign-schedule": "Расписание как у кампании",
+        "yes": "Да",
+        "no": "Нет"
+      },
+
+      "campaign-days": {
+        "0": "Понедельник",
+        "1": "Вторник",
+        "2": "Среда",
+        "3": "Четверг",
+        "4": "Пятница",
+        "5": "Суббота",
+        "6": "Воскресенье"
+      }
+    },
+    "table": {
+      "header": {
+        "track-name": "Название трека",
+        "clips-header": "Загруженные"
+      },
+      "empty-uploaded-track-row": "Нет загруженных треков",
+      "empty-track-row": "В плэйлисте еще нет треков"
+    },
+    "error": {
+      "required": "Поле обязательно к заполнению",
+      "store-campaign-playlist": "Не удалось сохранить плэйлист",
+      "upload": "Не удалось загрузить клип",
+      "uploads": "Не удалось загрузить клипы"
+    },
+    "success": {
+      "store-campaign-playlist": "Плэйлист был успешно сохранен",
+      "publish-campaign": "Кампания успешно опубликована",
+      "clip-added-to-campaign-playlist": "Клип добавлен к списку воспроизведения плэйлиста"
+    },
+    "drop-zone": {
+      "input-text": "Переместите файлы для загрузки"
+    }
+  }
+}

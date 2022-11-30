@@ -141,6 +141,7 @@ export class Client implements GraphQLClient {
             const subscription = client.subscribe<Response>({
                 fetchPolicy: "network-only",
                 query: query.query,
+                // @ts-ignore
                 variables: query.variables,
             });
 

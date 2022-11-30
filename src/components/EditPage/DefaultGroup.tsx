@@ -2,8 +2,7 @@ import React, {FC} from "react";
 import {EditFormGroupProperties} from "../../settings/pages/system/edit";
 import {useEntityEdit} from "../../context/EntityEditContext";
 import {distinctUntilChanged} from "rxjs";
-import {Grid, Paper} from "@mui/material";
-import {Box} from "@mui/system";
+import {Grid, Paper, Box} from "@mui/material";
 
 // Компонент вывода группы по умолчанию
 const DefaultGroup: FC<EditFormGroupProperties> = ({config}) => {

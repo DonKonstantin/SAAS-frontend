@@ -2,6 +2,8 @@ import { Collection } from "../../services/types";
 import notifications_template from "./NotificationsTemplate";
 import notification_config from "./NotificationConfig";
 import file, { file_data } from "./File";
+import projectChannel from "./ProjectChannel";
+import Player_Without_Relations from "./PlayerWithoutRelations";
 
 /**
  * Основные схемы данных GraphQL. Содержат связи между сущностями,
@@ -78,11 +80,11 @@ export class Schemas {
         isArray: false,
       },
       //  Паспорт объекта, который привязан к плееру.
-      object_passport: {
+     /* object_passport: {
         type: "Object_Passport",
         isPrimaryKey: false,
         isArray: false,
-      },
+      },*/
       //  Идентификатор паспорта объекта, который привязан к плееру.
       object_passport_id: {
         type: "NullableID",
@@ -474,40 +476,121 @@ export class Schemas {
     isDeletable: true,
   };
 
-  project_channel: Schema = {
+
+  // Параметры схемы сущности Компании
+  campaign: Schema = {
     fields: {
-      //  ID сущности
       id: {
         type: "ID",
         isPrimaryKey: true,
         isArray: false,
       },
-      //  Флаг активности расписания
-      is_active: {
-        type: "Boolean!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      //  Название канала
       name: {
         type: "String!",
         isPrimaryKey: false,
         isArray: false,
       },
-      //  Плееры, относящиеся к каналу
-      players: {
-        type: "Player_Without_Relations",
-        isPrimaryKey: false,
-        isArray: true,
-      },
-      //  Идентификатор проекта, к которому относится канал
-      project_id: {
-        type: "ID!",
+      version: {
+        type: "Int!",
         isPrimaryKey: false,
         isArray: false,
       },
+      campaign_priority : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            higher: "pages.campaign.list.fields.campaign-priority-enum.higher",
+            background: "pages.campaign.list.fields.campaign-priority-enum.background",
+            low: "pages.campaign.list.fields.campaign-priority-enum.low",
+            normal: "pages.campaign.list.fields.campaign-priority-enum.normal",
+            high: "pages.campaign.list.fields.campaign-priority-enum.high"
+          },
+        },
+      },
+      campaign_period_start: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      campaign_period_stop: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      days: {
+        type: "CampaignDay!",
+        isPrimaryKey: false,
+        isArray: true,
+      },
+      campaign_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            simple: "pages.campaign.edit.fields.campaign-type.simple",
+            mute: "pages.campaign.edit.fields.campaign-type.mute"
+          },
+        },
+      },
+      campaign_end_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_end_type.break"
+          },
+        },
+      },
+      campaign_low_priority_end_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_low_priority_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_low_priority_end_type.break"
+          },
+        },
+      },
+      campaign_play_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            periodic: "pages.campaign.edit.fields.campaign_play_type.periodic",
+            continuous: "pages.campaign.edit.fields.campaign_play_type.continuous"
+          },
+        },
+      },
+      campaign_play_tracks_period_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            hours: "pages.campaign.edit.fields.campaign_play_tracks_period_type.hours",
+            minutes: "pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes"
+          },
+        },
+      },
+      campaign_days_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            daily: "pages.campaign.edit.fields.campaign_days_type.daily",
+            daysOfTheWeek: "pages.campaign.edit.fields.campaign_days_type.daysOfTheWeek"
+          },
+        },
+      },
     },
-
     isChangeable: true,
     isCreatable: true,
     isDeletable: true,
@@ -551,6 +634,12 @@ export class Schemas {
       isPrimaryKey: false,
       isArray: false,
     },
+    //  Файлы, относящиеся к плейлисту
+    files: {
+      type: "[Project_PlayList_File!]",
+      isPrimaryKey: false,
+      isArray: false,
+    },
   },
 
   isChangeable: true,
@@ -563,6 +652,8 @@ export class Schemas {
   notification_config = notification_config;
   file = file;
   file_data = file_data;
+  project_channel: Schema = projectChannel;
+  Player_Without_Relations: Schema = Player_Without_Relations;
 }
 
 /**
@@ -584,18 +675,22 @@ export type FieldType =
   | "DateTime!"
   | "Enum"
   | "Enum!"
+  | "Schema"
   | "Project_Channel"
   | "Player_Without_Relations"
   | "Project_PlayList_File"
-  | "Object_Passport"
+  | "[Project_PlayList_File!]"
   | "NullableID"
-  | "Player_Code!";
+  | "Player_Code!"
+  | "CampaignDay!"
+  ;
 
 export class SchemaField {
   type: FieldType;
   isPrimaryKey: boolean;
   isArray: boolean;
   relation?: RelationConfiguration<any>;
+  schema?: keyof Schemas
   enum?: EnumConfiguration;
 }
 

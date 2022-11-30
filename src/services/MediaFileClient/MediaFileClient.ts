@@ -1,22 +1,10 @@
-import {MediaFileClientInterface, UpdateResponse} from "./interface";
+import {MediaFileClientInterface, MediaFileWithoutLicense, UpdateResponse} from "./interface";
 import {Axios, AxiosRequestConfig, AxiosRequestHeaders} from "axios";
 import {Logger} from "../logger/Logger";
 import {loggerFactory} from "../logger";
 import {MediaFile} from "../MediaLibraryService/interface";
-import {getMainFileApiLink} from "./helpers";
-import {getAuthorizationToken} from "../../context/AuthorizationContext";
-
-const prepareFormdata = (file: File, mediaInfo: MediaFile): FormData => {
-    const data = new FormData();
-
-    data.append('file', file);
-
-    Object.entries(mediaInfo).map(([field, value]) => {
-        data.append(field, value as string)
-    })
-
-    return data;
-}
+import {getMainFileApiLink, prepareFormdata, prepareFormdataWithoutLicense} from "./helpers";
+import {getAuthorizationToken, getCurrentState} from "../../context/AuthorizationContext";
 
 /**
  * Client for job with file on media library server
@@ -138,6 +126,52 @@ export default class MediaFileClient implements MediaFileClientInterface {
         } catch (e) {
             throw e
         }
+    }
+
+    /**
+     * Загрузка файла на сервер без типа лицензии
+     * @param file 
+     * @param mediaInfo 
+     * @param config 
+     * @returns 
+     */
+    async UploadWithoutLicense(file: File, mediaInfo: MediaFileWithoutLicense, config: AxiosRequestConfig = {}): Promise<any> {
+      this.logger.Debug("Имя загружаемого файла: ", file.name);
+      this.logger.Debug("Атрибуты загружаемого файла: ", mediaInfo);
+
+      try {
+        const formData = prepareFormdataWithoutLicense(file, mediaInfo);
+
+        const headers = await this.getHeaders(config.headers || {});
+
+        const {project} = getCurrentState();
+
+        const data  = await this.client.post(
+            `/project/${project}/files/upload?authorization=${headers.Authorization}`,
+            formData,
+            {
+                ...config,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    ...headers
+                },
+            }
+        );
+
+        // const result: UpdateResponse  = JSON.parse(data.data);
+
+        // if (result.code !== 200) {
+        //     throw new Error("Error upload file")
+        // }
+
+        // this.logger.Debug('file uploaded', result.file);
+
+        // return result.file;
+
+        return data;
+      } catch (e) {
+        throw e
+      }
     }
 
     async GetFilePath(name: string): Promise<string> {

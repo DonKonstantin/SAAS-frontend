@@ -61,6 +61,7 @@ export class PlayerCodeListingConfiguration
         field: "is_active",
         title: "player-codes.list.headers.is_active",
         isEnabled: true,
+        width: 233,
         align: "left",
         fieldType: {
           config: undefined,
@@ -132,16 +133,16 @@ export class PlayerCodeListingConfiguration
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/player-codes/edit/[entityId]",
-      as: `/domain/${domain}/project/${project}/player-codes/edit/${pk}`,
+      href: "/domain/[domainId]/project/[projectId]/player-code/edit/[entityId]",
+      as: `/domain/${domain}/project/${project}/player-code/edit/${pk}`,
     };
   };
   addPageUrl: { (): PageUrl } = () => {
     const { domain, project } = getCurrentState();
 
     return {
-      href: "/domain/[domainId]/project/[projectId]/player-codes/add",
-      as: `/domain/${domain}/project/${project}/player-codes/add`,
+      href: "/domain/[domainId]/project/[projectId]/player-code/add",
+      as: `/domain/${domain}/project/${project}/player-code/add`,
     };
   };
   hidePagination = true;

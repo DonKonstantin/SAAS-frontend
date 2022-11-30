@@ -239,7 +239,8 @@
         "fields": {
           "name": "Название проекта",
           "active": "Статус",
-          "parent": "Домен"
+          "parent": "Домен",
+          "id": "#"
         },
         "filters": {
           "name": "Название проекта",
@@ -261,6 +262,181 @@
           "name": "Название проекта",
           "parent": "Домен",
           "parent-error": "Необходимо выбрать домен"
+        }
+      },
+      "logs": {
+        "breadcrumb": "Логи"
+      }
+    },
+    "campaign": {
+      "list": {
+        "title": "Список кампаний",
+        "header": "Список кампаний",
+        "breadcrumb": "Кампании",
+        "last-version": {
+          "yes": "Да",
+          "no": "Нет"
+        },
+        "fields": {
+          "name": "Название",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец",
+          "campaign-priority-enum": {
+            "higher": "Наивысший",
+            "background": "Фоновый",
+            "low": "Низкий",
+            "normal": "Обычный",
+            "high": "Высокий"
+          }
+        },
+        "filters": {
+          "name": "Название кампании",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец"
+        }
+      },
+      "add": {
+        "title": "Создать кампанию",
+        "header": "Создать кампанию",
+        "breadcrumb": "Создать кампанию",
+        "fields": {
+          "schedule": {
+            "name": "Название",
+            "campaign_type": "Тип кампании:",
+            "campaign_end_type": "После окончания:",
+            "campaign_priority": "Приоритет:",
+            "campaign_low_priority_end_type": "Кампании с меньшим приоритетом:",
+            "campaign_play_type": "Воспроизведение",
+            "campaign_period": "Период кампании"
+          },
+          "campaign_days": {
+            "title": "Дни недели:",
+            "0": "Понедельник",
+            "1": "Вторник",
+            "2": "Среда",
+            "3": "Четверг",
+            "4": "Пятница",
+            "5": "Суббота",
+            "6": "Воскресенье"
+          }
+        },
+        "buttons": {
+          "save": "Сохранить",
+          "publish": "Опубликовать",
+          "add-channel": "Добавить"
+        }
+      },
+      "edit": {
+        "title": "Редактировать кампанию",
+        "header": "Редактировать кампанию",
+        "breadcrumb": "Редактировать кампанию",
+        "tabs": {
+          "schedule": "Расписание",
+          "content": "Контент",
+          "channels": "Каналы"
+        },
+        "fields": {
+          "schedule": {
+            "campaign-priority-enum": {
+              "priority-enum-error": "Необходимо выбрать хотя бы один приоритет"
+            },
+            "campaign-type": {
+              "simple": "Обычная",
+              "mute": "Mute"
+            },
+            "campaign_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_low_priority_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_play_type": {
+              "periodic": "Периодичное",
+              "continuous": "Непрерывное"
+            },
+            "campaign_play_tracks_period_type": {
+              "hours": "часы",
+              "minutes": "минут"
+            }
+          },
+          "content": {
+            "campaign_play_order": {
+              "title": "Порядок воспроизведения",
+              "mix": "Перемешать",
+              "byOrder": "Подряд"
+            },
+            "continues": "Длительность",
+            "trackCount": "Количество треков",
+            "playlist": {
+              "title": "Добавить существующий плейлист",
+              "noOptions": "Нет совпадений",
+              "buttons": {
+                "add": "Добавить",
+                "create": "Создать плейлист"
+              },
+              "drop-zone": {
+                "title": "Переместите файлы для загрузки",
+                "error": {
+                  "Too many files": "Одновременно можно загрузить максимум {{count}} файлов"
+                }
+              },
+              "table": {
+                "headCells": {
+                  "name": "Название",
+                  "trackCount": "Количество треков",
+                  "files": "Продолжительность",
+                  "shuffle": "Перемешать",
+                  "count": "Счетчик"
+                },
+                "snackbar": {
+                  "addPlaylist": "Плейлист {{name}} успешно добавлен"
+                },
+                "deleteDialog": {
+                  "header": "Удаление плейлиста {{name}}",
+                  "title": "Вы действиетльно хотите удалить плейлист {{name}}??",
+                  "buttons": {
+                    "tooltip-cancel": "Отменить удаление плейлиста",
+                    "tooltip-delete": "Подтвердить удаление плейлиста",
+                    "cancel": "Отмена",
+                    "delete": "Удалить"
+                  }
+                }
+              }
+            }
+          },
+          "campaign_days_type": {
+            "daily": "Ежедневно",
+            "daysOfTheWeek": "По дням"
+          },
+          "active": "Кампания активна",
+          "name": "Название кампании"
+        },
+        "errors": {
+          "required": "Поле обязательно к заполнению",
+          "date": {
+            "minDate": "Период окончания не может быть меньше периода начала",
+            "check-date": "Неверный формат даты"
+          },
+          "time": {
+            "timeValue": "Некорректное время"
+          },
+          "number": {
+            "positive": "Только положительные числа",
+            "integer": "Только целые числа"
+          },
+          "notifications": {
+            "playlistPeriod": "Ошибка при сохранении. Период трансляции плейлиста больше, чем у компании",
+            "storeCampaign": "Ошибка при сохранении компании"
+          }
+        },
+        "successMessages": {
+          "updateName": "Кампания {{name}} успешно изменена"
         }
       },
       "logs": {
@@ -495,6 +671,42 @@
           "rao_voice": "РАО/ВОИС",
           "sparx": "SPARX",
           "amurco": "AMURCO"
+        }
+      }
+    },
+    "project_channel": {
+      "list": {
+        "title": "Список каналов",
+        "header": "Каналы",
+        "breadcrumb": "Каналы",
+        "headers": {
+          "name": "Название",
+          "is_active": "Статусы плееров",
+          "active-players": "Подключено",
+          "players": "Подключено"
+        }
+      },
+      "add": {
+        "title": "Создание канала",
+        "header": "Создание канала",
+        "breadcrumb": "Каналы"
+      },
+      "edit": {
+        "title": "Редактирование канала",
+        "header": "Редактирование канала",
+        "breadcrumb": "Каналы",
+        "button": {
+          "Save": "Сохранить"
+        },
+        "fields": {
+          "name": "Название",
+          "is_active": "Свойства расписания",
+          "enum": {
+            "is-active": {
+              "enabled": "Активный",
+              "disabled": "Неактивный"
+            }
+          }
         }
       }
     }
