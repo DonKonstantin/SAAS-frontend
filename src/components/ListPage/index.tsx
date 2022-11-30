@@ -51,10 +51,14 @@ const ListPage: FC = () => {
     const config = listSchemaConfiguration()[data.schema]
 
     const ActionComponent = config?.action || undefined;
+    const HeaderActionsComponent = config?.headerActions || undefined;
+
     // Обработчик переключения фильтра
     const handleToggleFilter = () => {
         setIsFilterOpen(s => !s)
     }
+
+    const additionItemButtonTitle = config?.additionButtonTitle || undefined;
 
     const FilterIcon = isFilterOpen ? ChevronRightIcon : ChevronLeftIcon
     const filterTooltip = `entity-list.components.filter.show-button.tooltip.${!isFilterOpen ? "show" : "hide"}`
@@ -71,20 +75,25 @@ const ListPage: FC = () => {
                             <Breadcrumbs/>
                         </Grid>
                         <Grid item>
-                            <Tooltip title={t(filterTooltip) as string}>
-                                <IconButton
-                                    size="small"
-                                    color="primary"
-                                    onClick={handleToggleFilter}
-                                >
-                                    <FilterIcon fontSize="medium"/>
-                                </IconButton>
-                            </Tooltip>
+                          {!config?.hideFilter && (
+                                <Tooltip title={t(filterTooltip) as string}>
+                                    <IconButton
+                                        size="small"
+                                        color="primary"
+                                        onClick={handleToggleFilter}
+                                    >
+                                        <FilterIcon fontSize="medium"/>
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </Grid>
                     </Grid>
                 </Box>
                 <Box sx={{width: '100%'}}>
                     <Paper sx={{width: '100%', mb: 2, p: 3}}>
+                        {HeaderActionsComponent && (
+                          <HeaderActionsComponent checkedItems={selected} />
+                        )}
                         <TableCaption checkedItems={selected}/>
                         <List
                             checkedItems={selected}
@@ -97,16 +106,20 @@ const ListPage: FC = () => {
                                 spacing={1}
                             >
                                 <Grid item sx={{flex: "1 1 0"}}>
-                                    <ListPagePagination/>
+                                    {!config?.hidePagination && (
+                                        <ListPagePagination/>
+                                    )}
                                 </Grid>
                                 {ActionComponent && (
                                     <Grid item>
                                         <ActionComponent checkedItems={selected} />
                                     </Grid>
                                 )}
-                                <Grid item>
-                                    <ListPageCreationButton/>
-                                </Grid>
+                                {!ActionComponent && (
+                                  <Grid item>
+                                    <ListPageCreationButton buttonTitle={additionItemButtonTitle} />
+                                  </Grid>
+                                )}
                             </Grid>
                         </Box>
                     </Paper>

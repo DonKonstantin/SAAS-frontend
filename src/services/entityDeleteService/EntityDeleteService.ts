@@ -44,7 +44,7 @@ export class EntityDeleteService implements EntityDeleteServiceInterface {
             const ids: string[] = items.map(item => this.valueConverter.convertValueToGraphQL(primaryKey.field.type, item))
 
             this.logger.Debug(`Query parameters`, primaryKey, ids)
-
+            // @ts-ignore
             const mutation = `mutation __DELETE_ENTITY__ {${deleteSchema}_delete(where: {${primaryKey.code}: {_in: [${ids.join(",")}]}}) {affected_rows}}`
             this.logger.Debug(`Generated mutation`, mutation)
 

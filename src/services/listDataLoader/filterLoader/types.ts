@@ -189,6 +189,7 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "VariantsSelectorInt",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
+      "Switch"
     ];
     "String!": AvailableFilterField[] = [
         "EqualsString",
@@ -211,6 +212,7 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
         "EqualsString",
         "RelationVariantsSelector",
         "RelationAutocompleteSelector",
+        "VariantsSelectorFloat",
     ];
     Int: AvailableFilterField[] = [
         "EqualsInt",
@@ -232,4 +234,29 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "Enum!": AvailableFilterField[] = [
         "EnumSelector"
     ];
+    "Project_Channel": AvailableFilterField[] = [
+      
+    ];
+    "Player_Without_Relations": AvailableFilterField[] = [
+      
+    ];
+    "Project_PlayList_File": AvailableFilterField[] = [
+      
+    ];
+    "Object_Passport": AvailableFilterField[] = [
+      
+    ];
+    "NullableID": AvailableFilterField[] = [
+      
+    ];
+    "[Project_PlayList_File!]": AvailableFilterField[] = [
+
+    ];
+    "Player_Code!": AvailableFilterField[] = [
+      
+    ];
+    "CampaignDay!": AvailableFilterField[] = [
+
+    ];
+    Schema: AvailableFilterField[] = []
 }

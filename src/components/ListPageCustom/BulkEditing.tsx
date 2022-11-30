@@ -43,7 +43,7 @@ const getUpdatedFieldsForPlural = (file: MediaFile) => {
     file.lyricist !== '' && (fieldToUpdate['lyricist'] = file.lyricist)
     file.composer !== '' && (fieldToUpdate['composer'] = file.composer)
 
-    if (fieldToUpdate === {}) {
+    if (Object.keys(fieldToUpdate).length === 0) {
         return undefined
     }
 

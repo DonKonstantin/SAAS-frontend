@@ -1,0 +1,16 @@
+{
+  "validators": {
+    "not-empty-string": {
+      "error-message": "Необходимо ввести значение"
+    },
+    "minimal-length": {
+      "error-message": "Минимальная длина значения должна быть больше {{minimalLength}}"
+    },
+    "email": {
+      "error-message": "Указан не валидный E-mail"
+    },
+    "empty-array": {
+      "error-message": "Должно быть выбранно значение"
+    }
+  }
+}

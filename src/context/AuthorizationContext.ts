@@ -4,7 +4,6 @@ import {
     distinctUntilKeyChanged,
     map,
     OperatorFunction,
-    Subject,
     throttleTime
 } from "rxjs";
 import {RoleData, UserInfoData} from "../services/authService/UserInfoQuery";
@@ -65,6 +64,8 @@ const updateCookies = (name: string, value: string | undefined) => {
         cookie.remove(name, {
             ...COOKIE_CONFIG,
         })
+
+        return;
     }
 
     cookie.set(
@@ -139,10 +140,10 @@ class DefaultContext implements AuthorizationContext {
 // Создаем изначальный State
 const context$ = new BehaviorSubject<AuthorizationContext>(new DefaultContext);
 
-// Контекст для обработки изменения токена
-const tokenContext$ = new Subject<string | undefined>();
-
 const cookie = new Cookies();
+
+// Контекст для обработки изменения токена
+const tokenContext$ = new BehaviorSubject<string | undefined>(cookie.get('token') || undefined);
 
 /**
  * Обработка перехода на какие-то страницы при наличии флага редиректа
@@ -338,14 +339,14 @@ const initializeContextBus = () => {
     // Сохраняем изменения токена в Cookie
     const tokenCookieSet = tokenContext$
         .pipe(throttleTime(1000))
-        .subscribe(updateCookies.bind(null, ["token"]))
+        .subscribe(updateCookies.bind(null, "token"))
 
     tokenCookieSet.add(
-        updateDomain$.subscribe(updateCookies.bind(null, ['domain']))
+        updateDomain$.subscribe(updateCookies.bind(null, 'domain'))
     )
 
     tokenCookieSet.add(
-        updateProject$.subscribe(updateCookies.bind(null, ['project']))
+        updateProject$.subscribe(updateCookies.bind(null, 'project'))
     );
 
     tokenCookieSet.add(

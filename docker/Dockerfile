@@ -15,4 +15,4 @@ RUN rm -fR /usr/src/node_modules && yarn install
 RUN export NODE_OPTIONS="--max-old-space-size=8192" && yarn run build
 EXPOSE $PORT
 
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "run", "start" ]

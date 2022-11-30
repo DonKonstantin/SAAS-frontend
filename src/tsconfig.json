@@ -31,7 +31,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
   },
   "include": [
     "next-env.d.ts",
@@ -41,7 +41,8 @@
   "paths": {
     "rxjs/*": [
       "node_modules/rxjs/*"
-    ]
+    ],
+    "react": [ "./node_modules/@types/react" ]
   },
   "exclude": [
     "node_modules",

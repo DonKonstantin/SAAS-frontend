@@ -40,7 +40,12 @@ export class UpdateEntityService implements UpdateEntityServiceInterface {
                     // @ts-ignore
                     const fieldConfig: SchemaField = schemaConfig.fields[fieldCode]
                     // @ts-ignore
-                    const value: any = passedData.values[fieldCode]
+                    let value: any = passedData.values[fieldCode];
+                    
+                    if (typeof value === 'string') {
+                      value = value.replace(/[\r\n]/gm, ' ');
+                    }
+
                     // @ts-ignore
                     const originValue: any = passedData.originalValues[fieldCode]
 
@@ -54,7 +59,7 @@ export class UpdateEntityService implements UpdateEntityServiceInterface {
                     }
                 })
                 .filter(item => item.convertedValue !== item.convertedOriginValue)
-                .map(item => `${item.fieldCode}: ${item.convertedValue}`)
+                .map(item => `${item.fieldCode.toString()}: ${item.convertedValue}`)
             ;
 
             this.logger.Debug(`generated field to update`, fields)

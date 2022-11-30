@@ -1,0 +1,36 @@
+{
+  "player-list": {
+    "title": "Плееры",
+    "header": "Плееры",
+    "left-menu": {
+      "title": "Плееры"
+    },
+    "list": {
+      "header": {
+        "name": "Плеер",
+        "is-active": "Статусы плееров",
+        "last-update": "Последнее обращение",
+        "project-id": "Канал",
+        "uploading-status": "Загружено %"
+      }
+    },
+    "edit": {
+      "title": "Редактирование плеера",
+      "header": "Редактирование плеера",
+      "field-header": "Паспорт объекта",
+      "no-available-passports": "Нет доступных для выбора паспортов объектов",
+      "no-value": "Значение не выбрано"
+    },
+    "status": {
+      "true": "активен",
+      "false": "не активен"
+    },
+    "button": {
+      "save": "Сохранить"
+    },
+    "notifications": {
+      "success": "Плеер успешно сохранен",
+      "reject": "Плеер не был сохранен"
+    }
+  }
+}
