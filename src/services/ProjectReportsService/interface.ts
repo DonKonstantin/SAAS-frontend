@@ -68,4 +68,6 @@ export interface GetPlayerLogsReportParams {
   to: Date;
 }
 
-export interface GetPlayerLogsReportResponse {}
+export interface GetPlayerLogsReportResponse {
+
+}

@@ -23,15 +23,19 @@ import {
 import {
   GetPlayerPlayInfoStatistic,
   GetPlayerPlayInfoStatisticResponse,
-  GetPlayerPlayInfoStatisticResponseDTOFactory,
+  GetPlayerPlayInfoStatisticResponseDTOFactory
 } from "./Queryes/GetPlayerPlayInfoStatistic";
-import { GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse } from "./Queryes/GetChannelPlayInfoStatistic";
-import { GetFilesPlayInfoStatistic, GetFilesPlayInfoStatisticResponse } from "./Queryes/GetFilesPlayInfoStatistic";
+import {GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse} from "./Queryes/GetChannelPlayInfoStatistic";
+import {
+  GetFilesPlayInfoStatistic,
+  GetFilesPlayInfoStatisticResponse,
+} from "./Queryes/GetFilesPlayInfoStatistic";
+
 
 /**
  * Сервис отчетов проекта
  */
-export default class ProjectReportsService implements ProjectReportsServiceInterface {
+export default class ProjectReportsService  implements ProjectReportsServiceInterface {
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
 
@@ -79,7 +83,10 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(new GetPlayerPlayInfoStatistic(params), {});
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(
+          new GetPlayerPlayInfoStatistic(params),
+          {}
+      );
 
       return GetPlayerPlayInfoStatisticResponseDTOFactory(response.logs);
     } catch (error) {
@@ -98,8 +105,8 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
     try {
       const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetChannelPlayInfoStatisticResponse>(
-        new GetChannelPlayInfoStatistic(params),
-        {}
+          new GetChannelPlayInfoStatistic(params),
+          {}
       );
 
       return response.logs;
@@ -114,13 +121,20 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     }
   }
 
+
   async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(new GetFilesPlayInfoStatistic(params), {});
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(
+          new GetFilesPlayInfoStatistic(params),
+          {}
+      );
 
-      return [...response.globalFiles, ...response.projectFiles];
+      return [
+        ...response.globalFiles,
+        ...response.projectFiles,
+      ];
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
@@ -358,7 +372,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     }
 
     const headers = {
-      Authorization: token,
+      "Authorization": token,
       "Content-Type": "application/json",
     };
 
