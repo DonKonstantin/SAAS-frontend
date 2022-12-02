@@ -1,5 +1,4 @@
-import { Axios, AxiosRequestConfig } from "axios";
-import { ReportType } from "components/ProjectReports/types";
+import { Axios } from "axios";
 import { getAuthorizationToken } from "context/AuthorizationContext";
 import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
 import { loggerFactory } from "services/logger";
@@ -12,6 +11,13 @@ import {
   PlayerPlayInfoStatistic,
   PlayInfoStatisticQueryParams,
   ProjectFilePlayInfoStatistic,
+  ReportCampaignQueryParams,
+  ReportChannelsQueryParams,
+  ReportDeviceQueryParams,
+  ReportFilesQueryParams,
+  ReportPlayerLogsQueryParams,
+  ReportRaoQueryParams,
+  ReportVoiceQueryParams,
 } from "./types";
 import {
   GetPlayerPlayInfoStatistic,
@@ -139,31 +145,8 @@ export default class ProjectReportsService
     }
   }
 
-  /**
-   * Запрос отчета
-   * @param project
-   * @param reportType
-   * @param dateFrom
-   * @param dateTo
-   * @param primaryKeys
-   * @param config
-   * @returns
-   */
-  async getReports(
-    project: string,
-    reportType: ReportType,
-    dateFrom: Date,
-    dateTo: Date,
-    primaryKeys: string[],
-    config: AxiosRequestConfig = {}
-  ): Promise<Blob | undefined> {
-    this.logger.Debug("ID проекта: ", project);
-    this.logger.Debug("Тип отчета: ", reportType);
-    this.logger.Debug("Начиная с даты: ", dateFrom);
-    this.logger.Debug("Заканчивая датой: ", dateTo);
-    this.logger.Debug("Ключи выбранных отчетов: ", primaryKeys);
-
-    this.logger.Debug("config: ", config);
+  async getReportPlayerLogs(params: ReportPlayerLogsQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
 
     let token: string = getAuthorizationToken();
 
@@ -177,23 +160,236 @@ export default class ProjectReportsService
     };
 
     const data = JSON.stringify({
-      from: dateFrom.toISOString(),
-      playerId: primaryKeys,
-      projectId: project,
-      to: dateTo.toISOString(),
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
     });
 
     this.logger.Info("data: ", data);
 
     try {
-      const file = await this.clientAxios.post<any, Blob>(
-        `/reports/player-logs`,
-        data,
-        {
-          responseType: "blob",
-          headers,
-        }
-      );
+      const file = await this.clientAxios.post<any, any>(`/reports/player-logs`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportCampaign(params: ReportCampaignQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/campaign`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportChannels(params: ReportChannelsQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/channels`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportDevice(params: ReportDeviceQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/device`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportFiles(params: ReportFilesQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/files`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportRao(params: ReportRaoQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/rao`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
+
+      return file;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getReportVoice(params: ReportVoiceQueryParams): Promise<Blob | undefined> {
+    this.logger.Debug("Параметры запроса: ", params);
+
+    let token: string = getAuthorizationToken();
+
+    if (!token || 0 === token.length) {
+      return undefined;
+    }
+
+    const headers = {
+      Authorization: token,
+      "Content-Type": "application/json",
+    };
+
+    const data = JSON.stringify({
+      ...params,
+      from: params.from.toISOString(),
+      to: params.to.toISOString(),
+    });
+
+    this.logger.Info("data: ", data);
+
+    try {
+      const file = await this.clientAxios.post<any, any>(`/reports/voice`, data, {
+        responseType: "json",
+        headers,
+      });
+      //@ts-ignore
+      this.logger.Info("file loaded", file.data);
 
       this.logger.Info("file loaded", file);
 

@@ -108,3 +108,74 @@ export type GetPlayerPlayInfoStatisticResponse = {
     };
   })[];
 };
+
+/**
+ * Параметры запроса для получения отчета "Логи плеера"
+ */
+export type ReportPlayerLogsQueryParams = {
+  from: Date;
+  playerId: string[];
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "Кампании"
+ */
+export type ReportCampaignQueryParams = {
+  campaignId: string[];
+  from: Date;
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "Каналы"
+ */
+export type ReportChannelsQueryParams = {
+  channelId: string[];
+  from: Date;
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "Отчет по устройству"
+ */
+export type ReportDeviceQueryParams = {
+  from: Date;
+  playerId: string[];
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "Файлы"
+ */
+export type ReportFilesQueryParams = {
+  from: Date;
+  globalFileId: string[];
+  projectFileId: string[];
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "РАО"
+ */
+export type ReportRaoQueryParams = {
+  from: Date;
+  playerId: string[];
+  projectId: string;
+  to: Date;
+};
+
+/**
+ * Параметры запроса для получения отчета "ВОИС"
+ */
+export type ReportVoiceQueryParams = {
+  from: Date;
+  playerId: string[];
+  projectId: string;
+  to: Date;
+};
