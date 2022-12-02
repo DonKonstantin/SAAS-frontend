@@ -1,42 +1,46 @@
-import { ListItemText, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
+import { useProjectReportPageContext } from "context/ProjectReportPageContext";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
+import { distinctUntilKeyChanged } from "rxjs";
 import { ReportType } from "../types";
-
-interface Props {
-  selected: ReportType | undefined;
-  setSelected: (selected: ReportType) => void;
-};
 
 /**
  * Компонент селектора типа отчета
- * @param param0 
- * @returns 
+ * @returns
  */
-const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
+const TypeSelector: FC = () => {
   const { t } = useTranslation();
+
+  const { reportType, setReportType } = useProjectReportPageContext(
+    distinctUntilKeyChanged("reportType")
+  );
 
   const handleChange = (event: SelectChangeEvent<keyof ReportType>) => {
     const value = event.target.value as ReportType;
 
-    setSelected(value);
+    setReportType(value);
   };
 
   return (
     <Select
       variant="standard"
-      value={selected}
+      value={reportType}
       onChange={handleChange}
       placeholder={"Не выбрано"}
       displayEmpty
       renderValue={(selected) => {
-          if (!selected) {
-              return "Не выбрано";
-          }
+        if (!selected) {
+          return "Не выбрано";
+        }
 
-          return t(`reports.field.report-type.${selected.toString()}`);
+        return t(`reports.field.report-type.${selected.toString()}`);
       }}
-
       MenuProps={{
         PaperProps: {
           style: {
@@ -49,12 +53,9 @@ const TypeSelector: FC<Props> = ({ selected, setSelected }) => {
         width: "60%",
       }}
     >
-
-      {Object.keys(ReportType).map(type => (
+      {Object.keys(ReportType).map((type) => (
         <MenuItem value={type} key={type}>
-          <ListItemText
-            primary={t(`reports.field.report-type.${type}`)}
-          />
+          <ListItemText primary={t(`reports.field.report-type.${type}`)} />
         </MenuItem>
       ))}
     </Select>

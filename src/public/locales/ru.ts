@@ -7,8 +7,8 @@ import pages from './pages.json';
 import entityEdit from './entity-edit.json';
 import playerCodes from './player-codes.json';
 import projectPlaylist from './project-playlist.json';
-import editCampaignPlaylist from './edit-campaign-playlist.json';
 import reports from './reports.json';
+import editCampaignPlaylist from './edit-campaign-playlist.json';
 
 export const RU = {
   ...entityList,

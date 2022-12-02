@@ -6,14 +6,14 @@ import {Box, Button, Divider, TextField} from "@mui/material";
 import {styled} from "@mui/system";
 import {useTranslation} from "react-i18next";
 
-const headers = [
-  {
-    title: "reports.preview-table.logs.header.name"
-  },
-  {
-    title: "reports.preview-table.logs.header.number-of-plays"
-  },
-];
+// const headers = [
+//   {
+//     title: "reports.preview-table.logs.header.name"
+//   },
+//   {
+//     title: "reports.preview-table.logs.header.number-of-plays"
+//   },
+// ];
 
 const StyledButtonWrapper = styled(Box)({
   textAlign: "right",
@@ -46,7 +46,6 @@ const PlayerLogs: FC<ReportProps> = () => {
 
   return (
     <>
-      <TextField variant="standard"/>
       <ReportsTable headers={headers} rows={tableData} onSelect={setChecked}/>
       <Divider />
       <StyledButtonWrapper>

@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,9 @@ import Reports from "./Reports";
 import TypeSelector from "./TypeSelector";
 import { useProjectReportPageContext } from "context/ProjectReportPageContext";
 import { distinctUntilChanged } from "rxjs";
+import { LoadingButton } from "@mui/lab";
+import { ReportType } from "../types";
+import MonthPicker from "./MonthPicker";
 
 interface Props {}
 
@@ -24,6 +27,11 @@ const StyledFieldHeader = styled(Typography)({
   letterSpacing: 0.44,
 });
 
+const StyledButtonWrapper = styled(Box)({
+  textAlign: "right",
+  paddingTop: 20,
+});
+
 /**
  * Компонент страницы таба экспорта на странице отчетов
  * @param param0
@@ -32,13 +40,30 @@ const StyledFieldHeader = styled(Typography)({
 const ExportPage: FC<Props> = ({}) => {
   const { t } = useTranslation();
 
-  const { dateFrom, dateTo, reportType, setDateFrom, setDateTo, setReportType, generateReport } = useProjectReportPageContext(
-    distinctUntilChanged((prev, curr) => 
-      prev.dateFrom.getTime() === curr.dateFrom.getTime() &&
-      prev.dateTo.getTime() === curr.dateTo.getTime() &&
-      prev.reportType === curr.reportType
+  const {
+    dateFrom,
+    dateTo,
+    reportType,
+    selected,
+    setDateFrom,
+    setDateTo,
+    generateReport,
+  } = useProjectReportPageContext(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev.dateFrom === curr.dateFrom &&
+        prev.dateTo === curr.dateTo &&
+        prev.reportType === curr.reportType &&
+        prev.selected === curr.selected
     )
   );
+
+  const onGenerateHandler = () => {
+    generateReport(selected);
+  };
+
+  const isReport =
+    reportType === ReportType.reportRAO || reportType === ReportType.reportVOIS;
 
   return (
     <Box>
@@ -47,25 +72,42 @@ const ExportPage: FC<Props> = ({}) => {
           <StyledFieldHeader>{t("reports.field.chose-type")}</StyledFieldHeader>
         </StyledGridItem>
         <StyledGridItem item xs={8}>
-          <TypeSelector selected={reportType} setSelected={setReportType} />
+          <TypeSelector />
         </StyledGridItem>
         <StyledSecondRowGridItem xs={4}>
           <StyledFieldHeader>{t("reports.field.date")}</StyledFieldHeader>
         </StyledSecondRowGridItem>
         <StyledSecondRowGridItem item xs={8} sx={{ columnGap: 1.75 }}>
-          <ReportsDateRange
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-            setDateFrom={setDateFrom}
-            setDateTo={setDateTo}
-          />
+          {isReport && (
+            <MonthPicker
+              dateFrom={dateFrom}
+              setDateFrom={setDateFrom}
+              setDateTo={setDateTo}
+            />
+          )}
+          {!isReport && (
+            <ReportsDateRange
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              setDateFrom={setDateFrom}
+              setDateTo={setDateTo}
+            />
+          )}
         </StyledSecondRowGridItem>
         <Grid item xs={12} sx={{ mt: 11.25 }}>
-          <Reports
-            reportType={reportType}
-            dateFrom={dateFrom}
-            dateTo={dateTo}
-          />
+          <Reports reportType={reportType} />
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+          <StyledButtonWrapper>
+            <LoadingButton
+              disabled={!selected.length}
+              variant="outlined"
+              onClick={onGenerateHandler}
+            >
+              {t("reports.button.generate")}
+            </LoadingButton>
+          </StyledButtonWrapper>
         </Grid>
       </Grid>
     </Box>
