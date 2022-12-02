@@ -177,7 +177,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -218,7 +218,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -259,7 +259,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -300,7 +300,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -341,7 +341,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -382,7 +382,7 @@ export default class ProjectReportsService
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }

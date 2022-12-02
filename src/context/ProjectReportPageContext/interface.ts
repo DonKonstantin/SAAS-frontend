@@ -15,6 +15,7 @@ export interface ProjectReportPageContextTypes {
   sortDirection: SortDirection;
   sortedColumnIndex: number | undefined;
   loadReportsList: boolean;
+  loadReportsFile: boolean;
   errors: string | undefined;
 }
 
@@ -42,7 +43,7 @@ export interface ProjectReportPageContextActionsTypes {
   /**
    * Сгенерировать отчет
    */
-  generateReport: (reportsIds: string[]) => void;
+  generateReport: () => void;
 
   /**
    * Записывает строки таблицы

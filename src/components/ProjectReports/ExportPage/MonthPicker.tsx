@@ -23,7 +23,7 @@ const MonthPicker: FC<Props> = ({ dateFrom, setDateFrom, setDateTo }) => {
 
     setDateFrom(value);
 
-    const dateTo = dayjs(value).subtract(1, "month").toDate();
+    const dateTo = dayjs(value).add(1, "month").toDate();
 
     setDateTo(dateTo);
   };

@@ -45,6 +45,7 @@ const ExportPage: FC<Props> = ({}) => {
     dateTo,
     reportType,
     selected,
+    loadReportsFile,
     setDateFrom,
     setDateTo,
     generateReport,
@@ -54,12 +55,13 @@ const ExportPage: FC<Props> = ({}) => {
         prev.dateFrom === curr.dateFrom &&
         prev.dateTo === curr.dateTo &&
         prev.reportType === curr.reportType &&
-        prev.selected === curr.selected
+        prev.selected === curr.selected &&
+        prev.loadReportsFile === curr.loadReportsFile
     )
   );
 
   const onGenerateHandler = () => {
-    generateReport(selected);
+    generateReport();
   };
 
   const isReport =
@@ -104,6 +106,7 @@ const ExportPage: FC<Props> = ({}) => {
               disabled={!selected.length}
               variant="outlined"
               onClick={onGenerateHandler}
+              loading={loadReportsFile}
             >
               {t("reports.button.generate")}
             </LoadingButton>

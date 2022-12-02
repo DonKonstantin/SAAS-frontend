@@ -65,7 +65,7 @@ export interface ProjectReportsServiceInterface {
   getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]>;
 
   /**
-   * Запрос списка доступных отчетов для "Отчет Файлы" и "Отчет РАО" и "отчет ВОИС"
+   * Запрос списка доступных отчетов для "Отчет Файлы", "Отчет РАО" и "отчет ВОИС"
    * @param params
    */
   getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;

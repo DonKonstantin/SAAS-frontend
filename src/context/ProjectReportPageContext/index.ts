@@ -9,9 +9,10 @@ import {
   BehaviorSubject,
   catchError,
   combineLatest,
+  debounceTime,
   filter,
-  finalize,
   map,
+  merge,
   Observable,
   OperatorFunction,
   Subject,
@@ -34,6 +35,7 @@ import {
 import { campaignListService } from 'services/campaignListService';
 import { Campaign } from 'services/campaignListService/types';
 import { SortDirection } from 'components/EditPageCustomFields/EditProjectPlaylist/FileList/List/ListHeader';
+import fileDownload from 'js-file-download';
 
 class DefaultContextData implements ProjectReportPageContextTypes {
   dateFrom: Date = new Date();
@@ -45,6 +47,7 @@ class DefaultContextData implements ProjectReportPageContextTypes {
   sortDirection: SortDirection = "asc";
   sortedColumnIndex: number | undefined = undefined;
   loadReportsList: boolean = false;
+  loadReportsFile: boolean = false;
   errors: string | undefined = undefined;
 }
 
@@ -63,13 +66,17 @@ const dateTo$ = new BehaviorSubject<Date>(new Date());
 const reportType$ = new BehaviorSubject<ReportType | undefined>(undefined);
 const errors$ = new BehaviorSubject<string | undefined>(undefined);
 const selected$ = new BehaviorSubject<string[]>([]);
-const reportsIds$ = new Subject<string[]>();
 const tableHeaders$ = new BehaviorSubject<ReportTableHeaderCellType[]>([]);
 const tableRows$ = new BehaviorSubject<TableRowType[]>([]);
 const sortDirection$ = new BehaviorSubject<SortDirection>("asc");
 const sortedColumnIndex$ = new BehaviorSubject<number | undefined>(undefined);
+const globalFiles$ = new BehaviorSubject<GlobalFilePlayInfoStatistic[]>([]);
+const projectFiles$ = new BehaviorSubject<ProjectFilePlayInfoStatistic[]>([]);
+
+const generateReport$ = new Subject<void>();
 
 const LoadReportData$ = new BehaviorSubject<boolean>(false);
+const LoadReportFile$ = new BehaviorSubject<boolean>(false);
 
 /**
  * Шина записывает заголовок для таблицы со списком отчетов
@@ -94,15 +101,11 @@ const tableHeaderBus$ = reportType$.pipe(
         return [
           {
             title: "reports.preview-table.files.header.name",
-            width: "50%",
-          },
-          {
-            title: "reports.preview-table.files.header.company",
-            width: "40%",
+            width: "80%",
           },
           {
             title: "reports.preview-table.files.header.number-of-plays",
-            width: "10%",
+            width: "20%",
           },
         ];
 
@@ -234,9 +237,19 @@ const loadCampaignsBus$ = loadPlayerStatistic$.pipe(
 
     return reportType === ReportType.company;
   }),
-  switchMap((statistica: PlayerPlayInfoStatistic[]) => {
+  map((statistica: PlayerPlayInfoStatistic[]) => {
     const campaignsIds = statistica.flatMap(item => item.player.campaigns).map(campaign => campaign.campaignId);
 
+    if (!campaignsIds.length) {
+      LoadReportData$.next(false)
+
+      return undefined;
+    }
+
+    return campaignsIds;
+  }),
+  filter(campaignsIds => !!campaignsIds),
+  switchMap((campaignsIds: string[]) => {
     return new Observable((subscriber) => {
       campaignListService()
         .getCampaignsArrayByIds(campaignsIds)
@@ -248,7 +261,6 @@ const loadCampaignsBus$ = loadPlayerStatistic$.pipe(
 
         tableRows$.next([]);
       }),
-      finalize(() => LoadReportData$.next(false)),
     );
   })
 );
@@ -272,7 +284,6 @@ const loadChanelStatistic$ = loadReportsListBus$.pipe(
         .catch(() => subscriber.error("reports.error.load-list"));
     }).pipe(
       catchError(async (err) => errors$.next(err)),
-      finalize(() => LoadReportData$.next(false))
     );
   })
 );
@@ -286,6 +297,7 @@ const loadFileStatistic$ = loadReportsListBus$.pipe(
     ].includes(reportType as ReportType)
   ),
   tap(() => LoadReportData$.next(true)),
+  debounceTime(100),
   switchMap(({ dateFrom, dateTo }) => {
     const { project } = getCurrentState();
 
@@ -300,7 +312,6 @@ const loadFileStatistic$ = loadReportsListBus$.pipe(
         .catch(() => subscriber.error("reports.error.load-list"));
     }).pipe(
       catchError(async (err) => errors$.next(err)),
-      finalize(() => LoadReportData$.next(false)),
     );
   })
 );
@@ -308,23 +319,195 @@ const loadFileStatistic$ = loadReportsListBus$.pipe(
 /**
  * Шина загрузки отчетов
  */
-const generateReportsBus$ = combineLatest([
-  reportsIds$,
-  dateFrom$,
-  dateTo$,
-  reportType$,
-]).pipe(
-  switchMap(async ([reportsIds, dateFrom, dateTo, reportType]) => {
+const generateReportsBus$ = generateReport$.pipe(
+  map(() => {
+    const dateFrom = dateFrom$.getValue();
+    const dateTo = dateTo$.getValue();
+    const reportType = reportType$.getValue();
     const { project } = getCurrentState();
+    const reportsIds = selected$.getValue();
 
-    await projectReportsService().getReports(
-      project,
-      reportType as ReportType,
+    return {
       dateFrom,
       dateTo,
-      reportsIds
-    );
-  })
+      reportType,
+      project,
+      reportsIds,
+    };
+  }),
+  filter(({ reportType, reportsIds }) => !!reportType && !!reportsIds.length),
+  tap(() => LoadReportFile$.next(true)),
+);
+
+/**
+ * Шина загрузки отчета "Логи плеера"
+ */
+const getReportPlayerLogsBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.playerLogs),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportPlayerLogs({
+        from: dateFrom,
+        to: dateTo,
+        playerId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "Кампании"
+ */
+const getReportCampaignBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.company),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportCampaign({
+        from: dateFrom,
+        to: dateTo,
+        campaignId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "Каналы"
+ */
+ const getReportChannelsBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.channels),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportChannels({
+        from: dateFrom,
+        to: dateTo,
+        channelId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "Отчет по устройству"
+ */
+ const getReportDeviceBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.deviceReport),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportDevice({
+        from: dateFrom,
+        to: dateTo,
+        playerId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "Файлы"
+ */
+ const getReportFilesBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.files),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    const globalFiles = globalFiles$.getValue();
+    const projectFiles = projectFiles$.getValue();
+
+    const selectedGlobalFiles = globalFiles
+      .filter(file => reportsIds.some(id => id === file.id))
+      .map(item => item.id);
+    const selectedProjectFiles = projectFiles
+      .filter(file => reportsIds.some(id => id === file.id))
+      .map(item => item.id);
+
+    try {
+      return await projectReportsService().getReportFiles({
+        from: dateFrom,
+        to: dateTo,
+        globalFileId: selectedGlobalFiles,
+        projectFileId: selectedProjectFiles,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "РАО"
+ */
+ const getReportRaoBus$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.reportRAO),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportRao({
+        from: dateFrom,
+        to: dateTo,
+        playerId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+/**
+ * Шина загрузки отчета "ВОИС"
+ */
+ const getReportVoice$ = generateReportsBus$.pipe(
+  filter(({ reportType }) => reportType === ReportType.reportVOIS),
+  switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
+    try {
+      return await projectReportsService().getReportVoice({
+        from: dateFrom,
+        to: dateTo,
+        playerId: reportsIds,
+        projectId: project,
+      });
+    } catch (_) {
+      errors$.next("reports.error.load-report");
+
+      LoadReportFile$.next(false);
+    }
+  }),
+);
+
+const downloadReportFileBus$ = merge(
+  getReportPlayerLogsBus$,
+  getReportCampaignBus$,
+  getReportChannelsBus$,
+  getReportDeviceBus$,
+  getReportFilesBus$,
+  getReportRaoBus$,
+  getReportVoice$,
+).pipe(
+  filter(blob => !!blob),
+  tap(() => LoadReportFile$.next(false)),
 );
 
 const collectBus$: Observable<
@@ -339,6 +522,7 @@ const collectBus$: Observable<
     | "sortDirection"
     | "sortedColumnIndex"
     | "loadReportsList"
+    | "loadReportsFile"
     | "errors"
   >
 > = combineLatest([
@@ -351,6 +535,7 @@ const collectBus$: Observable<
   sortDirection$,
   sortedColumnIndex$,
   LoadReportData$,
+  LoadReportFile$,
   errors$,
 ]).pipe(
   map(([
@@ -363,6 +548,7 @@ const collectBus$: Observable<
     sortDirection,
     sortedColumnIndex,
     loadReportsList,
+    loadReportsFile,
     errors,
   ]) => ({
     dateFrom,
@@ -374,6 +560,7 @@ const collectBus$: Observable<
     sortDirection,
     sortedColumnIndex,
     loadReportsList,
+    loadReportsFile,
     errors,
   }))
 );
@@ -390,7 +577,9 @@ export const InitProjectReportPageContextContext = () => {
 
   subscriber.add(loadReportsListBus$.subscribe());
 
-  subscriber.add(generateReportsBus$.subscribe());
+  subscriber.add(downloadReportFileBus$.subscribe((file: Blob) => {
+    fileDownload(file, 'report.csv');
+  }));
   
   subscriber.add(loadPlayerStatistic$.subscribe((response: PlayerPlayInfoStatistic[]) => {
     const reportType = reportType$.getValue();
@@ -451,18 +640,23 @@ export const InitProjectReportPageContextContext = () => {
 
       const statuses = campaign?.channels.map(channel => channel.channel.is_active) || [false];
 
-      const status = statuses.every(s => !!s);
+      const isPublished = statuses.some(s => !!s);
 
-      //  ! TODO
-      const isPublished = true;
+      const start = new Date(campaign?.campaign_period_start || "").getTime();
+      const end = new Date(campaign?.campaign_period_stop || "").getTime();
+      const today = new Date().getTime();
+
+      const isInPeriod = start - today < 0 && end - today > 0;
 
       return {
         ...row,
-        cells: [row.cells[0], status, `reports.preview-table.company.value.is-publication.${isPublished}`],
+        cells: [row.cells[0], isInPeriod && isPublished, `reports.preview-table.company.value.is-publication.${isPublished}`],
       }
     });
 
     tableRows$.next(extendedRows);
+
+    LoadReportData$.next(false);
   }));
 
   subscriber.add(loadChanelStatistic$.subscribe((response: ChannelPlayInfoStatistic[]) => {
@@ -470,6 +664,8 @@ export const InitProjectReportPageContextContext = () => {
       primaryKey: chennal.id,
       cells: [chennal.name, chennal.played],
     })));
+
+    LoadReportData$.next(false);
   }));
 
   subscriber.add(loadFileStatistic$.subscribe((response: (PlayInfoStatistic | GlobalFilePlayInfoStatistic)[]) => {
@@ -481,7 +677,7 @@ export const InitProjectReportPageContextContext = () => {
       case ReportType.files:
         tableData = response.map(res => ({
           primaryKey: res.id,
-          cells: [res.name, "Some campaign", res.played]
+          cells: [res.name, res.played]
         }));
 
         break;
@@ -491,14 +687,17 @@ export const InitProjectReportPageContextContext = () => {
           const file = res.file;
 
           return {
-          primaryKey: res.id,
-          cells: [res.name, file.artist, file.composer, file.lyricist, file.publisher, res.played],
-        }});
+            primaryKey: res.id,
+            cells: [res.name, file.artist, file.composer, file.lyricist, file.publisher, res.played],
+          }
+        });
 
         break;
     }
 
     tableRows$.next(tableData);
+
+    LoadReportData$.next(false);
   }));
 
   subscriber.add(tableHeaderBus$.subscribe(tableHeaders$));
@@ -554,12 +753,9 @@ const setSelected: ProjectReportPageContextActionsTypes["setSelected"] = (
 
 /**
  * Сгенерировать отчет
- * @param reportsIds 
  */
-const generateReport: ProjectReportPageContextActionsTypes["generateReport"] = (
-  reportsIds
-) => {
-  reportsIds$.next(reportsIds);
+const generateReport: ProjectReportPageContextActionsTypes["generateReport"] = () => {
+  generateReport$.next();
 };
 
 /**
