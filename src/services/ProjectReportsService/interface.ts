@@ -14,39 +14,38 @@ import {
 } from "./types";
 
 export interface ProjectReportsServiceInterface {
-
   /**
-   * Запрос отчета "Логи плеера"
+   * Получаем отчет "Логи плеера" в формате .xlsx"
    */
   getReportPlayerLogs: (params: ReportPlayerLogsQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "Кампании"
+   * Получаем отчет "Кампании" в формате .xlsx
    */
   getReportCampaign: (params: ReportCampaignQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "Каналы"
+   * Получаем отчет "Каналы" в формате .xlsx
    */
   getReportChannels: (params: ReportChannelsQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "Отчет по устройству"
+   * Получаем отчет "Отчет по устройству" в формате .xlsx
    */
   getReportDevice: (params: ReportDeviceQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "Файлы"
+   * Получаем отчет "Файлы" в формате .xlsx
    */
   getReportFiles: (params: ReportFilesQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "РАО"
+   * Получаем отчет "РАО" в формате .xlsx
    */
   getReportRao: (params: ReportRaoQueryParams) => Promise<Blob | undefined>;
 
   /**
-   * Запрос отчета "ВОИС"
+   * Получаем отчет "ВОИС" в формате .xlsx
    */
   getReportVoice: (params: ReportVoiceQueryParams) => Promise<Blob | undefined>;
 
@@ -55,19 +54,19 @@ export interface ProjectReportsServiceInterface {
    * "Отчета Логов плеера", 
    * "Отчет по устройству", 
    * "Отчет Кампании"
-   * @param params 
+   * @param params
    */
   getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]>;
 
   /**
    * Запрос списка доступных отчетов для "Отчет Каналы"
-   * @param params 
+   * @param params
    */
   getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]>;
 
   /**
    * Запрос списка доступных отчетов для "Отчет Файлы" и "Отчет РАО" и "отчет ВОИС"
-   * @param params 
+   * @param params
    */
   getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;
 }

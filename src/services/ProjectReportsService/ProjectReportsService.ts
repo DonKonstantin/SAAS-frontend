@@ -24,19 +24,16 @@ import {
   GetPlayerPlayInfoStatisticResponseDTOFactory,
 } from "./Queryes/GetPlayerPlayInfoStatistic";
 import {
-  GetChannelPlayInfoStatistic,
+   GetChannelPlayInfoStatistic,
   GetChannelPlayInfoStatisticResponse,
-} from "./Queryes/GetChannelPlayInfoStatistic";
-import {
-  GetFilesPlayInfoStatistic,
-  GetFilesPlayInfoStatisticResponse,
-} from "./Queryes/GetFilesPlayInfoStatistic";
+ } from "./Queryes/GetChannelPlayInfoStatistic";
+import { GetFilesPlayInfoStatistic, GetFilesPlayInfoStatisticResponse } from "./Queryes/GetFilesPlayInfoStatistic";
 
 /**
  * Сервис отчетов проекта
  */
 export default class ProjectReportsService
-  implements ProjectReportsServiceInterface
+ implements ProjectReportsServiceInterface
 {
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
@@ -145,6 +142,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "Логи плеера" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportPlayerLogs(params: ReportPlayerLogsQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -169,7 +171,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/player-logs`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -181,6 +183,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "Кампании" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportCampaign(params: ReportCampaignQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -205,7 +212,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/campaign`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -217,6 +224,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "Каналы" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportChannels(params: ReportChannelsQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -241,7 +253,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/channels`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -253,6 +265,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "Отчет по устройству" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportDevice(params: ReportDeviceQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -277,7 +294,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/device`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -289,6 +306,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "Файлы" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportFiles(params: ReportFilesQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -313,7 +335,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/files`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -325,6 +347,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "РАО" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportRao(params: ReportRaoQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -349,7 +376,7 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/rao`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -361,6 +388,11 @@ export default class ProjectReportsService
     }
   }
 
+  /**
+   * Получаем отчет "ВОИС" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportVoice(params: ReportVoiceQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -385,13 +417,11 @@ export default class ProjectReportsService
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/voice`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
       this.logger.Info("file loaded", file.data);
-
-      this.logger.Info("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
