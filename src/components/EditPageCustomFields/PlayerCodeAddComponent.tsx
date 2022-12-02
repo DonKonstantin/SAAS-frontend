@@ -59,7 +59,7 @@ const PlayerCodeAddComponent: FC<EditFormGroupProperties> = ({ config }) => {
         <StyledPaper>
           <StyledHeader>
             <Typography color="primary">
-              {t(`objects-passport-list.add.header`)}
+              {t(`player-codes.add.header`)}
             </Typography>
           </StyledHeader>
           <StyledDivider />
