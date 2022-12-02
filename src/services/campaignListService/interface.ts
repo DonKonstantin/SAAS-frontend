@@ -23,7 +23,14 @@ export interface CampaignListServiceInterface {
   ) => Promise<CampaignChannels[]>;
 
   /**
-   * Создает\сохраняет сущность кампании
+   * Проверка валидации расписания компании
+   */
+  campaignValidation: (
+    campaign: CampaignInput
+  ) => Promise<boolean>;
+
+  /**
+   * Создает\сохраняет сущьность кампании
    */
   storeCampaign: (campaign: CampaignInput) => Promise<string>;
 

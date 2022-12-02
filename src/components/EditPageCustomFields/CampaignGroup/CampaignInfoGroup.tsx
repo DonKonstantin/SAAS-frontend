@@ -240,10 +240,12 @@ const CampaignInfoGroup = () => {
           type: "success",
         });
       } catch (error) {
-        messanger.dispatch({
-          message: error,
-          type: "error",
-        });
+        if (typeof error.message === "string") {
+          messanger.dispatch({
+            message: t("pages.campaign.edit.errors.notifications.storeCampaign"),
+            type: "error",
+          });
+        }
       }
 
       return
@@ -316,14 +318,33 @@ const CampaignInfoGroup = () => {
 
     delete inputData["version"];
 
+    let responseCampaignValidation;
+
+    try {
+      responseCampaignValidation = await campaignListService().campaignValidation(inputData)
+    } catch (error) {
+      if (typeof error.message === "string") {
+        messanger.dispatch({
+          message: t("pages.campaign.edit.errors.notifications.playlistPeriod"),
+          type: "error",
+        });
+      }
+    }
+
+    if (!responseCampaignValidation) {
+      return
+    }
+
     try {
       await campaignListService().storeCampaign(inputData)
       !successCreatedPlaylist && setCurrentActionTab("channels")
     } catch (error) {
-      messanger.dispatch({
-        message: error,
-        type: "error",
-      });
+      if (typeof error.message === "string") {
+        messanger.dispatch({
+          message: t("pages.campaign.edit.errors.notifications.storeCampaign"),
+          type: "error",
+        });
+      }
     }
   };
 
@@ -408,10 +429,12 @@ const CampaignInfoGroup = () => {
         await onSubmit()
         clearContext()
       } catch (error) {
-        messanger.dispatch({
-          message: error,
-          type: "error",
-        });
+        if (typeof error.message === "string") {
+          messanger.dispatch({
+            message: t("pages.campaign.edit.errors.notifications.storeCampaign"),
+            type: "error",
+          });
+        }
       }
     }
 

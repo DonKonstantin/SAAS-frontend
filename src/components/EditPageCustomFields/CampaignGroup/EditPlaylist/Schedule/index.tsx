@@ -166,9 +166,7 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
             daysStartMinutes: day.days_start_minutes,
             daysStopMinutes: day.days_stop_minutes,
           }
-        }),
-        periodStart: campaign.campaign_period_start,
-        periodStop: campaign.campaign_period_stop
+        })
       }
     }
 

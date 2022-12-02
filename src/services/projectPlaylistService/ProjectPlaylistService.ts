@@ -152,13 +152,13 @@ export default class ProjectPlaylistService
         RefreshCampaignsMutationResponse>(new RefreshCampaignsMutation(playlistIds), {});
 
       this.logger.Debug(
-        "Ответ мутации обновления связных компаний: ",
+        "Ответ мутации обновления связных кампаний: ",
         response
       );
 
       return response.campaignPublishByPlaylists;
     } catch (error) {
-      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
+      this.logger.Error("Ошибка мутации обновления связных кампаний: ", error);
 
       if (!error.errors) {
         throw error;
