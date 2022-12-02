@@ -1,0 +1,83 @@
+{
+  "reports": {
+    "left-menu-title": "Отчеты",
+    "breadcrumb": "Отчеты",
+    "tab": {
+      "export": "Экспорт",
+      "import": "Импорт"
+    },
+    "field": {
+      "chose-type": "Выберите тип отчета",
+      "date": "Дата",
+      "date-input": {
+        "from": "С",
+        "to": "по"
+      },
+      "report-type": {
+        "playerLogs": "Логи плеера",
+        "files": "Файлы",
+        "deviceReport": "Отчет по устройству",
+        "company": "Кампании",
+        "channels": "Каналы",
+        "reportRAO": "Отчет РАО",
+        "reportVOIS": "Отчет ВОИС"
+      }
+    },
+    "button": {
+      "generate": "СГЕНЕРИРОВАТЬ"
+    },
+    "preview-table": {
+      "logs": {
+        "header": {
+          "name": "Имя плеера",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      },
+      "files": {
+        "header": {
+          "name": "Файл",
+          "company": "Кампания",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      },
+      "device-report": {
+        "header": {
+          "name": "Имя плеера",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      },
+      "company": {
+        "header": {
+          "name": "Название",
+          "status": "Статус",
+          "is-publication": "Публикация"
+        },
+        "value": {
+          "is-publication": {
+            "true": "Да",
+            "false": "Нет"
+          }
+        }
+      },
+      "channels": {
+        "header": {
+          "name": "Имя канала",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      },
+      "report": {
+        "header": {
+          "name": "Название фонограммы",
+          "artist": "Исполнитель",
+          "composer": "Автор музыки",
+          "lyricist": "Автор слов",
+          "publisher": "Иной автор",
+          "number-of-plays": "Количество воспроизведений"
+        }
+      }
+    },
+    "error": {
+      "load-list": "Не удалось загрузить список"
+    }
+  }
+}

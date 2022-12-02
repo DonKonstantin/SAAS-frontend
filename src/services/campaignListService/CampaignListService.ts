@@ -1,7 +1,10 @@
-import {GraphQLClient} from "services/graphQLClient/GraphQLClient";
-import {loggerFactory} from "services/logger";
-import {Logger} from "services/logger/Logger";
-import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
+import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
+import { loggerFactory } from "services/logger";
+import { Logger } from "services/logger/Logger";
+import {
+  CampaignChannels,
+  ProjectChannel,
+} from "services/playerCodeService/interfaces";
 import {
   CampaignListServiceInterface,
   CampaignPublishQueryParams,
@@ -12,17 +15,19 @@ import {
   GetCampaignByArrayIdResponse,
   GetCampaignByIdQueryParams,
   GetCampaignByIdQueryResponse,
-  GetCampaignTimetableValidationResponse,
+  GetCampaignsArrayByIdsQueryParams,
+  GetCampaignsArrayByIdsResponse,
   StoreCampaignMutationParams,
   StoreCampaignMutationResponse,
 } from "./interface";
-import {GetAvailableChannelsQuery} from "./Queries/GetAvailableChannelsQuery";
-import {GetCampaignByIdQuery} from "./Queries/GetCampaignByIdQuery";
-import {Campaign, CampaignInput} from "./types";
-import {StoreCampaignMutation} from "./mutations/StoreCampaignMutation";
-import {CampaignPublish} from "./mutations/CampaignPublish";
-import {GetCampaignsByArrayId} from "./Queries/GetCampaignsByArrayId";
-import {GetCampaignTimetableValidation} from "./Queries/GetCampaignTimetableValidation";
+import { GetAvailableChannelsQuery } from "./Queries/GetAvailableChannelsQuery";
+import { GetCampaignByIdQuery } from "./Queries/GetCampaignByIdQuery";
+import { Campaign, CampaignInput } from "./types";
+import { StoreCampaignMutation } from "./mutations/StoreCampaignMutation";
+import { CampaignPublish } from "./mutations/CampaignPublish";
+import { GetCampaignsByArrayId } from "./Queries/GetCampaignsByArrayId";
+import { GetCampaignsArrayByIdsQuery } from "./Queries/GetCampaignsArrayByIds";
+import { GetCampaignTimetableValidation } from "./Queries/GetCampaignTimetableValidation";
 
 /**
  * Сервис авторизации пользователя
@@ -44,7 +49,7 @@ export class CampaignListService implements CampaignListServiceInterface {
   }
 
   /**
-   * Получаем сущьность кампании по ее ID
+   * Получаем сущность кампании по ее ID
    * @param campaignId
    * @returns
    */
@@ -52,34 +57,67 @@ export class CampaignListService implements CampaignListServiceInterface {
     this.logger.Debug("ID кампании: ", campaignId);
 
     try {
-      const { campaign } = await this.client.Query<GetCampaignByIdQueryParams,
-        GetCampaignByIdQueryResponse>(new GetCampaignByIdQuery(campaignId), {});
+      const { campaign } = await this.client.Query<
+        GetCampaignByIdQueryParams,
+        GetCampaignByIdQueryResponse
+      >(new GetCampaignByIdQuery(campaignId), {});
       return campaign[0];
     } catch (error) {
       this.logger.Debug("Ошибка получения списка каналов: ", error);
 
       throw Error(error);
     }
-  };
+  }
 
   /**
    * Получаем каналы компании по массиву ID
    * @param campaignArrayId
    * @returns
    */
-  async getCampaignByArrayId(campaignArrayId: string[]): Promise<CampaignChannels[]> {
+  async getCampaignByArrayId(
+    campaignArrayId: string[]
+  ): Promise<CampaignChannels[]> {
     this.logger.Debug("Массив ID кампании: ", campaignArrayId);
 
     try {
-      const { campaignChannels } = await this.client.Query<GetCampaignByArrayIdQueryParams,
-        GetCampaignByArrayIdResponse>(new GetCampaignsByArrayId(campaignArrayId), {});
+      const { campaignChannels } = await this.client.Query<
+        GetCampaignByArrayIdQueryParams,
+        GetCampaignByArrayIdResponse
+      >(new GetCampaignsByArrayId(campaignArrayId), {});
       return campaignChannels;
     } catch (error) {
-      this.logger.Debug("Ошибка получения списка кампаний по массиву ID : ", error);
+      this.logger.Debug(
+        "Ошибка получения списка каналов компаний по массиву ID : ",
+        error
+      );
 
       throw Error(error);
     }
-  };
+  }
+
+  /**
+   * Получение сущностей кампаний по ID
+   * @param campaignArrayId
+   * @returns
+   */
+  async getCampaignsArrayByIds(campaignArrayId: string[]): Promise<Campaign[]> {
+    this.logger.Debug("Массив ID кампаний: ", campaignArrayId);
+
+    try {
+      const { campaigns } = await this.client.Query<
+        GetCampaignsArrayByIdsQueryParams,
+        GetCampaignsArrayByIdsResponse
+      >(new GetCampaignsArrayByIdsQuery(campaignArrayId), {});
+      return campaigns;
+    } catch (error) {
+      this.logger.Debug(
+        "Ошибка получения списка компаний по массиву ID : ",
+        error
+      );
+
+      throw Error(error);
+    }
+  }
 
 
   /**
@@ -93,7 +131,7 @@ export class CampaignListService implements CampaignListServiceInterface {
     this.logger.Debug("Сущность кампании: ", campaign);
 
     try {
-      const response = await this.client.Query<StoreCampaignMutationParams, GetCampaignTimetableValidationResponse>(new GetCampaignTimetableValidation(campaign), {});
+      const response = await this.client.Query<StoreCampaignMutationParams, any>(new GetCampaignTimetableValidation(campaign), {});
       return response.campaignTimetableValidation
     } catch (error) {
       this.logger.Debug("Ошибка в проверке кампании: ", error);
@@ -106,13 +144,14 @@ export class CampaignListService implements CampaignListServiceInterface {
    * @param campaign
    * @returns
    */
-  async storeCampaign(
-    campaign: CampaignInput
-  ): Promise<string> {
+  async storeCampaign(campaign: CampaignInput): Promise<string> {
     this.logger.Debug("Сущность кампании: ", campaign);
 
     try {
-      const { campaignStore } = await this.client.Query<StoreCampaignMutationParams, StoreCampaignMutationResponse>(new StoreCampaignMutation(campaign), {});
+      const { campaignStore } = await this.client.Query<
+        StoreCampaignMutationParams,
+        StoreCampaignMutationResponse
+      >(new StoreCampaignMutation(campaign), {});
       return campaignStore.id;
     } catch (error) {
       this.logger.Debug("Ошибка в создании кампании: ", error);
@@ -134,8 +173,10 @@ export class CampaignListService implements CampaignListServiceInterface {
     this.logger.Debug("Имя канала: ", name);
 
     try {
-      const { channels } = await this.client.Query<GetAvailableChannelsQueryQueryParams,
-        GetAvailableChannelsQueryQueryResponse>(new GetAvailableChannelsQuery(projectId, name), {});
+      const { channels } = await this.client.Query<
+        GetAvailableChannelsQueryQueryParams,
+        GetAvailableChannelsQueryQueryResponse
+      >(new GetAvailableChannelsQuery(projectId, name), {});
 
       this.logger.Debug("Полученный спискок каналов: ", channels);
 
@@ -153,15 +194,17 @@ export class CampaignListService implements CampaignListServiceInterface {
    * @returns
    */
   async publishCampaign(
-    campaignPublishInput: CampaignPublishQueryParams,
+    campaignPublishInput: CampaignPublishQueryParams
   ): Promise<boolean> {
     this.logger.Debug("Параметры публикации кампании: ", campaignPublishInput);
 
-    const { campaignId, channelIds } = campaignPublishInput
+    const { campaignId, channelIds } = campaignPublishInput;
 
     try {
-      const { campaignPublish } = await this.client.Mutation<CampaignPublishQueryParams,
-        CampaignPublishQueryResponse>(new CampaignPublish(campaignId, channelIds), {});
+      const { campaignPublish } = await this.client.Mutation<
+        CampaignPublishQueryParams,
+        CampaignPublishQueryResponse
+      >(new CampaignPublish(campaignId, channelIds), {});
 
       this.logger.Debug("Кампания успешно опубликована: ", campaignPublish);
 
@@ -172,6 +215,4 @@ export class CampaignListService implements CampaignListServiceInterface {
       throw Error(error);
     }
   }
-
-
 }
