@@ -23,19 +23,15 @@ import {
 import {
   GetPlayerPlayInfoStatistic,
   GetPlayerPlayInfoStatisticResponse,
-  GetPlayerPlayInfoStatisticResponseDTOFactory
+  GetPlayerPlayInfoStatisticResponseDTOFactory,
 } from "./Queryes/GetPlayerPlayInfoStatistic";
-import {GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse} from "./Queryes/GetChannelPlayInfoStatistic";
-import {
-  GetFilesPlayInfoStatistic,
-  GetFilesPlayInfoStatisticResponse,
-} from "./Queryes/GetFilesPlayInfoStatistic";
-
+import { GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse } from "./Queryes/GetChannelPlayInfoStatistic";
+import { GetFilesPlayInfoStatistic, GetFilesPlayInfoStatisticResponse } from "./Queryes/GetFilesPlayInfoStatistic";
 
 /**
  * Сервис отчетов проекта
  */
-export default class ProjectReportsService  implements ProjectReportsServiceInterface {
+export default class ProjectReportsService implements ProjectReportsServiceInterface {
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
 
@@ -83,10 +79,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(
-          new GetPlayerPlayInfoStatistic(params),
-          {}
-      );
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(new GetPlayerPlayInfoStatistic(params), {});
 
       return GetPlayerPlayInfoStatisticResponseDTOFactory(response.logs);
     } catch (error) {
@@ -105,8 +98,8 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetChannelPlayInfoStatisticResponse>(
-          new GetChannelPlayInfoStatistic(params),
-          {}
+        new GetChannelPlayInfoStatistic(params),
+        {}
       );
 
       return response.logs;
@@ -121,20 +114,13 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
-
   async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(
-          new GetFilesPlayInfoStatistic(params),
-          {}
-      );
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(new GetFilesPlayInfoStatistic(params), {});
 
-      return [
-        ...response.globalFiles,
-        ...response.projectFiles,
-      ];
+      return [...response.globalFiles, ...response.projectFiles];
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
@@ -146,6 +132,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "Логи плеера" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportPlayerLogs(params: ReportPlayerLogsQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -170,7 +161,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/player-logs`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -182,6 +173,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "Кампании" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportCampaign(params: ReportCampaignQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -206,7 +202,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/campaign`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -218,6 +214,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "Каналы" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportChannels(params: ReportChannelsQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -242,7 +243,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/channels`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -254,6 +255,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "Отчет по устройству" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportDevice(params: ReportDeviceQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -278,7 +284,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/device`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -290,6 +296,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "Файлы" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportFiles(params: ReportFilesQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -314,7 +325,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/files`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -326,6 +337,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "РАО" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportRao(params: ReportRaoQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -350,7 +366,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/rao`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
@@ -362,6 +378,11 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Получаем отчет "ВОИС" в формате .xlsx"
+   * @param params
+   * @returns
+   */
   async getReportVoice(params: ReportVoiceQueryParams): Promise<Blob | undefined> {
     this.logger.Debug("Параметры запроса: ", params);
 
@@ -372,7 +393,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
 
     const headers = {
-      "Authorization": token,
+      Authorization: token,
       "Content-Type": "application/json",
     };
 
@@ -386,7 +407,7 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
 
     try {
       const file = await this.clientAxios.post<any, any>(`/reports/voice`, data, {
-        responseType: "json",
+        responseType: "blob",
         headers,
       });
       //@ts-ignore
