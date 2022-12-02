@@ -4,14 +4,14 @@ import React, {FC, memo, useState} from "react";
 import ReportsTable from "../../ReportsTable";
 import {TextField} from "@mui/material";
 
-const headers = [
-  {
-    title: "reports.preview-table.logs.header.name"
-  },
-  {
-    title: "reports.preview-table.logs.header.number-of-plays"
-  },
-];
+// const headers = [
+//   {
+//     title: "reports.preview-table.logs.header.name"
+//   },
+//   {
+//     title: "reports.preview-table.logs.header.number-of-plays"
+//   },
+// ];
 
 export interface PlayerLogsListType {
   id: string;
@@ -38,7 +38,6 @@ const PlayerLogs: FC<ReportProps> = () => {
 
   return (
     <>
-      <TextField variant="standard"/>
       <ReportsTable headers={headers} rows={tableData} onSelect={setChecked}/>
     </>
   );

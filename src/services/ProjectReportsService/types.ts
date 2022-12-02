@@ -1,3 +1,5 @@
+import { LicenseType } from "services/MediaLibraryService/interface"
+
 /**
  * Общие поля для объектов статистики по прогирыванию
  */
@@ -21,7 +23,33 @@ export type ChannelPlayInfoStatistic = PlayInfoStatistic & {
 
 
 export type GlobalFilePlayInfoStatistic = PlayInfoStatistic & {
+  file: ReportPlaylistGlobalFile;
+}
 
+export type ReportPlaylistGlobalFile = {
+  album: string;
+  artist: string;
+  bpm: number;
+  composer: string;
+  creation_date: string;
+  creator: string;
+  duration: number;
+  file_name: string;
+  genre: string;
+  hash_sum: string;
+  id?: string;
+  isrc: string;
+  language: string;
+  last_change_date: string;
+  last_editor: string;
+  license_type?: LicenseType;
+  lyricist: string;
+  mime_type: string;
+  obscene: boolean;
+  origin_name: string;
+  publisher: string;
+  title: string;
+  year: number;
 }
 
 /**
@@ -68,3 +96,15 @@ export type PlayInfoStatisticQueryParams = {
     from: string
     to: string
 }
+
+export type GetPlayerPlayInfoStatisticResponse = {
+  logs: (Omit<PlayerPlayInfoStatistic, "player"> & {
+    player: Omit<
+      PlayerPlayInfoStatistic["player"],
+      "last_query" | "last_update"
+    > & {
+      last_query: string;
+      last_update: string;
+    };
+  })[];
+};

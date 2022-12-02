@@ -1,34 +1,37 @@
-import {Axios, AxiosRequestConfig} from "axios";
-import {ReportType} from "components/ProjectReports/types";
-import {getAuthorizationToken} from "context/AuthorizationContext";
-import {GraphQLClient} from "services/graphQLClient/GraphQLClient";
-import {loggerFactory} from "services/logger";
-import {Logger} from "services/logger/Logger";
-import {ProjectReportsServiceInterface} from "./interface";
-import {playerLogsResponse} from "./Mocks/playerLogs";
+import { Axios, AxiosRequestConfig } from "axios";
+import { ReportType } from "components/ProjectReports/types";
+import { getAuthorizationToken } from "context/AuthorizationContext";
+import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
+import { loggerFactory } from "services/logger";
+import { Logger } from "services/logger/Logger";
+import { ProjectReportsServiceInterface } from "./interface";
 import {
   ChannelPlayInfoStatistic,
+  GetPlayerPlayInfoStatisticResponse,
   GlobalFilePlayInfoStatistic,
   PlayerPlayInfoStatistic,
   PlayInfoStatisticQueryParams,
-  ProjectFilePlayInfoStatistic
+  ProjectFilePlayInfoStatistic,
 } from "./types";
 import {
   GetPlayerPlayInfoStatistic,
-  GetPlayerPlayInfoStatisticResponse,
-  GetPlayerPlayInfoStatisticResponseDTOFactory
+  GetPlayerPlayInfoStatisticResponseDTOFactory,
 } from "./Queryes/GetPlayerPlayInfoStatistic";
-import {GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse} from "./Queryes/GetChannelPlayInfoStatistic";
+import {
+  GetChannelPlayInfoStatistic,
+  GetChannelPlayInfoStatisticResponse,
+} from "./Queryes/GetChannelPlayInfoStatistic";
 import {
   GetFilesPlayInfoStatistic,
   GetFilesPlayInfoStatisticResponse,
 } from "./Queryes/GetFilesPlayInfoStatistic";
 
-
 /**
  * Сервис отчетов проекта
  */
-export default class ProjectReportsService  implements ProjectReportsServiceInterface {
+export default class ProjectReportsService
+  implements ProjectReportsServiceInterface
+{
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
 
@@ -50,36 +53,23 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
   }
 
   /**
-   * Запрос листинга отчетов
-   * @param reportType
-   * @param args
+   * Запрос списка доступных отчетов для
+   * "Логов плеера",
+   * "Отчет по устройству",
+   * "Отчет Кампании"
+   * @param params
+   * @returns
    */
-  async getReportsList(reportType: keyof ReportType, ...args): Promise<any> {
-    this.logger.Debug("Параметры запроса: ", args);
-    this.logger.Debug("Тип отчета: ", reportType);
-
-    try {
-      // return response;
-      return playerLogsResponse;
-    } catch (error) {
-      this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
-
-      if (!error.errors) {
-        throw error;
-      }
-
-      throw error.errors;
-    }
-  }
-
-  async getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]> {
+  async getPlayerPlayInfoStatistic(
+    params: PlayInfoStatisticQueryParams
+  ): Promise<PlayerPlayInfoStatistic[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(
-          new GetPlayerPlayInfoStatistic(params),
-          {}
-      );
+      const response = await this.clientGQL.Query<
+        PlayInfoStatisticQueryParams,
+        GetPlayerPlayInfoStatisticResponse
+      >(new GetPlayerPlayInfoStatistic(params), {});
 
       return GetPlayerPlayInfoStatisticResponseDTOFactory(response.logs);
     } catch (error) {
@@ -93,14 +83,21 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
-  async getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]> {
+  /**
+   * Запрос списка доступных отчетов для "Отчет Каналы"
+   * @param params
+   * @returns
+   */
+  async getChannelPlayInfoStatistic(
+    params: PlayInfoStatisticQueryParams
+  ): Promise<ChannelPlayInfoStatistic[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetChannelPlayInfoStatisticResponse>(
-          new GetChannelPlayInfoStatistic(params),
-          {}
-      );
+      const response = await this.clientGQL.Query<
+        PlayInfoStatisticQueryParams,
+        GetChannelPlayInfoStatisticResponse
+      >(new GetChannelPlayInfoStatistic(params), {});
 
       return response.logs;
     } catch (error) {
@@ -114,20 +111,23 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
-
-  async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
+  /**
+   * Запрос списка доступных отчетов для "Отчет Файлы" и "Отчет РАО" и "отчет ВОИС"
+   * @param params
+   * @returns
+   */
+  async getFilePlayInfoStatistic(
+    params: PlayInfoStatisticQueryParams
+  ): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(
-          new GetFilesPlayInfoStatistic(params),
-          {}
-      );
+      const response = await this.clientGQL.Query<
+        PlayInfoStatisticQueryParams,
+        GetFilesPlayInfoStatisticResponse
+      >(new GetFilesPlayInfoStatistic(params), {});
 
-      return [
-        ...response.globalFiles,
-        ...response.projectFiles,
-      ];
+      return [...response.globalFiles, ...response.projectFiles];
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
@@ -139,9 +139,19 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
   }
 
+  /**
+   * Запрос отчета
+   * @param project
+   * @param reportType
+   * @param dateFrom
+   * @param dateTo
+   * @param primaryKeys
+   * @param config
+   * @returns
+   */
   async getReports(
     project: string,
-    reportType: keyof ReportType,
+    reportType: ReportType,
     dateFrom: Date,
     dateTo: Date,
     primaryKeys: string[],
@@ -151,9 +161,9 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     this.logger.Debug("Тип отчета: ", reportType);
     this.logger.Debug("Начиная с даты: ", dateFrom);
     this.logger.Debug("Заканчивая датой: ", dateTo);
-    this.logger.Debug("Ключи выбранных отчетов: ", primaryKeys)
+    this.logger.Debug("Ключи выбранных отчетов: ", primaryKeys);
 
-    this.logger.Info("config: ", config);
+    this.logger.Debug("config: ", config);
 
     let token: string = getAuthorizationToken();
 
@@ -162,32 +172,32 @@ export default class ProjectReportsService  implements ProjectReportsServiceInte
     }
 
     const headers = {
-      "Authorization": token,
+      Authorization: token,
       "Content-Type": "application/json",
     };
 
     const data = JSON.stringify({
-      "from": dateFrom.toISOString(),
-      "playerId": primaryKeys,
-      "projectId": project,
-      "to": dateTo.toISOString(),
+      from: dateFrom.toISOString(),
+      playerId: primaryKeys,
+      projectId: project,
+      to: dateTo.toISOString(),
     });
 
     this.logger.Info("data: ", data);
 
     try {
-      const file = await this.clientAxios.post<any, any>(
+      const file = await this.clientAxios.post<any, Blob>(
         `/reports/player-logs`,
         data,
         {
-          responseType: "json",
+          responseType: "blob",
           headers,
         }
       );
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
 
-      return file;
+      this.logger.Info("file loaded", file);
+
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }

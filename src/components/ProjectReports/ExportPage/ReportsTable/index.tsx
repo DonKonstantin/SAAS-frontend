@@ -1,37 +1,84 @@
 import { Table } from "@mui/material";
-import { ReportTableHeaderCellType } from "components/ProjectReports/types";
-import React, { FC, memo, useState } from "react";
+import { useProjectReportPageContext } from "context/ProjectReportPageContext";
+import { xor } from "lodash";
+import React, { FC, memo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { distinctUntilChanged } from "rxjs";
+import { notificationsDispatcher } from "services/notifications";
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
-
-export interface TableRowType {
-  primaryKey: string;
-  cells: any[];
-}
-
-interface Props {
-  headers: ReportTableHeaderCellType[];
-  rows: TableRowType[];
-  onSelect(selected: string[]) : void
-};
+import TableLoader from "./TableLoader";
 
 /**
- * 
- * @param param0 
- * @returns 
+ * Компонент таблицы доступных отчетов
+ * @param param0
+ * @returns
  */
-const ReportsTable: FC<Props> = ({ headers, rows, onSelect }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+const ReportsTable: FC<{ multiselected: boolean }> = ({ multiselected }) => {
+  const { t } = useTranslation();
 
-  const selectHandler = (items: string[]) => {
-    setSelected(items);
-    onSelect(items);
-  };
+  const {
+    tableRows,
+    tableHeaders,
+    selected,
+    sortDirection,
+    sortedColumnIndex,
+    loadReportsList,
+    errors,
+    setSortDirection,
+    setSortedColumnIndex,
+    setSelected,
+    setRows,
+    cleareError,
+  } = useProjectReportPageContext(
+    distinctUntilChanged(
+      (prev, curr) =>
+        !xor(prev.tableRows, curr.tableRows).length &&
+        !xor(prev.tableHeaders, curr.tableHeaders).length &&
+        !xor(prev.selected, curr.selected).length &&
+        prev.sortDirection === curr.sortDirection &&
+        prev.sortedColumnIndex === curr.sortedColumnIndex &&
+        prev.loadReportsList === curr.loadReportsList &&
+        prev.errors === curr.errors
+    )
+  );
+
+  useEffect(() => {
+    if (!errors) {
+      return
+    }
+
+    notificationsDispatcher().dispatch({
+      type: 'error',
+      message: t(errors),
+    });
+
+    cleareError();
+  }, [errors]);
 
   return (
     <Table>
-      <TableHeader cells={headers} checkedItems={selected} rows={rows} onChangeCheckedItems={selectHandler}/>
-      <TableBody rows={rows} checkedItems={selected} onChangeCheckedItems={selectHandler}/>
+      <TableHeader
+        cells={tableHeaders}
+        checkedItems={selected}
+        rows={tableRows}
+        multiselected={multiselected}
+        sortDirection={sortDirection}
+        sortedColumnIndex={sortedColumnIndex}
+        setSortDirection={setSortDirection}
+        setSortedColumnIndex={setSortedColumnIndex}
+        setRows={setRows}
+        onChangeCheckedItems={setSelected}
+      />
+      {loadReportsList && <TableLoader colCount={tableHeaders.length + 1} />}
+      {!loadReportsList && (
+        <TableBody
+          rows={tableRows}
+          checkedItems={selected}
+          multiselected={multiselected}
+          onChangeCheckedItems={setSelected}
+        />
+      )}
     </Table>
   );
 };

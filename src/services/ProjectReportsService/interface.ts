@@ -7,30 +7,30 @@ import {
 } from "./types";
 
 export interface ProjectReportsServiceInterface {
-  /**
-   * Запрос листинга отчетов
-   */
-  getReportsList: (reportType: keyof ReportType, project: string, dateFrom: Date, dateTo: Date) => Promise<any>;
 
   /**
    * Запрос отчета
    */
   getReports: (project: string, reportType: ReportType, dateFrom: Date, dateTo: Date, primaryKeys: string[]) => Promise<Blob | undefined>;
 
-
+  /**
+   * Запрос списка доступных отчетов для 
+   * "Отчета Логов плеера", 
+   * "Отчет по устройству", 
+   * "Отчет Кампании"
+   * @param params 
+   */
   getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]>;
 
+  /**
+   * Запрос списка доступных отчетов для "Отчет Каналы"
+   * @param params 
+   */
   getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]>;
 
+  /**
+   * Запрос списка доступных отчетов для "Отчет Файлы" и "Отчет РАО" и "отчет ВОИС"
+   * @param params 
+   */
   getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;
-}
-
-export interface GetPlayerLogsReportParams {
-  projectId: string;
-  from: Date;
-  to: Date;
-}
-
-export interface GetPlayerLogsReportResponse {
-
 }

@@ -9,21 +9,21 @@ interface Props {
   dateTo: Date;
   setDateFrom: (date: Date) => void;
   setDateTo: (date: Date) => void;
-};
+}
 
 /**
  * Компонент выбора временного интервала для отчета
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
-const ReportsDateRange: FC<Props> = props => {
+const ReportsDateRange: FC<Props> = (props) => {
   const { dateFrom, dateTo, setDateFrom, setDateTo } = props;
 
   const { t } = useTranslation();
 
   const onFromDateChange = (value: Date | null) => {
     if (!value) {
-      return
+      return;
     }
 
     setDateFrom(value);
@@ -31,7 +31,7 @@ const ReportsDateRange: FC<Props> = props => {
 
   const onToDateChange = (value: Date | null) => {
     if (!value) {
-      return
+      return;
     }
 
     setDateTo(value);
@@ -39,20 +39,22 @@ const ReportsDateRange: FC<Props> = props => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Typography sx={{ pr: 1.25 }}>{t('reports.field.date-input.from')}</Typography>
+      <Typography sx={{ pr: 1.25 }}>
+        {t("reports.field.date-input.from")}
+      </Typography>
       <DesktopDatePicker
-          inputFormat="DD.MM.YYYY"
-          value={dateFrom}
-          onChange={onFromDateChange}
-          renderInput={(params) => <TextField variant="standard" {...params} />}
-        />
-      <Typography>{t('reports.field.date-input.to')}</Typography>
+        inputFormat="DD.MM.YYYY"
+        value={dateFrom}
+        onChange={onFromDateChange}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
+      />
+      <Typography>{t("reports.field.date-input.to")}</Typography>
       <DesktopDatePicker
-          inputFormat="DD.MM.YYYY"
-          value={dateTo}
-          onChange={onToDateChange}
-          renderInput={(params) => <TextField variant="standard" {...params} />}
-        />
+        inputFormat="DD.MM.YYYY"
+        value={dateTo}
+        onChange={onToDateChange}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
+      />
     </LocalizationProvider>
   );
 };
