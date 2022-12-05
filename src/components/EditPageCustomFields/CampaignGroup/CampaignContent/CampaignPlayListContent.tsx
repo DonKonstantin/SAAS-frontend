@@ -123,6 +123,21 @@ const CampaignPlayListContent = () => {
     })
   }, [project]);
 
+  //загрузка всех плейлистов при 1 рендере
+  useEffect(()=>{
+    const loadPlaylists = async() => {
+      try {
+        setIsLoadingAutocomplete(true)
+        const response = await projectPlaylistService().getPlaylistsByName('', Number(project));
+        setOptions(response);
+      } catch (error) {
+        setOptions([])
+      }
+    }
+
+    loadPlaylists().finally(() => setIsLoadingAutocomplete(false))
+  },[project])
+
   if (!campaign) {
     return <></>
   }
