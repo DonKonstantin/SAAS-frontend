@@ -445,7 +445,7 @@ const onResetPassword = async (email: string) => {
 /**
  * Обработка разлогинивания пользователя
  */
-const onLogout = () => {
+export const onLogout = () => {
     tokenContext$.next("")
 };
 
