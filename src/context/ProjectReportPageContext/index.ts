@@ -305,28 +305,6 @@ const loadFileStatistic$ = loadReportsListBus$.pipe(
   })
 );
 
-/**
- * Шина загрузки отчетов
- */
-const generateReportsBus$ = combineLatest([
-  reportsIds$,
-  dateFrom$,
-  dateTo$,
-  reportType$,
-]).pipe(
-  switchMap(async ([reportsIds, dateFrom, dateTo, reportType]) => {
-    const { project } = getCurrentState();
-
-    await projectReportsService().getReports(
-      project,
-      reportType as ReportType,
-      dateFrom,
-      dateTo,
-      reportsIds
-    );
-  })
-);
-
 const collectBus$: Observable<
   Pick<
     ProjectReportPageContextTypes, 
@@ -389,8 +367,6 @@ export const InitProjectReportPageContextContext = () => {
   });
 
   subscriber.add(loadReportsListBus$.subscribe());
-
-  subscriber.add(generateReportsBus$.subscribe());
   
   subscriber.add(loadPlayerStatistic$.subscribe((response: PlayerPlayInfoStatistic[]) => {
     const reportType = reportType$.getValue();

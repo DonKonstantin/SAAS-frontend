@@ -1,4 +1,3 @@
-import { ReportType } from "components/ProjectReports/types";
 import {
   ChannelPlayInfoStatistic,
   GlobalFilePlayInfoStatistic,
