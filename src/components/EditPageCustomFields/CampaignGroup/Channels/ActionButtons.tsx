@@ -72,14 +72,20 @@ const ActionButtons: FC<Props> = ({ checkedItems, savedChannels }) => {
 
   return (
     <StyledWrapper>
-      <Tooltip title={isDifferent ? t('pages.campaign.add.buttons.publish.tooltip') : ''}>
-        <Button
-          variant="outlined"
-          onClick={onPublishHandler}
-          disabled={!checkedItems.length}
-        >
-          {t("pages.campaign.add.buttons.publish.title")}
-        </Button>
+      <Tooltip
+        title={
+          isDifferent ? t("pages.campaign.add.buttons.publish.tooltip") : ""
+        }
+      >
+        <Box>
+          <Button
+            variant="outlined"
+            onClick={onPublishHandler}
+            disabled={!checkedItems.length || isDifferent}
+          >
+            {t("pages.campaign.add.buttons.publish.title")}
+          </Button>
+        </Box>
       </Tooltip>
       <Button variant="outlined" type="submit">
         {t("pages.campaign.add.buttons.save")}

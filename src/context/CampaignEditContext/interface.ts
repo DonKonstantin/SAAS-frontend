@@ -10,7 +10,7 @@ export interface CampaignEditContextTypes {
   loadedChannels: ProjectChannel[];
   isChannelsLoading: boolean;
   error: string | undefined;
-  selectedChannels: CampaignChannelInputObject[];
+  selectedChannels: CampaignChannelInputObject[] | undefined;
 };
 
 export interface CampaignEditContextActionsTypes {

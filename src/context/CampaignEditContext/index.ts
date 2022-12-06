@@ -23,7 +23,7 @@ class DefaultContextData implements CampaignEditContextTypes {
   loadedChannels: ProjectChannel[] = [];
   isChannelsLoading: boolean = false;
   error: string | undefined = undefined;
-  selectedChannels: CampaignChannelInputObject[] = [];
+  selectedChannels: CampaignChannelInputObject[] | undefined = undefined;
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());

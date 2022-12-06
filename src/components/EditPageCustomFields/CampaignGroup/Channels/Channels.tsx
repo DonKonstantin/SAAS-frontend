@@ -9,14 +9,12 @@ import ActionButtons from "./ActionButtons";
 import ChannelsTable from "./ChannelsTable";
 import Pagination from "./Pagination";
 import { SortType } from "./types";
-import { UseFormSetValue } from "react-hook-form";
-import { CampaignInput } from "services/campaignListService/types";
 
 /**
  * Страница добавления каналов при редактировании кампании
  * @returns
  */
-const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }) => {
+const Channels: FC = () => {
   const { t } = useTranslation();
 
   const {
@@ -31,7 +29,7 @@ const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }
     distinctUntilChanged(
       (prev, curr) =>
         isEqual(prev.campaign, curr.campaign) &&
-        !!xor(prev.loadedChannels, curr.loadedChannels).length &&
+        !xor(prev.loadedChannels, curr.loadedChannels).length &&
         prev.isChannelsLoading === curr.isChannelsLoading &&
         prev.error === curr.error
     )
@@ -59,12 +57,11 @@ const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }
   const rows = useMemo(() => [...(campaign.channels as any[])], [campaign]);
 
   const setCheckedHandler = (checked: string[]) => {
-    const channels = campaign.channels.filter(ch => checkedItems.some(item => item === ch.channel_id)).map(el => ({
-      id: Number(el.id),
-      channel_id: Number(el.channel_id),
+    const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
+      channel_id: Number(el.id),
     }));
 
-    setValue('channels', channels);
+    setChannels(channels);
 
     setCheckedItems(checked);
   };
@@ -121,9 +118,14 @@ const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }
   useEffect(() => {
     setCheckedItems(savedChannels);
 
-    const
-  }, []);
+    const channels = campaign.channels.map(ch => ({
+      channel_id: Number(ch.channel_id),
+      id: Number(ch.id),
+    }));
 
+    setChannels(channels);
+  }, []);
+  
   return (
     <Grid container>
       <Grid item xs={12}>
