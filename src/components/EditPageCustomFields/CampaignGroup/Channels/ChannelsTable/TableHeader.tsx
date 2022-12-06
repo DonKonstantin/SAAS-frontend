@@ -4,6 +4,7 @@ import CheckBoxCell from "components/ListPageParts/List/CheckBoxCell";
 import { styled } from "@mui/system";
 import { SortType } from "../types";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   rows: ProjectChannel[];
@@ -27,19 +28,19 @@ const StyledHeaderCell = styled(TableCell)<{
 const headers = [
   {
     column: "name",
-    title: "Название канала",
+    title: "pages.campaign.edit.fields.channels.table.header.name",
     align: "left",
     width: "40%",
   },
   {
     column: "isActive",
-    title: "Статус",
+    title: "pages.campaign.edit.fields.channels.table.header.status",
     align: "left",
     width: "40%",
   },
   {
     column: "playersCount",
-    title: "Подключено плееров",
+    title: "pages.campaign.edit.fields.channels.table.header.players_count",
     align: "right",
     width: "40%",
   },
@@ -57,6 +58,8 @@ const TableHeader: FC<Props> = ({
   setSort,
   onChangeCheckedItems,
 }) => {
+  const { t } = useTranslation();
+
   const allPrimaryKeys = rows.map((row) => row.id!);
 
   const isAllItemsSelected = allPrimaryKeys.length === checkedItems.length;
@@ -96,7 +99,7 @@ const TableHeader: FC<Props> = ({
               direction={sort.column === props.column ? sort.direction : "asc"}
               onClick={() => onSortClickHandler(props.column)}
             >
-              {props.title}
+              {t(props.title)}
             </TableSortLabel>
           </StyledHeaderCell>
         ))}

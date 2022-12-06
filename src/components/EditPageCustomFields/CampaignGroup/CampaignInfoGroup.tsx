@@ -504,7 +504,7 @@ const CampaignInfoGroup = () => {
                       key={optionsForTabs.channels}
                       sx={{ p: 0 }}
                     >
-                      <Channels/>
+                      <Channels setValue={setValue} />
                     </TabPanel>
                     <Stack direction="row" justifyContent="flex-end">
                       {

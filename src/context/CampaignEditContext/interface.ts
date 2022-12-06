@@ -1,4 +1,5 @@
 import { Campaign, CampaignPlaylistConnect } from "services/campaignListService/types";
+import { ProjectChannel } from "services/playerCodeService/interfaces";
 
 export interface CampaignEditContextTypes {
   campaign: Campaign | undefined;
@@ -6,6 +7,9 @@ export interface CampaignEditContextTypes {
   campaignListErrorText: string | undefined
   isInitialized: boolean
   successCreatedPlaylist: boolean
+  loadedChannels: ProjectChannel[];
+  isChannelsLoading: boolean;
+  error: string | undefined;
 };
 
 export interface CampaignEditContextActionsTypes {
@@ -57,6 +61,16 @@ export interface CampaignEditContextActionsTypes {
    * @param campaign 
    */
   setCampaign: (campaign: Campaign) => void;
+
+  /**
+   * Загружает доступные для кампании каналы
+   */
+  loadChannels: VoidFunction;
+
+  /**
+   * Очищает загруженные каналы
+   */
+  cleareLoadedChannels: VoidFunction;
 };
 
 

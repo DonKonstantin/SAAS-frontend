@@ -327,7 +327,10 @@
         "buttons": {
           "save": "Сохранить",
           "publish": "Опубликовать",
-          "add-channel": "Добавить"
+          "add-channel": {
+            "title": "Добавить",
+            "tooltip": "Не возможно сохранить не сохраненные каналы"
+          }
         }
       },
       "edit": {
@@ -410,6 +413,15 @@
               }
             }
           },
+          "channels": {
+            "table": {
+              "header": {
+                "name": "Название канала",
+                "status": "Статус",
+                "players_count": "Подключено плееров"
+              }
+            }
+          },
           "campaign_days_type": {
             "daily": "Ежедневно",
             "daysOfTheWeek": "По дням"
@@ -433,7 +445,8 @@
           "notifications": {
             "playlistPeriod": "Ошибка при сохранении. Период трансляции плейлиста больше, чем у компании",
             "storeCampaign": "Ошибка при сохранении компании"
-          }
+          },
+          "load-channels": "Не удалось загрузить каналы"
         },
         "successMessages": {
           "updateName": "Кампания {{name}} успешно изменена"

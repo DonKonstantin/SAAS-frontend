@@ -4,9 +4,8 @@ import { getCurrentState } from "context/AuthorizationContext";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
 import React, {FC, memo, useEffect, useLayoutEffect, useRef, useState} from "react";
 import { useTranslation } from "react-i18next";
-import { debounceTime, distinctUntilKeyChanged, filter, fromEvent, map, switchMap } from "rxjs";
+import { debounceTime, distinctUntilKeyChanged, filter, fromEvent, map } from "rxjs";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
-import { projectChannelsService } from "services/projectChannelsService";
 
 const StyledWrapper = styled(Box)({
   display: "grid",
@@ -41,13 +40,13 @@ const AddChannel: FC = () => {
 
   // Load channel on mounted component
   useEffect(() => {
-    const { project } = getCurrentState();
+    // const { project } = getCurrentState();
 
-    projectChannelsService().getChannelsByName(project, "").then(options => {
-      setOptions(options);
-    }).catch(() => {
-      setOptions([]);
-    })
+    // projectChannelsService().getChannelsByName(project, "").then(options => {
+    //   setOptions(options);
+    // }).catch(() => {
+    //   setOptions([]);
+    // })
   }, [])
 
   const onAddChannelHandler = async () => {
@@ -85,13 +84,13 @@ const AddChannel: FC = () => {
           };
         }),
         filter((searchParam) => searchParam.name.length >= 3),
-        switchMap(async ({ name, project }) => {
-          try {
-            return await projectChannelsService().getChannelsByName(project, name);
-          } catch (error) {
-            return undefined;
-          }
-        }),
+        // switchMap(async ({ name, project }) => {
+        //   try {
+        //     // return await projectChannelsService().getChannelsByName(project, name);
+        //   } catch (error) {
+        //     return undefined;
+        //   }
+        // }),
         filter((response) => !!response)
       )
       .subscribe((response) => {

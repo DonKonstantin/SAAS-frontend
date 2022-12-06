@@ -1,4 +1,5 @@
 import { Table } from "@mui/material";
+import { TableLoader } from "components/TableLoader";
 import { useProjectReportPageContext } from "context/ProjectReportPageContext";
 import { xor } from "lodash";
 import React, { FC, memo, useEffect } from "react";
@@ -7,7 +8,6 @@ import { distinctUntilChanged } from "rxjs";
 import { notificationsDispatcher } from "services/notifications";
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
-import TableLoader from "./TableLoader";
 
 /**
  * Компонент таблицы доступных отчетов

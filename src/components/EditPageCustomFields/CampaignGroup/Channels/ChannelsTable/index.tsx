@@ -11,6 +11,7 @@ interface Props {
   sort: SortType;
   limit: number;
   offset: number;
+  isChannelsLoading: boolean;
   setSort: (sort: SortType) => void;
   onChangeCheckedItems: (checkedItems: string[]) => void;
 }
@@ -26,6 +27,7 @@ const ChannelsTable: FC<Props> = ({
   sort,
   limit,
   offset,
+  isChannelsLoading,
   setSort,
   onChangeCheckedItems,
 }) => {
@@ -42,6 +44,7 @@ const ChannelsTable: FC<Props> = ({
         <TableBodyComponent
           checkedItems={checkedItems}
           rows={rows.slice(offset, offset + limit)}
+          isChannelsLoading={isChannelsLoading}
           onChangeCheckedItems={onChangeCheckedItems}
         />
       </Table>

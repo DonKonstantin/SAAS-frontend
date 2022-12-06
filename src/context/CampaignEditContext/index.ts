@@ -1,5 +1,5 @@
 import {CampaignEditContextActionsTypes, CampaignEditContextTypes} from './interface';
-import {auditTime, BehaviorSubject, combineLatest, filter, interval, map, Observable, switchMap, tap} from "rxjs";
+import {auditTime, BehaviorSubject, combineLatest, delay, filter, interval, map, Observable, Subject, switchMap, tap} from "rxjs";
 import {
   Campaign,
   CampaignDaysType,
@@ -9,6 +9,9 @@ import {
 import {campaignListService} from "../../services/campaignListService";
 import {fileService} from "../../services/FileService";
 import campaignPlaylistService from "../../services/campaignPlaylistService";
+import { ProjectChannel } from 'services/playerCodeService/interfaces';
+import { getCurrentState } from 'context/AuthorizationContext';
+import { projectChannelsService } from 'services/projectChannelsService';
 
 class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
@@ -16,6 +19,9 @@ class DefaultContextData implements CampaignEditContextTypes {
   campaignListErrorText: string | undefined = undefined
   isInitialized: boolean = false
   successCreatedPlaylist: boolean = false
+  loadedChannels: ProjectChannel[] = [];
+  isChannelsLoading: boolean = false;
+  error: string | undefined = undefined;
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());
@@ -41,6 +47,14 @@ const isInitialized$ = new BehaviorSubject<boolean>(false)
 const isLoading$ = new BehaviorSubject<boolean>(false);
 //  Флаг для автосохранения плейлиста при добавлении музыки
 const successCreatedPlaylist$ = new BehaviorSubject<boolean>(false);
+//  Загруженные доступные для кампании каналы
+const loadedChannels$ = new BehaviorSubject<ProjectChannel[]>([]);
+//  Инициатор загрузки доступных каналов
+const loadChannels$ = new Subject<void>();
+//  Флаг загрузки каналов
+const isChannelsLoading$ = new BehaviorSubject<boolean>(false);
+//  Текст ошибки
+const error$ = new BehaviorSubject<string | undefined>(undefined);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -319,15 +333,54 @@ const checkUploadedFilesBus$ = combineLatest([interval(6000), uploadedTracksToPl
   })
 );
 
+/**
+ * Шина загрузки каналов для вкладки каналов кампании
+ */
+const loadChannelsBus$ = loadChannels$.pipe(
+  map(() => {
+    const { project } = getCurrentState();
+
+    return project;
+  }),
+  filter(projectId => !!projectId),
+  tap(() => error$.next(undefined)),
+  tap(() => isChannelsLoading$.next(true)),
+  switchMap(async projectId => {
+    try {
+      return projectChannelsService().getChannels(projectId);
+    } catch (_) {
+      error$.next('pages.campaigns.edit.errors.load-channels');
+
+      return [];
+    }
+  }),
+  tap(() => isChannelsLoading$.next(false)),
+);
+
+/**
+ * Шина сброса ошибки
+ */
+const clearErrorBus$ = error$.pipe(
+  filter(error => !!error),
+  delay(10000),
+);
+
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
   'campaign'
   | 'isLoading'
-  | 'campaignListErrorText'>> = combineLatest([
+  | 'campaignListErrorText'
+  | 'loadedChannels'
+  | 'isChannelsLoading'
+  | 'error'
+>> = combineLatest([
   campaign$,
   isLoading$,
   campaignListErrorText$,
   isInitialized$,
-  successCreatedPlaylist$
+  successCreatedPlaylist$,
+  loadedChannels$,
+  isChannelsLoading$,
+  error$,
 ]).pipe(
   map(
     ([
@@ -335,13 +388,19 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
        isLoading,
        campaignListErrorText,
        isInitialized,
-       successCreatedPlaylist
+       successCreatedPlaylist,
+       loadedChannels,
+       isChannelsLoading,
+       error,
      ]) => ({
       campaign,
       isLoading,
       campaignListErrorText,
       isInitialized,
-      successCreatedPlaylist
+      successCreatedPlaylist,
+      loadedChannels,
+      isChannelsLoading,
+      error,
     })
   )
 );
@@ -404,6 +463,12 @@ export const InitCampaignEditContext = () => {
     isLoading$.next(false)
     successCreatedPlaylist$.next(true)
   }));
+
+  subscriber.add(loadChannelsBus$.subscribe(channels => {
+    loadedChannels$.next(channels);
+  }));
+
+  subscriber.add(clearErrorBus$.subscribe(() => error$.next(undefined)));
 
   return () => subscriber.unsubscribe();
 };
@@ -479,6 +544,20 @@ const newAddedCampaignPlaylist: CampaignEditContextActionsTypes['newAddedCampaig
   successCreatedPlaylist$.next(newPlaylist);
 };
 
+/**
+ * Загружает доступные для кампании каналы
+ */
+ const loadChannels: CampaignEditContextActionsTypes['loadChannels'] = () => {
+  loadChannels$.next();
+};
+
+/**
+ * Очищает загруженные каналы
+ */
+ const cleareLoadedChannels: CampaignEditContextActionsTypes['cleareLoadedChannels'] = () => {
+  loadedChannels$.next([]);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
@@ -487,5 +566,7 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   movePlaylistCampaign,
   addFilesToUploadPlaylist,
   newAddedCampaignPlaylist,
-  setCampaign
+  setCampaign,
+  loadChannels,
+  cleareLoadedChannels,
 };
