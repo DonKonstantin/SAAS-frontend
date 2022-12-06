@@ -26,6 +26,7 @@ const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }
     error,
     loadChannels,
     cleareLoadedChannels,
+    setChannels,
   } = useCampaignEditContext(
     distinctUntilChanged(
       (prev, curr) =>
@@ -118,11 +119,9 @@ const Channels: FC<{ setValue: UseFormSetValue<CampaignInput> }> = ({ setValue }
    * Записываем значение выбранных каналов
    */
   useEffect(() => {
-    console.log(campaign, "campaign");
-    
-    console.log(savedChannels, "savedChannels");
-    
     setCheckedItems(savedChannels);
+
+    const
   }, []);
 
   return (
