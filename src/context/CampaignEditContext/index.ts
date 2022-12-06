@@ -2,6 +2,7 @@ import {CampaignEditContextActionsTypes, CampaignEditContextTypes} from './inter
 import {auditTime, BehaviorSubject, combineLatest, delay, filter, interval, map, Observable, Subject, switchMap, tap} from "rxjs";
 import {
   Campaign,
+  CampaignChannelInputObject,
   CampaignDaysType,
   CampaignPlayList,
   CampaignPlaylistConnect
@@ -22,6 +23,7 @@ class DefaultContextData implements CampaignEditContextTypes {
   loadedChannels: ProjectChannel[] = [];
   isChannelsLoading: boolean = false;
   error: string | undefined = undefined;
+  selectedChannels: CampaignChannelInputObject[] = [];
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());
@@ -55,6 +57,8 @@ const loadChannels$ = new Subject<void>();
 const isChannelsLoading$ = new BehaviorSubject<boolean>(false);
 //  Текст ошибки
 const error$ = new BehaviorSubject<string | undefined>(undefined);
+//  Стрим для выбраных каналов
+const selectedChannels$ = new BehaviorSubject<CampaignChannelInputObject[]>([]);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -372,6 +376,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   | 'loadedChannels'
   | 'isChannelsLoading'
   | 'error'
+  | 'selectedChannels'
 >> = combineLatest([
   campaign$,
   isLoading$,
@@ -381,6 +386,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   loadedChannels$,
   isChannelsLoading$,
   error$,
+  selectedChannels$,
 ]).pipe(
   map(
     ([
@@ -392,6 +398,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
        loadedChannels,
        isChannelsLoading,
        error,
+       selectedChannels,
      ]) => ({
       campaign,
       isLoading,
@@ -401,6 +408,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
       loadedChannels,
       isChannelsLoading,
       error,
+      selectedChannels,
     })
   )
 );
@@ -558,6 +566,13 @@ const newAddedCampaignPlaylist: CampaignEditContextActionsTypes['newAddedCampaig
   loadedChannels$.next([]);
 };
 
+/**
+ * Записываем выбранные каналы
+ */
+ const setChannels: CampaignEditContextActionsTypes['setChannels'] = (channels) => {
+  selectedChannels$.next(channels);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
@@ -569,4 +584,5 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   setCampaign,
   loadChannels,
   cleareLoadedChannels,
+  setChannels,
 };

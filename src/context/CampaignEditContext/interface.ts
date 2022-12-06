@@ -1,4 +1,4 @@
-import { Campaign, CampaignPlaylistConnect } from "services/campaignListService/types";
+import { Campaign, CampaignChannelInputObject, CampaignPlaylistConnect } from "services/campaignListService/types";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 
 export interface CampaignEditContextTypes {
@@ -10,6 +10,7 @@ export interface CampaignEditContextTypes {
   loadedChannels: ProjectChannel[];
   isChannelsLoading: boolean;
   error: string | undefined;
+  selectedChannels: CampaignChannelInputObject[];
 };
 
 export interface CampaignEditContextActionsTypes {
@@ -71,7 +72,13 @@ export interface CampaignEditContextActionsTypes {
    * Очищает загруженные каналы
    */
   cleareLoadedChannels: VoidFunction;
+
+  /**
+   * Записываем выбранные каналы
+   */
+  setChannels: (channels: CampaignChannelInputObject[]) => void;
 };
 
 
 export type CampaignEditContextCommonType<T = {}> = T & CampaignEditContextTypes & CampaignEditContextActionsTypes;
+
