@@ -32,9 +32,7 @@ import { GetFilesPlayInfoStatistic, GetFilesPlayInfoStatisticResponse } from "./
 /**
  * Сервис отчетов проекта
  */
-export default class ProjectReportsService
- implements ProjectReportsServiceInterface
-{
+export default class ProjectReportsService implements ProjectReportsServiceInterface {
   //  Клиент GraphQL API
   private readonly clientGQL: GraphQLClient;
 
@@ -63,16 +61,11 @@ export default class ProjectReportsService
    * @param params
    * @returns
    */
-  async getPlayerPlayInfoStatistic(
-    params: PlayInfoStatisticQueryParams
-  ): Promise<PlayerPlayInfoStatistic[]> {
+  async getPlayerPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<PlayerPlayInfoStatistic[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<
-        PlayInfoStatisticQueryParams,
-        GetPlayerPlayInfoStatisticResponse
-      >(new GetPlayerPlayInfoStatistic(params), {});
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetPlayerPlayInfoStatisticResponse>(new GetPlayerPlayInfoStatistic(params), {});
 
       return GetPlayerPlayInfoStatisticResponseDTOFactory(response.logs);
     } catch (error) {
@@ -91,16 +84,14 @@ export default class ProjectReportsService
    * @param params
    * @returns
    */
-  async getChannelPlayInfoStatistic(
-    params: PlayInfoStatisticQueryParams
-  ): Promise<ChannelPlayInfoStatistic[]> {
+  async getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<
-        PlayInfoStatisticQueryParams,
-        GetChannelPlayInfoStatisticResponse
-      >(new GetChannelPlayInfoStatistic(params), {});
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetChannelPlayInfoStatisticResponse>(
+        new GetChannelPlayInfoStatistic(params),
+        {}
+      );
 
       return response.logs;
     } catch (error) {
@@ -119,16 +110,11 @@ export default class ProjectReportsService
    * @param params
    * @returns
    */
-  async getFilePlayInfoStatistic(
-    params: PlayInfoStatisticQueryParams
-  ): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
+  async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
-      const response = await this.clientGQL.Query<
-        PlayInfoStatisticQueryParams,
-        GetFilesPlayInfoStatisticResponse
-      >(new GetFilesPlayInfoStatistic(params), {});
+      const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(new GetFilesPlayInfoStatistic(params), {});
 
       return [...response.globalFiles, ...response.projectFiles];
     } catch (error) {
@@ -167,15 +153,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/player-logs`, data, {
+      const file = await this.clientAxios.post<ReportPlayerLogsQueryParams, Blob>(`/reports/player-logs`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -208,15 +192,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/campaign`, data, {
+      const file = await this.clientAxios.post<ReportCampaignQueryParams, Blob>(`/reports/campaign`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -249,15 +231,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/channels`, data, {
+      const file = await this.clientAxios.post<ReportChannelsQueryParams, Blob>(`/reports/channels`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -290,15 +270,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/device`, data, {
+      const file = await this.clientAxios.post<ReportDeviceQueryParams, Blob>(`/reports/device`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -331,15 +309,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/files`, data, {
+      const file = await this.clientAxios.post<ReportFilesQueryParams, Blob>(`/reports/files`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -372,15 +348,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/rao`, data, {
+      const file = await this.clientAxios.post<ReportRaoQueryParams, Blob>(`/reports/rao`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {
@@ -413,15 +387,13 @@ export default class ProjectReportsService
       to: params.to.toISOString(),
     });
 
-    this.logger.Info("data: ", data);
-
     try {
-      const file = await this.clientAxios.post<any, any>(`/reports/voice`, data, {
+      const file = await this.clientAxios.post<ReportVoiceQueryParams, Blob>(`/reports/voice`, data, {
         responseType: "blob",
         headers,
       });
-      //@ts-ignore
-      this.logger.Info("file loaded", file.data);
+
+      this.logger.Debug("file loaded", file);
 
       return new Blob([file]);
     } catch (e) {

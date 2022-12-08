@@ -105,9 +105,10 @@ const DropZoneArea: FC<Props> = (props) => {
         <Box sx={{ height: iconSize }}>
           <CloudUploadIcon color={"primary"} sx={{ fontSize: iconSize }}/>
         </Box>
-        <Typography color={"primary"}>
-          {!!customInputText?.length && customInputText}
-          {!customInputText?.length && <>Переместите <br/> файлы для загрузки</>}
+        <Typography color={"primary"} sx={{whiteSpace: 'pre-line'}}>
+          {!!customInputText?.length
+            ? customInputText
+            : "Переместите \n файлы для загрузки"}
         </Typography>
       </Box>
     </div>
