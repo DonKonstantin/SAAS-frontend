@@ -7,6 +7,9 @@ import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteBut
 import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
 import CampaignLastVersionField from "../../../components/ListPageCustom/CampaignLastVersionField";
 import {campaignListService} from "../../../services/campaignListService";
+import { ListHeaderProps } from "components/ListPageParts/TableCaption";
+import CampaignsActions from "components/ListPageCustom/CampaignsActions";
+import CampaignIsActiveCell from "components/ListPageCustom/CampaignIsActiveCell";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
   filter: FilterFieldsConfiguration<"campaign"> = {
@@ -44,15 +47,6 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         fieldType: {
           config: undefined,
           type: "Simple"
-        }
-      },
-      id: {
-        field: "id",
-        title: "",
-        isEnabled: true,
-        fieldType: {
-          config: undefined,
-          type: "Hidden"
         }
       },
       version: {
@@ -94,6 +88,17 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
           type: "Simple",
           customComponent: CampaignDataField
         }
+      },
+      id: {
+        field: "id",
+        title: "pages.campaign.list.fields.campaign-is-active",
+        isEnabled: true,
+        align: 'center',
+        fieldType: {
+          config: undefined,
+          type: "Simple",
+          customComponent: CampaignIsActiveCell,
+        },
       },
     },
     actions: ListPageEditDeleteButtons,
@@ -145,4 +150,5 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         }
     }
   };
+  action: React.ComponentType<ListHeaderProps> = CampaignsActions;
 }

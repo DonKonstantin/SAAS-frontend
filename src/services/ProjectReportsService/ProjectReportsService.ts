@@ -1,5 +1,4 @@
-import { Axios, AxiosRequestConfig } from "axios";
-import { ReportType } from "components/ProjectReports/types";
+import { Axios } from "axios";
 import { getAuthorizationToken } from "context/AuthorizationContext";
 import { GraphQLClient } from "services/graphQLClient/GraphQLClient";
 import { loggerFactory } from "services/logger";
