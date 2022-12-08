@@ -30,7 +30,7 @@ const TypeSelector: FC = () => {
   return (
     <Select
       variant="standard"
-      // @ts-ignore
+      //@ts-ignore
       value={reportType}
       onChange={handleChange}
       placeholder={"Не выбрано"}

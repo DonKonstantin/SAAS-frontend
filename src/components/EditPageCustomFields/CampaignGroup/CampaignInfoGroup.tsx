@@ -26,7 +26,7 @@ import {
 import {CampaignDaysType, CampaignInput,} from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import {useCampaignEditContext} from "../../../context/CampaignEditContext/useCampaignEditContext";
-import {isEqual} from "lodash";
+import {isEqual, xor} from "lodash";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
 import {EditPlaylist} from "./EditPlaylist";
@@ -70,6 +70,7 @@ const CampaignInfoGroup = () => {
     isInitialized,
     campaignListErrorText,
     successCreatedPlaylist,
+    selectedChannels,
     loadCampaign,
     newAddedCampaignPlaylist,
   } =
@@ -78,7 +79,8 @@ const CampaignInfoGroup = () => {
         (prev, curr) =>
           prev.isInitialized === curr.isInitialized &&
           prev.successCreatedPlaylist === curr.successCreatedPlaylist &&
-          isEqual(prev.campaign, curr.campaign)
+          isEqual(prev.campaign, curr.campaign) &&
+          !xor(prev.selectedChannels, curr.selectedChannels).length
       )
     );
 
@@ -309,11 +311,14 @@ const CampaignInfoGroup = () => {
       }
 
       return { channel_id: Number(channel.id) }
-    })
+    });
+
+    //  Если было взаимодействие со вкладкой каналов то берем каналы обработанные на этой вкладке
+    const commonChannels = selectedChannels || channels;
 
     setValue('days', days)
     setValue('playlists', playlistInput)
-    setValue('channels', channels)
+    setValue('channels', commonChannels)
     const inputData = getValues()
 
     delete inputData["version"];

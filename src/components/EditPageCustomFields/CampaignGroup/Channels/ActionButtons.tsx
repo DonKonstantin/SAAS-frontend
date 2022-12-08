@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Tooltip } from "@mui/material";
 import { styled } from "@mui/system";
 import { useEntityEdit } from "context/EntityEditContext";
 import React, { FC, memo } from "react";
@@ -7,17 +7,19 @@ import { distinctUntilKeyChanged } from "rxjs";
 import { useRouter } from "next/router";
 import { campaignListService } from "../../../../services/campaignListService";
 import { notificationsDispatcher } from "../../../../services/notifications";
+import { xor } from "lodash";
 
 interface Props {
   checkedItems: string[];
+  savedChannels: string[];
 }
 
 const StyledWrapper = styled(Box)({
   display: "flex",
   justifyContent: "flex-end",
   columnGap: 20,
-  alignItems: 'center',
-  height: '100%'
+  alignItems: "center",
+  height: "100%",
 });
 
 /**
@@ -25,7 +27,7 @@ const StyledWrapper = styled(Box)({
  * @param param0
  * @returns
  */
-const ActionButtons: FC<Props> = ({ checkedItems }) => {
+const ActionButtons: FC<Props> = ({ checkedItems, savedChannels }) => {
   const { t } = useTranslation();
 
   const { entityData } = useEntityEdit(distinctUntilKeyChanged("entityData"));
@@ -38,21 +40,24 @@ const ActionButtons: FC<Props> = ({ checkedItems }) => {
     return null;
   }
 
+  const isDifferent = !!xor(checkedItems, savedChannels).length;
 
   const onPublishHandler = async () => {
-
     if (!router.query.entityId) {
-      return
+      return;
     }
 
-    const channelsDataArray = checkedItems.reduce((acc, channelId) => [...acc, Number(channelId)], [])
+    const channelsDataArray = checkedItems.reduce(
+      (acc, channelId) => [...acc, Number(channelId)],
+      []
+    );
     const campaignPublishData = {
       campaignId: Number(router.query.entityId),
-      channelIds: channelsDataArray
-    }
+      channelIds: channelsDataArray,
+    };
 
     try {
-      await campaignListService().publishCampaign(campaignPublishData)
+      await campaignListService().publishCampaign(campaignPublishData);
       messanger.dispatch({
         message: t("edit-campaign-playlist.success.publish-campaign"),
         type: "success",
@@ -67,17 +72,22 @@ const ActionButtons: FC<Props> = ({ checkedItems }) => {
 
   return (
     <StyledWrapper>
-      <Button
-        variant="outlined"
-        onClick={onPublishHandler}
-        disabled={!checkedItems.length}
+      <Tooltip
+        title={
+          isDifferent ? t("pages.campaign.add.buttons.publish.tooltip") : ""
+        }
       >
-        {t("pages.campaign.add.buttons.publish")}
-      </Button>
-      <Button
-        variant="outlined"
-        type='submit'
-      >
+        <Box>
+          <Button
+            variant="outlined"
+            onClick={onPublishHandler}
+            disabled={!checkedItems.length || isDifferent}
+          >
+            {t("pages.campaign.add.buttons.publish.title")}
+          </Button>
+        </Box>
+      </Tooltip>
+      <Button variant="outlined" type="submit">
         {t("pages.campaign.add.buttons.save")}
       </Button>
     </StyledWrapper>

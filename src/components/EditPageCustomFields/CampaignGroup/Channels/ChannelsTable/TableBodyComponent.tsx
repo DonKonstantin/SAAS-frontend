@@ -2,10 +2,12 @@ import React, { FC, memo } from "react";
 import { TableBody } from "@mui/material";
 import ChannelRow from "./ChannelRow";
 import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
+import { TableLoader } from "components/TableLoader";
 
 interface Props {
   rows: ProjectChannel[] | CampaignChannels[];
   checkedItems: string[];
+  isChannelsLoading: boolean;
   onChangeCheckedItems: (checkedItems: string[]) => void;
 }
 
@@ -17,11 +19,15 @@ interface Props {
 const TableBodyComponent: FC<Props> = ({
   rows,
   checkedItems,
+  isChannelsLoading,
   onChangeCheckedItems,
 }) => {
   return (
     <TableBody>
-      {rows.map((row) => (
+      {isChannelsLoading && (
+        <TableLoader colCount={4}/>
+      )}
+      {!isChannelsLoading && rows.map((row) => (
         <ChannelRow
           key={row.id}
           row={row}
@@ -29,6 +35,7 @@ const TableBodyComponent: FC<Props> = ({
           onChangeCheckedItems={onChangeCheckedItems}
         />
       ))}
+      {}
     </TableBody>
   );
 };
