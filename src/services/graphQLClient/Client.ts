@@ -3,6 +3,7 @@ import {Collection} from "../types";
 import {Logger, LoggerFactory} from "../logger/Logger";
 import {ApolloClient, FetchResult, NormalizedCacheObject} from "@apollo/client";
 import {Subject} from "rxjs";
+import { onLogout } from "context/AuthorizationContext";
 
 // Данные для управления клиентом
 type ClientData = {(): {
@@ -80,6 +81,8 @@ export class Client implements GraphQLClient {
              * Проверка на не корректный токен
              */
             if (`${e}`.indexOf(`incorrect token`) > -1) {
+                onLogout();
+
                 throw new Error(`${e}`);
             }
 
@@ -124,7 +127,17 @@ export class Client implements GraphQLClient {
 
             return response.data;
         } catch (e) {
+            /**
+            * Проверка на не корректный токен
+            */
+            if (`${e}`.indexOf(`incorrect token`) > -1) {
+                onLogout();
+
+                throw new Error(`${e}`);
+            }
+
             this.logger.Error("Request failed", e);
+
             throw new Error(`${e}`)
         }
     }
