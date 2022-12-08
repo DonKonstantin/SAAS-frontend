@@ -57,6 +57,8 @@ type Props = {
 const EditPlaylist: FC<Props> = ({ onSubmitCampaign }) => {
   const { t } = useTranslation();
 
+  const { setPlaylist } = useCampaignPlaylistEditContext();
+
   const { playlist, isLoading, availableTabs, setAvailableTabs } = useCampaignPlaylistEditContext(
     distinctUntilChanged(
       (prev, curr) =>
@@ -92,6 +94,21 @@ const EditPlaylist: FC<Props> = ({ onSubmitCampaign }) => {
     }
 
   }, [playlist])
+
+  //при клике "Назад" возвращает к страницу кампании
+  useEffect(() => {
+    const onBack = (e) => {
+      e.preventDefault()
+      setPlaylist(undefined)
+      window.history.forward()
+    }
+
+    window.addEventListener('popstate', onBack)
+
+    return(()=>{
+      window.removeEventListener('popstate', onBack)
+    })
+  }, [])
 
   return (
     <StyledWrapper>
