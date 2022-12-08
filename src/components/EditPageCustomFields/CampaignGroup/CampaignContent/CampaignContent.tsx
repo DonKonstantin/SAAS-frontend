@@ -72,7 +72,6 @@ const CampaignContent = () => {
         variant="standard"
         disabled
         fullWidth
-        disabled
         sx={{ maxWidth: "99px" }}
         type='number'
       />,
