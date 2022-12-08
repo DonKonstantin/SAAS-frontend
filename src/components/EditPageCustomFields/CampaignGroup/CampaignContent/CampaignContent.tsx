@@ -70,8 +70,8 @@ const CampaignContent = () => {
       component: <TextField
         value={countTracks}
         variant="standard"
-        fullWidth
         disabled
+        fullWidth
         sx={{ maxWidth: "99px" }}
         type='number'
       />,

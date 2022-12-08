@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import {EditFieldProperties} from "../../settings/pages/system/edit";
 import {useAuthorization} from "../../context/AuthorizationContext";
 import {useEntityEdit} from "../../context/EntityEditContext";
@@ -6,6 +6,7 @@ import {LoaderQueryResponse} from "../../services/loaders/allDomainsAndProjects/
 import {MenuItem, Tab, Tabs, TextField, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {Box} from "@mui/system";
+import { notificationsDispatcher } from "services/notifications";
 
 // Селектор выбора уровня доступа для роли
 const LevelCheckSelector: FC<EditFieldProperties> = props => {
@@ -54,6 +55,30 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
 
     const isNeedShowRealm = menuType === `realm`
     const isNeedShowDomain = menuType === `domain` || menuType === `realm`
+
+    useEffect(() => {
+      if (values['level'] === "realm") {
+        return
+      }
+
+      if (values['level'] === "domain" && !domainsToChoose.length) {
+        notificationsDispatcher().dispatch({
+          message: t('pages.role.error.load_domains'),
+          type: 'warning',
+        });
+
+        return
+      }
+
+      if (!!projectsToChoose.length) {
+        return
+      }
+
+      notificationsDispatcher().dispatch({
+        message: t('pages.role.error.load_projects'),
+        type: 'warning',
+      });
+    }, []);
 
     return (
         <Box sx={{flexGrow: 1, display: 'flex', height: 174}}>
