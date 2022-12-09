@@ -76,7 +76,7 @@ export default class MediaFileClient implements MediaFileClientInterface {
             );
 
             if (data.status !== 200) {
-                throw new Error("Error upload file")
+              throw new Error("Error upload file")
             }
             
             const result: UpdateResponse  = JSON.parse(data.data);
@@ -115,7 +115,7 @@ export default class MediaFileClient implements MediaFileClientInterface {
             );
             
             if (data.status !== 200) {
-                throw new Error("Error upload file")
+              throw new Error("Error upload file")
             }
             
             const result: UpdateResponse  = JSON.parse(data.data);
