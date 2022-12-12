@@ -41,19 +41,10 @@ export class CreateEntityService implements CreateEntityServiceInterface {
                     // @ts-ignore
                     const fieldConfig: SchemaField = schemaConfig.fields[fieldCode]
                     // @ts-ignore
-                    let value: any = passedData.values[fieldCode];
-                    
-                    if (typeof value === 'string') {
-                      value = value.replace(/[\r\n]/gm, ' ');
-                    }
+                    const value: any = passedData.values[fieldCode]
 
-                    let convertedValue = this.valueConverter.convertValueToGraphQL(fieldConfig, value)
+                    const convertedValue = this.valueConverter.convertValueToGraphQL(fieldConfig, value)
 
-                    if (!convertedValue || convertedValue.replace(' ', '').length === 2) {
-                      convertedValue = "\"\"";
-                    }
-
-                    // @ts-ignore
                     return `${fieldCode}: ${convertedValue}`
                 })
 
@@ -64,7 +55,6 @@ export class CreateEntityService implements CreateEntityServiceInterface {
             }
 
             const primaryKey = getPrimaryKeyForSchema(storeSchema)
-            // @ts-ignore
             const mutation = `mutation __INSERT_ENTITY__ {result: ${storeSchema}_insert(objects: [{${fields.join(`,`)}}]){returning {primaryKey: ${primaryKey.code}}}}`
 
             this.logger.Debug(`generated insert query`, mutation)
