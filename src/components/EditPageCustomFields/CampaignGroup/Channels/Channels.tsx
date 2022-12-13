@@ -57,6 +57,7 @@ const Channels: FC = () => {
   const rows = useMemo(() => [...(campaign.channels as any[])], [campaign]);
 
   const setCheckedHandler = (checked: string[]) => {
+    console.log('checked: ', checked)
     const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
       channel_id: Number(el.id),
     }));

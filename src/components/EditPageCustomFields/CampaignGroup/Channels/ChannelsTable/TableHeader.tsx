@@ -64,8 +64,11 @@ const TableHeader: FC<Props> = ({
 
   const isAllItemsSelected = allPrimaryKeys.length === checkedItems.length;
 
-  const onToggleItemCheckedState = () => {
-    onChangeCheckedItems(allPrimaryKeys);
+  const onToggleItemCheckedState = (checked: boolean) => {
+    checked ? 
+      onChangeCheckedItems(allPrimaryKeys)
+      :
+      onChangeCheckedItems([])
   };
 
   const onSortClickHandler = (column: string) => {
@@ -86,7 +89,7 @@ const TableHeader: FC<Props> = ({
           isHeader={true}
           indeterminate={!isAllItemsSelected && checkedItems.length > 0}
           checked={isAllItemsSelected && allPrimaryKeys.length > 0}
-          onChange={onToggleItemCheckedState}
+          onChange={(_, checked) => onToggleItemCheckedState(checked)}
         />
         {headers.map((props) => (
           <StyledHeaderCell
