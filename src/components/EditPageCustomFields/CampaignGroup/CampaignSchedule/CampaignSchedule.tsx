@@ -121,7 +121,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
         {watchTime.campaign_play_type === "periodic" &&
             <Grid container alignItems="flex-start" spacing={2} sx={{ pt: "30px" }}>
                 <Grid item xs={1}>
-                    <RHFTextField type='number' inputProps={{inputProps: {min: 0, type: "text", pattern: "[0-9]*"} }} name='campaign_play_tracks_quantity'/>
+                    <RHFTextField type='number' name='campaign_play_tracks_quantity'/>
                 </Grid>
                 <Grid item xs='auto' alignSelf='flex-end'>
                     Трека каждые:
