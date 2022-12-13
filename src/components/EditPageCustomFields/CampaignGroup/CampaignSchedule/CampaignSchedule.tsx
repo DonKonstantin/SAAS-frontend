@@ -68,11 +68,11 @@ let simpleCompanyOptionsData = [
   {
     name: "pages.campaign.add.fields.schedule.campaign_priority",
     component: <RHFDropDown name='campaign_priority' options={[
-      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
       { name: 'background', label: "pages.campaign.list.fields.campaign-priority-enum.background" },
       { name: 'low', label: "pages.campaign.list.fields.campaign-priority-enum.low" },
       { name: 'normal', label: "pages.campaign.list.fields.campaign-priority-enum.normal" },
       { name: 'high', label: "pages.campaign.list.fields.campaign-priority-enum.high" },
+      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
     ]}/>,
     size: {
       container: { spacing: 4, sx: { mb: "21px" } },
@@ -121,7 +121,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
         {watchTime.campaign_play_type === "periodic" &&
             <Grid container alignItems="flex-start" spacing={2} sx={{ pt: "30px" }}>
                 <Grid item xs={1}>
-                    <RHFTextField type='number' name='campaign_play_tracks_quantity'/>
+                    <RHFTextField type='number' inputProps={{inputProps: {min: 0, type: "text", pattern: "[0-9]*"} }} name='campaign_play_tracks_quantity'/>
                 </Grid>
                 <Grid item xs='auto' alignSelf='flex-end'>
                     Трека каждые:
