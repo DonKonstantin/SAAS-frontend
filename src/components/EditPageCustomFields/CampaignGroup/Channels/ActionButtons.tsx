@@ -7,11 +7,10 @@ import { distinctUntilKeyChanged } from "rxjs";
 import { useRouter } from "next/router";
 import { campaignListService } from "../../../../services/campaignListService";
 import { notificationsDispatcher } from "../../../../services/notifications";
-import { xor } from "lodash";
 
 interface Props {
   checkedItems: string[];
-  savedChannels: string[];
+  isDifferent: boolean
 }
 
 const StyledWrapper = styled(Box)({
@@ -27,7 +26,7 @@ const StyledWrapper = styled(Box)({
  * @param param0
  * @returns
  */
-const ActionButtons: FC<Props> = ({ checkedItems, savedChannels }) => {
+const ActionButtons: FC<Props> = ({ checkedItems, isDifferent }) => {
   const { t } = useTranslation();
 
   const { entityData } = useEntityEdit(distinctUntilKeyChanged("entityData"));
@@ -39,8 +38,6 @@ const ActionButtons: FC<Props> = ({ checkedItems, savedChannels }) => {
   if (!entityData) {
     return null;
   }
-
-  const isDifferent = !!xor(checkedItems, savedChannels).length;
 
   const onPublishHandler = async () => {
     if (!router.query.entityId) {
