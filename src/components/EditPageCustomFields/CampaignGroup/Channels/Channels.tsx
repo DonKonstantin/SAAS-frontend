@@ -1,6 +1,6 @@
 import { Alert, Collapse, Grid } from "@mui/material";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
-import { isEqual, xor } from "lodash";
+import { isEqual, xor, isEmpty, xorWith } from "lodash";
 import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { distinctUntilChanged } from "rxjs";
@@ -28,7 +28,7 @@ const Channels: FC = () => {
   } = useCampaignEditContext(
     distinctUntilChanged(
       (prev, curr) =>
-        isEqual(prev.campaign, curr.campaign) &&
+        isEmpty(xorWith(prev.campaign, curr.campaign, isEqual)) &&
         !xor(prev.loadedChannels, curr.loadedChannels).length &&
         prev.isChannelsLoading === curr.isChannelsLoading &&
         prev.error === curr.error
@@ -54,9 +54,12 @@ const Channels: FC = () => {
 
   const savedChannels = campaign.channels.map(el => el.channel_id) as string[];
 
+  const isDifferent = !!xor(checkedItems, savedChannels).length;
+
   const rows = useMemo(() => [...(campaign.channels as any[])], [campaign]);
 
   const setCheckedHandler = (checked: string[]) => {
+    console.log('checked: ', checked)
     const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
       channel_id: Number(el.id),
     }));
@@ -157,7 +160,7 @@ const Channels: FC = () => {
         />
       </Grid>
       <Grid item xs={6}>
-        <ActionButtons checkedItems={checkedItems} savedChannels={savedChannels} />
+        <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent}/>
       </Grid>
     </Grid>
   );

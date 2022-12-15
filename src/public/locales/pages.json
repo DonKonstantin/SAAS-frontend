@@ -288,11 +288,11 @@
           "campaign-period-start": "Начало",
           "campaign-period-stop": "Конец",
           "campaign-priority-enum": {
-            "higher": "Наивысший",
             "background": "Фоновый",
             "low": "Низкий",
             "normal": "Обычный",
-            "high": "Высокий"
+            "high": "Высокий",
+            "higher": "Наивысший"
           }
         },
         "filters": {
