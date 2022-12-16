@@ -72,6 +72,7 @@ const sortDirection$ = new BehaviorSubject<SortDirection>("asc");
 const sortedColumnIndex$ = new BehaviorSubject<number | undefined>(undefined);
 const globalFiles$ = new BehaviorSubject<GlobalFilePlayInfoStatistic[]>([]);
 const projectFiles$ = new BehaviorSubject<ProjectFilePlayInfoStatistic[]>([]);
+const playerStatisticToCampaignBus$ = new BehaviorSubject<PlayerPlayInfoStatistic[]>([]);
 
 const generateReport$ = new Subject<void>();
 
@@ -225,7 +226,7 @@ const loadPlayerStatistic$ = loadReportsListBus$.pipe(
   })
 );
 
-const loadCampaignsBus$ = loadPlayerStatistic$.pipe(
+const loadCampaignsBus$ = playerStatisticToCampaignBus$.pipe(
   filter(() => {
     const reportType = reportType$.getValue();
 
@@ -582,6 +583,8 @@ export const InitProjectReportPageContextContext = () => {
   }));
   
   subscriber.add(loadPlayerStatistic$.subscribe((response: PlayerPlayInfoStatistic[]) => {
+    playerStatisticToCampaignBus$.next(response);
+
     const reportType = reportType$.getValue();
 
     let tableData: TableRowType[] = [];
