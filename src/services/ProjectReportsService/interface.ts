@@ -48,10 +48,11 @@ export interface ProjectReportsServiceInterface {
    * Получаем отчет "ВОИС" в формате .xlsx
    */
   getReportVoice: (params: ReportVoiceQueryParams) => Promise<Blob | undefined>;
+
   /**
-   * Запрос списка доступных отчетов для
-   * "Отчета Логов плеера",
-   * "Отчет по устройству",
+   * Запрос списка доступных отчетов для 
+   * "Отчета Логов плеера", 
+   * "Отчет по устройству", 
    * "Отчет Кампании"
    * @param params
    */
@@ -64,8 +65,18 @@ export interface ProjectReportsServiceInterface {
   getChannelPlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<ChannelPlayInfoStatistic[]>;
 
   /**
-   * Запрос списка доступных отчетов для "Отчет Файлы" и "Отчет РАО" и "отчет ВОИС"
+   * Запрос списка доступных отчетов для "Отчет Файлы", "Отчет РАО" и "отчет ВОИС"
    * @param params
    */
   getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;
+}
+
+export interface GetPlayerLogsReportParams {
+  projectId: string;
+  from: Date;
+  to: Date;
+}
+
+export interface GetPlayerLogsReportResponse {
+
 }

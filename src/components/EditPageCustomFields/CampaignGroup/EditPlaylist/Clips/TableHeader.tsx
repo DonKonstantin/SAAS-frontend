@@ -7,7 +7,7 @@ import { CampaignPlayListFileType } from "services/campaignListService/types";
 import { styled } from "@mui/system";
 import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 import { distinctUntilKeyChanged } from "rxjs";
-import TableLoader from "./TableLoader";
+import { TableLoader } from "components/TableLoader";
 
 interface Props {
   rows: CampaignPlayListFileType[];
@@ -77,7 +77,7 @@ const TableHeader: FC<Props> = ({
         <TableCell />
         <TableCell width={38} />
       </TableRow>
-      {!!uploadedClips.length && <TableLoader />}
+      {!!uploadedClips.length && <TableLoader colCount={4} />}
     </TableHead>
   );
 };

@@ -68,11 +68,11 @@ let simpleCompanyOptionsData = [
   {
     name: "pages.campaign.add.fields.schedule.campaign_priority",
     component: <RHFDropDown name='campaign_priority' options={[
-      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
       { name: 'background', label: "pages.campaign.list.fields.campaign-priority-enum.background" },
       { name: 'low', label: "pages.campaign.list.fields.campaign-priority-enum.low" },
       { name: 'normal', label: "pages.campaign.list.fields.campaign-priority-enum.normal" },
       { name: 'high', label: "pages.campaign.list.fields.campaign-priority-enum.high" },
+      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
     ]}/>,
     size: {
       container: { spacing: 4, sx: { mb: "21px" } },

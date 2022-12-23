@@ -200,6 +200,10 @@
           "structure_item_id-error": "Необходимо выбрать одно из значений",
           "permissions_id-error": "Необходимо выбрать хотя бы одно разрешение"
         }
+      },
+      "error": {
+        "load_domains": "Не удалось загрузить список доменов, перезагрузите страницу",
+        "load_projects": "Не удалось загрузить список проектов, перезагрузите страницу"
       }
     },
     "domain": {
@@ -284,11 +288,11 @@
           "campaign-period-start": "Начало",
           "campaign-period-stop": "Конец",
           "campaign-priority-enum": {
-            "higher": "Наивысший",
             "background": "Фоновый",
             "low": "Низкий",
             "normal": "Обычный",
-            "high": "Высокий"
+            "high": "Высокий",
+            "higher": "Наивысший"
           },
           "campaign-is-active": "Статус"
         },
@@ -327,8 +331,10 @@
         },
         "buttons": {
           "save": "Сохранить",
-          "publish": "Опубликовать",
-          "add-channel": "Добавить"
+          "publish": {
+            "title": "Опубликовать",
+            "tooltip": "Не возможно сохранить не сохраненные каналы"
+          }
         }
       },
       "edit": {
@@ -411,6 +417,15 @@
               }
             }
           },
+          "channels": {
+            "table": {
+              "header": {
+                "name": "Название канала",
+                "status": "Статус",
+                "players_count": "Подключено плееров"
+              }
+            }
+          },
           "campaign_days_type": {
             "daily": "Ежедневно",
             "daysOfTheWeek": "По дням"
@@ -434,7 +449,8 @@
           "notifications": {
             "playlistPeriod": "Ошибка при сохранении. Период трансляции плейлиста больше, чем у компании",
             "storeCampaign": "Ошибка при сохранении компании"
-          }
+          },
+          "load-channels": "Не удалось загрузить каналы"
         },
         "successMessages": {
           "updateName": "Кампания {{name}} успешно изменена"

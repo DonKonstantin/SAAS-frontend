@@ -2,6 +2,7 @@
 import { Controller, useFormContext } from 'react-hook-form';
 // @mui
 import { TextField, TextFieldProps } from '@mui/material';
+import { ChangeEvent } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -16,14 +17,26 @@ export default function RHFTextField({ name, ...other }: IProps & TextFieldProps
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
-        <TextField {...field}
-                   variant="standard"
-                   fullWidth
-                   error={!!error}
-                   helperText={error?.message}
-                   {...other} />
-      )}
+      render={({ field, fieldState: { error } }) => {
+        const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+          if (other.type === 'number') {
+            return parseInt(e.target.value) < 0 ? 0 : e.target.value
+          }
+
+          return e.target.value
+        }
+
+        return (
+          <TextField {...field}
+                     variant="standard"
+                     fullWidth
+                     error={!!error}
+                     helperText={error?.message}
+                     onChange={e => field.onChange(handleChange(e))}
+                     {...other}
+                     />
+        )
+      }}
     />
   );
 }

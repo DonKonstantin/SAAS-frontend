@@ -19,8 +19,14 @@ import {
   ReportRaoQueryParams,
   ReportVoiceQueryParams,
 } from "./types";
-import { GetPlayerPlayInfoStatistic, GetPlayerPlayInfoStatisticResponseDTOFactory } from "./Queryes/GetPlayerPlayInfoStatistic";
-import { GetChannelPlayInfoStatistic, GetChannelPlayInfoStatisticResponse } from "./Queryes/GetChannelPlayInfoStatistic";
+import {
+  GetPlayerPlayInfoStatistic,
+  GetPlayerPlayInfoStatisticResponseDTOFactory,
+} from "./Queryes/GetPlayerPlayInfoStatistic";
+import {
+   GetChannelPlayInfoStatistic,
+  GetChannelPlayInfoStatisticResponse,
+ } from "./Queryes/GetChannelPlayInfoStatistic";
 import { GetFilesPlayInfoStatistic, GetFilesPlayInfoStatisticResponse } from "./Queryes/GetFilesPlayInfoStatistic";
 
 /**
@@ -155,7 +161,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -194,7 +200,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -233,7 +239,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -272,7 +278,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -311,7 +317,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }
@@ -350,7 +356,7 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
 
       this.logger.Debug("file loaded", file);
 
-      return file;
+      return new Blob([file]);
     } catch (e) {
       throw e;
     }

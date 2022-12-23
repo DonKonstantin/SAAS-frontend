@@ -1,6 +1,7 @@
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { TextField, Typography } from "@mui/material";
+import dayjs from "dayjs";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -25,8 +26,7 @@ const ReportsDateRange: FC<Props> = (props) => {
     if (!value) {
       return;
     }
-
-    setDateFrom(value);
+    setDateFrom(dayjs(value).startOf('day').toDate());
   };
 
   const onToDateChange = (value: Date | null) => {
@@ -34,7 +34,7 @@ const ReportsDateRange: FC<Props> = (props) => {
       return;
     }
 
-    setDateTo(value);
+    setDateTo(dayjs(value).endOf('day').toDate());
   };
 
   return (

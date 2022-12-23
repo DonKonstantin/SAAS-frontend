@@ -373,8 +373,8 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
       breadcrumb: "pages.mediaLibraryUpload.breadcrumb",
       link: () => {
         return {
-          href: "/media-rules/upload",
-          as: `/media-rules/upload`,
+          href: "/media/upload",
+          as: `/media/upload`,
         };
       },
     },
@@ -382,8 +382,8 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
       breadcrumb: "pages.mediaLibraryCheck.breadcrumb",
       link: () => {
         return {
-          href: "/media-rules/check",
-          as: `/media-rules/check`,
+          href: "/media/check",
+          as: `/media/check`,
         };
       },
     },

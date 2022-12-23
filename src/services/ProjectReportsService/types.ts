@@ -88,10 +88,10 @@ export type ProjectFilePlayInfoStatistic = PlayInfoStatistic & {};
  * Параметры запроса для получения статистики
  */
 export type PlayInfoStatisticQueryParams = {
-  projectId: string;
-  from: string;
-  to: string;
-};
+    projectId: string
+    from: string
+    to: string
+}
 
 /**
  * Параметры запроса для получения отчета "Логи плеера"

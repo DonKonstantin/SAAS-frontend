@@ -12,7 +12,6 @@ import Schedule from "./Schedule";
 import Tracks from "./Tracks";
 import LoadingBlurEffect from "../CommonComponents/LoadingBlurEffect/LoadingBlurEffect";
 import {isEqual} from "lodash";
-import { useRouter } from "next/router";
 
 const StyledWrapper = styled("div")({
   position: "absolute",
