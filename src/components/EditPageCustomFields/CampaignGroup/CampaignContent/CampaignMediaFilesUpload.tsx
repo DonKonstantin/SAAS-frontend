@@ -9,7 +9,7 @@ import { ProgressUploadStatusByFile } from 'components/MediaLibraryUploadPage/Me
 import { notificationsDispatcher } from "../../../../services/notifications";
 import { useCampaignEditContext } from "../../../../context/CampaignEditContext/useCampaignEditContext";
 import { distinctUntilChanged } from "rxjs";
-import { FileRejection } from "react-dropzone";
+import { ErrorCode, FileRejection } from "react-dropzone";
 
 const CampaignMediaFilesUpload = () => {
 
@@ -97,6 +97,19 @@ const CampaignMediaFilesUpload = () => {
     setUploading(summ / uploadingCount);
   }, [uploadingStatus]);
 
+  const errorMsg = () => {
+    switch (errorInDrag[0].errors[0].code) {
+      case ErrorCode.TooManyFiles:
+        return t(`pages.campaign.edit.fields.content.playlist.drop-zone.error.${errorInDrag[0].errors[0].code}`, { count: 5 })
+
+      case ErrorCode.FileInvalidType:
+        return t(`pages.campaign.edit.fields.content.playlist.drop-zone.error.${errorInDrag[0].errors[0].code}`, { type: "audio/*" })
+  
+      default:
+        return errorInDrag[0].errors[0].message
+    }
+  }
+  
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -106,7 +119,7 @@ const CampaignMediaFilesUpload = () => {
               ? <Box
                 sx={{ color: "red", fontSize: "20px", mb: "5px" }}
               >
-                {t(`pages.campaign.edit.fields.content.playlist.drop-zone.error.${errorInDrag[0].errors[0].message}`, { count: 5 })}
+                {errorMsg()}
               </Box>
               : null
           }
