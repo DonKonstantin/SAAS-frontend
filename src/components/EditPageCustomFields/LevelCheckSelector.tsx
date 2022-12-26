@@ -142,6 +142,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                         disabled={values['level'] !== "domain"}
                         fullWidth
                         select
+                        SelectProps={{ MenuProps: { PaperProps: { sx: { maxHeight: 300 } } } }}
                         onChange={event => {
                             event.preventDefault()
                             event.stopPropagation()
@@ -179,6 +180,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                         disabled={values['level'] !== "project"}
                         fullWidth
                         select
+                        SelectProps={{ MenuProps: { PaperProps: { sx: { maxHeight: 300 } } } }}
                         onChange={event => {
                             event.preventDefault()
                             event.stopPropagation()
