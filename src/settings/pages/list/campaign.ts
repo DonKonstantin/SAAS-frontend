@@ -8,8 +8,8 @@ import CampaignDataField from "../../../components/ListPageCustom/CampaignDataFi
 import CampaignLastVersionField from "../../../components/ListPageCustom/CampaignLastVersionField";
 import {campaignListService} from "../../../services/campaignListService";
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
-import CampaignsActions from "components/ListPageCustom/CampaignsActions";
 import CampaignIsActiveCell from "components/ListPageCustom/CampaignIsActiveCell";
+import { CampaignsActions } from "components/ListPageCustom/CampaignsActions";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
   filter: FilterFieldsConfiguration<"campaign"> = {
@@ -103,9 +103,13 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
     },
     actions: ListPageEditDeleteButtons,
     additionDataLoader: async (listData: ListFieldRow<"campaign">[]) => {
-      const arrayOfCampaign = listData.map(campaign => campaign.columnValues.id.value)
+      const arrayOfCampaign = listData.map(campaign => campaign.columnValues.id.value);
 
-      return await campaignListService().getCampaignByArrayId(arrayOfCampaign)
+      if (!arrayOfCampaign.length) {
+        return [];
+      }
+
+      return await campaignListService().getCampaignByArrayId(arrayOfCampaign);
     }
   };
   schema: "campaign" = "campaign";
