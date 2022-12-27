@@ -14,7 +14,7 @@ const NameWithToggleCell: FC<ListFieldProperties<SimpleValues>> = ({value, confi
 
     const open = openRows.includes(rowValues.id.value);
 
-    const hasSubRows = rowValues.players.value.lenght > 0
+    const hasSubRows = rowValues.players.value.length === 0
 
     const toggleHandler = () => {
         if (open) {
@@ -30,7 +30,7 @@ const NameWithToggleCell: FC<ListFieldProperties<SimpleValues>> = ({value, confi
         <TableCell
             className="list-table-cell"
             padding={padding}
-            style={{width}}
+            style={{width, height: '73px'}}
             align={align}
         >
             {value.value}
