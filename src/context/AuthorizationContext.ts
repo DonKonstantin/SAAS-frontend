@@ -237,29 +237,33 @@ export const onReloadDomainsAndProjects: AuthorizationActions['onReloadDomainsAn
  * @param token
  */
 const loadAuthorizationData = async (token: string): Promise<AuthorizationContext> => {
-    const [userProfile, domainsAndProjects] = await Promise.all([
-        authService().GetUserInfo(token),
-        allDomainsAndProjectsLoader(token).Load(),
-    ])
+    try {
+        const [userProfile, domainsAndProjects] = await Promise.all([
+            authService().GetUserInfo(token),
+            allDomainsAndProjectsLoader(token).Load(),
+        ])
 
-    let domains: RoleData[] = [];
-    let projects: RoleData[] = [];
+        let domains: RoleData[] = [];
+        let projects: RoleData[] = [];
 
-    if ("roles" in userProfile) {
-        domains = userProfile.roles.filter(r => r.level === "domain")
-        projects = userProfile.roles.filter(r => r.level === "project")
-    }
+        if ("roles" in userProfile) {
+            domains = userProfile.roles.filter(r => r.level === "domain")
+            projects = userProfile.roles.filter(r => r.level === "project")
+        }
 
-    const domain = domains.length === 1 ? domains[0].id : ""
-    const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
+        const domain = domains.length === 1 ? domains[0].id : ""
+        const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
 
-    return {
-        ...new DefaultContext(),
-        ...domainsAndProjects,
-        authToken: token,
-        userInfo: userProfile,
-        domain: domain,
-        project: project,
+        return {
+            ...new DefaultContext(),
+            ...domainsAndProjects,
+            authToken: token,
+            userInfo: userProfile,
+            domain: domain,
+            project: project,
+        }
+    } catch (e) {
+        return new DefaultContext();
     }
 }
 
@@ -297,7 +301,11 @@ const initializeContextBus = () => {
     const {publicRuntimeConfig} = getConfig();
 
     const log = loggerFactory().make(`Authorization`)
-    const tokenUpd = tokenContext$.pipe(throttleTime(1000), distinctUntilChanged()).subscribe({
+    const tokenUpd = tokenContext$
+      .pipe(
+        throttleTime(1000),
+        distinctUntilChanged()
+      ).subscribe({
         next: async token => {
             if (token === undefined) {
                 return;
