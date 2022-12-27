@@ -1,3 +1,5 @@
+import { Paper, Grid } from "@mui/material";
+import { styled } from "@mui/system";
 import React, { FC, memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { campaignListService } from "services/campaignListService";
@@ -11,6 +13,15 @@ interface Props {
   onClose: VoidFunction;
   reloadedListingData: VoidFunction;
 };
+
+const StyledPaper = styled(Paper)({
+  padding: 40,
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "50vw",
+});
 
 const CopyCampaignPeriodModal: FC<Props> = props => {
   const { selectedCampaigns, onClose, reloadedListingData } = props;
@@ -93,9 +104,14 @@ const CopyCampaignPeriodModal: FC<Props> = props => {
   };
 
   return (
-    <>
-      
-    </>
+    <StyledPaper>
+      <Grid container>
+        <Grid item>
+
+        </Grid>
+        {}
+      </Grid>
+    </StyledPaper>
   );
 };
 
