@@ -1,18 +1,36 @@
-import { Paper, Grid } from "@mui/material";
+import {
+  Paper,
+  Grid,
+  Tooltip,
+  IconButton,
+  Button,
+  Typography,
+  Box,
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import { styled } from "@mui/system";
-import React, { FC, memo, useState } from "react";
+import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
 import { campaignListService } from "services/campaignListService";
 import { ListFieldRow } from "services/listDataLoader/listLoader/types";
 import { notificationsDispatcher } from "services/notifications";
 import { Schemas } from "settings/schema";
 import { prepareCampaignDataForStore } from "./helpers";
+import CloseIcon from "@mui/icons-material/Close";
+import PeriodItem from "./PeriodItem";
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FormProvider } from "components/hook-form";
 
 interface Props {
   selectedCampaigns: ListFieldRow<keyof Schemas>[];
+  allCampaigns: ListFieldRow<keyof Schemas>[];
   onClose: VoidFunction;
   reloadedListingData: VoidFunction;
-};
+}
+
+type CopyCampaignPeriodFormType = { [x: string]: Date | null };
 
 const StyledPaper = styled(Paper)({
   padding: 40,
@@ -23,18 +41,63 @@ const StyledPaper = styled(Paper)({
   width: "50vw",
 });
 
-const CopyCampaignPeriodModal: FC<Props> = props => {
-  const { selectedCampaigns, onClose, reloadedListingData } = props;
+/**
+ * Модалка для указания периода копируемым кампаниям
+ * @param props
+ * @returns
+ */
+const CopyCampaignPeriodModal: FC<Props> = (props) => {
+  const { selectedCampaigns, allCampaigns, onClose, reloadedListingData } =
+    props;
 
   const { t } = useTranslation();
 
-  const [copyLoading, setCopyLoading] = useState<boolean>(false);
+  const busyDays = allCampaigns.map((campaign) => ({
+    from: new Date(
+      campaign.columnValues.campaign_period_start.value
+    ).valueOf() as number,
+    to: new Date(
+      campaign.columnValues.campaign_period_stop.value
+    ).valueOf() as number,
+  }));
 
   const notifications = notificationsDispatcher();
 
-  const onCopyHandler = async () => {
-    setCopyLoading(true);
+  const RegisterScheme = Yup.object().shape(
+    selectedCampaigns.reduce(
+      (acc, item) => ({
+        ...acc,
+        [`${item.primaryKeyValue} from`]: Yup.date()
+          .required(t("pages.campaign.edit.errors.required"))
+          .nullable(),
+        [`${item.primaryKeyValue} to`]: Yup.date()
+          .required(t("pages.campaign.edit.errors.required"))
+          .nullable(),
+      }),
+      {}
+    )
+  );
 
+  let defaultValues: CopyCampaignPeriodFormType = selectedCampaigns.reduce(
+    (acc, item) => ({
+      ...acc,
+      [`${item.primaryKeyValue} from`]: null,
+      [`${item.primaryKeyValue} to`]: null,
+    }),
+    {}
+  );
+
+  const methods = useForm<CopyCampaignPeriodFormType>({
+    resolver: yupResolver(RegisterScheme),
+    defaultValues,
+  });
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = async (data: CopyCampaignPeriodFormType) => {
     try {
       const campaigns = await campaignListService().getCampaignsArrayByIds(
         selectedCampaigns.map((row) => row.primaryKeyValue)
@@ -44,25 +107,13 @@ const CopyCampaignPeriodModal: FC<Props> = props => {
         campaigns.map((campaign) => {
           const preparedCampaign = prepareCampaignDataForStore(campaign);
 
-          const campaignPlaylistsPeriodStart = Math.min(
-            ...campaign.playlists.map((playlist) =>
-              new Date(playlist.periodStart).getTime()
-            )
-          );
-          const campaignPlaylistsPeriodStop = Math.min(
-            ...campaign.playlists.map((playlist) =>
-              new Date(playlist.periodStop).getTime()
-            )
-          );
+          const campaignPlaylistsPeriodStart = data[`${campaign.id} from`];
+          const campaignPlaylistsPeriodStop = data[`${campaign.id} to`];
 
           return campaignListService().storeCampaign({
             ...preparedCampaign,
-            campaign_period_start: !!campaign.playlists.length
-              ? new Date(campaignPlaylistsPeriodStart)
-              : new Date(),
-            campaign_period_stop: !!campaign.playlists.length
-              ? new Date(campaignPlaylistsPeriodStop)
-              : new Date(),
+            campaign_period_start: campaignPlaylistsPeriodStart,
+            campaign_period_stop: campaignPlaylistsPeriodStop,
             campaign_type: "mute",
             channels: [],
             name: `${t("pages.campaign.copy-prefix")} ${campaign.name}`,
@@ -96,20 +147,54 @@ const CopyCampaignPeriodModal: FC<Props> = props => {
         message: t(`pages.campaign.notifications.campaign-copy.error`),
         type: "error",
       });
-
-      setCopyLoading(true);
-    } finally {
-      setCopyLoading(false);
     }
   };
 
   return (
     <StyledPaper>
-      <Grid container>
-        <Grid item>
-
+      <Grid container spacing={2}>
+        <Grid item sx={{ display: "flex", justifyContent: "flex-end" }} xs={12}>
+          <Tooltip title={t("pages.campaign.tooltip.button.close-copy-modal")}>
+            <IconButton size={"small"} onClick={onClose}>
+              <CloseIcon color="primary" />
+            </IconButton>
+          </Tooltip>
         </Grid>
-        {}
+        <Grid item xs={12}>
+          <Typography variant="body1" color="primary">
+            {t("pages.campaign.copy-campaign.period-form.header")}
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            {selectedCampaigns.map((campaign) => (
+              <PeriodItem
+                campaignId={campaign.primaryKeyValue}
+                campaignName={campaign.columnValues.name.value}
+                busyDays={busyDays}
+              />
+            ))}
+            <Box
+              sx={{ display: "flex", justifyContent: "space-evenly", pt: 3 }}
+            >
+              <LoadingButton
+                loading={isSubmitting}
+                variant="outlined"
+                type="submit"
+              >
+                {t("pages.campaign.button.copy")}
+              </LoadingButton>
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                disabled={isSubmitting}
+                color="error"
+              >
+                {t("pages.campaign.button.close")}
+              </Button>
+            </Box>
+          </FormProvider>
+        </Grid>
       </Grid>
     </StyledPaper>
   );

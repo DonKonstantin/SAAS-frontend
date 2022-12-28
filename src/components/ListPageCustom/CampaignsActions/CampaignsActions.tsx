@@ -28,7 +28,8 @@ const CampaignsActions: FC<ListHeaderProps> = ({
 
   const [publishLoading, setPublishLoading] = useState<boolean>(false);
   const [depublishLoading, setDepublishLoading] = useState<boolean>(false);
-  const [showCopyPeriodModal, setShowCopyPeriodModal] = useState<boolean>(false);
+  const [showCopyPeriodModal, setShowCopyPeriodModal] =
+    useState<boolean>(false);
 
   const { reloadedListingData, data } = useEntityList(
     distinctUntilKeyChanged("data")
@@ -68,26 +69,20 @@ const CampaignsActions: FC<ListHeaderProps> = ({
       return;
     }
 
+    const items = checkedItems.filter(
+      (id) => !!channelsForSelected.find((item) => item[0].campaign_id === id)
+    );
+
     try {
       await Promise.all(
-        checkedItems
-          .map((campaignId) => {
-            const channel = channelsForSelected.find(
-              (item) => item[0].campaign_id === campaignId
-            );
-
-            if (!channel) {
-              return undefined;
-            }
-
-            return campaignListService().publishCampaign({
-              campaignId,
-              channelIds: channels
-                .find((item) => item[0]?.campaign_id === campaignId)
-                .map((channel) => channel.channel_id),
-            });
-          })
-          .filter((item) => !!item)
+        items.map((campaignId) => {
+          return campaignListService().publishCampaign({
+            campaignId,
+            channelIds: channels
+              .find((item) => item[0]?.campaign_id === campaignId)
+              .map((channel) => channel.channel_id),
+          });
+        })
       )
         .then(() => {
           notifications.dispatch({
@@ -99,10 +94,11 @@ const CampaignsActions: FC<ListHeaderProps> = ({
             type: "success",
           });
 
-          typeof onChangeCheckedItems === "function" &&
-            onChangeCheckedItems([]);
-
           reloadedListingData();
+
+          if (typeof onChangeCheckedItems === "function") {
+            onChangeCheckedItems([]);
+          }
         })
         .catch(() => {
           notifications.dispatch({
@@ -146,7 +142,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
         .then(() => {
           notifications.dispatch({
             message: t(
-              `pages.campaign.notifications.campaign-publish.succeess.${
+              `pages.campaign.notifications.campaign-depublish.succeess.${
                 campaigns.length === 1 ? "single" : "multiple"
               }`
             ),
@@ -158,7 +154,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
         .catch(() => {
           notifications.dispatch({
             message: t(
-              `pages.campaign.notifications.campaign-publish.reject.${
+              `pages.campaign.notifications.campaign-depublish.reject.${
                 checkedItems.length === 1 ? "single" : "multiple"
               }`
             ),
@@ -166,10 +162,8 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           });
         });
     } catch (error) {
-      console.log(error, "error");
-
       notifications.dispatch({
-        message: t(`pages.campaign.notifications.campaign-publish.error`),
+        message: t(`pages.campaign.notifications.campaign-depublish.error`),
         type: "error",
       });
     } finally {
@@ -181,9 +175,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
     !selectedRows.length || publishLoading || depublishLoading
       ? `pages.campaign.tooltip.button.${
           !selectedRows.length ? "is-loading" : ""
-        }${
-          publishLoading || depublishLoading ? "no-selected" : ""
-        }`
+        }${publishLoading || depublishLoading ? "no-selected" : ""}`
       : "";
 
   return (
@@ -224,10 +216,11 @@ const CampaignsActions: FC<ListHeaderProps> = ({
       </Tooltip>
       <Modal
         open={showCopyPeriodModal}
-        onClose={setShowCopyPeriodModal}
+        onClose={() => setShowCopyPeriodModal(false)}
       >
         <CopyCampaignPeriodModal
           selectedCampaigns={selectedRows}
+          allCampaigns={currentData.rows}
           onClose={() => setShowCopyPeriodModal(false)}
           reloadedListingData={reloadedListingData}
         />

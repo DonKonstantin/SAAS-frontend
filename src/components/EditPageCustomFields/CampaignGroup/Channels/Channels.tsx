@@ -52,17 +52,20 @@ const Channels: FC = () => {
     return null;
   }
 
-  const savedChannels = campaign.channels.map(el => el.channel_id) as string[];
+  const savedChannels = campaign.channels.map(
+    (el) => el.channel_id
+  ) as string[];
 
   const isDifferent = !!xor(checkedItems, savedChannels).length;
 
   const rows = useMemo(() => [...(campaign.channels as any[])], [campaign]);
 
   const setCheckedHandler = (checked: string[]) => {
-    console.log('checked: ', checked)
-    const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
-      channel_id: Number(el.id),
-    }));
+    const channels = loadedChannels
+      .filter((ch) => checked.some((item) => item === ch.id))
+      .map((el) => ({
+        channel_id: Number(el.id),
+      }));
 
     setChannels(channels);
 
@@ -121,21 +124,19 @@ const Channels: FC = () => {
   useEffect(() => {
     setCheckedItems(savedChannels);
 
-    const channels = campaign.channels.map(ch => ({
+    const channels = campaign.channels.map((ch) => ({
       channel_id: Number(ch.channel_id),
       id: Number(ch.id),
     }));
 
     setChannels(channels);
   }, []);
-  
+
   return (
     <Grid container>
       <Grid item xs={12}>
         <Collapse in={error !== undefined}>
-          <Alert severity="warning">
-            {t(error || "")}
-          </Alert>
+          <Alert severity="warning">{t(error || "")}</Alert>
         </Collapse>
       </Grid>
       <Grid item xs={12}>
@@ -160,7 +161,7 @@ const Channels: FC = () => {
         />
       </Grid>
       <Grid item xs={6}>
-        <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent}/>
+        <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent} />
       </Grid>
     </Grid>
   );
