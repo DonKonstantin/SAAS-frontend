@@ -47,7 +47,7 @@ const ListRowContainer: FC<ListRowProps> = (props) => {
       {CustomRow ? (
         <CustomRow {...props} />
       ) : (
-        <TableRow hover tabIndex={-1} onClick={onToggleItemCheckedState}>
+        <TableRow hover tabIndex={-1} onClick={onToggleItemCheckedState} sx={{height: '55px'}}>
           <ListRow {...props} />
         </TableRow>
       )}

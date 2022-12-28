@@ -30,12 +30,12 @@ const NameWithToggleCell: FC<ListFieldProperties<SimpleValues>> = ({value, confi
         <TableCell
             className="list-table-cell"
             padding={padding}
-            style={{width, height: '73px'}}
+            style={{width}}
             align={align}
         >
             {value.value}
             <Tooltip title="">
-                <IconButton onClick={toggleHandler} disabled={hasSubRows}>
+                <IconButton onClick={toggleHandler} disabled={hasSubRows} sx={{marginY: '-9px'}}>
                     <ArrowDropUpIcon
                         sx={{transform: `rotate(${open ? 180 : 0}deg)`}}
                     />
