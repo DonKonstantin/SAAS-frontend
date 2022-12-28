@@ -11,7 +11,7 @@ const ListingPage: NextPage = () => {
 }
 
 // Экспортируем основные параметры страницы
-ListingPage.getInitialProps = async ({query}): Promise<PageWithEntityList> => ({
+ListingPage.getInitialProps = async ({query}): Promise<PageWithEntityList & {hideButtonDeleteItems: boolean}> => ({
     title: "pages.project.list.title",
     header: "pages.project.list.header",
     entityListSchema: "project",
@@ -21,7 +21,8 @@ ListingPage.getInitialProps = async ({query}): Promise<PageWithEntityList> => ({
     permissionCheckCreatePermission: "CREATE_PROJECT",
     permissionCheckDeletePermission: "DELETE_PROJECT",
     permissionCheckCreateLevel: "domain",
-    pageMenuType: "domain"
+    pageMenuType: "domain",
+    hideButtonDeleteItems: true
 })
 
 // Экспортируем компонент

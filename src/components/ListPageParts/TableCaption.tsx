@@ -13,6 +13,7 @@ import {PageWithEntityList} from "../ListPage/types";
 export type ListHeaderProps = PageWithEntityList & {
     checkedItems: any[];
     onChangeCheckedItems?: (items: any[]) => void;
+    hideButtonDeleteItems?: boolean;
 }
 
 // Компонент вывода заголовочной части таблицы
@@ -25,6 +26,7 @@ const TableCaption: FC<ListHeaderProps> = props => {
         permissionCheckLevel = "project",
         permissionCheckEditLevel = permissionCheckLevel,
         permissionCheckDeleteLevel = permissionCheckEditLevel,
+        hideButtonDeleteItems
     } = props
 
     const {t} = useTranslation()
@@ -51,7 +53,7 @@ const TableCaption: FC<ListHeaderProps> = props => {
                 </Typography>
             </Grid>
             <Grid item>
-                {hasAccess && (
+                {hasAccess && !hideButtonDeleteItems && (
                     <Tooltip title={t(`entity-list.components.table-caption.delete-tooltip`) as string}>
                     <span>
                         <IconButton

@@ -30,21 +30,28 @@ export class AuthorizationLoader implements LoaderInterface<WithAuthorizationLoa
             token = cookie.get('token')
         }
 
-        if (0 !== token.length) {
-            await initializeContextData(token)
+        try {
+            if (0 !== token.length) {
+                await initializeContextData(token)
 
-            if (domainId) {
-                setDomain(domainId)
+                if (domainId) {
+                    setDomain(domainId)
+                }
+
+                if (projectId) {
+                    setProject(projectId)
+                }
             }
 
-            if (projectId) {
-                setProject(projectId)
+            return {
+                token: token,
+            }
+        } catch (e) {
+            return {
+                token: ""
             }
         }
 
-        return {
-            token: token,
-        }
     }
 
     /**
