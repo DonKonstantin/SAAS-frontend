@@ -52,7 +52,7 @@ const ActionButtons: FC<Props> = ({ checkedItems, isDifferent }) => {
       campaignId: Number(router.query.entityId),
       channelIds: channelsDataArray,
     };
-
+    
     try {
       await campaignListService().publishCampaign(campaignPublishData);
       messanger.dispatch({

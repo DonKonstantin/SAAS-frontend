@@ -73,6 +73,7 @@ const CampaignInfoGroup = () => {
     selectedChannels,
     loadCampaign,
     newAddedCampaignPlaylist,
+    setSavedChannels,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
@@ -232,7 +233,7 @@ const CampaignInfoGroup = () => {
 
         if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
           router.push(
-            `/domain/${domain}/project/${project}/campaign/edit/${response}`
+            `/domain/${domain}/project/${project}/campaign/edit/${response.id}`
           );
           return;
         }
@@ -308,7 +309,6 @@ const CampaignInfoGroup = () => {
 
     const channels = campaign.channels.map(channel => {
       if (channel.channel_id) {
-
         return { channel_id: Number(channel.channel_id), id: Number(channel.id) }
       }
 
@@ -343,7 +343,10 @@ const CampaignInfoGroup = () => {
     }
 
     try {
-      await campaignListService().storeCampaign(inputData)
+      const campaign = await campaignListService().storeCampaign(inputData);
+
+      setSavedChannels(campaign.channels.map(channel => ({...channel.channel, channel_id: channel.channel_id})));
+
       !successCreatedPlaylist && setCurrentActionTab("channels")
     } catch (error) {
       if (typeof error.message === "string") {

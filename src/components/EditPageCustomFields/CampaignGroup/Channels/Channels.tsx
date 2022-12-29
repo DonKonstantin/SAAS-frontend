@@ -1,6 +1,6 @@
 import { Alert, Collapse, Grid } from "@mui/material";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
-import { isEqual, xor, isEmpty, xorWith } from "lodash";
+import { difference, xor } from "lodash";
 import React, { FC, memo, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { distinctUntilChanged } from "rxjs";
@@ -18,7 +18,7 @@ const Channels: FC = () => {
   const { t } = useTranslation();
 
   const {
-    campaign,
+    savedChannels,
     loadedChannels,
     isChannelsLoading,
     error,
@@ -28,7 +28,7 @@ const Channels: FC = () => {
   } = useCampaignEditContext(
     distinctUntilChanged(
       (prev, curr) =>
-        isEmpty(xorWith(prev.campaign, curr.campaign, isEqual)) &&
+        !xor(prev.savedChannels, curr.savedChannels).length &&
         !xor(prev.loadedChannels, curr.loadedChannels).length &&
         prev.isChannelsLoading === curr.isChannelsLoading &&
         prev.error === curr.error
@@ -48,17 +48,11 @@ const Channels: FC = () => {
     direction: "asc",
   });
 
-  if (!campaign) {
-    return null;
-  }
+  const savedChannelsIds = savedChannels.map(el => el.channel_id) as string[];
 
-  const savedChannels = campaign.channels.map(
-    (el) => el.channel_id
-  ) as string[];
+  const isDifferent = !!difference(checkedItems, savedChannelsIds).length;
 
-  const isDifferent = !!xor(checkedItems, savedChannels).length;
-
-  const rows = useMemo(() => [...(campaign.channels as any[])], [campaign]);
+  const rows = useMemo(() => [...(loadedChannels as any[])], [loadedChannels]);
 
   const setCheckedHandler = (checked: string[]) => {
     const channels = loadedChannels
@@ -122,9 +116,9 @@ const Channels: FC = () => {
    * Записываем значение выбранных каналов
    */
   useEffect(() => {
-    setCheckedItems(savedChannels);
+    setCheckedItems(savedChannelsIds);
 
-    const channels = campaign.channels.map((ch) => ({
+    const channels = savedChannels.map(ch => ({
       channel_id: Number(ch.channel_id),
       id: Number(ch.id),
     }));

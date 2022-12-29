@@ -145,7 +145,7 @@ export class CampaignListService implements CampaignListServiceInterface {
    * @param campaign
    * @returns
    */
-  async storeCampaign(campaign: CampaignInput): Promise<string> {
+  async storeCampaign(campaign: CampaignInput): Promise<Campaign> {
     this.logger.Debug("Сущность кампании: ", campaign);
 
     try {
@@ -153,7 +153,7 @@ export class CampaignListService implements CampaignListServiceInterface {
         StoreCampaignMutationParams,
         StoreCampaignMutationResponse
       >(new StoreCampaignMutation(campaign), {});
-      return campaignStore.id;
+      return campaignStore;
     } catch (error) {
       this.logger.Debug("Ошибка в создании кампании: ", error);
       throw error;
