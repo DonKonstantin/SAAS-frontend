@@ -7,8 +7,8 @@ import {
 } from "../types";
 
 export type GetFilesPlayInfoStatisticResponse = {
-    projectFiles:ProjectFilePlayInfoStatistic[]
-    globalFiles: GlobalFilePlayInfoStatistic[]
+    projectFiles:ProjectFilePlayInfoStatistic[];
+    globalFiles: GlobalFilePlayInfoStatistic[];
 }
 
 export class GetFilesPlayInfoStatistic implements GraphQLQuery<PlayInfoStatisticQueryParams> {
@@ -24,11 +24,20 @@ export class GetFilesPlayInfoStatistic implements GraphQLQuery<PlayInfoStatistic
             id
             name
             played
+            file {
+              artist
+              composer
+              lyricist
+              publisher
+            }
         }
         projectFiles: projectFilePlayInfoStatistic(projectId: $projectId, from: $from, to: $to) {
             id
             name
             played
+            file {
+              composer
+            }
        }
     }`);
     }

@@ -1,9 +1,8 @@
+import { GetFilesPlayInfoStatisticResponse } from "./Queryes/GetFilesPlayInfoStatistic";
 import {
   ChannelPlayInfoStatistic,
-  GlobalFilePlayInfoStatistic,
   PlayerPlayInfoStatistic,
   PlayInfoStatisticQueryParams,
-  ProjectFilePlayInfoStatistic,
   ReportCampaignQueryParams,
   ReportChannelsQueryParams,
   ReportDeviceQueryParams,
@@ -68,7 +67,7 @@ export interface ProjectReportsServiceInterface {
    * Запрос списка доступных отчетов для "Отчет Файлы", "Отчет РАО" и "отчет ВОИС"
    * @param params
    */
-  getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]>;
+  getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<GetFilesPlayInfoStatisticResponse>;
 }
 
 export interface GetPlayerLogsReportParams {

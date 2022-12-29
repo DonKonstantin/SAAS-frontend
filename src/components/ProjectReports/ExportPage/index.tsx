@@ -60,10 +60,6 @@ const ExportPage: FC<Props> = ({}) => {
     )
   );
 
-  const onGenerateHandler = () => {
-    generateReport();
-  };
-
   const isReport =
     reportType === ReportType.reportRAO || reportType === ReportType.reportVOIS;
 
@@ -105,7 +101,7 @@ const ExportPage: FC<Props> = ({}) => {
             <LoadingButton
               disabled={!selected.length}
               variant="outlined"
-              onClick={onGenerateHandler}
+              onClick={generateReport}
               loading={loadReportsFile}
             >
               {t("reports.button.generate")}

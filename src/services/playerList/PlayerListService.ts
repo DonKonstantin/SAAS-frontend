@@ -60,9 +60,9 @@ export class PlayerListService implements PlayerListServiceInterface {
           {}
         );
 
-        this.logger.Debug("Ответ на запрос паспорта объекта привязанного к плееру: ", playerObjectPassport.object_passport);
+        this.logger.Debug("Ответ на запрос паспорта объекта привязанного к плееру: ", playerObjectPassport[0].object_passport);
 
-        return playerObjectPassport.object_passport;
+        return playerObjectPassport[0].object_passport;
       } catch (error) {
         this.logger.Error("Ошибка запроса паспорта объекта привязанного к плееру: ", error);
 
@@ -118,7 +118,7 @@ export class PlayerListService implements PlayerListServiceInterface {
 
         this.logger.Debug("Ответ на мутацию сохранения плеера: ", updatePlayer);
 
-        return updatePlayer.affected_rows > 0;
+        return updatePlayer.id === playerId;
       } catch (error) {
         this.logger.Error("Ошибка мутации сохранения плеера: ", error);
 

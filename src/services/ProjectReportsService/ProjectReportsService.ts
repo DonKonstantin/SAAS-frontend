@@ -7,10 +7,8 @@ import { ProjectReportsServiceInterface } from "./interface";
 import {
   ChannelPlayInfoStatistic,
   GetPlayerPlayInfoStatisticResponse,
-  GlobalFilePlayInfoStatistic,
   PlayerPlayInfoStatistic,
   PlayInfoStatisticQueryParams,
-  ProjectFilePlayInfoStatistic,
   ReportCampaignQueryParams,
   ReportChannelsQueryParams,
   ReportDeviceQueryParams,
@@ -110,13 +108,13 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
    * @param params
    * @returns
    */
-  async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<(GlobalFilePlayInfoStatistic | ProjectFilePlayInfoStatistic)[]> {
+  async getFilePlayInfoStatistic(params: PlayInfoStatisticQueryParams): Promise<GetFilesPlayInfoStatisticResponse> {
     this.logger.Debug("Параметры запроса: ", params);
 
     try {
       const response = await this.clientGQL.Query<PlayInfoStatisticQueryParams, GetFilesPlayInfoStatisticResponse>(new GetFilesPlayInfoStatistic(params), {});
 
-      return [...response.globalFiles, ...response.projectFiles];
+      return response;
     } catch (error) {
       this.logger.Error("Ошибка мутации обновления связных компаний: ", error);
 
@@ -154,14 +152,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportPlayerLogsQueryParams, Blob>(`/reports/player-logs`, data, {
+      const file = await this.clientAxios.post<ReportPlayerLogsQueryParams, {data: Blob}>(`/reports/player-logs`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -193,14 +191,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportCampaignQueryParams, Blob>(`/reports/campaign`, data, {
+      const file = await this.clientAxios.post<ReportCampaignQueryParams, {data: Blob}>(`/reports/campaign`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -232,14 +230,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportChannelsQueryParams, Blob>(`/reports/channels`, data, {
+      const file = await this.clientAxios.post<ReportChannelsQueryParams, {data: Blob}>(`/reports/channels`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -271,14 +269,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportDeviceQueryParams, Blob>(`/reports/device`, data, {
+      const file = await this.clientAxios.post<ReportDeviceQueryParams, {data: Blob}>(`/reports/device`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -310,14 +308,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportFilesQueryParams, Blob>(`/reports/files`, data, {
+      const file = await this.clientAxios.post<ReportFilesQueryParams, {data: Blob}>(`/reports/files`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -349,14 +347,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportRaoQueryParams, Blob>(`/reports/rao`, data, {
+      const file = await this.clientAxios.post<ReportRaoQueryParams, {data: Blob}>(`/reports/rao`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }
@@ -388,14 +386,14 @@ export default class ProjectReportsService implements ProjectReportsServiceInter
     });
 
     try {
-      const file = await this.clientAxios.post<ReportVoiceQueryParams, Blob>(`/reports/voice`, data, {
+      const file = await this.clientAxios.post<ReportVoiceQueryParams, {data: Blob}>(`/reports/voice`, data, {
         responseType: "blob",
         headers,
       });
 
       this.logger.Debug("file loaded", file);
 
-      return new Blob([file]);
+      return file.data;
     } catch (e) {
       throw e;
     }

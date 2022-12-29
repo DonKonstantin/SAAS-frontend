@@ -36,6 +36,7 @@ import { campaignListService } from 'services/campaignListService';
 import { Campaign } from 'services/campaignListService/types';
 import { SortDirection } from 'components/EditPageCustomFields/EditProjectPlaylist/FileList/List/ListHeader';
 import fileDownload from 'js-file-download';
+import { GetFilesPlayInfoStatisticResponse } from 'services/ProjectReportsService/Queryes/GetFilesPlayInfoStatistic';
 
 class DefaultContextData implements ProjectReportPageContextTypes {
   dateFrom: Date = new Date();
@@ -314,7 +315,10 @@ const loadFileStatistic$ = loadReportsListBus$.pipe(
     }).pipe(
       catchError(async (err) => errors$.next(err)),
     );
-  })
+  }),
+  tap((responce: GetFilesPlayInfoStatisticResponse) => globalFiles$.next(responce.globalFiles)),
+  tap((responce: GetFilesPlayInfoStatisticResponse) => projectFiles$.next(responce.projectFiles)),
+  map(({ globalFiles, projectFiles }) => [...globalFiles, ...projectFiles]),
 );
 
 /**
@@ -432,6 +436,13 @@ const getReportCampaignBus$ = generateReportsBus$.pipe(
   switchMap(async ({ dateFrom, dateTo, project, reportsIds }) => {
     const globalFiles = globalFiles$.getValue();
     const projectFiles = projectFiles$.getValue();
+
+    console.log(reportsIds, "reportsIds");
+
+    console.log(globalFiles, "globalFiles");
+    console.log(projectFiles, "projectFiles");
+    
+    
 
     const selectedGlobalFiles = globalFiles
       .filter(file => reportsIds.some(id => id === file.id))
@@ -579,7 +590,7 @@ export const InitProjectReportPageContextContext = () => {
   subscriber.add(loadReportsListBus$.subscribe());
 
   subscriber.add(downloadReportFileBus$.subscribe((file: Blob) => {
-    fileDownload(file, 'report.csv');
+    fileDownload(file, 'report.xlsx');
   }));
   
   subscriber.add(loadPlayerStatistic$.subscribe((response: PlayerPlayInfoStatistic[]) => {
@@ -691,7 +702,7 @@ export const InitProjectReportPageContextContext = () => {
 
           return {
             primaryKey: res.id,
-            cells: [res.name, file.artist, file.composer, file.lyricist, file.publisher, res.played],
+            cells: [res.name, file.artist || "", file.composer, file.lyricist || "", file.publisher || "", res.played],
           }
         });
 
