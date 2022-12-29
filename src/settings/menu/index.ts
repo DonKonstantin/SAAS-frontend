@@ -15,6 +15,9 @@ export const RealmMenuItems = (): MenuItem[] => [
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
         icon: StorageIcon,
+        level: "realm",
+        permission: 'READ_DOMAIN',
+        checkIncludes: true,
     },
     {
         link: {href: "/users"},
@@ -115,6 +118,9 @@ export const DomainMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.projects.index",
+        level: 'domain',
+        permission: 'READ_PROJECT',
+        checkIncludes: true,
     },
     {
         link: () => {
