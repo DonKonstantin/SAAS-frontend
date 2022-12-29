@@ -88,7 +88,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                 value={values['level']}
                 onChange={(_, value) => {
                     onChangeFieldValue('level', () => value)
-                    onChangeFieldValue("permissions_id", () => [])
+                    onChangeFieldValue("permissions_id", () => value === 'domain' ? ['51'] : value === 'project' ? ['51', '52'] : [])
                     onChangeFieldValue(fieldCode, () => {
                         if (value === "realm") {
                             return "1"
