@@ -10,6 +10,7 @@ import CheckPermission from "./CheckPermission";
  * @param menuItem
  */
 const isMenuItemAvailable = (userInfo: UserInfoData, menuItem: MenuItem): boolean => {
+
     const {level = "project", permission, checkIncludes} = menuItem
 
     // Если пункт не защищен разрешением, то выводим его
@@ -19,14 +20,15 @@ const isMenuItemAvailable = (userInfo: UserInfoData, menuItem: MenuItem): boolea
 
     const checkPermission = CheckPermission(userInfo, permission, level);
 
+    if (!checkIncludes || !checkPermission) {
+      return checkPermission;
+    }
+
     const nextLevel = level === 'realm' ? 'domain' : 'project';
 
-    const checkIncludesResult = 
-    !!checkIncludes 
-      ? !!userInfo.roles.filter(el => el.level === nextLevel && el.permissions.some(permission => permission.code.includes('READ'))).length 
-      : true;
+    const checkIncludesResult = !!userInfo.roles.flatMap(item => item.permissions).filter(el => el.category.level === nextLevel && el.code.includes('READ')).length;
 
-    return checkPermission && checkIncludesResult;
+    return checkIncludesResult;
 }
 
 /**

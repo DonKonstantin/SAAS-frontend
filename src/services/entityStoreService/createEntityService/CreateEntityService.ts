@@ -61,7 +61,7 @@ export class CreateEntityService implements CreateEntityServiceInterface {
 
             const response = await this.client.Mutation<null, CreateResponse>(new CreateQuery(mutation), {})
 
-            this.logger.Info(`created entity in schema "${storeSchema}"`, response)
+            this.logger.Debug(`created entity in schema "${storeSchema}"`, response)
 
             if (0 === response.result.returning.length) {
                 this.logger.Error(`Empty response returned`, storeSchema, data, response)
