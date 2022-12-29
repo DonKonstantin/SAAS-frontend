@@ -248,7 +248,6 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
       <StyledButtonWrapper>
         <LoadingButton
           variant="outlined"
-          color="success"
           type="submit"
           sx={{ m: "18px 21px 18px 0" }}
           loading={isSubmitting}
