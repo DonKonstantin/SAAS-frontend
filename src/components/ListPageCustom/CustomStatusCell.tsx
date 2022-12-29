@@ -47,7 +47,7 @@ const CustomStatusCell: FC<ListFieldProperties<SimpleValues>> = props => {
     const file: MediaFile = Object.keys(props.rowValues).reduce((acc, item) => {
         acc = {
             ...acc,
-            [item]: props.rowValues[item].value
+            [item]: props.rowValues[item]?.value || ''
         }
         return acc
     }, TemplateMediaFile)
