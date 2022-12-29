@@ -437,13 +437,6 @@ const getReportCampaignBus$ = generateReportsBus$.pipe(
     const globalFiles = globalFiles$.getValue();
     const projectFiles = projectFiles$.getValue();
 
-    console.log(reportsIds, "reportsIds");
-
-    console.log(globalFiles, "globalFiles");
-    console.log(projectFiles, "projectFiles");
-    
-    
-
     const selectedGlobalFiles = globalFiles
       .filter(file => reportsIds.some(id => id === file.id))
       .map(item => item.id);

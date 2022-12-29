@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { EditFieldProperties } from "../../../settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
 import { distinctUntilChanged } from "rxjs";
@@ -35,6 +35,10 @@ const AdditionalDataPassportSelector: FC<EditFieldProperties> = ({
   const defaultValue = additionData.project_id.platerObjectPassport.id || "";
 
   const options = additionData.project_id.playerObjectPassports || [];
+
+  useEffect(() => {
+    onChangeFieldValue(() => defaultValue);
+  }, []);
 
   return (
     <TextField
