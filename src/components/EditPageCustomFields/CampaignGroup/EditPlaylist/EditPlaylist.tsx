@@ -15,10 +15,8 @@ import {isEqual} from "lodash";
 
 const StyledWrapper = styled("div")({
   position: "absolute",
-  width: "100%",
-  height: "100%",
   background: "#FBFDFC",
-  padding: "30px 36px",
+  paddingRight: "30px",
   zIndex: 1100,
 });
 
