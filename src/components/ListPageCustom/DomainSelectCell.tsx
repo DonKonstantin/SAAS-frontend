@@ -7,7 +7,6 @@ import convertSimpleValueToString from "../ListPageParts/List/helpers/convertSim
 import Link from "../Link";
 import { useAuthorization } from "../../context/AuthorizationContext";
 import { useRouter } from "next/router";
-import { distinctUntilKeyChanged } from "rxjs";
 
 // Компонент вывода простой ячейки
 const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
@@ -20,9 +19,7 @@ const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
 
   const router = useRouter();
 
-  const { setDomain, userInfo } = useAuthorization(
-    distinctUntilKeyChanged("userInfo")
-  );
+  const { setDomain } = useAuthorization();
 
   const handleDomainClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
@@ -31,15 +28,15 @@ const DomainSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
 
     setDomain(primaryKeyValue);
 
-    const hasPermisson = !!userInfo?.roles
-      .flatMap((item) => item.permissions)
-      .find((el) => el.code === "READ_PROJECT");
+    // const hasPermisson = !!userInfo?.roles
+    //   .flatMap((item) => item.permissions)
+    //   .find((el) => el.code === "READ_PROJECT");
 
-    const routeEnd = hasPermisson ? "project" : "";
+    // const routeEnd = hasPermisson ? "project" : "";
 
     return router.push(
-      `/domain/[domainId]/${routeEnd}`,
-      `/domain/${primaryKeyValue}/${routeEnd}`
+      `/domain/[domainId]/project`,
+      `/domain/${primaryKeyValue}/project`
     );
   };
 
