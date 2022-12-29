@@ -1,10 +1,11 @@
-import { getCurrentState } from "context/AuthorizationContext";
-import { TFunction } from "react-i18next";
+import {getCurrentState} from "context/AuthorizationContext";
+import {TFunction} from "react-i18next";
 import mediaLibraryService from "services/MediaLibraryService";
-import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
-import { notificationsDispatcher } from "services/notifications";
+import {MediaFilesDoubles} from "services/MediaLibraryService/interface";
+import {notificationsDispatcher} from "services/notifications";
 import projectPlaylistService from "services/projectPlaylistService";
-import { ExportedPlaylistType } from "services/projectPlaylistService/interfaces";
+import {ExportedPlaylistType} from "services/projectPlaylistService/interfaces";
+import {makeInputPlaylists} from "../../../services/projectPlaylistService/helpers";
 
 export const checksFileExists = (
   fileList: ExportedPlaylistType
@@ -29,6 +30,7 @@ export const onDropHandler = async (
   const notifications = notificationsDispatcher();
 
   const dropedList = JSON.parse(await acceptedFiles[0].text());
+  const { project } = getCurrentState();
 
   setDropedPlaylistList(dropedList);
 
@@ -62,21 +64,61 @@ export const onDropHandler = async (
     return;
   }
 
-  const { project } = getCurrentState();
 
   const existsFiles = checkResul.filter((item) => !!item.doubles.length);
 
+  // Запрашиваем плейлисты по названию
+  const findCurrentsPlaylists = await projectPlaylistService().getPlaylistsByArrayName(Object.keys(dropedList), Number(project))
+
+  // Создаем массив объектов плейлистов для создания
+  const getToCreatedPlaylists = Object.keys(dropedList).reduce((acc, el) => {
+    const findPlaylist = findCurrentsPlaylists.find(playlist => playlist.name === el)
+
+    if (!findPlaylist) {
+      acc[el] = dropedList[el]
+    }
+
+    return acc
+  }, {})
+
+  //Преобразовываем весь входящий JSON в плейлисты
+  const getInputForPlaylist = makeInputPlaylists(
+    dropedList,
+    existsFiles,
+    project
+  );
+
+  // Создаем массив с объектами плейлистов для редактирования и добавляем к нему id
+  const getToUpdatePlaylists = findCurrentsPlaylists
+    .map(playlist => {
+
+    let findPlaylistForUpdate = getInputForPlaylist.find(list => list?.name === playlist.name)
+
+    if (findPlaylistForUpdate) {
+      return  {...findPlaylistForUpdate, id: Number(playlist.id)}
+    }
+
+    return null
+  })
+    .filter(playlist => !!playlist)
+
   try {
-    const response = await projectPlaylistService().storePlaylist(
-      dropedList,
+    const newPlaylists = await projectPlaylistService().storePlaylist(
+      getToCreatedPlaylists,
       existsFiles,
       project
     );
 
+    const updatedPlaylists = await Promise.all(
+      getToUpdatePlaylists.map(async playlist => projectPlaylistService().storePlaylistChanges(playlist!))
+    )
+
+    const responses = newPlaylists.length + updatedPlaylists.length
+
     notifications.dispatch({
       message: t(
         `project-playlists.notifications.export-playlist.successfully-added.${
-          response.length > 1 ? "multiple" : "single"
+          responses > 1 ? "multiple" : "single"
         }`
       ),
       type: "success",

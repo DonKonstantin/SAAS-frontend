@@ -12,7 +12,7 @@ import {
   GetPlaylistFilesByPlaylistIdQueryParams,
   GetPlaylistFilesByPlaylistIdQueryResponse,
   GetPlaylistFilesByPlaylistIdsQueryParams,
-  GetPlaylistFilesByPlaylistIdsQueryResponse,
+  GetPlaylistFilesByPlaylistIdsQueryResponse, GetPlaylistsCampaignByArrayNameParams,
   GetPlaylistsCampaignByNameParams,
   GetPlaylistsCampaignByNameResponse,
   GetPlaylistsIdByCampaignsIdQueryParams,
@@ -36,6 +36,7 @@ import { GetCampaignsIdByNameQuery } from "./Querys/getCampignsId";
 import { GetPlaylistsIdByCampaignsIdQuery } from "./Querys/getPlaylistsId";
 import { StorePlaylistMutation } from "./Mutations/storePlaylist";
 import { GetCampaignsProjectPlaylistQuery } from "./Querys/getProjectPlaylist";
+import {GetCampaignsProjectPlaylistArrayNameQuery} from "./Querys/getProjectPlaylistArrayName";
 
 /**
  * Сервис для работы со списком плэйлистов
@@ -342,6 +343,32 @@ export default class ProjectPlaylistService
     try {
       const response = await this.client.Query<GetPlaylistsCampaignByNameParams,
         GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistQuery(playlistName, projectId), {});
+
+      this.logger.Debug("Ответ на запрос плэйлистов: ", response);
+
+      return response.playlists;
+    } catch (error) {
+      this.logger.Error("Ошибка запроса плэйлистов: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
+   * Получаем список плейлистов по массиву названию
+   * @param playlistName
+   * @param projectId
+   */
+  async getPlaylistsByArrayName(playlistName: string[], projectId: number): Promise<PlaylistsResponseType[]> {
+    this.logger.Debug("Список плейлистов по массиву названию: ", playlistName);
+
+    try {
+      const response = await this.client.Query<GetPlaylistsCampaignByArrayNameParams,
+        GetPlaylistsCampaignByNameResponse>(new GetCampaignsProjectPlaylistArrayNameQuery(playlistName, projectId), {});
 
       this.logger.Debug("Ответ на запрос плэйлистов: ", response);
 
