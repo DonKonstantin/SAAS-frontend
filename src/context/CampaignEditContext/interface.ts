@@ -11,6 +11,7 @@ export interface CampaignEditContextTypes {
   isChannelsLoading: boolean;
   error: string | undefined;
   selectedChannels: CampaignChannelInputObject[] | undefined;
+  savedChannels: (ProjectChannel & {channel_id: string})[];
 };
 
 export interface CampaignEditContextActionsTypes {
@@ -84,6 +85,13 @@ export interface CampaignEditContextActionsTypes {
    * Записываем выбранные каналы
    */
   setChannels: (channels: CampaignChannelInputObject[]) => void;
+
+  /**
+   * Записывает сохраненые каналы
+   * @param savedChannels
+   * @returns
+   */
+  setSavedChannels: (savedChannels: (ProjectChannel & {channel_id: string})[]) => void;
 };
 
 

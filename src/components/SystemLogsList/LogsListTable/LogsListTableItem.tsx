@@ -16,7 +16,7 @@ const LogsListTableItem: FC<Props> = props => {
     } = props;
 
     return (
-        <TableRow>
+        <TableRow sx={{height: '55px'}}>
             <TableCell width={200}>
                 {user.firstName} {user.lastName}
             </TableCell>

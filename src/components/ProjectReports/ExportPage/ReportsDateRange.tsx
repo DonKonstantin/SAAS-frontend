@@ -5,6 +5,14 @@ import dayjs from "dayjs";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
 
+// конвертация с учётом времени часового пояса
+const dateWithoutTimeZone = (date: Date): Date => {
+
+  const timestamp = date.getTime() - date.getTimezoneOffset() * 60 * 1000
+
+  return new Date(timestamp)
+}
+
 interface Props {
   dateFrom: Date;
   dateTo: Date;
@@ -26,7 +34,8 @@ const ReportsDateRange: FC<Props> = (props) => {
     if (!value) {
       return;
     }
-    setDateFrom(dayjs(value).startOf('day').toDate());
+
+    setDateFrom(dateWithoutTimeZone(dayjs(value).startOf('day').toDate()));
   };
 
   const onToDateChange = (value: Date | null) => {
@@ -34,7 +43,7 @@ const ReportsDateRange: FC<Props> = (props) => {
       return;
     }
 
-    setDateTo(dayjs(value).endOf('day').toDate());
+    setDateTo(dateWithoutTimeZone(dayjs(value).endOf('day').toDate()));
   };
 
   return (
@@ -51,7 +60,7 @@ const ReportsDateRange: FC<Props> = (props) => {
       <Typography>{t("reports.field.date-input.to")}</Typography>
       <DesktopDatePicker
         inputFormat="DD.MM.YYYY"
-        value={dateTo}
+        value={dateTo.getTime() - 3 * 60 * 60 * 1000}
         onChange={onToDateChange}
         renderInput={(params) => <TextField variant="standard" {...params} />}
       />

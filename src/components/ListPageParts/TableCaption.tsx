@@ -11,8 +11,9 @@ import {PageWithEntityList} from "../ListPage/types";
 
 // Свойства компонента
 export type ListHeaderProps = PageWithEntityList & {
-    checkedItems: any[],
-    hideButtonDeleteItems?: boolean
+    checkedItems: any[];
+    onChangeCheckedItems?: (items: any[]) => void;
+    hideButtonDeleteItems?: boolean;
 }
 
 // Компонент вывода заголовочной части таблицы

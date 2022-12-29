@@ -32,6 +32,7 @@ import CampaignContent from "./CampaignContent/CampaignContent";
 import {EditPlaylist} from "./EditPlaylist";
 import dayjs from "dayjs";
 import {notificationsDispatcher} from "services/notifications";
+import Breadcrumbs from "components/Breadcrumbs";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -73,6 +74,7 @@ const CampaignInfoGroup = () => {
     selectedChannels,
     loadCampaign,
     newAddedCampaignPlaylist,
+    setSavedChannels,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
@@ -221,6 +223,8 @@ const CampaignInfoGroup = () => {
 
       const newData = {
         ...data,
+        campaign_period_start: new Date(dayjs(data.campaign_period_start).format("YYYY-MM-DD")),
+        campaign_period_stop: new Date(dayjs(data.campaign_period_stop).format("YYYY-MM-DD")),
         days,
         project_id: project
       }
@@ -230,7 +234,7 @@ const CampaignInfoGroup = () => {
 
         if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
           router.push(
-            `/domain/${domain}/project/${project}/campaign/edit/${response}`
+            `/domain/${domain}/project/${project}/campaign/edit/${response.id}`
           );
           return;
         }
@@ -306,7 +310,6 @@ const CampaignInfoGroup = () => {
 
     const channels = campaign.channels.map(channel => {
       if (channel.channel_id) {
-
         return { channel_id: Number(channel.channel_id), id: Number(channel.id) }
       }
 
@@ -341,7 +344,10 @@ const CampaignInfoGroup = () => {
     }
 
     try {
-      await campaignListService().storeCampaign(inputData)
+      const campaign = await campaignListService().storeCampaign(inputData);
+
+      setSavedChannels(campaign.channels.map(channel => ({...channel.channel, channel_id: channel.channel_id})));
+
       !successCreatedPlaylist && setCurrentActionTab("channels")
     } catch (error) {
       if (typeof error.message === "string") {
@@ -458,8 +464,10 @@ const CampaignInfoGroup = () => {
   }
 
   return (
-    <>
-      <CampaignPlaylistEditContextConnector>
+    <CampaignPlaylistEditContextConnector>
+      <Box sx={{pb: 3}}>
+        <Breadcrumbs/>
+      </Box>
         {!!playlist
           ? <EditPlaylist onSubmitCampaign={addPlaylist}/>
           :
@@ -531,9 +539,7 @@ const CampaignInfoGroup = () => {
             </Box>
           </Grid>
         }
-
-      </CampaignPlaylistEditContextConnector>
-    </>
+    </CampaignPlaylistEditContextConnector>
   );
 };
 

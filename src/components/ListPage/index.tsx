@@ -112,7 +112,7 @@ const ListPage: FC = () => {
                                 </Grid>
                                 {ActionComponent && (
                                     <Grid item>
-                                        <ActionComponent checkedItems={selected} />
+                                        <ActionComponent checkedItems={selected} onChangeCheckedItems={setSelected} />
                                     </Grid>
                                 )}
                                 {!ActionComponent && (

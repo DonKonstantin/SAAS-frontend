@@ -24,6 +24,7 @@ class DefaultContextData implements CampaignEditContextTypes {
   isChannelsLoading: boolean = false;
   error: string | undefined = undefined;
   selectedChannels: CampaignChannelInputObject[] | undefined = undefined;
+  savedChannels: (ProjectChannel & {channel_id: string})[] = [];
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());
@@ -61,6 +62,8 @@ const isChannelsLoading$ = new BehaviorSubject<boolean>(false);
 const error$ = new BehaviorSubject<string | undefined>(undefined);
 //  Стрим для выбраных каналов
 const selectedChannels$ = new BehaviorSubject<CampaignChannelInputObject[]>([]);
+//  Сохраненые каналы кампании
+const savedChannels$ = new BehaviorSubject<(ProjectChannel & {channel_id: string})[]>([]);
 
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
@@ -397,6 +400,13 @@ const clearErrorBus$ = error$.pipe(
   delay(10000),
 );
 
+/**
+ * Шина записи сохраненых каналов при перезаписи сущности кампании
+ */
+const setSavedChannelsBus$ = campaign$.pipe(
+  map(campaign => campaign?.channels.map(channel => !!channel.channel ? {...channel.channel, channel_id: channel.channel_id} : channel)),
+);
+
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
   'campaign'
   | 'isLoading'
@@ -405,6 +415,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   | 'isChannelsLoading'
   | 'error'
   | 'selectedChannels'
+  | 'savedChannels'
 >> = combineLatest([
   campaign$,
   isLoading$,
@@ -415,6 +426,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   isChannelsLoading$,
   error$,
   selectedChannels$,
+  savedChannels$,
 ]).pipe(
   map(
     ([
@@ -427,6 +439,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
        isChannelsLoading,
        error,
        selectedChannels,
+       savedChannels,
      ]) => ({
       campaign,
       isLoading,
@@ -437,6 +450,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
       isChannelsLoading,
       error,
       selectedChannels,
+      savedChannels,
     })
   )
 );
@@ -506,6 +520,12 @@ export const InitCampaignEditContext = () => {
   }));
 
   subscriber.add(clearErrorBus$.subscribe(() => error$.next(undefined)));
+
+  /**
+   * Шина записи сохраненых каналов при перезаписи сущности кампании
+   */
+  //@ts-ignore
+  subscriber.add(setSavedChannelsBus$.subscribe(response => savedChannels$.next(response!)));
 
   return () => subscriber.unsubscribe();
 };
@@ -593,22 +613,29 @@ const newAddedCampaignPlaylist: CampaignEditContextActionsTypes['newAddedCampaig
 /**
  * Загружает доступные для кампании каналы
  */
- const loadChannels: CampaignEditContextActionsTypes['loadChannels'] = () => {
+const loadChannels: CampaignEditContextActionsTypes['loadChannels'] = () => {
   loadChannels$.next();
 };
 
 /**
  * Очищает загруженные каналы
  */
- const cleareLoadedChannels: CampaignEditContextActionsTypes['cleareLoadedChannels'] = () => {
+const cleareLoadedChannels: CampaignEditContextActionsTypes['cleareLoadedChannels'] = () => {
   loadedChannels$.next([]);
 };
 
 /**
  * Записываем выбранные каналы
  */
- const setChannels: CampaignEditContextActionsTypes['setChannels'] = (channels) => {
+const setChannels: CampaignEditContextActionsTypes['setChannels'] = (channels) => {
   selectedChannels$.next(channels);
+};
+
+/**
+ * Записывает сохраненые каналы
+ */
+const setSavedChannels: CampaignEditContextActionsTypes['setSavedChannels'] = (savedChannels) => {
+  savedChannels$.next(savedChannels);
 };
 
 export const campaignEditActions: CampaignEditContextActionsTypes = {
@@ -624,4 +651,5 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadChannels,
   cleareLoadedChannels,
   setChannels,
+  setSavedChannels,
 };

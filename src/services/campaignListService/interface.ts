@@ -32,7 +32,7 @@ export interface CampaignListServiceInterface {
   /**
    * Создает\сохраняет сущьность кампании
    */
-  storeCampaign: (campaign: CampaignInput) => Promise<string>;
+  storeCampaign: (campaign: CampaignInput) => Promise<Campaign>;
 
   /**
    * Получения списка каналов по ID проекта и части имени
@@ -83,9 +83,7 @@ export type StoreCampaignMutationParams = {
 };
 
 export type StoreCampaignMutationResponse = {
-  campaignStore: {
-    id: string;
-  };
+  campaignStore: Campaign;
 };
 
 export type CampaignPublishQueryParams = {
