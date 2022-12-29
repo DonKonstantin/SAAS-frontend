@@ -79,7 +79,7 @@ export class UpdateEntityService implements UpdateEntityServiceInterface {
             this.logger.Debug(`generated update query`, mutation)
 
             const response = await this.client.Mutation<null, UpdateResponse>(new UpdateQuery(mutation), {})
-            this.logger.Info(`updated entity in schema "${storeSchema}"`, response)
+            this.logger.Debug(`updated entity in schema "${storeSchema}"`, response)
 
             if (0 === response.result.returning.length) {
                 this.logger.Error(`Empty response returned`, storeSchema, primaryKey, data, response)
