@@ -55,9 +55,11 @@ const Channels: FC = () => {
   const rows = useMemo(() => [...(loadedChannels as any[])], [loadedChannels]);
 
   const setCheckedHandler = (checked: string[]) => {
-    const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
-      channel_id: Number(el.id),
-    }));
+    const channels = loadedChannels
+      .filter((ch) => checked.some((item) => item === ch.id))
+      .map((el) => ({
+        channel_id: Number(el.id),
+      }));
 
     setChannels(channels);
 
@@ -123,14 +125,12 @@ const Channels: FC = () => {
 
     setChannels(channels);
   }, []);
-  
+
   return (
     <Grid container>
       <Grid item xs={12}>
         <Collapse in={error !== undefined}>
-          <Alert severity="warning">
-            {t(error || "")}
-          </Alert>
+          <Alert severity="warning">{t(error || "")}</Alert>
         </Collapse>
       </Grid>
       <Grid item xs={12}>
@@ -155,7 +155,7 @@ const Channels: FC = () => {
         />
       </Grid>
       <Grid item xs={6}>
-        <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent}/>
+        <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent} />
       </Grid>
     </Grid>
   );
