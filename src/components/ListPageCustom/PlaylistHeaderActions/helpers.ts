@@ -70,7 +70,7 @@ export const onDropHandler = async (
   // Запрашиваем плейлисты по названию
   const findCurrentsPlaylists = await projectPlaylistService().getPlaylistsByArrayName(Object.keys(dropedList), Number(project))
 
-  // Создаем массив объектов плейлистов для создания
+  // Создаем объекты плейлистов для создания
   const getToCreatedPlaylists = Object.keys(dropedList).reduce((acc, current) => {
     const findPlaylist = findCurrentsPlaylists.find(playlist => playlist.name === current)
 
