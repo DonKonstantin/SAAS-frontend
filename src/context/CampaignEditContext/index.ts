@@ -39,6 +39,8 @@ const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(un
 const deletePlaylistId$ = new BehaviorSubject<string | undefined>(undefined)
 // ID и состояние "перемешать" для плейлиста
 const shufflePlaylist$ = new BehaviorSubject<{playlistId: string, shuffle: boolean} | undefined>(undefined)
+// Счетчик для плейлиста
+const playCounterPlaylist$ = new BehaviorSubject<{playlistId: string, playCounter: number} | undefined>(undefined)
 // Делает сортировку плейлиста
 const movePlaylist$ = new BehaviorSubject<{playlistId: string, direction: 'up' | 'down'} | undefined>(undefined);
 // Для загруженных треков по Drop Zone
@@ -219,6 +221,32 @@ const shuffleCampaignPlaylist$ = shufflePlaylist$.pipe(
   //@ts-ignore
   tap((campaign) => campaign$.next(campaign)),
   tap(() => shufflePlaylist$.next(undefined))
+)
+
+const playCounterCampaignPlaylist$ = playCounterPlaylist$.pipe(
+  filter((playCounterPlaylist) => !!playCounterPlaylist),
+  map((playCounterPlaylist) => {
+    if (!playCounterPlaylist) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    const playCounterPlaylistById = getCampaign.playlists.map(playlist => playlist.id === playCounterPlaylist.playlistId
+      ? {
+        ...playlist,
+        playCounter: playCounterPlaylist.playCounter
+      } : playlist)
+
+    return { ...getCampaign, playlists: playCounterPlaylistById }
+
+  }),
+  //@ts-ignore
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => playCounterPlaylist$.next(undefined))
 )
 
 //  шина изменения позиции воспроизведения трека в плейлисте
@@ -431,6 +459,7 @@ export const InitCampaignEditContext = () => {
   subscriber.add(setNewPlaylistForCampaign$.subscribe());
   subscriber.add(deletePlaylistFromProject$.subscribe());
   subscriber.add(shuffleCampaignPlaylist$.subscribe());
+  subscriber.add(playCounterCampaignPlaylist$.subscribe());
   subscriber.add(movePlaylistBus$.subscribe());
   subscriber.add(checkUploadedFilesBus$.subscribe(async (newCampaignPlaylist) => {
 
@@ -523,6 +552,15 @@ const shuffleCampaignPlaylist: CampaignEditContextActionsTypes['shuffleCampaignP
 }
 
 /**
+ * Изменяет счетчик для плейлиста
+ * @param playlistId
+ * @param playCounter
+ */
+const playCounterCampaignPlaylist: CampaignEditContextActionsTypes['playCounterCampaignPlaylist'] = (playlistId, playCounter) => {
+  playCounterPlaylist$.next({ playlistId, playCounter });
+}
+
+/**
  * Изменяет сортировку плейлиста
  * @param playlistId
  * @param direction
@@ -578,6 +616,7 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   storeCampaignPlaylist,
   deleteCampaignPlaylist,
   shuffleCampaignPlaylist,
+  playCounterCampaignPlaylist,
   movePlaylistCampaign,
   addFilesToUploadPlaylist,
   newAddedCampaignPlaylist,
