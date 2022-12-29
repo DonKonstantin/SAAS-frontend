@@ -55,16 +55,26 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
         }
 
         onRedirectToUserPage(() => {
-            const domains = userInfo.roles.filter(r => r.level === "domain");
+          const domains = userInfo.roles.filter(r => r.level === "domain")
 
-            if (domains.length === 1) {
-                return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`);
-            }
+          if (domains.length === 1) {
+              return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`)
+          }
 
-            const domainRedirect = userInfo.roles.find(el => el.level === 'realm' && el.permissions.some(item => item.code === 'READ_DOMAIN'));
-
-            return router.push(!domainRedirect ? "/" : "/domain");
+          return router.push("/domain")
         })
+
+        // onRedirectToUserPage(() => {
+        //     const domains = userInfo.roles.filter(r => r.level === "domain");
+
+        //     if (domains.length === 1) {
+        //         return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`);
+        //     }
+
+        //     const domainRedirect = userInfo.roles.find(el => el.level === 'realm' && el.permissions.some(item => item.code === 'READ_DOMAIN'));
+
+        //     return router.push(!domainRedirect ? "/" : "/domain");
+        // })
     }, [userInfo, isNeedRedirectAfterAuth])
 
     if (0 === authToken.length) {

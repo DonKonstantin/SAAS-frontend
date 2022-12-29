@@ -56,6 +56,8 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     const isNeedShowRealm = menuType === `realm`
     const isNeedShowDomain = menuType === `domain` || menuType === `realm`
 
+    // const permissions_ids = values.permissions_id as string[];
+
     useEffect(() => {
       if (values['level'] === "realm") {
         return
@@ -80,6 +82,14 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
       });
     }, []);
 
+    // useEffect(() => {
+    //   if (!!permissions_ids.length) {
+    //     return
+    //   }
+      
+    //   onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
+    // }, []);
+
     return (
         <Box sx={{flexGrow: 1, display: 'flex', height: 174}}>
             <Tabs
@@ -88,7 +98,8 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                 value={values['level']}
                 onChange={(_, value) => {
                     onChangeFieldValue('level', () => value)
-                    onChangeFieldValue("permissions_id", () => value === 'domain' ? ['51'] : value === 'project' ? ['51', '52'] : [])
+                    // onChangeFieldValue("permissions_id", () => value === 'domain' ? ['51'] : value === 'project' ? ['52'] : [])
+                    onChangeFieldValue("permissions_id", () => [])
                     onChangeFieldValue(fieldCode, () => {
                         if (value === "realm") {
                             return "1"
@@ -148,6 +159,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                             event.stopPropagation()
 
                             onChangeFieldValue(fieldCode, () => event.target.value)
+                            // onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
                             onChangeFieldValue("permissions_id", () => [])
                         }}
                     >
@@ -187,6 +199,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
 
                             onChangeFieldValue(fieldCode, () => event.target.value)
                             onChangeFieldValue("permissions_id", () => [])
+                            // onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
                         }}
                     >
                         <MenuItem value="">
