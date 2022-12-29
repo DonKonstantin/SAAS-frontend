@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import { styled } from "@mui/system";
-import { getCurrentState } from "context/AuthorizationContext";
 import React, { FC, memo, useState } from "react";
 import { distinctUntilChanged } from "rxjs";
 import { notificationsDispatcher } from "services/notifications";
@@ -34,16 +33,14 @@ const PlayerSaveButtonField: FC<EditFieldProperties> = ({ fieldCode }) => {
 
   const { handleClose } = actionsCtx;
 
-  const { t, primaryKey } = fieldData;
+  const { t, primaryKey, values } = fieldData;
 
   const onClickHandler = async () => {
     setDisableButton(true);
 
-    const { project } = getCurrentState();
-
     const saveResult = await playerListService().savePlayer(
       primaryKey,
-      project
+      String(values?.project_id),
     );
 
     if (saveResult) {

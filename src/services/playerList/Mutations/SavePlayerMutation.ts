@@ -8,7 +8,7 @@ export interface SavePlayerMutationParams {
 
 export interface SavePlayerMutationResponse {
   updatePlayer: {
-    affected_rows : number;
+    id: string;
   };
 }
 
@@ -30,7 +30,7 @@ export class SavePlayerMutation
     this.query = gql(`
     mutation __SAVE_PLAYER__($playerId: ID!, $objectPasportId: int64ID) {
       updatePlayer (objectPassportId: $objectPasportId, playerId: $playerId) {
-        affected_rows
+        id
       }
     }`
     );
