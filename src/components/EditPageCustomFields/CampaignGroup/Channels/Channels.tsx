@@ -48,7 +48,7 @@ const Channels: FC = () => {
     direction: "asc",
   });
 
-  const savedChannelsIds = savedChannels.map(el => el.channel_id) as string[];
+  const savedChannelsIds = savedChannels.map((el) => el.channel_id) as string[];
 
   const isDifferent = !!difference(checkedItems, savedChannelsIds).length;
 

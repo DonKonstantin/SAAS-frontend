@@ -19,6 +19,8 @@ import {allDomainsAndProjectsLoader} from "../services/loaders/allDomainsAndProj
 import {DomainData, ProjectData} from "../services/loaders/allDomainsAndProjects/LoaderQuery";
 import Cookies from "universal-cookie";
 
+export type MenuType = "realm" | "domain" | "project";
+
 // Контекст шагов импорта
 export type AuthorizationContext = {
     authToken: string                   // Токен авторизации в системе
@@ -27,7 +29,7 @@ export type AuthorizationContext = {
     isNeedRedirectAfterAuth: boolean    // Необходимость выполнить редирект на основную сраницу для пользователя
 
     // Тип отображаемого в данный момент меню
-    menuType: "realm" | "domain" | "project"
+    menuType: MenuType;
 
     domain: string  // Выбранный пользователем домен
     project: string // Выбранный пользователем проект

@@ -1,4 +1,4 @@
-import React, { FC, memo } from "react";
+import React, { FC, memo, useEffect } from "react";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { TextField } from "@mui/material";
@@ -21,12 +21,26 @@ const MonthPicker: FC<Props> = ({ dateFrom, setDateFrom, setDateTo }) => {
       return;
     }
 
-    setDateFrom(value);
+    const preparedFromDate = new Date(dayjs(value).format("YYYY-MM") + "-01");
 
-    const dateTo = dayjs(value).add(1, "month").toDate();
+    setDateFrom(preparedFromDate);
 
-    setDateTo(dateTo);
+    const dateTo = new Date(
+      preparedFromDate.getFullYear(),
+      preparedFromDate.getMonth() + 1,
+      0
+    );
+
+    const preparedToDate = new Date(
+      dayjs(dateTo).format("YYYY-MM-DD") + "T00:00:00.000Z"
+    );
+
+    setDateTo(preparedToDate);
   };
+
+  useEffect(() => {
+    onFromDateChange(dateFrom);
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

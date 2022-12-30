@@ -51,7 +51,6 @@ const ProjectReports: NextPage<Props> = ({}) => {
         <StyledTabWrapper>
           <TabList onChange={onTabChangeHandler}>
             <Tab label={t("reports.tab.export")} value="export" />
-            <Tab label={t("reports.tab.import")} value="import" />
           </TabList>
         </StyledTabWrapper>
         <StyledContentWrapper elevation={3}>

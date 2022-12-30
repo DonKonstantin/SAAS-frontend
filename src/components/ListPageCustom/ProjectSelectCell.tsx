@@ -7,6 +7,8 @@ import convertSimpleValueToString from "../ListPageParts/List/helpers/convertSim
 import Link from "../Link";
 import { useAuthorization } from "../../context/AuthorizationContext";
 import { useRouter } from "next/router";
+import { getMenuItems } from "components/UILayer/LeftPanel/helpers";
+import { distinctUntilChanged } from "rxjs";
 
 // Компонент вывода простой ячейки
 const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
@@ -18,17 +20,29 @@ const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
   } = configuration;
 
   const router = useRouter();
-  const { domain, setProject } = useAuthorization();
+  const { domain, userInfo, setProject } = useAuthorization(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev.domain === curr.domain &&
+        JSON.stringify(prev.userInfo) === JSON.stringify(curr.userInfo)
+    )
+  );
   const handleDomainClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
     setProject(primaryKeyValue);
 
+    //  получаем список доступных пользователю пунктов меню для того что бы перейти на верхний пункт
+    const menuItems = getMenuItems("project", userInfo!);
+
+    const currentMenuPath =
+      menuItems.length > 1 ? menuItems[1].pathName : menuItems[0].pathName;
+
     //  пушит на вкладку проекта по умолчанию
     return router.push(
-      `/domain/[domainId]/project/[projectId]/campaign`,
-      `/domain/${domain}/project/${primaryKeyValue}/campaign`
+      `/domain/[domainId]/project/[projectId]/${currentMenuPath}`,
+      `/domain/${domain}/project/${primaryKeyValue}/${currentMenuPath}`
     );
   };
 

@@ -18,6 +18,7 @@ const baseStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  justifyContent: 'center',
   // padding: '40px',
   borderWidth: 1,
   borderRadius: 3,
