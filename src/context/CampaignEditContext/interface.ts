@@ -40,6 +40,13 @@ export interface CampaignEditContextActionsTypes {
   shuffleCampaignPlaylist: (playlistId: string, shuffle: boolean) => void;
 
   /**
+   * Изменяет счетчик для плейлиста
+   * @param playlistId
+   * @param playCounter
+   */
+  playCounterCampaignPlaylist: (playlistId: string, playCounter: number) => void;
+
+  /**
    * Изменяет сортировку плейлиста
    * @param playlistId
    * @param direction

@@ -27,7 +27,7 @@ const PlayerCodeSubRow: FC<Props> = ({row}) => {
     const nameWidth = listSchemaConfiguration()["project_channel"]?.listFields.fields["name"]!.width as unknown as number
 
     return (
-        <TableRow>
+        <TableRow sx={{height: '55px'}}>
             <TableCell width={48}/>
             <TableCell
                        width={nameWidth}

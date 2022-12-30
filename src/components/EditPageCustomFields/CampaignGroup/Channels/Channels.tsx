@@ -118,7 +118,7 @@ const Channels: FC = () => {
   useEffect(() => {
     setCheckedItems(savedChannelsIds);
 
-    const channels = savedChannels.map((ch) => ({
+    const channels = savedChannels.map(ch => ({
       channel_id: Number(ch.channel_id),
       id: Number(ch.id),
     }));

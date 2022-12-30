@@ -14,12 +14,8 @@ import LoadingBlurEffect from "../CommonComponents/LoadingBlurEffect/LoadingBlur
 import {isEqual} from "lodash";
 
 const StyledWrapper = styled("div")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
+  width: '100%',
   background: "#FBFDFC",
-  padding: "30px 36px",
-  zIndex: 1100,
 });
 
 const StyledTabsWrapper = styled("div")({

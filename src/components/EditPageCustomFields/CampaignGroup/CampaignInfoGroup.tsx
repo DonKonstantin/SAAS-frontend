@@ -32,6 +32,7 @@ import CampaignContent from "./CampaignContent/CampaignContent";
 import {EditPlaylist} from "./EditPlaylist";
 import dayjs from "dayjs";
 import {notificationsDispatcher} from "services/notifications";
+import Breadcrumbs from "components/Breadcrumbs";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -463,8 +464,10 @@ const CampaignInfoGroup = () => {
   }
 
   return (
-    <>
-      <CampaignPlaylistEditContextConnector>
+    <CampaignPlaylistEditContextConnector>
+      <Box sx={{pb: 3}}>
+        <Breadcrumbs/>
+      </Box>
         {!!playlist
           ? <EditPlaylist onSubmitCampaign={addPlaylist}/>
           :
@@ -536,9 +539,7 @@ const CampaignInfoGroup = () => {
             </Box>
           </Grid>
         }
-
-      </CampaignPlaylistEditContextConnector>
-    </>
+    </CampaignPlaylistEditContextConnector>
   );
 };
 

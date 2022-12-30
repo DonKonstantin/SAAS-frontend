@@ -14,7 +14,7 @@ const NameWithToggleCell: FC<ListFieldProperties<SimpleValues>> = ({value, confi
 
     const open = openRows.includes(rowValues.id.value);
 
-    const hasSubRows = rowValues.players.value.lenght > 0
+    const hasSubRows = rowValues.players.value.length === 0
 
     const toggleHandler = () => {
         if (open) {
@@ -35,7 +35,7 @@ const NameWithToggleCell: FC<ListFieldProperties<SimpleValues>> = ({value, confi
         >
             {value.value}
             <Tooltip title="">
-                <IconButton onClick={toggleHandler} disabled={hasSubRows}>
+                <IconButton onClick={toggleHandler} disabled={hasSubRows} sx={{marginY: '-9px'}}>
                     <ArrowDropUpIcon
                         sx={{transform: `rotate(${open ? 180 : 0}deg)`}}
                     />
