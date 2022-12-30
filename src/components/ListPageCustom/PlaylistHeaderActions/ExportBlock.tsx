@@ -25,6 +25,7 @@ const ExportBlock: FC<Props> = ({ onDrop, onClose }) => {
         iconSize={18}
         onDrop={onDrop}
         accept={"application/json"}
+        height={192}
       />
       <Stack direction="row" justifyContent="space-between" sx={{ mt: 2.5 }}>
         <Box>

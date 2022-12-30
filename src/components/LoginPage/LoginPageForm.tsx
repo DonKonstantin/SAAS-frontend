@@ -4,6 +4,8 @@ import LoginFormUiLayer from "./LoginFormUiLayer";
 import {auditTime} from "rxjs";
 import LoginPageFormContent from "./LoginPageFormContent";
 import {useRouter} from "next/router";
+import projectListService from "services/projectListService";
+import { getMenuItems } from "components/UILayer/LeftPanel/helpers";
 
 // Свойства компонента страницы авторизации
 export type LoginPageFormProps = WithAuthorization<{
@@ -54,28 +56,33 @@ const LoginPageForm: FC<LoginPageFormProps> = props => {
             return
         }
 
-        onRedirectToUserPage(() => {
-          const domains = userInfo.roles.filter(r => r.level === "domain")
+        onRedirectToUserPage(async () => {
+          const domains = userInfo.roles.filter(r => r.level === "domain");
 
-          if (domains.length === 1) {
-              return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`)
+          const projects = userInfo.roles.filter(r => r.level === "project");
+
+          //  Если у юзера только один проект для доступа то редиректим его на страницу
+          if (!domains.length && projects.length === 1) {
+            const projectsList = await projectListService().getProjectsByIds(projects.map(project => project.structure_item_id));
+
+            const projectDomain = projectsList[0].parent;
+
+            const menuItems = getMenuItems('project', userInfo);
+
+            return router.push(`/domain/[domainId]/project/[projectId]/${menuItems[1].pathName}`, `/domain/${projectDomain}/project/${projects[0].structure_item_id}/${menuItems[1].pathName}`);
           }
 
-          return router.push("/domain")
-        })
+          if (domains.length === 1) {
+              return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`);
+          }
 
-        // onRedirectToUserPage(() => {
-        //     const domains = userInfo.roles.filter(r => r.level === "domain");
+          if (!!domains.length) {
+            return router.push("/domain");
+          }
 
-        //     if (domains.length === 1) {
-        //         return router.push("/domain/[domainId]/project", `/domain/${domains[0].structure_item_id}/project`);
-        //     }
-
-        //     const domainRedirect = userInfo.roles.find(el => el.level === 'realm' && el.permissions.some(item => item.code === 'READ_DOMAIN'));
-
-        //     return router.push(!domainRedirect ? "/" : "/domain");
-        // })
-    }, [userInfo, isNeedRedirectAfterAuth])
+          return router.push("/");
+        });
+    }, [userInfo, isNeedRedirectAfterAuth]);
 
     if (0 === authToken.length) {
         return (

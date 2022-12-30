@@ -1,11 +1,9 @@
 import React, {FC} from "react";
 import AuthorizationHoc, {WithAuthorization} from "../../../context/AuthorizationContext";
-import {DomainMenuItems, ProjectMenuItems, RealmMenuItems} from "../../../settings/menu";
-import {MenuItem} from "../../../settings/menu/system";
-import GetAvailableMenuItemsByUserInfo from "../../../services/helpers/GetAvailableMenuItemsByUserInfo";
 import {List} from "@mui/material";
 import MainMenuItem from "./MainMenuItem";
 import {auditTime} from "rxjs";
+import { getMenuItems } from "./helpers";
 
 // Свойства компонента
 export type MainMenuProps = WithAuthorization<{}>
@@ -21,20 +19,7 @@ const MainMenu: FC<MainMenuProps> = props => {
         return null
     }
 
-    let menuItems: MenuItem[]
-    switch (menuType) {
-        case "project":
-            menuItems = ProjectMenuItems()
-            break
-        case "domain":
-            menuItems = DomainMenuItems()
-            break
-        default:
-            menuItems = RealmMenuItems()
-    }
-
-    // Фильтруем пункты меню по уровню доступа
-    menuItems = GetAvailableMenuItemsByUserInfo(userInfo, menuItems)
+    const menuItems = getMenuItems(menuType, userInfo);
 
     return (
         <List>

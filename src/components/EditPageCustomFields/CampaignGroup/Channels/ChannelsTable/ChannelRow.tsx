@@ -54,7 +54,12 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
 
   return (
     <TableRow>
-      <CheckBoxCell checked={isChecked} onClick={onToggleItemCheckedState} />
+      <CheckBoxCell 
+        checked={isChecked} 
+        tooltipOnCheck={'player-list.tooltip.list.item.check'}
+        tooltipOnUncheck={'player-list.tooltip.list.item.uncheck'}
+        onClick={onToggleItemCheckedState} 
+      />
       <TableCell>{row.name}</TableCell>
       <TableCell>
         <StyledBox bgColor={isActive}>
