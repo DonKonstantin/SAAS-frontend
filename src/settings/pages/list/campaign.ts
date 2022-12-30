@@ -7,6 +7,9 @@ import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteBut
 import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
 import CampaignLastVersionField from "../../../components/ListPageCustom/CampaignLastVersionField";
 import {campaignListService} from "../../../services/campaignListService";
+import { ListHeaderProps } from "components/ListPageParts/TableCaption";
+import CampaignIsActiveCell from "components/ListPageCustom/CampaignIsActiveCell";
+import { CampaignsActions } from "components/ListPageCustom/CampaignsActions";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
   filter: FilterFieldsConfiguration<"campaign"> = {
@@ -44,15 +47,6 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         fieldType: {
           config: undefined,
           type: "Simple"
-        }
-      },
-      id: {
-        field: "id",
-        title: "",
-        isEnabled: true,
-        fieldType: {
-          config: undefined,
-          type: "Hidden"
         }
       },
       version: {
@@ -95,12 +89,27 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
           customComponent: CampaignDataField
         }
       },
+      id: {
+        field: "id",
+        title: "pages.campaign.list.fields.campaign-is-active",
+        isEnabled: true,
+        align: 'center',
+        fieldType: {
+          config: undefined,
+          type: "Simple",
+          customComponent: CampaignIsActiveCell,
+        },
+      },
     },
     actions: ListPageEditDeleteButtons,
     additionDataLoader: async (listData: ListFieldRow<"campaign">[]) => {
-      const arrayOfCampaign = listData.map(campaign => campaign.columnValues.id.value)
+      const arrayOfCampaign = listData.map(campaign => campaign.columnValues.id.value);
 
-      return await campaignListService().getCampaignByArrayId(arrayOfCampaign)
+      if (!arrayOfCampaign.length) {
+        return [];
+      }
+
+      return await campaignListService().getCampaignByArrayId(arrayOfCampaign);
     }
   };
   schema: "campaign" = "campaign";
@@ -145,4 +154,5 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         }
     }
   };
+  action: React.ComponentType<ListHeaderProps> = CampaignsActions;
 }

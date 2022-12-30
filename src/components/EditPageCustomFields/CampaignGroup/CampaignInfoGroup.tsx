@@ -222,6 +222,8 @@ const CampaignInfoGroup = () => {
 
       const newData = {
         ...data,
+        campaign_period_start: new Date(dayjs(data.campaign_period_start).format("YYYY-MM-DD")),
+        campaign_period_stop: new Date(dayjs(data.campaign_period_stop).format("YYYY-MM-DD")),
         days,
         project_id: project
       }

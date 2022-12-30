@@ -29,6 +29,7 @@ import { GetCampaignsByArrayId } from "./Queries/GetCampaignsByArrayId";
 import { GetCampaignsArrayByIdsQuery } from "./Queries/GetCampaignsArrayByIds";
 import { GetCampaignTimetableValidation } from "./Queries/GetCampaignTimetableValidation";
 
+
 /**
  * Сервис авторизации пользователя
  */
