@@ -3,7 +3,10 @@ import { styled } from "@mui/system";
 import CheckBoxCell from "components/ListPageParts/List/CheckBoxCell";
 import React, { FC, memo } from "react";
 import { useTranslation } from "react-i18next";
-import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
+import {
+  CampaignChannels,
+  ProjectChannel,
+} from "services/playerCodeService/interfaces";
 
 interface Props {
   row: ProjectChannel & CampaignChannels;
@@ -44,7 +47,9 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
 
   const onToggleItemCheckedState = () => {
     if (isChecked) {
-      onChangeCheckedItems(checkedItems.filter((i) => i !== row.id ?? row.channel_id));
+      onChangeCheckedItems(
+        checkedItems.filter((i) => i !== row.id ?? row.channel_id)
+      );
 
       return;
     }
@@ -54,11 +59,11 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
 
   return (
     <TableRow>
-      <CheckBoxCell 
-        checked={isChecked} 
-        tooltipOnCheck={'player-list.tooltip.list.item.check'}
-        tooltipOnUncheck={'player-list.tooltip.list.item.uncheck'}
-        onClick={onToggleItemCheckedState} 
+      <CheckBoxCell
+        checked={isChecked}
+        tooltipOnCheck="player-list.tooltip.list.item.check"
+        tooltipOnUncheck="player-list.tooltip.list.item.uncheck"
+        onClick={onToggleItemCheckedState}
       />
       <TableCell>{row.name}</TableCell>
       <TableCell>

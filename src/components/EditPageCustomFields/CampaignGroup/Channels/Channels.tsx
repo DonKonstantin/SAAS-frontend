@@ -48,16 +48,18 @@ const Channels: FC = () => {
     direction: "asc",
   });
 
-  const savedChannelsIds = savedChannels.map(el => el.channel_id) as string[];
+  const savedChannelsIds = savedChannels.map((el) => el.channel_id) as string[];
 
   const isDifferent = !!difference(checkedItems, savedChannelsIds).length;
 
   const rows = useMemo(() => [...(loadedChannels as any[])], [loadedChannels]);
 
   const setCheckedHandler = (checked: string[]) => {
-    const channels = loadedChannels.filter(ch => checked.some(item => item === ch.id)).map(el => ({
-      channel_id: Number(el.id),
-    }));
+    const channels = loadedChannels
+      .filter((ch) => checked.some((item) => item === ch.id))
+      .map((el) => ({
+        channel_id: Number(el.id),
+      }));
 
     setChannels(channels);
 
@@ -116,7 +118,7 @@ const Channels: FC = () => {
   useEffect(() => {
     setCheckedItems(savedChannelsIds);
 
-    const channels = savedChannels.map(ch => ({
+    const channels = savedChannels.map((ch) => ({
       channel_id: Number(ch.channel_id),
       id: Number(ch.id),
     }));

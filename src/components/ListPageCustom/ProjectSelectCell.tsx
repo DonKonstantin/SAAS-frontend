@@ -20,9 +20,13 @@ const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
   } = configuration;
 
   const router = useRouter();
-  const { domain, userInfo, setProject } = useAuthorization(distinctUntilChanged((prev, curr) =>
-    prev.domain === curr.domain && JSON.stringify(prev.userInfo) === JSON.stringify(curr.userInfo)
-  ));
+  const { domain, userInfo, setProject } = useAuthorization(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev.domain === curr.domain &&
+        JSON.stringify(prev.userInfo) === JSON.stringify(curr.userInfo)
+    )
+  );
   const handleDomainClick: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -30,9 +34,10 @@ const ProjectSelectCell: FC<ListFieldProperties<SimpleValues>> = (props) => {
     setProject(primaryKeyValue);
 
     //  получаем список доступных пользователю пунктов меню для того что бы перейти на верхний пункт
-    const menuItems = getMenuItems('project', userInfo!);
+    const menuItems = getMenuItems("project", userInfo!);
 
-    const currentMenuPath = menuItems.length > 1 ? menuItems[1].pathName : menuItems[0].pathName;
+    const currentMenuPath =
+      menuItems.length > 1 ? menuItems[1].pathName : menuItems[0].pathName;
 
     //  пушит на вкладку проекта по умолчанию
     return router.push(

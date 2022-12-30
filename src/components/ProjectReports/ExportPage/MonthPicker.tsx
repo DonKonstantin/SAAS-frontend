@@ -25,9 +25,15 @@ const MonthPicker: FC<Props> = ({ dateFrom, setDateFrom, setDateTo }) => {
 
     setDateFrom(preparedFromDate);
 
-    const dateTo = new Date(preparedFromDate.getFullYear(), preparedFromDate.getMonth() + 1, 0);
+    const dateTo = new Date(
+      preparedFromDate.getFullYear(),
+      preparedFromDate.getMonth() + 1,
+      0
+    );
 
-    const preparedToDate = new Date(dayjs(dateTo).format("YYYY-MM-DD") + "T00:00:00.000Z");
+    const preparedToDate = new Date(
+      dayjs(dateTo).format("YYYY-MM-DD") + "T00:00:00.000Z"
+    );
 
     setDateTo(preparedToDate);
   };
