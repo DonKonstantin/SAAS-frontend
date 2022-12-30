@@ -210,6 +210,9 @@ const CampaignContentTable = () => {
                             size='small'
                             value={playlist.playCounter}
                             onChange={(e)=> playCounterCampaignPlaylist(playlist.id!, Number(e.currentTarget.value))}
+                            InputProps={{
+                              inputProps: { min: 0 }
+                            }}
                           />
                         </TableCell>
                         <TableCell align="right">
