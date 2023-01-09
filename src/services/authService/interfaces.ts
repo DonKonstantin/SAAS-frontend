@@ -33,5 +33,5 @@ export interface AuthServiceInterface {
      * @param token
      * @param password
      */
-    ChangePasswordByResetToken(token: string, password: string): Promise<string>
+    ChangePasswordByResetToken(token: string, password: string): Promise<boolean>
 }

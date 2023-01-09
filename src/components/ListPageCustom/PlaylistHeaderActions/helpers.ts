@@ -23,7 +23,7 @@ export const onDropHandler = async (
   acceptedFiles: File[],
   setDropedPlaylistList: (value: ExportedPlaylistType) => void,
   t: TFunction,
-  onClose: VoidFunction,
+  onCloseHandle: () => void,
   setNotAvailables: (value: string[]) => void,
   setShowResult: (values: boolean) => void
 ) => {
@@ -125,7 +125,7 @@ export const onDropHandler = async (
     });
 
     if (!noAvailableInStock.length) {
-      onClose();
+      onCloseHandle()
     }
 
     setShowResult(true);

@@ -90,7 +90,7 @@ type AuthorizationActions = {
     onResetPassword: { (email: string): Promise<void> }
 
     // Выполнение установки нового пароля по токену сброса пароля
-    onChangePasswordByResetToken: { (token: string, newPassword: string): Promise<void> }
+    onChangePasswordByResetToken: { (token: string, newPassword: string): Promise<boolean | undefined> }
 
     // Получение токена авторизации
     getAuthorizationToken: { (token?: string): string }
@@ -399,27 +399,30 @@ const onChangePasswordByResetToken = async (token: string, newPassword: string) 
 
     try {
         const authToken = await authService().ChangePasswordByResetToken(token, newPassword)
-        if (0 === authToken.length) {
+        if (!authToken) {
             throw new Error(`Failed to set user password`)
         }
 
-        tokenContext$.next(authToken)
+        const countTimer = 5 // Время в секундах до перехода на главную страницу
 
         notificationsDispatcher().dispatch({
-            message: i18n.t(`UI.auth-context.change-password.success`),
+            message: i18n.t(`UI.auth-context.change-password.success`, {count: countTimer}),
             type: "success"
         })
+
+        return authToken
     } catch (e) {
         notificationsDispatcher().dispatch({
             message: i18n.t(`UI.auth-context.change-password.error`),
             type: "warning"
         })
+    } finally {
+        context$.next({
+            ...context$.getValue(),
+            isRequestInProgress: false,
+        })
     }
 
-    context$.next({
-        ...context$.getValue(),
-        isRequestInProgress: false,
-    })
 };
 
 /**
