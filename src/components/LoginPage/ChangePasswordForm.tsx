@@ -6,6 +6,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import {useTranslation} from "react-i18next";
 import {PasswordValidator} from "../../services/validation/validators/passwordValidator";
 import {notificationsDispatcher} from "../../services/notifications";
+import {useRouter} from "next/router";
 
 // Свойства компонента
 export type ChangePasswordFormProps = WithAuthorization<{
@@ -26,10 +27,12 @@ const ChangePasswordForm: FC<ChangePasswordFormProps> = props => {
     } = props
 
     const {t} = useTranslation()
+    const router = useRouter()
 
     // State формы
     const [password, setPassword] = useState("")
     const [passwordConfirm, setPasswordConfirm] = useState("")
+    const [tmpToken, setTmpToken] = useState<boolean>(false);
 
     // Валидация паролей
     const [isValid, setIsValid] = useState(true)
@@ -64,7 +67,10 @@ const ChangePasswordForm: FC<ChangePasswordFormProps> = props => {
             return
         }
 
-        await onChangePasswordByResetToken(changePasswordToken, password)
+        const response = await onChangePasswordByResetToken(changePasswordToken, password)
+        if (response) {
+            setTmpToken(response)
+        }
     }
 
     // Обработка отправки формы изменения пароля пользователя
@@ -94,6 +100,30 @@ const ChangePasswordForm: FC<ChangePasswordFormProps> = props => {
 
         onToggleForm()
     }
+
+    useEffect(() => {
+      if (!tmpToken) {
+        return
+      }
+
+        let newTo: number
+        if (tmpToken) {
+            newTo = +setTimeout(() => {
+                router.push('/')
+                setTmpToken(false)
+                onToggleForm()
+            }, 5000)
+        }
+
+        return () => {
+            if (tmpToken) {
+                clearTimeout(newTo)
+                setTmpToken(false)
+                onToggleForm()
+            }
+        }
+
+    }, [tmpToken])
 
     const title = `${t(`UI.meta.title.prefix`)}${t(`UI.login.change-password.title`)}${t(`UI.meta.title.suffix`)}`
     return (

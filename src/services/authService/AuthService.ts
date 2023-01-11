@@ -31,13 +31,13 @@ export class AuthService implements AuthServiceInterface {
      * @param token
      * @param password
      */
-    async ChangePasswordByResetToken(token: string, password: string): Promise<string> {
+    async ChangePasswordByResetToken(token: string, password: string): Promise<boolean> {
         let response = await this.client().Mutation<{ token: string, password: string }, ChangePasswordByResetTokenQueryResponse>(
             new ChangePasswordByResetTokenQuery(token, password),
             {}
         )
 
-        return response.result.token
+        return response.result.success
     }
 
     /**

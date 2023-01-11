@@ -129,7 +129,7 @@ const CampaignMediaFilesUpload = () => {
             active={false}
             customInputText={t("pages.campaign.edit.fields.content.playlist.drop-zone.title")}
             height={113}
-            iconSize={18}
+            iconSize={50}
             dropZonePadding={22}
             messagePadding="15px 15px 10px"
             maxFiles={5}

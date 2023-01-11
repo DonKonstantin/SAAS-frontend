@@ -1,8 +1,8 @@
-import React, { FC, memo, Fragment } from "react";
-import { Divider, Typography, Stack, Button } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import React, {FC, Fragment, memo} from "react";
+import {Button, Divider, Stack, Typography} from "@mui/material";
+import {useTranslation} from "react-i18next";
 import NotAvailableTracksList from "./NotAvailableTracksList";
-import { ExportedPlaylistType } from "services/projectPlaylistService/interfaces";
+import {ExportedPlaylistType} from "services/projectPlaylistService/interfaces";
 
 interface Props {
   dropedPlaylistList: ExportedPlaylistType;

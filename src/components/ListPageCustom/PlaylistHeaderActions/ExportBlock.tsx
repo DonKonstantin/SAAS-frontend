@@ -22,7 +22,6 @@ const ExportBlock: FC<Props> = ({ onDrop, onClose }) => {
         customInputText={t(
           "project-playlists.import-playlist.drop-step.input-text"
         )}
-        iconSize={18}
         onDrop={onDrop}
         accept={"application/json"}
         height={192}
