@@ -75,6 +75,7 @@ const CampaignInfoGroup = () => {
     loadCampaign,
     newAddedCampaignPlaylist,
     setSavedChannels,
+    writeCampaign,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
@@ -348,7 +349,9 @@ const CampaignInfoGroup = () => {
 
       setSavedChannels(campaign.channels.map(channel => ({...channel.channel, channel_id: channel.channel_id})));
 
-      !successCreatedPlaylist && setCurrentActionTab("channels")
+      writeCampaign(campaign);
+
+      !successCreatedPlaylist && setCurrentActionTab("channels");
     } catch (error) {
       if (typeof error.message === "string") {
         messanger.dispatch({
