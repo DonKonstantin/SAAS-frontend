@@ -106,6 +106,16 @@ export class PlayersListingConfiguration
           customComponent: PlayerUploadingStatus,
         },
       },
+      object_passport_id: {
+        field: "object_passport_id",
+        title: "",
+        isEnabled: true,
+        isHidden: true,
+        fieldType: {
+          config: undefined,
+          type: "Simple",
+        },
+      },
     },
     actions: ListPageEditDeleteButtons,
     additionDataLoader: async (listData: ListFieldRow<"player">[]) => {
