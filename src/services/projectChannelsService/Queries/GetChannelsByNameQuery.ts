@@ -24,6 +24,7 @@ export class GetChannelsByNameQuery
         is_active
         players{
           id
+          is_active
         }
       }
     }`);

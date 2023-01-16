@@ -1,9 +1,21 @@
 import {CampaignEditContextActionsTypes, CampaignEditContextTypes} from './interface';
-import {auditTime, BehaviorSubject, combineLatest, delay, filter, interval, map, Observable, Subject, switchMap, tap} from "rxjs";
+import {
+  auditTime,
+  BehaviorSubject,
+  combineLatest,
+  delay,
+  filter,
+  interval,
+  map,
+  Observable,
+  Subject,
+  switchMap,
+  tap,
+  merge,
+} from "rxjs";
 import {
   Campaign,
   CampaignChannelInputObject,
-  CampaignDaysType,
   CampaignPlayList,
   CampaignPlaylistConnect
 } from 'services/campaignListService/types';
@@ -13,7 +25,6 @@ import campaignPlaylistService from "../../services/campaignPlaylistService";
 import { ProjectChannel } from 'services/playerCodeService/interfaces';
 import { getCurrentState } from 'context/AuthorizationContext';
 import { projectChannelsService } from 'services/projectChannelsService';
-import { merge } from 'lodash';
 
 class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
@@ -504,20 +515,29 @@ export const InitCampaignEditContext = () => {
     const newPlaylist = {
       id: newCampaignPlaylist.id,
       playCounter: 1,
-      periodStop: new Date(),
       shuffle: false,
-      periodStart: new Date(),
-      daysType: 'daily' as CampaignDaysType,
-      days: [],
-      isCampaignTimetable: false,
-      allDaysStartMinutes: 0,
-      allDaysStopMinutes: 0,
       sortOrder: getCampaign.playlists.length + 1,
       name: newCampaignPlaylist.name,
       duration: newCampaignPlaylist.duration,
       files: newCampaignPlaylist.files,
       campaignPlaylistId: newCampaignPlaylist.id,
-      campaignPlaylist: newCampaignPlaylist
+      campaignPlaylist: newCampaignPlaylist,
+      isCampaignTimetable: true,
+      daysType: getCampaign.campaign_days_type,
+      allDaysStartMinutes: 0,
+      allDaysStopMinutes: 0,
+      periodStart: getCampaign.campaign_period_start,
+      periodStop: getCampaign.campaign_period_stop,
+      days: getCampaign.days.map(day => {
+        delete day['campaign_id']
+        return {
+          id: day.id,
+          dayNum: day.day_num,
+          isActive: day.is_active,
+          daysStartMinutes: day.days_start_minutes,
+          daysStopMinutes: day.days_stop_minutes,
+        }
+      })
     }
 
     //@ts-ignore
