@@ -92,6 +92,13 @@ export interface CampaignEditContextActionsTypes {
    * @returns
    */
   setSavedChannels: (savedChannels: (ProjectChannel & {channel_id: string})[]) => void;
+
+  /**
+   * Записывает сущность кампании в контекст
+   * @param campaign 
+   * @returns 
+   */
+  writeCampaign: (campaign: Campaign) => void;
 };
 
 
