@@ -148,11 +148,29 @@ export class CampaignListService implements CampaignListServiceInterface {
   async storeCampaign(campaign: CampaignInput): Promise<Campaign> {
     this.logger.Debug("Сущность кампании: ", campaign);
 
+    //  устанавливаем у плэйлистов которые проигрываются по расписанию кампании те же дни что и у кампании
+    const preparedPlaylists = campaign.playlists.map(playlist => {
+      if (!playlist.isCampaignTimetable) {
+        return playlist;
+      }
+
+      return {
+        ...playlist,
+        days: campaign.days.map(day => ({
+          dayNum: day.day_num,
+          daysStartMinutes: day.days_start_minutes,
+          daysStopMinutes: day.days_stop_minutes,
+          id: Number(day.id),
+          isActive: day.is_active,
+        })),
+      };
+    });
+
     try {
       const { campaignStore } = await this.client.Query<
         StoreCampaignMutationParams,
         StoreCampaignMutationResponse
-      >(new StoreCampaignMutation(campaign), {});
+      >(new StoreCampaignMutation({...campaign, playlists: preparedPlaylists}), {});
       return campaignStore;
     } catch (error) {
       this.logger.Debug("Ошибка в создании кампании: ", error);
