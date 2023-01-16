@@ -45,6 +45,8 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
 
   const isActive = row.is_active;
 
+  const players = row.players?.filter(player => player.is_active)
+
   const onToggleItemCheckedState = () => {
     if (isChecked) {
       onChangeCheckedItems(
@@ -73,7 +75,7 @@ const ChannelRow: FC<Props> = ({ row, checkedItems, onChangeCheckedItems }) => {
           </StyledTypography>
         </StyledBox>
       </TableCell>
-      <TableCell>{row.players?.length}</TableCell>
+      <TableCell>{players?.length}</TableCell>
     </TableRow>
   );
 };

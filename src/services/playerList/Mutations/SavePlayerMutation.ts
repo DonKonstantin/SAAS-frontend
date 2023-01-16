@@ -27,9 +27,17 @@ export class SavePlayerMutation
       objectPasportId,
     };
 
+    let variables = `$playerId: ID!`;
+    let parameters =`playerId: $playerId`;
+
+    if (objectPasportId) {
+      variables += `, $objectPasportId: int64ID`
+      parameters += `, objectPassportId: $objectPasportId`
+    }
+
     this.query = gql(`
-    mutation __SAVE_PLAYER__($playerId: ID!, $objectPasportId: int64ID) {
-      updatePlayer (objectPassportId: $objectPasportId, playerId: $playerId) {
+    mutation __SAVE_PLAYER__(${variables}) {
+      updatePlayer (${parameters}) {
         id
       }
     }`

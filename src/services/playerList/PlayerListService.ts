@@ -45,10 +45,11 @@ export class PlayerListService implements PlayerListServiceInterface {
 
     /**
      * Запрос паспорта объекта привязанного к плееру
-     * @param playerId 
-     * @returns 
+     * @param object_passport_id
+     * @param playerId
+     * @returns
      */
-    async loadPlayerObjectPassport(playerId: string): Promise<ObjectPassport> {
+    async loadPlayerObjectPassport(object_passport_id: string| null, playerId: string): Promise<ObjectPassport> {
       this.logger.Debug("ID плеера: ", playerId);
 
       try {
@@ -56,7 +57,7 @@ export class PlayerListService implements PlayerListServiceInterface {
           GetPlayerObjectPasportQueryParams, 
           GetPlayerObjectPasportQueryResponse
         >(
-          new GetPlayerObjectPasportQuery(playerId),
+          new GetPlayerObjectPasportQuery(object_passport_id, playerId),
           {}
         );
 

@@ -202,6 +202,7 @@ const CampaignInfoGroup = () => {
 
     const campaignDaysType = getValues('campaign_days_type')
 
+    //Блок создания кампании
     if (!router.query.entityId && data) {
 
       const days = data.days.map((day) => {
@@ -257,6 +258,7 @@ const CampaignInfoGroup = () => {
       return
     }
 
+    //Блок редактирования кампании
     if (!campaign) {
       return
     }
@@ -405,6 +407,13 @@ const CampaignInfoGroup = () => {
     }
 
     Object.entries(campaign).forEach(([key, value]) => {
+      if (key === "days") {
+        const newDays = value.sort((a,b) => a.day_num - b.day_num)
+        setValue(key as any, newDays);
+
+        return
+      }
+
       setValue(key as any, value);
     });
   }, [campaign, router.query.entityId]);

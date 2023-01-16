@@ -1,14 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Autocomplete, Button, Grid, Stack, TextField } from "@mui/material";
-import { useTranslation } from "react-i18next";
-import { debounceTime, distinctUntilChanged, filter, fromEvent, map, switchMap, tap } from "rxjs";
+import React, {useEffect, useRef, useState} from 'react';
+import {Autocomplete, Button, Grid, Stack, TextField} from "@mui/material";
+import {useTranslation} from "react-i18next";
+import {debounceTime, distinctUntilChanged, filter, fromEvent, map, switchMap, tap} from "rxjs";
 import projectPlaylistService from "../../../../services/projectPlaylistService";
-import { PlaylistsResponseType } from "../../../../services/projectPlaylistService/interfaces";
-import { CampaignDaysType } from "../../../../services/campaignListService/types";
-import { useCampaignEditContext } from "../../../../context/CampaignEditContext/useCampaignEditContext";
-import { isEqual } from "lodash";
-import { getCurrentState } from "../../../../context/AuthorizationContext";
-import { notificationsDispatcher } from "../../../../services/notifications";
+import {PlaylistsResponseType} from "../../../../services/projectPlaylistService/interfaces";
+import {useCampaignEditContext} from "../../../../context/CampaignEditContext/useCampaignEditContext";
+import {isEqual} from "lodash";
+import {getCurrentState} from "../../../../context/AuthorizationContext";
+import {notificationsDispatcher} from "../../../../services/notifications";
 import {
   useCampaignPlaylistEditContext
 } from "../../../../context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
@@ -38,6 +37,10 @@ const CampaignPlayListContent = () => {
   const [currentPlaylist, setCurrentPlaylist] = useState<PlaylistsResponseType | undefined>(undefined);
   const [inputValue, setInputValue] = useState<string>("");
 
+  if (!campaign || !project) {
+    return <></>
+  }
+
   const addPlaylistHandle = () => {
     if (!currentPlaylist || !campaign) {
       return
@@ -52,18 +55,27 @@ const CampaignPlayListContent = () => {
       name: currentPlaylist.name,
       duration: currentPlaylist.duration,
       isCampaignTimetable: false,
-      allDaysStartMinutes: 0,
-      allDaysStopMinutes: 0,
       sortOrder: campaign.playlists.length + 1,
-      periodStop: new Date(),
       shuffle: false,
-      periodStart: new Date(),
-      daysType: 'daily' as CampaignDaysType,
-      playCounter: 1, //TODO имзенить когда добавят в запрос
-      days: [],
+      playCounter: 1,
       files: currentPlaylist.files,
       projectPlaylistId: currentPlaylist.id,
-      projectPlaylist: currentPlaylist
+      projectPlaylist: currentPlaylist,
+      daysType: campaign.campaign_days_type,
+      allDaysStartMinutes: 0,
+      allDaysStopMinutes: 0,
+      periodStart: campaign.campaign_period_start,
+      periodStop: campaign.campaign_period_stop,
+      days: campaign.days.map(day => {
+        delete day['campaign_id']
+        return {
+          id: day.id,
+          dayNum: day.day_num,
+          isActive: day.is_active,
+          daysStartMinutes: day.days_start_minutes,
+          daysStopMinutes: day.days_stop_minutes,
+        }
+      })
     }
 
     //@ts-ignore
@@ -137,10 +149,6 @@ const CampaignPlayListContent = () => {
 
     loadPlaylists().finally(() => setIsLoadingAutocomplete(false))
   },[project])
-
-  if (!campaign) {
-    return <></>
-  }
 
   return (
     <Grid container alignItems="center">

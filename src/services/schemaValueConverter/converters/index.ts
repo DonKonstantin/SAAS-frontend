@@ -11,6 +11,7 @@ import {DateTimeValueProcessor} from "./DateTimeValueProcessor";
 import {DateTimeNotNullValueProcessor} from "./DateTimeNotNullValueProcessor";
 import {EnumValueNotNullProcessor} from "./EnumValueNotNullProcessor";
 import {EnumValueProcessor} from "./EnumValueProcessor";
+import {NullableIDProcessor} from "./NullableIDProcessor";
 
 // Фабрика процессоров конвертации значений
 export const schemaValueConverterProcessors: () => SchemaValueConverterProcessor[] = () => ([
@@ -26,4 +27,5 @@ export const schemaValueConverterProcessors: () => SchemaValueConverterProcessor
     new DateTimeNotNullValueProcessor(),
     new EnumValueNotNullProcessor(),
     new EnumValueProcessor(),
+    new NullableIDProcessor(),
 ])

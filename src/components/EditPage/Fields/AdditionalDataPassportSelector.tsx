@@ -32,7 +32,7 @@ const AdditionalDataPassportSelector: FC<EditFieldProperties> = ({
     additionData,
   } = fieldData;
 
-  const defaultValue = additionData.project_id.platerObjectPassport.id || "";
+  const defaultValue = additionData.project_id.platerObjectPassport?.id || "";
 
   const options = additionData.project_id.playerObjectPassports || [];
 
