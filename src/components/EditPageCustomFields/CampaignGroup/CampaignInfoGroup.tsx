@@ -1,5 +1,5 @@
 import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
-import {Box, Grid, Paper, Stack, Tab} from "@mui/material";
+import {Box, Button, Grid, Paper, Stack, Tab} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {LoadingButton, TabContext, TabList, TabPanel} from "@mui/lab";
 import {useTranslation} from "react-i18next";
@@ -194,6 +194,10 @@ const CampaignInfoGroup = () => {
     campaign_priority: watch("campaign_priority"),
     campaign_play_type: watch("campaign_play_type"),
     campaign_days_type: watch("campaign_days_type"),
+  };
+
+  const onCancelClickHandler = () => {
+    router.push(`/domain/${domain}/project/${project}/campaign`);
   };
 
   const onSubmit = async (data?: FormValuesProps) => {
@@ -534,15 +538,28 @@ const CampaignInfoGroup = () => {
                     <Stack direction="row" justifyContent="flex-end">
                       {
                         currentActionTab !== optionsForTabs.channels &&
-                          <LoadingButton
-                              variant="outlined"
-                              color="success"
-                              type="submit"
+                        <>
+                          {asPathNestedRoutes === "add" && (
+                            <Button 
+                              disabled={isSubmitting} 
+                              variant="outlined" 
+                              color="secondary"
                               sx={{ m: "18px 21px 18px 0" }}
-                              loading={isSubmitting}
+                              onClick={onCancelClickHandler}
+                            >
+                              {t("pages.campaign.add.buttons.cancel")}
+                            </Button>
+                          )}
+                          <LoadingButton
+                            variant="outlined"
+                            color="success"
+                            type="submit"
+                            sx={{ m: "18px 21px 18px 0" }}
+                            loading={isSubmitting}
                           >
                             {t("pages.campaign.add.buttons.save")}
                           </LoadingButton>
+                        </>
                       }
                     </Stack>
                   </Paper>

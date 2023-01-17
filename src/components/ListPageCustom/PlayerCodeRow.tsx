@@ -63,7 +63,7 @@ const PlayerCodeRow: FC<ListRowProps> = (props) => {
   const subRowsData: PlayerWithoutRelations[] =
     additionData?.player_code?.filter(
       (item) => item.code === row.primaryKeyValue
-    )[0].players || [];
+    )[0]?.players || [];
 
   // Переключение состояния чекбокса выбора элемента
   const onToggleItemCheckedState: SwitchBaseProps["onClick"] = (event) => {

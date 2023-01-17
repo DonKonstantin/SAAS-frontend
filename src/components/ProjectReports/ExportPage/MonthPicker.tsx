@@ -32,7 +32,7 @@ const MonthPicker: FC<Props> = ({ dateFrom, setDateFrom, setDateTo }) => {
     );
 
     const preparedToDate = new Date(
-      dayjs(dateTo).format("YYYY-MM-DD") + "T00:00:00.000Z"
+      dayjs(dateTo).format("YYYY-MM-DD") + "T23:59:59.000Z"
     );
 
     setDateTo(preparedToDate);

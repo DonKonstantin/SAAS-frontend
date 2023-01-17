@@ -43,7 +43,9 @@ const ReportsDateRange: FC<Props> = (props) => {
       return;
     }
 
-    setDateTo(dateWithoutTimeZone(dayjs(value).endOf('day').toDate()));
+    const date = dateWithoutTimeZone(dayjs(value).startOf('day').toDate());
+
+    setDateTo(new Date(dayjs(date).format("YYYY-MM-DD") + "T23:59:59.000Z"));
   };
 
   return (

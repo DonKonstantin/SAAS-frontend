@@ -28,6 +28,11 @@ const projectChannel: Schema = {
             isPrimaryKey: false,
             isArray: true,
             schema: "Player_Without_Relations",
+        },
+        updated_at: {
+          type: "DateTime!",
+          isPrimaryKey: false,
+          isArray: false,
         }
     },
     isChangeable: true,

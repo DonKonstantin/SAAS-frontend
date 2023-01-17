@@ -291,7 +291,7 @@ export default class ProjectPlaylistService
 
     try {
       const response = await this.client.Mutation<GetCampaignsIdByNameQueryParams,
-        GetCampaignsIdByNameQueryResponse>(new GetCampaignsIdByNameQuery(campaignName, projectId), {});
+        GetCampaignsIdByNameQueryResponse>(new GetCampaignsIdByNameQuery(`%${campaignName}%`, projectId), {});
 
       this.logger.Debug("Ответ на запрос массива ID кампаний по имени: ", response);
 
