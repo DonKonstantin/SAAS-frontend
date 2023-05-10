@@ -119,6 +119,21 @@ DEV Release Deploy:
       - local: '.gitlab-ci/_DeployRelease.yml'
   needs: [ "Build tag" ]
 
+# Деплой тега на PROD (ручной)
+PROD Release Deploy:
+  stage: deploy
+  only:
+    - tags
+  when: manual
+  variables:
+    CI_REF: $CI_COMMIT_TAG
+  trigger:
+    strategy: depend
+    include:
+      - local: '.gitlab-ci/variables/_Prod_Variables.yml'
+      - local: '.gitlab-ci/_DeployRelease.yml'
+  needs: [ "Build tag" ]
+
 #=====================================================================================================
 # Удаление приложения из ревью
 #=====================================================================================================

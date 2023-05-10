@@ -3,6 +3,9 @@ kind: Secret
 type: kubernetes.io/dockercfg
 metadata:
   name: registrysecret
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "-5"
 data:
   .dockercfg: {{ printf "{\"%s\": {\"auth\": \"%s\"}}" .Values.imageCredentials.registry (printf "%s:%s" .Values.imageCredentials.username .Values.imageCredentials.password | b64enc) | b64enc }}
 
