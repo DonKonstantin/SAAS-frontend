@@ -32,7 +32,7 @@ const PermissionGroup: FC<PermissionGroupProps> = props => {
 
     // Обработка переключения выбранных элементов
     const handleToggleItem = (item: string) => {
-        onChangeSelected(selected => {
+        onChangeSelected(() => {
             if (selected.includes(item)) {
                 return selected.filter(s => s !== item)
             }

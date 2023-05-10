@@ -15,6 +15,9 @@ export const RealmMenuItems = (): MenuItem[] => [
         link: {href: "/domain"},
         title: "UI.menu.left-menu.items.domain",
         icon: StorageIcon,
+        level: "realm",
+        // permission: 'READ_DOMAIN',
+        // checkIncludes: true,
     },
     {
         link: {href: "/users"},
@@ -115,6 +118,9 @@ export const DomainMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.projects.index",
+        level: 'domain',
+        // permission: 'READ_PROJECT',
+        // checkIncludes: true,
     },
     {
         link: () => {
@@ -165,6 +171,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.projects-list",
+        pathName: '',
         icon: ArrowBackIosIcon,
         disableActiveState: true,
     },
@@ -178,6 +185,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.campaign",
+        pathName: 'campaign',
     },
     {
         link: () => {
@@ -189,6 +197,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.channel",
+        pathName: 'channel',
     },
     {
         link: () => {
@@ -200,6 +209,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.player-codes.index",
+        pathName: 'player-code',
     },
     {
         link: () => {
@@ -211,6 +221,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.project-playlists",
+        pathName: 'project-playlist',
     },
     {
         link: () => {
@@ -222,6 +233,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "objects-passport-list.left-menu-title",
+        pathName: 'object-passport',
         permission: "READ_OBJECT_PASSPORT",
         level: "project",
     },
@@ -235,6 +247,21 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "player-list.left-menu.title",
+        pathName: 'player-list',
+    },
+    {
+      link: () => {
+        const {domain, project} = getCurrentState();
+        
+        return {
+            href: "/domain/[domainId]/project/[projectId]/reports",
+            as: `/domain/${domain}/project/${project}/reports`,
+        }
+      },
+      title: "reports.left-menu-title",
+      pathName: 'reports',
+      permission: "READ_REPORTS",
+      level: "project",
     },
     {
         link: () => {
@@ -245,6 +272,7 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.user",
+        pathName: 'users',
         permission: "READ_USERS",
         level: "project",
     },
@@ -257,11 +285,13 @@ export const ProjectMenuItems = (): MenuItem[] => [
             };
         },
         title: "UI.menu.left-menu.items.roles",
+        pathName: 'roles',
         permission: "READ_ROLES",
         level: "project",
     },
     {
         title: "UI.menu.left-menu.items.logs",
+        pathName: 'logs',
         permission: "READ_LOGS",
         level: "project",
         link: () => {

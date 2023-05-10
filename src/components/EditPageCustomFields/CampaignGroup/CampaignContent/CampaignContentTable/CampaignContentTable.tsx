@@ -11,7 +11,7 @@ import TableHead from "@mui/material/TableHead";
 import { useTranslation } from "react-i18next";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { Checkbox, IconButton, styled } from "@mui/material";
+import { Checkbox, IconButton, styled, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCampaignEditContext } from "../../../../../context/CampaignEditContext/useCampaignEditContext";
@@ -102,6 +102,7 @@ const CampaignContentTable = () => {
   const {
     campaign,
     shuffleCampaignPlaylist,
+    playCounterCampaignPlaylist,
     movePlaylistCampaign
   } =
     useCampaignEditContext(
@@ -202,7 +203,18 @@ const CampaignContentTable = () => {
                             onChange={(e) => shuffleCampaignPlaylist(playlist.id!, e.currentTarget.checked)}
                           />
                         </TableCell>
-                        <TableCell align="left">{playlist.playCounter}</TableCell>
+                        <TableCell align="left">
+                          <TextField 
+                            type='number'
+                            variant='standard'
+                            size='small'
+                            value={playlist.playCounter}
+                            onChange={(e)=> playCounterCampaignPlaylist(playlist.id!, Number(e.currentTarget.value))}
+                            InputProps={{
+                              inputProps: { min: 1 }
+                            }}
+                          />
+                        </TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="small"

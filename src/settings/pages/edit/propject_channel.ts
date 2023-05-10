@@ -6,6 +6,7 @@ import {getCurrentState} from "../../../context/AuthorizationContext";
 import ProjectChannelGroup from "../../../components/EditPageCustomFields/project_channel/ProjectChannelGroup";
 import ProjectStatusField from "../../../components/EditPageCustomFields/project_channel/ProjectStatusField";
 import StringFieldWithoutLabel from "../../../components/EditPage/Fields/StringFieldWithoutLabel";
+import HiddenField from "components/EditPage/Fields/HiddenField";
 
 export class ProjectChannelEditPageConfig implements EditPageConfiguration<"project_channel"> {
     groups: EditFormGroup<"project_channel">[] = [
@@ -44,6 +45,13 @@ export class ProjectChannelEditPageConfig implements EditPageConfiguration<"proj
                     validation: [],
                     component: StringFieldWithoutLabel,
                 },
+                {
+                  field: "updated_at",
+                  title: "",
+                  defaultValue: new Date(),
+                  validation: [],
+                  component: HiddenField,
+              },
             ]
         },
     ];

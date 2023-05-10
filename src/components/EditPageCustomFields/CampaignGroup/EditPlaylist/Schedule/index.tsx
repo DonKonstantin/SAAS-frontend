@@ -16,7 +16,7 @@ import RHFRadioGroup from "../../../../hook-form/RHFRadioGroup";
 import {useCampaignEditContext} from "../../../../../context/CampaignEditContext/useCampaignEditContext";
 import {isEqual} from "lodash";
 import {daysName} from "../../CampaignInfoGroup";
-import { CampaignDay } from "services/projectPlaylistService/interfaces";
+import {CampaignDay} from "services/projectPlaylistService/interfaces";
 
 interface Props {
   storePlaylist: (playlist: CampaignPlaylistConnect) => void;
@@ -26,7 +26,7 @@ interface Props {
 
 interface CampaignPlaylistEditFormFieldsType {
   days: CampaignDay[];
-  campaign_days_type: CampaignDaysType;
+  daysType: CampaignDaysType;
   isCampaignTimetable: string
 }
 
@@ -104,7 +104,7 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
           days_start_minutes: 0,
           days_stop_minutes: 1439,
         })),
-    campaign_days_type: "daily" as CampaignDaysType,
+    daysType: playlist.daysType ?? "daily",
     periodStart: playlist.periodStart ?? null,
     periodStop: playlist.periodStop ?? null,
     isCampaignTimetable: String(playlist.isCampaignTimetable)
@@ -121,7 +121,7 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
     formState: { isSubmitting, errors },
   } = methods;
 
-  const watchSelectedType = watch("campaign_days_type");
+  const watchSelectedType = watch("daysType");
   const watchIsCampaignTimetable = watch("isCampaignTimetable");
 
   const onSubmit = (data: CampaignPlaylistEditFormFieldsType) => {
@@ -133,6 +133,7 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
     if (!playlist || !campaign) {
       return;
     }
+
     let preparedPlaylist;
 
     if (watchIsCampaignTimetable === "true") {
@@ -159,6 +160,19 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
         ...data,
         days: data.days.map(day => {
           delete day['campaign_id']
+
+          if (data.daysType === 'daily') {
+            const getDayForTime = data.days[0]
+
+            return ({
+              dayNum: day.day_num,
+              daysStartMinutes: getDayForTime.days_start_minutes,
+              daysStopMinutes: getDayForTime.days_stop_minutes,
+              isActive: true,
+              id: day.id
+            })
+          }
+
           return {
             id: day.id,
             dayNum: day.day_num,
@@ -216,39 +230,43 @@ const Schedule: FC<Props> = ({ storePlaylist, onSubmitCampaign }) => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={4} sx={{ mb: "23px" }} alignItems="flex-start">
-        <Grid item xs={2.5}>
-          {t("edit-campaign-playlist.field.campaign-period")}
-        </Grid>
-        <Grid item xs={9.5} sx={{ display: "flex", columnGap: "14px" }}>
-          <RHFDateField
-            name="periodStart"
-            inputFormat="дд/мм/гггг"
-            disabled={disableForm}
-            sx={{ maxWidth: 154 }}
-          />
-          <RHFDateField
-            name="periodStop"
-            inputFormat="дд/мм/гггг"
-            disabled={disableForm}
-            sx={{ maxWidth: 154 }}
-          />
-        </Grid>
-      </Grid>
+      {
+        !disableForm &&
+          <>
+              <Grid container spacing={4} sx={{ mb: "23px" }} alignItems="flex-start">
+                  <Grid item xs={2.5}>
+                    {t("edit-campaign-playlist.field.campaign-period")}
+                  </Grid>
+                  <Grid item xs={9.5} sx={{ display: "flex", columnGap: "14px" }}>
+                      <RHFDateField
+                          name="periodStart"
+                          inputFormat="дд/мм/гггг"
+                          disabled={disableForm}
+                          sx={{ maxWidth: 154 }}
+                      />
+                      <RHFDateField
+                          name="periodStop"
+                          inputFormat="дд/мм/гггг"
+                          disabled={disableForm}
+                          sx={{ maxWidth: 154 }}
+                      />
+                  </Grid>
+              </Grid>
 
-      <Grid container spacing={4} alignItems="flex-start">
-        <DaysGroupPicker
-          nameRadioButton="campaign_days_type"
-          nameFieldDays="days"
-          watchNameRadioButton={watchSelectedType}
-          disabled={disableForm}
-        />
-      </Grid>
+              <Grid container spacing={4} alignItems="flex-start">
+                  <DaysGroupPicker
+                      nameRadioButton="daysType"
+                      nameFieldDays="days"
+                      watchNameRadioButton={watchSelectedType}
+                      disabled={disableForm}
+                  />
+              </Grid>
+          </>
+      }
 
       <StyledButtonWrapper>
         <LoadingButton
           variant="outlined"
-          color="success"
           type="submit"
           sx={{ m: "18px 21px 18px 0" }}
           loading={isSubmitting}

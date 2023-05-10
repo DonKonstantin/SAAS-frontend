@@ -63,9 +63,9 @@ const ListPageEditDeleteFilesButtons: FC<ListPageEditDeleteButtonsProps> = props
     const file: MediaFile = Object.keys(item.columnValues).reduce((acc, element) => {
         acc = {
             ...acc,
-            [element]: item.columnValues[element].relationCaption
+            [element]: item.columnValues[element]?.relationCaption
                 ? item.columnValues[element].relationCaption
-                : item.columnValues[element].value
+                : item.columnValues[element]?.value || ''
         }
         return acc
     }, TemplateMediaFile);

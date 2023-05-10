@@ -14,12 +14,8 @@ import LoadingBlurEffect from "../CommonComponents/LoadingBlurEffect/LoadingBlur
 import {isEqual} from "lodash";
 
 const StyledWrapper = styled("div")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
+  width: '100%',
   background: "#FBFDFC",
-  padding: "30px 36px",
-  zIndex: 1100,
 });
 
 const StyledTabsWrapper = styled("div")({
@@ -57,6 +53,8 @@ type Props = {
 const EditPlaylist: FC<Props> = ({ onSubmitCampaign }) => {
   const { t } = useTranslation();
 
+  const { setPlaylist } = useCampaignPlaylistEditContext();
+
   const { playlist, isLoading, availableTabs, setAvailableTabs } = useCampaignPlaylistEditContext(
     distinctUntilChanged(
       (prev, curr) =>
@@ -92,6 +90,21 @@ const EditPlaylist: FC<Props> = ({ onSubmitCampaign }) => {
     }
 
   }, [playlist])
+
+  //при клике "Назад" возвращает к страницу кампании
+  useEffect(() => {
+    const onBack = (e) => {
+      e.preventDefault()
+      setPlaylist(undefined)
+      window.history.forward()
+    }
+
+    window.addEventListener('popstate', onBack)
+
+    return(()=>{
+      window.removeEventListener('popstate', onBack)
+    })
+  }, [])
 
   return (
     <StyledWrapper>

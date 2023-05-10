@@ -127,7 +127,7 @@ const FileList: FC = () => {
           <List
             selected={selected}
             setSelected={setSelected}
-            rows={filteredRows}
+            rows={filteredRows.slice(offset, limit + offset)}
             direction={direction}
             setDirection={setDirection}
           />

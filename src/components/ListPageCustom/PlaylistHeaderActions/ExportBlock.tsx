@@ -22,9 +22,9 @@ const ExportBlock: FC<Props> = ({ onDrop, onClose }) => {
         customInputText={t(
           "project-playlists.import-playlist.drop-step.input-text"
         )}
-        iconSize={18}
         onDrop={onDrop}
         accept={"application/json"}
+        height={192}
       />
       <Stack direction="row" justifyContent="space-between" sx={{ mt: 2.5 }}>
         <Box>

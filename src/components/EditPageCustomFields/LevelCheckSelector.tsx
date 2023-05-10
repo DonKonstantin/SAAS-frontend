@@ -1,4 +1,4 @@
-import React, {FC} from "react";
+import React, {FC, useEffect} from "react";
 import {EditFieldProperties} from "../../settings/pages/system/edit";
 import {useAuthorization} from "../../context/AuthorizationContext";
 import {useEntityEdit} from "../../context/EntityEditContext";
@@ -6,6 +6,7 @@ import {LoaderQueryResponse} from "../../services/loaders/allDomainsAndProjects/
 import {MenuItem, Tab, Tabs, TextField, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {Box} from "@mui/system";
+import { notificationsDispatcher } from "services/notifications";
 
 // Селектор выбора уровня доступа для роли
 const LevelCheckSelector: FC<EditFieldProperties> = props => {
@@ -55,6 +56,40 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
     const isNeedShowRealm = menuType === `realm`
     const isNeedShowDomain = menuType === `domain` || menuType === `realm`
 
+    // const permissions_ids = values.permissions_id as string[];
+
+    useEffect(() => {
+      if (values['level'] === "realm") {
+        return
+      }
+
+      if (values['level'] === "domain" && !domainsToChoose.length) {
+        notificationsDispatcher().dispatch({
+          message: t('pages.role.error.load_domains'),
+          type: 'warning',
+        });
+
+        return
+      }
+
+      if (!!projectsToChoose.length) {
+        return
+      }
+
+      notificationsDispatcher().dispatch({
+        message: t('pages.role.error.load_projects'),
+        type: 'warning',
+      });
+    }, []);
+
+    // useEffect(() => {
+    //   if (!!permissions_ids.length) {
+    //     return
+    //   }
+      
+    //   onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
+    // }, []);
+
     return (
         <Box sx={{flexGrow: 1, display: 'flex', height: 174}}>
             <Tabs
@@ -63,6 +98,7 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                 value={values['level']}
                 onChange={(_, value) => {
                     onChangeFieldValue('level', () => value)
+                    // onChangeFieldValue("permissions_id", () => value === 'domain' ? ['51'] : value === 'project' ? ['52'] : [])
                     onChangeFieldValue("permissions_id", () => [])
                     onChangeFieldValue(fieldCode, () => {
                         if (value === "realm") {
@@ -117,11 +153,13 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                         disabled={values['level'] !== "domain"}
                         fullWidth
                         select
+                        SelectProps={{ MenuProps: { PaperProps: { sx: { maxHeight: 300 } } } }}
                         onChange={event => {
                             event.preventDefault()
                             event.stopPropagation()
 
                             onChangeFieldValue(fieldCode, () => event.target.value)
+                            // onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
                             onChangeFieldValue("permissions_id", () => [])
                         }}
                     >
@@ -154,12 +192,14 @@ const LevelCheckSelector: FC<EditFieldProperties> = props => {
                         disabled={values['level'] !== "project"}
                         fullWidth
                         select
+                        SelectProps={{ MenuProps: { PaperProps: { sx: { maxHeight: 300 } } } }}
                         onChange={event => {
                             event.preventDefault()
                             event.stopPropagation()
 
                             onChangeFieldValue(fieldCode, () => event.target.value)
                             onChangeFieldValue("permissions_id", () => [])
+                            // onChangeFieldValue("permissions_id", () => values.level === 'domain' ? ['51'] :  values.level === 'project' ? ['51', '52'] : []);
                         }}
                     >
                         <MenuItem value="">

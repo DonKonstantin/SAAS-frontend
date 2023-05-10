@@ -50,6 +50,11 @@ export interface ProjectPlaylistServiceInterface {
    * Получаем список плейлистов по названию
    */
   getPlaylistsByName: (name: string, projectId: number) => Promise<PlaylistsResponseType[]>;
+
+  /**
+   * Получаем список плейлистов по массиву названию
+   */
+  getPlaylistsByArrayName: (name: string[], projectId: number) => Promise<PlaylistsResponseType[]>;
 }
 
 export type ExportedPlaylistType = { [x: string]: string[] };
@@ -291,3 +296,7 @@ export type GetPlaylistsCampaignByNameResponse = {
   playlists: PlaylistsResponseType[]
 };
 
+export type GetPlaylistsCampaignByArrayNameParams = {
+  playlistName: string[];
+  projectId: number
+};

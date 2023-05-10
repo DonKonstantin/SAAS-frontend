@@ -1,8 +1,8 @@
 // form
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from "react-hook-form";
 // @mui
-import { TextField, TextFieldProps } from '@mui/material';
-import * as React from 'react';
+import { TextField, TextFieldProps } from "@mui/material";
+import * as React from "react";
 import AdapterDayjs from "@mui/lab/AdapterDayjs";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 
@@ -10,16 +10,18 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/lab";
 
 interface IProps {
   name: string;
-  inputFormat?: string
-  disabled?: boolean
+  inputFormat?: string;
+  disabled?: boolean;
+  shouldDisableDate?: (day: any) => boolean;
 }
 
 export default function RHFDateField({
-                                       name,
-                                       inputFormat,
-                                       disabled,
-                                       ...other
-                                     }: IProps & TextFieldProps) {
+  name,
+  inputFormat,
+  disabled,
+  shouldDisableDate,
+  ...other
+}: IProps & TextFieldProps) {
   const { control } = useFormContext();
 
   return (
@@ -31,6 +33,7 @@ export default function RHFDateField({
           <DesktopDatePicker
             {...field}
             disabled={disabled}
+            shouldDisableDate={shouldDisableDate}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -39,12 +42,10 @@ export default function RHFDateField({
                 helperText={error?.message}
                 variant="standard"
                 {...other}
-                inputProps={
-                  {
-                    ...params.inputProps,
-                    placeholder: inputFormat ?? params.inputProps?.placeholder
-                  }
-                }
+                inputProps={{
+                  ...params.inputProps,
+                  placeholder: inputFormat ?? params.inputProps?.placeholder,
+                }}
               />
             )}
           />

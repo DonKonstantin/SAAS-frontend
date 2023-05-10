@@ -68,11 +68,11 @@ let simpleCompanyOptionsData = [
   {
     name: "pages.campaign.add.fields.schedule.campaign_priority",
     component: <RHFDropDown name='campaign_priority' options={[
-      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
       { name: 'background', label: "pages.campaign.list.fields.campaign-priority-enum.background" },
       { name: 'low', label: "pages.campaign.list.fields.campaign-priority-enum.low" },
       { name: 'normal', label: "pages.campaign.list.fields.campaign-priority-enum.normal" },
       { name: 'high', label: "pages.campaign.list.fields.campaign-priority-enum.high" },
+      { name: 'higher', label: "pages.campaign.list.fields.campaign-priority-enum.higher" },
     ]}/>,
     size: {
       container: { spacing: 4, sx: { mb: "21px" } },
@@ -129,7 +129,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
                 <Grid item xs={1}>
                     <RHFTextField type='number' name='campaign_play_tracks_period_value'/>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={1.5}>
                     <RHFDropDown name='campaign_play_tracks_period_type' options={
                       [
                         {
@@ -193,10 +193,10 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
         <Grid item xs={2.5}>
           {t("pages.campaign.add.fields.schedule.campaign_period")}
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item xs={1.8}>
           <RHFDateField name='campaign_period_start' inputFormat='дд/мм/гггг'/>
         </Grid>
-        <Grid item xs={1.5}>
+        <Grid item xs={1.8}>
           <RHFDateField name='campaign_period_stop' inputFormat='дд/мм/гггг'/>
         </Grid>
       </Grid>

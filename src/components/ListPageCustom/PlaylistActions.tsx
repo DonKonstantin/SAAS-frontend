@@ -24,7 +24,7 @@ const PlaylistActions: FC<ListHeaderProps> = ({ checkedItems }) => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isCopying, setIsCopying] = useState<boolean>(false);
 
-  const campaigns = data?.currentData.additionData.playlistCampaigns.flatMap((campaign) => campaign.campaigns) || [];
+  const campaigns = data?.currentData.additionData?.playlistCampaigns.flatMap((campaign) => campaign.campaigns) || [];
 
   /**
    * Обработчик кнопки обновления связных компаний

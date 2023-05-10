@@ -54,6 +54,7 @@ const CampaignContent = () => {
         value={formatTime}
         variant="standard"
         fullWidth
+        disabled
         InputProps={{
           endAdornment:
             <InputAdornment position="end">
@@ -69,6 +70,7 @@ const CampaignContent = () => {
       component: <TextField
         value={countTracks}
         variant="standard"
+        disabled
         fullWidth
         sx={{ maxWidth: "99px" }}
         type='number'

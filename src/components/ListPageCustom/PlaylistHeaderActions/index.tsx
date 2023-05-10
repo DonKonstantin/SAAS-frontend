@@ -1,11 +1,9 @@
-import { ListHeaderProps } from "components/ListPageParts/TableCaption";
-import React, { FC, memo, useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Button, Modal, Stack, Divider } from "@mui/material";
+import {ListHeaderProps} from "components/ListPageParts/TableCaption";
+import React, {FC, memo, useCallback, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {Button, Divider, Modal, Stack} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DragAndDropComponent from "./DragAndDropComponent";
-import { useEntityList } from "context/EntityListContext";
-import { distinctUntilChanged } from "rxjs";
 
 /**
  * Активный компонент для заголовка листинга плэйлистов
@@ -14,10 +12,6 @@ import { distinctUntilChanged } from "rxjs";
 const PlaylistHeaderActions: FC<ListHeaderProps> = () => {
   const { t } = useTranslation();
 
-  const { reloadedListingData } = useEntityList(
-    distinctUntilChanged(() => true)
-  );
-
   const [open, setOpen] = useState<boolean>(false);
 
   const openImportHandler = useCallback(() => {
@@ -25,10 +19,8 @@ const PlaylistHeaderActions: FC<ListHeaderProps> = () => {
   }, [setOpen]);
 
   const onCloseHandler = useCallback(() => {
-    reloadedListingData();
-
     setOpen(false);
-  }, [setOpen, reloadedListingData]);
+  }, [setOpen]);
 
   return (
     <Stack direction="column" alignItems="flex-end" sx={{ pb: 2.5 }}>

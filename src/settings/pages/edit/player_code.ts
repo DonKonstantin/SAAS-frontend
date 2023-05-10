@@ -101,7 +101,7 @@ export class PlayerCodeEditPageConfig
           field: "project_id",
           title: "",
           size: { xs: 12 },
-          defaultValue: "13",
+          defaultValue: this.projectId,
           validation: [],
           component: HiddenField,
         },

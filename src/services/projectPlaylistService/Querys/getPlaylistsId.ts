@@ -17,8 +17,8 @@ export class GetPlaylistsIdByCampaignsIdQuery
     };
 
     this.query = gql(`
-      query __GET_PLAYLISTS_ID_BY_CAMPAIGNS_ID__($projectId: [ID!]!){
-        campaignsId: projectPlayListByCampaigns(campaigns: $projectId)
+      query __GET_PLAYLISTS_ID_BY_CAMPAIGNS_ID__($campaignsId: [ID!]!){
+        campaignsId: projectPlayListByCampaigns(campaigns: $campaignsId)
       }`
     );
   }

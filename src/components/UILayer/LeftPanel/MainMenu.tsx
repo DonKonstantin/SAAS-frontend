@@ -1,51 +1,37 @@
-import React, {FC} from "react";
-import AuthorizationHoc, {WithAuthorization} from "../../../context/AuthorizationContext";
-import {DomainMenuItems, ProjectMenuItems, RealmMenuItems} from "../../../settings/menu";
-import {MenuItem} from "../../../settings/menu/system";
-import GetAvailableMenuItemsByUserInfo from "../../../services/helpers/GetAvailableMenuItemsByUserInfo";
-import {List} from "@mui/material";
+import React, { FC } from "react";
+import AuthorizationHoc, {
+  WithAuthorization,
+} from "../../../context/AuthorizationContext";
+import { List } from "@mui/material";
 import MainMenuItem from "./MainMenuItem";
-import {auditTime} from "rxjs";
+import { auditTime } from "rxjs";
+import { getMenuItems } from "./helpers";
 
 // Свойства компонента
-export type MainMenuProps = WithAuthorization<{}>
+export type MainMenuProps = WithAuthorization<{}>;
 
 // Компонент вывода основного меню
-const MainMenu: FC<MainMenuProps> = props => {
-    const {
-        userInfo,
-        menuType,
-    } = props
+const MainMenu: FC<MainMenuProps> = (props) => {
+  const { userInfo, menuType } = props;
 
-    if (!userInfo) {
-        return null
-    }
+  if (!userInfo) {
+    return null;
+  }
 
-    let menuItems: MenuItem[]
-    switch (menuType) {
-        case "project":
-            menuItems = ProjectMenuItems()
-            break
-        case "domain":
-            menuItems = DomainMenuItems()
-            break
-        default:
-            menuItems = RealmMenuItems()
-    }
+  const menuItems = getMenuItems(menuType, userInfo);
 
-    // Фильтруем пункты меню по уровню доступа
-    menuItems = GetAvailableMenuItemsByUserInfo(userInfo, menuItems)
-
-    return (
-        <List>
-            {menuItems.map((item, i) => (
-                <MainMenuItem item={item} key={i}/>
-            ))}
-        </List>
-    )
-}
+  return (
+    <List>
+      {menuItems.map((item, i) => (
+        <MainMenuItem item={item} key={i} />
+      ))}
+    </List>
+  );
+};
 
 // Экспортируем компонент основного меню
-export default AuthorizationHoc(auditTime(50))(React.memo(MainMenu, (prevProps, nextProps) => {
-    return prevProps.menuType === nextProps.menuType
-}))
+export default AuthorizationHoc(auditTime(50))(
+  React.memo(MainMenu, (prevProps, nextProps) => {
+    return prevProps.menuType === nextProps.menuType;
+  })
+);

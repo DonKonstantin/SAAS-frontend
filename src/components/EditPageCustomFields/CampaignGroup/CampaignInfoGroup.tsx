@@ -1,5 +1,5 @@
 import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
-import {Box, Grid, Paper, Stack, Tab} from "@mui/material";
+import {Box, Button, Grid, Paper, Stack, Tab} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {LoadingButton, TabContext, TabList, TabPanel} from "@mui/lab";
 import {useTranslation} from "react-i18next";
@@ -26,12 +26,13 @@ import {
 import {CampaignDaysType, CampaignInput,} from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
 import {useCampaignEditContext} from "../../../context/CampaignEditContext/useCampaignEditContext";
-import {isEqual} from "lodash";
+import {isEqual, xor} from "lodash";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
 import {EditPlaylist} from "./EditPlaylist";
 import dayjs from "dayjs";
 import {notificationsDispatcher} from "services/notifications";
+import Breadcrumbs from "components/Breadcrumbs";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -70,15 +71,19 @@ const CampaignInfoGroup = () => {
     isInitialized,
     campaignListErrorText,
     successCreatedPlaylist,
+    selectedChannels,
     loadCampaign,
     newAddedCampaignPlaylist,
+    setSavedChannels,
+    writeCampaign,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
         (prev, curr) =>
           prev.isInitialized === curr.isInitialized &&
           prev.successCreatedPlaylist === curr.successCreatedPlaylist &&
-          isEqual(prev.campaign, curr.campaign)
+          isEqual(prev.campaign, curr.campaign) &&
+          !xor(prev.selectedChannels, curr.selectedChannels).length
       )
     );
 
@@ -191,6 +196,10 @@ const CampaignInfoGroup = () => {
     campaign_days_type: watch("campaign_days_type"),
   };
 
+  const onCancelClickHandler = () => {
+    router.push(`/domain/${domain}/project/${project}/campaign`);
+  };
+
   const onSubmit = async (data?: FormValuesProps) => {
     if (Object.keys(errors).length) {
       return;
@@ -198,6 +207,7 @@ const CampaignInfoGroup = () => {
 
     const campaignDaysType = getValues('campaign_days_type')
 
+    //Блок создания кампании
     if (!router.query.entityId && data) {
 
       const days = data.days.map((day) => {
@@ -219,6 +229,8 @@ const CampaignInfoGroup = () => {
 
       const newData = {
         ...data,
+        campaign_period_start: new Date(dayjs(data.campaign_period_start).format("YYYY-MM-DD")),
+        campaign_period_stop: new Date(dayjs(data.campaign_period_stop).format("YYYY-MM-DD")),
         days,
         project_id: project
       }
@@ -228,7 +240,7 @@ const CampaignInfoGroup = () => {
 
         if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
           router.push(
-            `/domain/${domain}/project/${project}/campaign/edit/${response}`
+            `/domain/${domain}/project/${project}/campaign/edit/${response.id}`
           );
           return;
         }
@@ -251,6 +263,7 @@ const CampaignInfoGroup = () => {
       return
     }
 
+    //Блок редактирования кампании
     if (!campaign) {
       return
     }
@@ -304,16 +317,18 @@ const CampaignInfoGroup = () => {
 
     const channels = campaign.channels.map(channel => {
       if (channel.channel_id) {
-
         return { channel_id: Number(channel.channel_id), id: Number(channel.id) }
       }
 
       return { channel_id: Number(channel.id) }
-    })
+    });
+
+    //  Если было взаимодействие со вкладкой каналов то берем каналы обработанные на этой вкладке
+    const commonChannels = selectedChannels || channels;
 
     setValue('days', days)
     setValue('playlists', playlistInput)
-    setValue('channels', channels)
+    setValue('channels', commonChannels)
     const inputData = getValues()
 
     delete inputData["version"];
@@ -336,8 +351,13 @@ const CampaignInfoGroup = () => {
     }
 
     try {
-      await campaignListService().storeCampaign(inputData)
-      !successCreatedPlaylist && setCurrentActionTab("channels")
+      const campaign = await campaignListService().storeCampaign(inputData);
+
+      setSavedChannels(campaign.channels.map(channel => ({...channel.channel, channel_id: channel.channel_id})));
+
+      writeCampaign(campaign);
+
+      !successCreatedPlaylist && setCurrentActionTab("channels");
     } catch (error) {
       if (typeof error.message === "string") {
         messanger.dispatch({
@@ -394,6 +414,13 @@ const CampaignInfoGroup = () => {
     }
 
     Object.entries(campaign).forEach(([key, value]) => {
+      if (key === "days") {
+        const newDays = value.sort((a,b) => a.day_num - b.day_num)
+        setValue(key as any, newDays);
+
+        return
+      }
+
       setValue(key as any, value);
     });
   }, [campaign, router.query.entityId]);
@@ -453,8 +480,10 @@ const CampaignInfoGroup = () => {
   }
 
   return (
-    <>
-      <CampaignPlaylistEditContextConnector>
+    <CampaignPlaylistEditContextConnector>
+      <Box sx={{pb: 3}}>
+        <Breadcrumbs/>
+      </Box>
         {!!playlist
           ? <EditPlaylist onSubmitCampaign={addPlaylist}/>
           :
@@ -509,15 +538,28 @@ const CampaignInfoGroup = () => {
                     <Stack direction="row" justifyContent="flex-end">
                       {
                         currentActionTab !== optionsForTabs.channels &&
-                          <LoadingButton
-                              variant="outlined"
-                              color="success"
-                              type="submit"
+                        <>
+                          {asPathNestedRoutes === "add" && (
+                            <Button 
+                              disabled={isSubmitting} 
+                              variant="outlined" 
+                              color="secondary"
                               sx={{ m: "18px 21px 18px 0" }}
-                              loading={isSubmitting}
+                              onClick={onCancelClickHandler}
+                            >
+                              {t("pages.campaign.add.buttons.cancel")}
+                            </Button>
+                          )}
+                          <LoadingButton
+                            variant="outlined"
+                            color="success"
+                            type="submit"
+                            sx={{ m: "18px 21px 18px 0" }}
+                            loading={isSubmitting}
                           >
                             {t("pages.campaign.add.buttons.save")}
                           </LoadingButton>
+                        </>
                       }
                     </Stack>
                   </Paper>
@@ -526,9 +568,7 @@ const CampaignInfoGroup = () => {
             </Box>
           </Grid>
         }
-
-      </CampaignPlaylistEditContextConnector>
-    </>
+    </CampaignPlaylistEditContextConnector>
   );
 };
 

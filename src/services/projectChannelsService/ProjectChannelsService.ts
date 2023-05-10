@@ -29,23 +29,20 @@ export class ProjectChannelsService implements ProjectChannelsServiceInterface {
   }
 
   /**
-   * Получения списка каналов по ID проекта и части имени
+   * Получения списка каналов по ID проекта
    * @param projectId
-   * @param name
    * @returns
    */
-  async getChannelsByName(
+  async getChannels(
     projectId: string,
-    name: string
   ): Promise<ProjectChannel[]> {
     this.logger.Debug("ID проекта: ", projectId);
-    this.logger.Debug("Имя канала: ", name);
 
     try {
       const { channels } = await this.client.Query<
         GetChannelsByNameQueryParams,
         GetChannelsByNameQueryResponse
-      >(new GetChannelsByNameQuery(projectId, name), {});
+      >(new GetChannelsByNameQuery(projectId), {});
 
       this.logger.Debug("Полученный спискок каналов: ", channels);
 

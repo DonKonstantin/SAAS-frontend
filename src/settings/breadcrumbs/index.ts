@@ -265,6 +265,17 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
         };
       },
     },
+    "/domain/[domainId]/project/[projectId]/reports": {
+      breadcrumb: "reports.breadcrumb",
+      link: () => {
+        const { domain, project } = getCurrentState();
+
+        return {
+          href: "/domain/[domainId]/project/[projectId]/reports",
+          as: `/domain/${domain}/project/${project}/reports`,
+        };
+      },
+    },
     "/domain/[domainId]/project/[projectId]/users": {
       breadcrumb: "pages.users.list.breadcrumb",
       link: () => {
@@ -362,8 +373,8 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
       breadcrumb: "pages.mediaLibraryUpload.breadcrumb",
       link: () => {
         return {
-          href: "/media-rules/upload",
-          as: `/media-rules/upload`,
+          href: "/media/upload",
+          as: `/media/upload`,
         };
       },
     },
@@ -371,8 +382,8 @@ export const breadcrumbs: { (): BreadcrumbsStructure } = () => {
       breadcrumb: "pages.mediaLibraryCheck.breadcrumb",
       link: () => {
         return {
-          href: "/media-rules/check",
-          as: `/media-rules/check`,
+          href: "/media/check",
+          as: `/media/check`,
         };
       },
     },

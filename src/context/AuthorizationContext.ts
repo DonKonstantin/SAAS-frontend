@@ -19,6 +19,8 @@ import {allDomainsAndProjectsLoader} from "../services/loaders/allDomainsAndProj
 import {DomainData, ProjectData} from "../services/loaders/allDomainsAndProjects/LoaderQuery";
 import Cookies from "universal-cookie";
 
+export type MenuType = "realm" | "domain" | "project";
+
 // Контекст шагов импорта
 export type AuthorizationContext = {
     authToken: string                   // Токен авторизации в системе
@@ -27,7 +29,7 @@ export type AuthorizationContext = {
     isNeedRedirectAfterAuth: boolean    // Необходимость выполнить редирект на основную сраницу для пользователя
 
     // Тип отображаемого в данный момент меню
-    menuType: "realm" | "domain" | "project"
+    menuType: MenuType;
 
     domain: string  // Выбранный пользователем домен
     project: string // Выбранный пользователем проект
@@ -88,7 +90,7 @@ type AuthorizationActions = {
     onResetPassword: { (email: string): Promise<void> }
 
     // Выполнение установки нового пароля по токену сброса пароля
-    onChangePasswordByResetToken: { (token: string, newPassword: string): Promise<void> }
+    onChangePasswordByResetToken: { (token: string, newPassword: string): Promise<boolean | undefined> }
 
     // Получение токена авторизации
     getAuthorizationToken: { (token?: string): string }
@@ -237,29 +239,33 @@ export const onReloadDomainsAndProjects: AuthorizationActions['onReloadDomainsAn
  * @param token
  */
 const loadAuthorizationData = async (token: string): Promise<AuthorizationContext> => {
-    const [userProfile, domainsAndProjects] = await Promise.all([
-        authService().GetUserInfo(token),
-        allDomainsAndProjectsLoader(token).Load(),
-    ])
+    try {
+        const [userProfile, domainsAndProjects] = await Promise.all([
+            authService().GetUserInfo(token),
+            allDomainsAndProjectsLoader(token).Load(),
+        ])
 
-    let domains: RoleData[] = [];
-    let projects: RoleData[] = [];
+        let domains: RoleData[] = [];
+        let projects: RoleData[] = [];
 
-    if ("roles" in userProfile) {
-        domains = userProfile.roles.filter(r => r.level === "domain")
-        projects = userProfile.roles.filter(r => r.level === "project")
-    }
+        if ("roles" in userProfile) {
+            domains = userProfile.roles.filter(r => r.level === "domain")
+            projects = userProfile.roles.filter(r => r.level === "project")
+        }
 
-    const domain = domains.length === 1 ? domains[0].id : ""
-    const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
+        const domain = domains.length === 1 ? domains[0].id : ""
+        const project = domain.length === 0 && projects.length === 1 ? projects[0].id : ""
 
-    return {
-        ...new DefaultContext(),
-        ...domainsAndProjects,
-        authToken: token,
-        userInfo: userProfile,
-        domain: domain,
-        project: project,
+        return {
+            ...new DefaultContext(),
+            ...domainsAndProjects,
+            authToken: token,
+            userInfo: userProfile,
+            domain: domain,
+            project: project,
+        }
+    } catch (e) {
+        return new DefaultContext();
     }
 }
 
@@ -297,7 +303,11 @@ const initializeContextBus = () => {
     const {publicRuntimeConfig} = getConfig();
 
     const log = loggerFactory().make(`Authorization`)
-    const tokenUpd = tokenContext$.pipe(throttleTime(1000), distinctUntilChanged()).subscribe({
+    const tokenUpd = tokenContext$
+      .pipe(
+        throttleTime(1000),
+        distinctUntilChanged()
+      ).subscribe({
         next: async token => {
             if (token === undefined) {
                 return;
@@ -389,27 +399,30 @@ const onChangePasswordByResetToken = async (token: string, newPassword: string) 
 
     try {
         const authToken = await authService().ChangePasswordByResetToken(token, newPassword)
-        if (0 === authToken.length) {
+        if (!authToken) {
             throw new Error(`Failed to set user password`)
         }
 
-        tokenContext$.next(authToken)
+        const countTimer = 5 // Время в секундах до перехода на главную страницу
 
         notificationsDispatcher().dispatch({
-            message: i18n.t(`UI.auth-context.change-password.success`),
+            message: i18n.t(`UI.auth-context.change-password.success`, {count: countTimer}),
             type: "success"
         })
+
+        return authToken
     } catch (e) {
         notificationsDispatcher().dispatch({
             message: i18n.t(`UI.auth-context.change-password.error`),
             type: "warning"
         })
+    } finally {
+        context$.next({
+            ...context$.getValue(),
+            isRequestInProgress: false,
+        })
     }
 
-    context$.next({
-        ...context$.getValue(),
-        isRequestInProgress: false,
-    })
 };
 
 /**
@@ -445,7 +458,7 @@ const onResetPassword = async (email: string) => {
 /**
  * Обработка разлогинивания пользователя
  */
-const onLogout = () => {
+export const onLogout = () => {
     tokenContext$.next("")
 };
 

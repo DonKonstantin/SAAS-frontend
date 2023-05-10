@@ -1,8 +1,8 @@
-import React, { FC, memo, Fragment } from "react";
-import { Divider, Typography, Stack, Button } from "@mui/material";
-import { useTranslation } from "react-i18next";
+import React, {FC, Fragment, memo} from "react";
+import {Button, Divider, Stack, Typography, Box} from "@mui/material";
+import {useTranslation} from "react-i18next";
 import NotAvailableTracksList from "./NotAvailableTracksList";
-import { ExportedPlaylistType } from "services/projectPlaylistService/interfaces";
+import {ExportedPlaylistType} from "services/projectPlaylistService/interfaces";
 
 interface Props {
   dropedPlaylistList: ExportedPlaylistType;
@@ -25,7 +25,7 @@ const ExportResultBlock: FC<Props> = ({
   const playlistList = Object.keys(dropedPlaylistList)
     .map((key) => {
       const trackList = dropedPlaylistList[key].filter((track) =>
-        notAvailables.every((item) => item === track)
+        notAvailables.some((item) => item === track)
       );
 
       if (!trackList.length) {
@@ -41,7 +41,9 @@ const ExportResultBlock: FC<Props> = ({
       <Typography variant="body1" color="primary">
         {t("project-playlists.epsent-tracks.header")}
       </Typography>
-      {playlistList}
+      <Box sx={{maxHeight: 'calc(90vh - 164px)', overflow: 'auto'}}>
+        {playlistList}
+      </Box>
       <Stack direction="column" alignItems="flex-end">
         <Divider sx={{ width: "100%" }} />
         <Button onClick={onClose} variant="outlined" sx={{ mt: 2.75 }}>

@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 // Результат выполнения запроса установки пароля
 export type ChangePasswordByResetTokenQueryResponse = {
     result: {
-        token: string
+        success: boolean
     }
 };
 
@@ -20,7 +20,7 @@ export class ChangePasswordByResetTokenQuery implements GraphQLQuery<{ token: st
         this.query = gql`
             mutation ChangeUserPasswordByResetToken($token: String!, $password: String!) {
               result: changePassword(token: $token, password: $password) {
-                token
+                success
               }
             }
         `

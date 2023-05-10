@@ -1,14 +1,30 @@
 import {CampaignEditContextActionsTypes, CampaignEditContextTypes} from './interface';
-import {auditTime, BehaviorSubject, combineLatest, filter, interval, map, Observable, switchMap, tap} from "rxjs";
+import {
+  auditTime,
+  BehaviorSubject,
+  combineLatest,
+  delay,
+  filter,
+  interval,
+  map,
+  Observable,
+  Subject,
+  switchMap,
+  tap,
+  merge,
+} from "rxjs";
 import {
   Campaign,
-  CampaignDaysType,
+  CampaignChannelInputObject,
   CampaignPlayList,
   CampaignPlaylistConnect
 } from 'services/campaignListService/types';
 import {campaignListService} from "../../services/campaignListService";
 import {fileService} from "../../services/FileService";
 import campaignPlaylistService from "../../services/campaignPlaylistService";
+import { ProjectChannel } from 'services/playerCodeService/interfaces';
+import { getCurrentState } from 'context/AuthorizationContext';
+import { projectChannelsService } from 'services/projectChannelsService';
 
 class DefaultContextData implements CampaignEditContextTypes {
   campaign: Campaign | undefined = undefined;
@@ -16,6 +32,11 @@ class DefaultContextData implements CampaignEditContextTypes {
   campaignListErrorText: string | undefined = undefined
   isInitialized: boolean = false
   successCreatedPlaylist: boolean = false
+  loadedChannels: ProjectChannel[] = [];
+  isChannelsLoading: boolean = false;
+  error: string | undefined = undefined;
+  selectedChannels: CampaignChannelInputObject[] | undefined = undefined;
+  savedChannels: (ProjectChannel & {channel_id: string})[] = [];
 };
 
 export const campaignEditContext$ = new BehaviorSubject<CampaignEditContextTypes>(new DefaultContextData());
@@ -31,6 +52,8 @@ const newPlayList$ = new BehaviorSubject<CampaignPlaylistConnect | undefined>(un
 const deletePlaylistId$ = new BehaviorSubject<string | undefined>(undefined)
 // ID и состояние "перемешать" для плейлиста
 const shufflePlaylist$ = new BehaviorSubject<{playlistId: string, shuffle: boolean} | undefined>(undefined)
+// Счетчик для плейлиста
+const playCounterPlaylist$ = new BehaviorSubject<{playlistId: string, playCounter: number} | undefined>(undefined)
 // Делает сортировку плейлиста
 const movePlaylist$ = new BehaviorSubject<{playlistId: string, direction: 'up' | 'down'} | undefined>(undefined);
 // Для загруженных треков по Drop Zone
@@ -41,7 +64,24 @@ const isInitialized$ = new BehaviorSubject<boolean>(false)
 const isLoading$ = new BehaviorSubject<boolean>(false);
 //  Флаг для автосохранения плейлиста при добавлении музыки
 const successCreatedPlaylist$ = new BehaviorSubject<boolean>(false);
+//  Загруженные доступные для кампании каналы
+const loadedChannels$ = new BehaviorSubject<ProjectChannel[]>([]);
+//  Инициатор загрузки доступных каналов
+const loadChannels$ = new Subject<void>();
+//  Флаг загрузки каналов
+const isChannelsLoading$ = new BehaviorSubject<boolean>(false);
+//  Текст ошибки
+const error$ = new BehaviorSubject<string | undefined>(undefined);
+//  Стрим для выбраных каналов
+const selectedChannels$ = new BehaviorSubject<CampaignChannelInputObject[]>([]);
+//  Сохраненые каналы кампании
+const savedChannels$ = new BehaviorSubject<(ProjectChannel & {channel_id: string})[]>([]);
+//  Стрим на запись кампании в контекст
+const toWriteCampaign$ = new Subject<Campaign>();
 
+/**
+ * Загружает сущность кампании для контекста по ID
+ */
 const loadCampaign$ = campaignId$.pipe(
   filter((companyId) => !!companyId),
   tap(() => isInitialized$.next(true)),
@@ -61,6 +101,12 @@ const loadCampaign$ = campaignId$.pipe(
     }
   }),
   filter((result) => !!result),
+)
+
+/**
+ * Подготавливает данные пришедшие с сервера для контекста
+ */
+const writeCampaignToContextBus$ = merge(loadCampaign$, toWriteCampaign$).pipe(
   map((response) => {
     if (!response) {
       return
@@ -121,8 +167,8 @@ const loadCampaign$ = campaignId$.pipe(
   //@ts-ignore
   tap((campaign) => campaign$.next(campaign)),
   tap(() => isInitialized$.next(false)),
-  tap(() => campaignId$.next(undefined))
-)
+  tap(() => campaignId$.next(undefined)),
+);
 
 const setNewPlaylistForCampaign$ = newPlayList$.pipe(
   filter((newPlayList) => !!newPlayList),
@@ -201,6 +247,32 @@ const shuffleCampaignPlaylist$ = shufflePlaylist$.pipe(
   //@ts-ignore
   tap((campaign) => campaign$.next(campaign)),
   tap(() => shufflePlaylist$.next(undefined))
+)
+
+const playCounterCampaignPlaylist$ = playCounterPlaylist$.pipe(
+  filter((playCounterPlaylist) => !!playCounterPlaylist),
+  map((playCounterPlaylist) => {
+    if (!playCounterPlaylist) {
+      return
+    }
+
+    const getCampaign = campaign$.getValue()
+    if (!getCampaign) {
+      return
+    }
+
+    const playCounterPlaylistById = getCampaign.playlists.map(playlist => playlist.id === playCounterPlaylist.playlistId
+      ? {
+        ...playlist,
+        playCounter: playCounterPlaylist.playCounter
+      } : playlist)
+
+    return { ...getCampaign, playlists: playCounterPlaylistById }
+
+  }),
+  //@ts-ignore
+  tap((campaign) => campaign$.next(campaign)),
+  tap(() => playCounterPlaylist$.next(undefined))
 )
 
 //  шина изменения позиции воспроизведения трека в плейлисте
@@ -319,15 +391,65 @@ const checkUploadedFilesBus$ = combineLatest([interval(6000), uploadedTracksToPl
   })
 );
 
+/**
+ * Шина загрузки каналов для вкладки каналов кампании
+ */
+const loadChannelsBus$ = loadChannels$.pipe(
+  map(() => {
+    const { project } = getCurrentState();
+
+    return project;
+  }),
+  filter(projectId => !!projectId),
+  tap(() => error$.next(undefined)),
+  tap(() => isChannelsLoading$.next(true)),
+  switchMap(async projectId => {
+    try {
+      return projectChannelsService().getChannels(projectId);
+    } catch (_) {
+      error$.next('pages.campaigns.edit.errors.load-channels');
+
+      return [];
+    }
+  }),
+  tap(() => isChannelsLoading$.next(false)),
+);
+
+/**
+ * Шина сброса ошибки
+ */
+const clearErrorBus$ = error$.pipe(
+  filter(error => !!error),
+  delay(10000),
+);
+
+/**
+ * Шина записи сохраненых каналов при перезаписи сущности кампании
+ */
+const setSavedChannelsBus$ = campaign$.pipe(
+  map(campaign => campaign?.channels.map(channel => !!channel.channel ? {...channel.channel, channel_id: channel.channel_id} : channel)),
+);
+
 const collectBus$: Observable<Pick<CampaignEditContextTypes,
   'campaign'
   | 'isLoading'
-  | 'campaignListErrorText'>> = combineLatest([
+  | 'campaignListErrorText'
+  | 'loadedChannels'
+  | 'isChannelsLoading'
+  | 'error'
+  | 'selectedChannels'
+  | 'savedChannels'
+>> = combineLatest([
   campaign$,
   isLoading$,
   campaignListErrorText$,
   isInitialized$,
-  successCreatedPlaylist$
+  successCreatedPlaylist$,
+  loadedChannels$,
+  isChannelsLoading$,
+  error$,
+  selectedChannels$,
+  savedChannels$,
 ]).pipe(
   map(
     ([
@@ -335,13 +457,23 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
        isLoading,
        campaignListErrorText,
        isInitialized,
-       successCreatedPlaylist
+       successCreatedPlaylist,
+       loadedChannels,
+       isChannelsLoading,
+       error,
+       selectedChannels,
+       savedChannels,
      ]) => ({
       campaign,
       isLoading,
       campaignListErrorText,
       isInitialized,
-      successCreatedPlaylist
+      successCreatedPlaylist,
+      loadedChannels,
+      isChannelsLoading,
+      error,
+      selectedChannels,
+      savedChannels,
     })
   )
 );
@@ -360,10 +492,14 @@ export const InitCampaignEditContext = () => {
     })
   );
 
-  subscriber.add(loadCampaign$.subscribe());
+  /**
+   * Подготавливает данные пришедшие с сервера для контекста
+   */
+  subscriber.add(writeCampaignToContextBus$.subscribe());
   subscriber.add(setNewPlaylistForCampaign$.subscribe());
   subscriber.add(deletePlaylistFromProject$.subscribe());
   subscriber.add(shuffleCampaignPlaylist$.subscribe());
+  subscriber.add(playCounterCampaignPlaylist$.subscribe());
   subscriber.add(movePlaylistBus$.subscribe());
   subscriber.add(checkUploadedFilesBus$.subscribe(async (newCampaignPlaylist) => {
 
@@ -379,20 +515,29 @@ export const InitCampaignEditContext = () => {
     const newPlaylist = {
       id: newCampaignPlaylist.id,
       playCounter: 1,
-      periodStop: new Date(),
       shuffle: false,
-      periodStart: new Date(),
-      daysType: 'daily' as CampaignDaysType,
-      days: [],
-      isCampaignTimetable: false,
-      allDaysStartMinutes: 0,
-      allDaysStopMinutes: 0,
       sortOrder: getCampaign.playlists.length + 1,
       name: newCampaignPlaylist.name,
       duration: newCampaignPlaylist.duration,
       files: newCampaignPlaylist.files,
       campaignPlaylistId: newCampaignPlaylist.id,
-      campaignPlaylist: newCampaignPlaylist
+      campaignPlaylist: newCampaignPlaylist,
+      isCampaignTimetable: true,
+      daysType: getCampaign.campaign_days_type,
+      allDaysStartMinutes: 0,
+      allDaysStopMinutes: 0,
+      periodStart: getCampaign.campaign_period_start,
+      periodStop: getCampaign.campaign_period_stop,
+      days: getCampaign.days.map(day => {
+        delete day['campaign_id']
+        return {
+          id: day.id,
+          dayNum: day.day_num,
+          isActive: day.is_active,
+          daysStartMinutes: day.days_start_minutes,
+          daysStopMinutes: day.days_stop_minutes,
+        }
+      })
     }
 
     //@ts-ignore
@@ -404,6 +549,18 @@ export const InitCampaignEditContext = () => {
     isLoading$.next(false)
     successCreatedPlaylist$.next(true)
   }));
+
+  subscriber.add(loadChannelsBus$.subscribe(channels => {
+    loadedChannels$.next(channels);
+  }));
+
+  subscriber.add(clearErrorBus$.subscribe(() => error$.next(undefined)));
+
+  /**
+   * Шина записи сохраненых каналов при перезаписи сущности кампании
+   */
+  //@ts-ignore
+  subscriber.add(setSavedChannelsBus$.subscribe(response => savedChannels$.next(response!)));
 
   return () => subscriber.unsubscribe();
 };
@@ -450,6 +607,15 @@ const shuffleCampaignPlaylist: CampaignEditContextActionsTypes['shuffleCampaignP
 }
 
 /**
+ * Изменяет счетчик для плейлиста
+ * @param playlistId
+ * @param playCounter
+ */
+const playCounterCampaignPlaylist: CampaignEditContextActionsTypes['playCounterCampaignPlaylist'] = (playlistId, playCounter) => {
+  playCounterPlaylist$.next({ playlistId, playCounter });
+}
+
+/**
  * Изменяет сортировку плейлиста
  * @param playlistId
  * @param direction
@@ -479,13 +645,54 @@ const newAddedCampaignPlaylist: CampaignEditContextActionsTypes['newAddedCampaig
   successCreatedPlaylist$.next(newPlaylist);
 };
 
+/**
+ * Загружает доступные для кампании каналы
+ */
+const loadChannels: CampaignEditContextActionsTypes['loadChannels'] = () => {
+  loadChannels$.next();
+};
+
+/**
+ * Очищает загруженные каналы
+ */
+const cleareLoadedChannels: CampaignEditContextActionsTypes['cleareLoadedChannels'] = () => {
+  loadedChannels$.next([]);
+};
+
+/**
+ * Записываем выбранные каналы
+ */
+const setChannels: CampaignEditContextActionsTypes['setChannels'] = (channels) => {
+  selectedChannels$.next(channels);
+};
+
+/**
+ * Записывает сохраненые каналы
+ */
+const setSavedChannels: CampaignEditContextActionsTypes['setSavedChannels'] = (savedChannels) => {
+  savedChannels$.next(savedChannels);
+};
+
+/**
+ * Записывает сущность кампании в контекст
+ */
+const writeCampaign: CampaignEditContextActionsTypes['writeCampaign'] = (campaign) => {
+  toWriteCampaign$.next(campaign);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
   deleteCampaignPlaylist,
   shuffleCampaignPlaylist,
+  playCounterCampaignPlaylist,
   movePlaylistCampaign,
   addFilesToUploadPlaylist,
   newAddedCampaignPlaylist,
-  setCampaign
+  setCampaign,
+  loadChannels,
+  cleareLoadedChannels,
+  setChannels,
+  setSavedChannels,
+  writeCampaign,
 };
