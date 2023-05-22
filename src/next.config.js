@@ -32,6 +32,8 @@ const nextConfig = {
         debug: process.env.DEBUG === "true",
         environment: process.env.ENVIRONMENT || `dev`,
         tokenRefreshTimeout: parseInt(process.env.TOKEN_REFRESH_TIMEOUT) || 1,
+        reportsUrl: process.env.NEXT_PUBLIC_REPORTS_URL || '',
+        reportsApiVersion: process.env.NEXT_PUBLIC_REPORTS_API_VERSION || '',
     },
     serverRuntimeConfig: {
         env: {...process.env}
