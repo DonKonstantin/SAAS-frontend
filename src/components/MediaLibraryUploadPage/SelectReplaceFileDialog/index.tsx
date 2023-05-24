@@ -22,13 +22,15 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
         return null;
     }
 
-    const saveHandler = (file: MediaFile) => {
+    const selectHandler = (file: MediaFile | undefined) => {
         setFile(file);
-        onSave(targetFile as MediaFile, file?.id || "", false);
+
+        onSave(targetFile as MediaFile, file?.id, !file?.id);
     }
 
-    const uploadNewHandler = () => {
-        onSave(targetFile as MediaFile, undefined, true);
+    const saveHandler = () => {
+        onSave(targetFile as MediaFile, file?.id, !file?.id);
+
         closeReplaceFileDialog();
     }
 
@@ -43,7 +45,7 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
             </DialogTitle>
             <DialogContent>
                 <DoubleFilesList
-                    onSelect={saveHandler}
+                    onSelect={selectHandler}
                     current={file}
                     files={availableFiles}
                 />
@@ -54,9 +56,9 @@ const SelectReplaceFileDialog: FC<Props> = (props) => {
                         variant={"outlined"}
                         type={"submit"}
                         color={"primary"}
-                        onClick={uploadNewHandler}
+                        onClick={saveHandler}
                     >
-                        Загрузить новый
+                        {!file ? 'Загрузить новый' : 'Заменить'}
                     </Button>
                 )}
                 <Button

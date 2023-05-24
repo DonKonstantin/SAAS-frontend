@@ -4,7 +4,7 @@ import {Table, TableBody, TableContainer} from "@mui/material";
 import DoublerFileListItem from "./DoublerFileListItem";
 
 type Props = {
-    onSelect?(file: MediaFile): void
+    onSelect?(file: MediaFile | undefined): void
     current?: MediaFile | undefined
     files: MediaFile[]
 }
@@ -16,14 +16,18 @@ const DoubleFilesList: FC<Props> = props => {
         files
     } = props;
 
+
+
     const onSelectHandler = typeof onSelect === "function"
         ? useCallback((file: MediaFile) => {
             if (!onSelect) {
                 return;
             }
 
-            onSelect(file);
-        }, [onSelect])
+            const selectedFile = current?.id === file.id ? undefined : file;
+
+            onSelect(selectedFile);
+        }, [onSelect, current])
         : undefined;
 
     return (
