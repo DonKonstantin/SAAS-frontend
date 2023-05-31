@@ -174,8 +174,8 @@ export default class MediaFileClient implements MediaFileClientInterface {
       }
     }
 
-    async GetFilePath(name: string): Promise<string> {
-        return `${getMainFileApiLink()}/file/${name}`;
+    async GetFilePath(name: string, isProject: boolean): Promise<string> {
+        return `${getMainFileApiLink()}/${isProject ? "project-files" : "file"}/${name}`;
     }
 
     /**

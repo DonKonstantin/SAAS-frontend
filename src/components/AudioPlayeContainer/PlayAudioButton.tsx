@@ -6,17 +6,18 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import {distinctUntilKeyChanged} from "rxjs";
 
 type Props = {
-    fileName: string,
-    songName?: string
+    fileName: string;
+    isProject: boolean;
+    songName?: string;
 }
 
 const PlayAudioButton: FC<Props> = props => {
-    const {fileName, songName} = props;
+    const {fileName, isProject, songName} = props;
     const {toggleSongPlay, currentPlaySongId} = useAudioPlayer(distinctUntilKeyChanged("currentPlaySongId"));
 
     return (
         <IconButton
-            onClick={() => toggleSongPlay(fileName, songName)}
+            onClick={() => toggleSongPlay(fileName, isProject, songName)}
         >
             {
                 currentPlaySongId !== fileName

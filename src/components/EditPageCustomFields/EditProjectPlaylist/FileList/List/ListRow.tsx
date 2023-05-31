@@ -84,7 +84,11 @@ const ListRow: FC<PageWithEntityList & Props> = (props) => {
         {file.title}
       </TableCell>
       <TableCell className="list-table-cell">
-        <PlayAudioButton fileName={file.file_name} songName={file.title} />
+        <PlayAudioButton
+          fileName={file.file_name}
+          songName={file.title}
+          isProject={false}
+        />
       </TableCell>
       <TableCell className="list-table-cell"></TableCell>
       <TableCell

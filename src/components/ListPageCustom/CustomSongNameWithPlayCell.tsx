@@ -24,6 +24,7 @@ const CustomSongNameWithPlayCell: FC<ListFieldProperties<SimpleValues>> = props 
                 <PlayAudioButton
                     fileName={value.value}
                     songName={rowValues.title.value}
+                    isProject={false}
                 />
         </TableCell>
     )
