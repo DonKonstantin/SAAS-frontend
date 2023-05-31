@@ -50,6 +50,7 @@ const TrackRow: FC<Props> = ({ row, isEditable }) => {
         <PlayAudioButton
           fileName={row.file.file_name}
           songName={row.file.title}
+          isProject={false}
         />
       </TableCell>
       <TableCell>

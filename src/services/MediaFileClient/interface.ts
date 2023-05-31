@@ -63,7 +63,7 @@ export interface MediaFileClientInterface {
      * Get filepath on server
      * @param name
      */
-    GetFilePath(name: string): Promise<string>
+    GetFilePath(name: string, isProject: boolean): Promise<string>
 }
 
 //  тип атрибутов для загружаемого файла без типа лицензии

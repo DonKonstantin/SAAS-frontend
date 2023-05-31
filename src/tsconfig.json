@@ -32,6 +32,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "strictNullChecks": true,
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
@@ -42,7 +43,9 @@
     "rxjs/*": [
       "node_modules/rxjs/*"
     ],
-    "react": [ "./node_modules/@types/react" ]
+    "react": [
+      "./node_modules/@types/react"
+    ]
   },
   "exclude": [
     "node_modules",

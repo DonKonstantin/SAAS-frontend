@@ -39,6 +39,7 @@ const ClipsTableRow: FC<Props> = ({ row, selected, setSelected }) => {
     removeLoadedFile([row.file_id]);
   };
 
+  
   return (
     <TableRow>
       <CheckBoxCell checked={isChecked} onClick={onToggleItemCheckedState} />
@@ -47,6 +48,7 @@ const ClipsTableRow: FC<Props> = ({ row, selected, setSelected }) => {
         <PlayAudioButton
           fileName={row.file.file_name}
           songName={row.file.title}
+          isProject={true}
         />
       </TableCell>
       <TableCell>
