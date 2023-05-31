@@ -25,7 +25,6 @@ import { FormProvider } from "components/hook-form";
 
 interface Props {
   selectedCampaigns: ListFieldRow<keyof Schemas>[];
-  allCampaigns: ListFieldRow<keyof Schemas>[];
   onClose: VoidFunction;
   reloadedListingData: VoidFunction;
 }
@@ -47,19 +46,10 @@ const StyledPaper = styled(Paper)({
  * @returns
  */
 const CopyCampaignPeriodModal: FC<Props> = (props) => {
-  const { selectedCampaigns, allCampaigns, onClose, reloadedListingData } =
+  const { selectedCampaigns, onClose, reloadedListingData } =
     props;
 
   const { t } = useTranslation();
-
-  const busyDays = allCampaigns.map((campaign) => ({
-    from: new Date(
-      campaign.columnValues.campaign_period_start.value
-    ).valueOf() as number,
-    to: new Date(
-      campaign.columnValues.campaign_period_stop.value
-    ).valueOf() as number,
-  }));
 
   const notifications = notificationsDispatcher();
 
@@ -171,7 +161,6 @@ const CopyCampaignPeriodModal: FC<Props> = (props) => {
               <PeriodItem
                 campaignId={campaign.primaryKeyValue}
                 campaignName={campaign.columnValues.name.value}
-                busyDays={busyDays}
               />
             ))}
             <Box
