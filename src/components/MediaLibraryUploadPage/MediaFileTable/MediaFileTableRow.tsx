@@ -132,7 +132,7 @@ const MediaFileTableRow: FC<Props> = props => {
                             <Tooltip title={t(!!file.replaceId || !!file.autoReplaceId ? "Заменить" : "Загрузить") as string}>
                                 <span>
                                     <IconButton
-                                        onClick={() => onUpload ? onUpload(file) : false}
+                                        onClick={() => !!onUpload ? onUpload(file) : false}
                                         size={"small"}
                                         disabled={!mayUploaded}
                                     >
