@@ -220,7 +220,6 @@ const CampaignsActions: FC<ListHeaderProps> = ({
       >
         <CopyCampaignPeriodModal
           selectedCampaigns={selectedRows}
-          allCampaigns={currentData.rows}
           onClose={() => setShowCopyPeriodModal(false)}
           reloadedListingData={reloadedListingData}
         />
