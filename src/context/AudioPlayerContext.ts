@@ -40,9 +40,6 @@ const toggleSongPlay: AudioPlayerContextActions["toggleSongPlay"] = async (fileN
 const startPlay = async (fileName: string, isProject: boolean, songName?: string) => {
     const url = await mediaFileClient().GetFilePath(fileName, isProject);
 
-    console.log(url, "URL");
-    
-
     audioPlayerChangeSongBus$.next(url);
     audioPlayerControlBus$.next(true);
 
