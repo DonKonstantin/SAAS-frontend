@@ -451,6 +451,8 @@ const CampaignInfoGroup = () => {
       return
     }
 
+    setSaveCampaign(false);
+
     const saveCompany = async () => {
       try {
         await onSubmit()
@@ -463,10 +465,9 @@ const CampaignInfoGroup = () => {
           });
         }
       }
-    }
+    };
 
     saveCompany().finally(() => {
-      setSaveCampaign(false)
       messanger.dispatch({
         message: t("edit-campaign-playlist.success.store-campaign-playlist"),
         type: "success",
