@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {Autocomplete, Button, Grid, Stack, TextField} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {debounceTime, distinctUntilChanged, filter, fromEvent, map, switchMap, tap} from "rxjs";
@@ -12,7 +12,7 @@ import {
   useCampaignPlaylistEditContext
 } from "../../../../context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 
-const CampaignPlayListContent = () => {
+const CampaignPlayListContent: FC = () => {
 
   const { campaign, storeCampaignPlaylist } = useCampaignEditContext(
     distinctUntilChanged(
@@ -21,7 +21,7 @@ const CampaignPlayListContent = () => {
     )
   );
 
-  const { setNewPlaylist } = useCampaignPlaylistEditContext();
+  const { setNewPlaylist } = useCampaignPlaylistEditContext(distinctUntilChanged(() => true));
 
   const { t } = useTranslation()
 
@@ -176,8 +176,18 @@ const CampaignPlayListContent = () => {
             />)}
         />
       </Grid>
-      <Grid item xs={3.5} sx={{ ml: "60px" }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ maxWidth: "371px" }}>
+      <Grid
+        item
+        xs={3.5}
+        sx={{ ml: "60px" }}
+      >
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          gap="10px"
+          sx={{ maxWidth: "371px" }}
+        >
           <Button
             sx={{ minWidth: "155px" }}
             variant="outlined"
