@@ -69,11 +69,12 @@ const DaysGroupPicker: FC<Props> = ({
             days_start_minutes: time,
           }));
         } else {
-          if (findDay.days_start_minutes >= time) {
-            setError(`${nameFieldDays}[${0}].days_stop_minutes`, errorMessage);
+          //! заказчик просил убрать проверку времени
+          // if (findDay.days_start_minutes >= time) {
+          //   setError(`${nameFieldDays}[${0}].days_stop_minutes`, errorMessage);
 
-            return;
-          }
+          //   return;
+          // }
 
           // Проверяем корректное время
           if (isNaN(time)) {
