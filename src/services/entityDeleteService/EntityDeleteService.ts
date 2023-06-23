@@ -59,7 +59,7 @@ export class EntityDeleteService implements EntityDeleteServiceInterface {
       this.logger.Debug(`Query parameters`, primaryKey, ids);
 
       await this.client.Mutation<DeleteItemsByIdProps, any>(
-        new DeleteItemsByIdMutation(deleteSchema, primaryKey.code, ids),
+        new DeleteItemsByIdMutation(deleteSchema, String(primaryKey.code), ids),
         {}
       );
 
