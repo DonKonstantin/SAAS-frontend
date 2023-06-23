@@ -34,6 +34,7 @@ const nextConfig = {
         tokenRefreshTimeout: parseInt(process.env.TOKEN_REFRESH_TIMEOUT) || 1,
         reportsUrl: process.env.NEXT_PUBLIC_REPORTS_URL || '',
         reportsApiVersion: process.env.NEXT_PUBLIC_REPORTS_API_VERSION || '',
+        CI: process.env.NEXT_PUBLIC_CI || false,
     },
     serverRuntimeConfig: {
         env: {...process.env}

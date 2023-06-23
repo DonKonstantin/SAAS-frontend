@@ -17,7 +17,7 @@ export class GetCampaignsArrayByIdsQuery
     };
 
     this.query = gql(`
-    query __GET_CAMPAIGN__($campaignArrayId: [ID]){
+    query __GET_CAMPAIGN_BY_IDS__($campaignArrayId: [ID]){
     campaigns: campaign_list(where: { id: { _in: $campaignArrayId } } ){
     campaign_all_days_start_minutes
     campaign_all_days_stop_minutes

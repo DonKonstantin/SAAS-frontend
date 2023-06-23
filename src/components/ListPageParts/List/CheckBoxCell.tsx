@@ -42,6 +42,7 @@ const CheckBoxCell: FC<CheckBoxCellProps> = (props) => {
           onChange={onChange}
           onClick={onClick}
           indeterminate={indeterminate}
+          data-testid="rowCheckbox"
         />
       </Tooltip>
     </TableCell>

@@ -4,7 +4,10 @@ import LoadingAnimation from "./LoadingAnimation";
 // контентной области
 const LoadingBlocker = () => {
     return (
-        <div className={"loading-blocker-container"}>
+        <div
+          className={"loading-blocker-container"}
+          data-testid="loadingBlocker"
+        >
             <LoadingAnimation />
         </div>
     )
