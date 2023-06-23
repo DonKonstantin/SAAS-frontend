@@ -26,9 +26,9 @@ const PeriodItem: FC<Props> = (props) => {
 
   return (
     <Box sx={{ mb: 2 }}>
-      <Typography variant="body1">{`${t(
-        "pages.campaign.copy-prefix"
-      )} ${campaignName}`}</Typography>
+      <Typography variant="body1" data-testid="copingCampaignTitle">
+        {`${t("pages.campaign.copy-prefix")} ${campaignName}`}
+      </Typography>
       <Stack
         sx={{ flexDirection: "row", columnGap: 1.5, alignItems: "flex-end" }}
       >

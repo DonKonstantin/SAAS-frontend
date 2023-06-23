@@ -128,17 +128,15 @@ const CampaignsActions: FC<ListHeaderProps> = ({
         selectedRows.map((row) => row.primaryKeyValue)
       );
 
-      await Promise.all([
-        campaigns.map((campaign) => {
-          const preparedCampaign = prepareCampaignDataForStore(campaign);
+      await Promise.all(campaigns.map((campaign) => {
+        const preparedCampaign = prepareCampaignDataForStore(campaign);
 
-          return campaignListService().storeCampaign({
-            ...preparedCampaign,
-            id: Number(campaign.id),
-            channels: [],
-          });
-        }),
-      ])
+        return campaignListService().storeCampaign({
+          ...preparedCampaign,
+          id: Number(campaign.id),
+          channels: [],
+        });
+      }))
         .then(() => {
           notifications.dispatch({
             message: t(
@@ -189,6 +187,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           variant="outlined"
           onClick={() => setShowCopyPeriodModal(true)}
           disabled={!selectedRows.length || publishLoading || depublishLoading}
+          data-testid="copyCampaignButton"
         >
           {t("pages.campaign.button.copy")}
         </Button>
@@ -199,6 +198,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           variant="outlined"
           onClick={onPublishHandler}
           disabled={!selectedRows.length || depublishLoading}
+          data-testid="publishCampaignButton"
         >
           {t("pages.campaign.button.publish")}
         </LoadingButton>
@@ -210,6 +210,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           color="error"
           onClick={onDepublishHandler}
           disabled={!selectedRows.length || publishLoading}
+          data-testid="deselectCampaignButton"
         >
           {t("pages.campaign.button.deselect")}
         </LoadingButton>

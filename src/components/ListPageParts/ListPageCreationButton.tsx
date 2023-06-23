@@ -63,7 +63,12 @@ const ListPageCreationButton: FC<
 
   return (
     <Tooltip title={t(`entity-list.components.actions.add-tooltip`) as string}>
-      <Button variant={"outlined"} onClick={onClick} disabled={disabled}>
+      <Button
+        variant={"outlined"}
+        onClick={onClick}
+        disabled={disabled}
+        data-testid="createCampaignButton"
+      >
         {t(buttonTitle || `entity-list.components.actions.add`)}
       </Button>
     </Tooltip>

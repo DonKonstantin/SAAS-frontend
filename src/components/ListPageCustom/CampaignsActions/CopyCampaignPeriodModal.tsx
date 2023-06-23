@@ -141,17 +141,17 @@ const CopyCampaignPeriodModal: FC<Props> = (props) => {
   };
 
   return (
-    <StyledPaper>
+    <StyledPaper data-testid="copyCampaignWrapper">
       <Grid container spacing={2}>
         <Grid item sx={{ display: "flex", justifyContent: "flex-end" }} xs={12}>
           <Tooltip title={t("pages.campaign.tooltip.button.close-copy-modal")}>
-            <IconButton size={"small"} onClick={onClose}>
+            <IconButton size={"small"} onClick={onClose} data-testid="copyCampaignCloseCrossButton">
               <CloseIcon color="primary" />
             </IconButton>
           </Tooltip>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="body1" color="primary">
+          <Typography variant="body1" color="primary" data-testid="copyCampaignHeader">
             {t("pages.campaign.copy-campaign.period-form.header")}
           </Typography>
         </Grid>
@@ -170,6 +170,7 @@ const CopyCampaignPeriodModal: FC<Props> = (props) => {
                 loading={isSubmitting}
                 variant="outlined"
                 type="submit"
+                data-testid="copyCampaignSubmitButton"
               >
                 {t("pages.campaign.button.copy")}
               </LoadingButton>
@@ -178,6 +179,7 @@ const CopyCampaignPeriodModal: FC<Props> = (props) => {
                 onClick={onClose}
                 disabled={isSubmitting}
                 color="error"
+                data-testid="copyCampaignCloseButton"
               >
                 {t("pages.campaign.button.close")}
               </Button>

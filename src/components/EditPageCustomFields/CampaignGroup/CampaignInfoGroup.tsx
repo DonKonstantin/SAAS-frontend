@@ -482,7 +482,10 @@ const CampaignInfoGroup = () => {
 
   return (
     <CampaignPlaylistEditContextConnector>
-      <Box sx={{pb: 3}}>
+      <Box
+        sx={{pb: 3}}
+        data-testid="editOrAddCampaignWrapper"
+      >
         <Breadcrumbs/>
       </Box>
         {!!playlist

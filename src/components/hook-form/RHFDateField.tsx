@@ -40,6 +40,7 @@ export default function RHFDateField({
                 fullWidth
                 error={!!error}
                 helperText={error?.message}
+                data-testid="datePicker"
                 variant="standard"
                 {...other}
                 inputProps={{

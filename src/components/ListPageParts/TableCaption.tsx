@@ -63,7 +63,12 @@ const TableCaption: FC<ListHeaderProps> = (props) => {
   return (
     <Grid container alignItems="center" spacing={1}>
       <Grid item sx={{ flex: "1 1 0" }}>
-        <Typography variant="h6" color="primary" sx={{ pl: 2 }}>
+        <Typography
+          variant="h6"
+          color="primary"
+          sx={{ pl: 2 }}
+          data-testid="listHeader"
+        >
           {t(header)}
         </Typography>
       </Grid>
@@ -80,6 +85,7 @@ const TableCaption: FC<ListHeaderProps> = (props) => {
                 sx={{ mr: 2 }}
                 disabled={checkedItems.length === 0}
                 onClick={handleDeleteItems}
+                data-testid="commonDeleteButton"
               >
                 <DeleteIcon fontSize="medium" />
               </IconButton>
