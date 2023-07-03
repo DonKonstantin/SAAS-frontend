@@ -1,0 +1,98 @@
+$step: 8px;
+
+@mixin editPageDropZoneColorMixin($color, $textColor) {
+  $borderSize: .4 * $step;
+
+  $primaryColor: $color;
+
+  $gradientSteps: 3;
+  $gradientDisabledColorBackgroundHover: rgba($primaryColor, .3);
+  $gradientColorBackgroundHover: rgba($primaryColor, .05);
+
+  $descriptionColor: black;
+  $descriptionBackground: rgba(255, 255, 255, .8);
+
+  $descriptionColorHover: $textColor;
+  $descriptionBackgroundHover: rgba($color, .8);
+
+  $hoveredBackground: repeating-linear-gradient(
+                  45deg,
+                  $gradientColorBackgroundHover,
+                  $gradientColorBackgroundHover 0.8 * $gradientSteps * $step,
+                  $gradientDisabledColorBackgroundHover 0.8 * $gradientSteps * $step,
+                  $gradientDisabledColorBackgroundHover 2 * $gradientSteps * $step
+  );
+
+  .container {
+    background: $hoveredBackground;
+    border: $borderSize solid rgba($primaryColor, .6);
+    border-radius: 2 * $borderSize;
+
+    .component--description {
+      background: $descriptionBackground;
+
+      color: $descriptionColor;
+
+      transition: .25s background, .25s color;
+    }
+
+    &:hover, &:focus {
+      border-color: $primaryColor;
+      filter: grayscale(0);
+
+      .component--description {
+        background: $descriptionBackgroundHover;
+        color: $descriptionColorHover;
+      }
+    }
+  }
+}
+
+.edit-page-dropzone {
+  $primaryColor: #3F51B5;
+
+  .container {
+    width: 100%;
+    min-height: 300px;
+    outline: none;
+    cursor: pointer;
+    filter: grayscale(100%);
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
+    transition: .3s;
+
+    .component--description {
+      $size: 6;
+
+      padding: ($size * $step - 18px) ($size * 2) * $step $size * $step;
+      border-radius: 0.5 * $step;
+
+      text-align: center;
+
+      transition: .25s background, .25s color;
+    }
+
+    &:hover, &:focus {
+      filter: grayscale(0);
+    }
+  }
+
+  &.primary-color {
+    @include editPageDropZoneColorMixin($primaryColor, white)
+  }
+
+  &.secondary-color {
+    @include editPageDropZoneColorMixin(#f50057, white)
+  }
+
+  &.orange-color {
+    @include editPageDropZoneColorMixin(#d84315, white)
+  }
+}
+

@@ -1,0 +1,48 @@
+.login-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 100%;
+  overflow: hidden;
+
+  &--picture {
+    background: #6F933D;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+
+    > svg {
+      height: 50%;
+    }
+  }
+
+  &--content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  &--form {
+    width: 389px;
+  }
+
+  &--logo {
+    width: 100%;
+    margin-bottom: 26px;
+    text-align: center;
+  }
+}

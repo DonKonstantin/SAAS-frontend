@@ -1,0 +1,791 @@
+{
+  "pages": {
+    "main": {
+      "title": "Главная",
+      "header": "Главная",
+      "breadcrumb": "Главная"
+    },
+    "SystemLogs": {
+      "breadcrumb": "Логи",
+      "list": {
+        "tableHeader": "Логи",
+        "field": {
+          "user": "Пользователь",
+          "eventTypeName": "Действие",
+          "entityName": "Объект",
+          "date": "Дата"
+        }
+      },
+      "filter": {
+        "field": {
+          "userName": {
+            "title": "Пользователь",
+            "placeholder": "Введите значение"
+          },
+          "eventType": {
+            "title": "Действие",
+            "placeholder": "Выберите значения",
+            "variants": {
+              "updated": "Редактирование",
+              "created": "Создание",
+              "deleted": "Удаление"
+            }
+          },
+          "date": {
+            "title": "Дата",
+            "placeholder": "Введите значение"
+          },
+          "entityTypeName": {
+            "title": "Объект",
+            "placeholder": "Выберите значения",
+            "variants": {
+              "NotificationConfig": "Настройка оповещение",
+              "NotificationsTemplate": "Шаблон рассылки",
+              "Files": "Медиабиблиотека",
+              "RealmStructureElement": "Реалм",
+              "ChangeUserPassword": "Изменение пароля",
+              "PermissionCategory": "Категории разрешений",
+              "Permission": "Разрешения",
+              "Role": "Роль",
+              "User": "Пользователь",
+              "none": "Не выбрано"
+            }
+          }
+        },
+        "button": {
+          "resetFilter": {
+            "text": "Сбросить фильтр",
+            "tooltip": "Сбросить выбранные параметры фильтра"
+          }
+        }
+      }
+    },
+    "users": {
+      "list": {
+        "title": "Все пользователи",
+        "header": "Все пользователи",
+        "breadcrumb": "Пользователи",
+        "fields": {
+          "email": "Логин",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "active": "Статус",
+          "active-status": {
+            "active": "Активен",
+            "inactive": "Не активен"
+          }
+        },
+        "filters": {
+          "email": "Логин",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "active": "Активен",
+          "roles_id": "Роли"
+        }
+      },
+      "add": {
+        "title": "Создать пользователя",
+        "header": "Создать пользователя",
+        "breadcrumb": "Создать пользователя"
+      },
+      "edit": {
+        "title": "Редактирование пользователя",
+        "header": "Редактирование пользователя",
+        "breadcrumb": "Редактирование пользователя",
+        "fields": {
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "email": "E-mail",
+          "active": "Активен",
+          "roles_id-error": "Необходимо выбрать хотя бы одну роль",
+          "role-not-found": "Нет доступа"
+        }
+      }
+    },
+    "permission_category": {
+      "list": {
+        "title": "Группы разрешений",
+        "header": "Группы разрешений",
+        "breadcrumb": "Группы разрешений",
+        "fields": {
+          "level": "Уровень",
+          "level-enum": {
+            "realm": "Реалм",
+            "domain": "Домен",
+            "project": "Проект"
+          },
+          "name": "Название"
+        },
+        "filters": {
+          "level": "Уровень",
+          "name": "Название"
+        }
+      },
+      "add": {
+        "title": "Создать группу разрешений",
+        "header": "Создать группу разрешений",
+        "breadcrumb": "Создать группу"
+      },
+      "edit": {
+        "title": "Редактировать группу разрешений",
+        "header": "Редактировать группу разрешений",
+        "breadcrumb": "Редактировать группу",
+        "fields": {
+          "level": "Уровень",
+          "level-error": "Выберите один из вариантов",
+          "name": "Название"
+        }
+      }
+    },
+    "permission": {
+      "list": {
+        "title": "Все разрешения",
+        "header": "Все разрешения",
+        "breadcrumb": "Разрешения",
+        "fields": {
+          "name": "Название",
+          "code": "Код разрешения",
+          "category_id": "Группа"
+        },
+        "filters": {
+          "name": "Название",
+          "code": "Код разрешения",
+          "category_id": "Группа"
+        }
+      },
+      "add": {
+        "title": "Создать разрешение",
+        "header": "Создать разрешение",
+        "breadcrumb": "Создать разрешение"
+      },
+      "edit": {
+        "title": "Редактировать разрешение",
+        "header": "Редактировать разрешение",
+        "breadcrumb": "Редактировать разрешение",
+        "fields": {
+          "code": "Символьный код",
+          "category_id": "Группа разрешения",
+          "category_id-error": "Выберите один из вариантов",
+          "name": "Название"
+        }
+      }
+    },
+    "role": {
+      "list": {
+        "title": "Все роли",
+        "header": "Все роли",
+        "breadcrumb": "Роли",
+        "fields": {
+          "name": "Название роли",
+          "structure_item_id": "Имя объекта",
+          "level": "Уровень"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        }
+      },
+      "add": {
+        "title": "Создать роль",
+        "header": "Создать роль",
+        "breadcrumb": "Создать роль"
+      },
+      "edit": {
+        "title": "Редактирование роли",
+        "header": "Редактирование роли",
+        "breadcrumb": "Редактирование роли",
+        "fields": {
+          "name": "Название роли",
+          "structure_item_id-error": "Необходимо выбрать одно из значений",
+          "permissions_id-error": "Необходимо выбрать хотя бы одно разрешение"
+        }
+      },
+      "error": {
+        "load_domains": "Не удалось загрузить список доменов, перезагрузите страницу",
+        "load_projects": "Не удалось загрузить список проектов, перезагрузите страницу"
+      }
+    },
+    "domain": {
+      "list": {
+        "title": "Список доменов",
+        "header": "Список доменов",
+        "breadcrumb": "Домены",
+        "fields": {
+          "name": "Название домена",
+          "active": "Статус"
+        },
+        "filters": {
+          "name": "Название домена",
+          "active": "Статус"
+        }
+      },
+      "add": {
+        "title": "Создать домен",
+        "header": "Создать домен",
+        "breadcrumb": "Создать домен"
+      },
+      "edit": {
+        "title": "Редактировать домен",
+        "header": "Редактировать домен",
+        "breadcrumb": "Редактировать домен",
+        "fields": {
+          "active": "Домен активен",
+          "name": "Название домена"
+        }
+      }
+    },
+    "project": {
+      "list": {
+        "title": "Список проектов",
+        "header": "Список проектов",
+        "breadcrumb": "Проекты",
+        "fields": {
+          "name": "Название проекта",
+          "active": "Статус",
+          "parent": "Домен",
+          "id": "#"
+        },
+        "filters": {
+          "name": "Название проекта",
+          "active": "Статус",
+          "parent": "Домен"
+        }
+      },
+      "add": {
+        "title": "Создать проект",
+        "header": "Создать проект",
+        "breadcrumb": "Создать проект"
+      },
+      "edit": {
+        "title": "Редактировать проект",
+        "header": "Редактировать проект",
+        "breadcrumb": "Редактировать проект",
+        "fields": {
+          "active": "Проект активен",
+          "name": "Название проекта",
+          "parent": "Домен",
+          "parent-error": "Необходимо выбрать домен"
+        }
+      },
+      "logs": {
+        "breadcrumb": "Логи"
+      }
+    },
+    "campaign": {
+      "list": {
+        "title": "Список кампаний",
+        "header": "Список кампаний",
+        "breadcrumb": "Кампании",
+        "last-version": {
+          "yes": "Да",
+          "no": "Нет"
+        },
+        "fields": {
+          "name": "Название",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец",
+          "campaign-priority-enum": {
+            "background": "Фоновый",
+            "low": "Низкий",
+            "normal": "Обычный",
+            "high": "Высокий",
+            "higher": "Наивысший"
+          },
+          "campaign-is-active": "Статус"
+        },
+        "filters": {
+          "name": "Название кампании",
+          "version": "Последняя версия",
+          "campaign-priority": "Приоритет",
+          "campaign-period-start": "Начало",
+          "campaign-period-stop": "Конец"
+        }
+      },
+      "add": {
+        "title": "Создать кампанию",
+        "header": "Создать кампанию",
+        "breadcrumb": "Создать кампанию",
+        "fields": {
+          "schedule": {
+            "name": "Название",
+            "campaign_type": "Тип кампании:",
+            "campaign_end_type": "После окончания:",
+            "campaign_priority": "Приоритет:",
+            "campaign_low_priority_end_type": "Кампании с меньшим приоритетом:",
+            "campaign_play_type": "Воспроизведение",
+            "campaign_period": "Период кампании"
+          },
+          "campaign_days": {
+            "title": "Дни недели:",
+            "0": "Понедельник",
+            "1": "Вторник",
+            "2": "Среда",
+            "3": "Четверг",
+            "4": "Пятница",
+            "5": "Суббота",
+            "6": "Воскресенье"
+          }
+        },
+        "buttons": {
+          "save": "Сохранить",
+          "publish": {
+            "title": "Опубликовать",
+            "tooltip": "Не возможно опубликовать не сохраненные каналы"
+          },
+          "cancel": "Отмена"
+        }
+      },
+      "edit": {
+        "title": "Редактировать кампанию",
+        "header": "Редактировать кампанию",
+        "breadcrumb": "Редактировать кампанию",
+        "tabs": {
+          "schedule": "Расписание",
+          "content": "Контент",
+          "channels": "Каналы"
+        },
+        "fields": {
+          "schedule": {
+            "campaign-priority-enum": {
+              "priority-enum-error": "Необходимо выбрать хотя бы один приоритет"
+            },
+            "campaign-type": {
+              "simple": "Обычная",
+              "mute": "Mute"
+            },
+            "campaign_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_low_priority_end_type": {
+              "finish": "Закончить трек",
+              "break": "Прервать немедленно"
+            },
+            "campaign_play_type": {
+              "periodic": "Периодичное",
+              "continuous": "Непрерывное"
+            },
+            "campaign_play_tracks_period_type": {
+              "hours": "часы",
+              "minutes": "минут"
+            }
+          },
+          "content": {
+            "campaign_play_order": {
+              "title": "Порядок воспроизведения",
+              "mix": "Перемешать",
+              "byOrder": "Подряд"
+            },
+            "continues": "Длительность",
+            "trackCount": "Количество треков",
+            "playlist": {
+              "title": "Добавить существующий плейлист",
+              "noOptions": "Нет совпадений",
+              "buttons": {
+                "add": "Добавить",
+                "create": "Создать плейлист"
+              },
+              "drop-zone": {
+                "title": "Переместите файлы для загрузки",
+                "error": {
+                  "too-many-files": "Одновременно можно загрузить максимум {{count}} файлов",
+                  "file-invalid-type": "Тип файла должен быть {{type}}" 
+                }
+              },
+              "table": {
+                "headCells": {
+                  "name": "Название",
+                  "trackCount": "Количество треков",
+                  "files": "Продолжительность",
+                  "shuffle": "Перемешать",
+                  "count": "Счетчик"
+                },
+                "snackbar": {
+                  "addPlaylist": "Плейлист {{name}} успешно добавлен"
+                },
+                "deleteDialog": {
+                  "header": "Удаление плейлиста {{name}}",
+                  "title": "Вы действиетльно хотите удалить плейлист {{name}}??",
+                  "buttons": {
+                    "tooltip-cancel": "Отменить удаление плейлиста",
+                    "tooltip-delete": "Подтвердить удаление плейлиста",
+                    "cancel": "Отмена",
+                    "delete": "Удалить"
+                  }
+                }
+              }
+            }
+          },
+          "channels": {
+            "table": {
+              "header": {
+                "name": "Название канала",
+                "status": "Статус",
+                "players_count": "Подключено плееров"
+              }
+            }
+          },
+          "campaign_days_type": {
+            "daily": "Ежедневно",
+            "daysOfTheWeek": "По дням"
+          },
+          "active": "Кампания активна",
+          "name": "Название кампании"
+        },
+        "errors": {
+          "required": "Поле обязательно к заполнению",
+          "date": {
+            "minDate": "Период окончания не может быть меньше периода начала",
+            "check-date": "Неверный формат даты"
+          },
+          "time": {
+            "timeValue": "Некорректное время"
+          },
+          "number": {
+            "positive": "Только положительные числа",
+            "integer": "Только целые числа"
+          },
+          "notifications": {
+            "playlistPeriod": "Ошибка при сохранении. Период трансляции плейлиста больше, чем у компании",
+            "storeCampaign": "Ошибка при сохранении компании"
+          },
+          "load-channels": "Не удалось загрузить каналы"
+        },
+        "successMessages": {
+          "updateName": "Кампания {{name}} успешно изменена"
+        }
+      },
+      "copy-campaign": {
+        "period-form": {
+          "header": "Для копий кампаний необходимо указать период",
+          "from": "С",
+          "to": "по"
+        }
+      },
+      "logs": {
+        "breadcrumb": "Логи"
+      },
+      "button": {
+        "create": "Создать",
+        "copy": "Копировать",
+        "publish": "Опубликовать",
+        "deselect": "Снять",
+        "close": "Закрыть"
+      },
+      "copy-prefix": "COPY",
+      "notifications": {
+        "campaign-copy": {
+          "succeess": {
+            "single": "Кампания скопирована",
+            "multiple": "Кампании скопированы"
+          },
+          "reject": {
+            "single": "Не удалось скопировать кампанию",
+            "multiple": "Не удалось скопировать кампании"
+          },
+          "error": "Во время копирования кампании произошла ошибка"
+        },
+        "campaign-publish": {
+          "succeess": {
+            "single": "Кампания опубликована",
+            "multiple": "Кампании опубликованы"
+          },
+          "reject": {
+            "single": "Не удалось опубликовать кампанию",
+            "multiple": "Не удалось опубликовать кампании"
+          },
+          "error": "Во время публикации кампании произошла ошибка",
+          "no-channels": "Кампании без каналов не публикуются"
+        },
+        "campaign-depublish": {
+          "succeess": {
+            "single": "Публикация кампании снята",
+            "multiple": "Публикация кампаний снята"
+          },
+          "reject": {
+            "single": "Не удалось снять публикацию кампании",
+            "multiple": "Не удалось снять публикацию кампаний"
+          },
+          "error": "Во время снятия публикации кампании произошла ошибка"
+        }
+      },
+      "tooltip": {
+        "button": {
+          "is-loading": "Идет выполнение операции",
+          "no-selected": "Нет выбранных кампаний",
+          "close-copy-modal": "Отменить копирование"
+        }
+      }
+    },
+    "notifications_template": {
+      "title": "Шаблоны оповещений",
+      "header": "Шаблоны оповещений",
+      "list": {
+        "title": "Шаблоны оповещений",
+        "header": "Шаблоны оповещений",
+        "breadcrumb": "Шаблоны оповещений",
+        "fields": {
+          "name": "Название шаблона"
+        },
+        "filters": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        }
+      },
+      "edit": {
+        "title": "Редактирование шаблона оповещений",
+        "header": "Редактирование шаблона оповещений",
+        "breadcrumb": "Редактирование шаблона оповещений",
+        "fields": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        },
+        "block": {
+          "preview": {
+            "title": "Предпросмотр"
+          }
+        },
+        "action": {
+          "preview": "Предпросмотр",
+          "testSend": "Тестовая отправка"
+        },
+        "dialog": {
+          "preview": {
+            "title": "Предпросмотр оповещения",
+            "variablesHint": "Введите тестовые значения переменных в формате JSON",
+            "presetVariablesHint": "Или выберите из доступных примеров",
+            "variablesError": "Проверьте формат введенных значений",
+            "field": {
+              "variables": "Значения переменных"
+            },
+            "button": {
+              "start": "Сгенерировать",
+              "close": "Закрыть",
+              "refresh": "Обновить",
+              "set": "Установить"
+            }
+          },
+          "needSave": {
+            "title": "Сохранение шаблона",
+            "bodyText": "Для тестовой отправки нужно сохранить шаблон. Сохранить?",
+            "button": {
+              "yes": "Да",
+              "no": "Нет"
+            }
+          },
+          "testSend": {
+            "title": "Выберите канал для отправки",
+            "variablesHint": "Введите тестовые значения переменных в формате JSON",
+            "variablesError": "Проверьте формат введенных значений",
+            "field": {
+              "variables": "Значения переменных",
+              "email": "email",
+              "channel": "Канал",
+              "channelVariant": {
+                "mail": "Email"
+              }
+            },
+            "button": {
+              "start": "Отправить",
+              "close": "Закрыть",
+              "refresh": "Обновить"
+            },
+            "message": {
+              "success": "Сообщение было отправлено",
+              "error": "Сообщение не было отправлено"
+            }
+          }
+        }
+      },
+      "add": {
+        "title": "Создание шаблона",
+        "header": "Создание шаблона",
+        "breadcrumb": "Создание шаблона",
+        "fields": {
+          "id": "#",
+          "name": "Название шаблона",
+          "body": "Текст рассылки",
+          "title": "Заголовок рассылки",
+          "recipient": "Адресат"
+        },
+        "filters": {
+          "name": "Название роли",
+          "permissions_id": "Разрешения",
+          "level": "Уровень"
+        }
+      }
+    },
+    "notification_config": {
+      "list": {
+        "title": "Настройки оповещений",
+        "header": "Настройки оповещений",
+        "breadcrumb": "Настройка оповещений",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        },
+        "filters": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "event_type": "Триггер",
+          "channel": "Канал"
+        }
+      },
+      "edit": {
+        "title": "Редактирование оповещения",
+        "header": "Редактирование оповещения",
+        "breadcrumb": "Редактирование оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Активен",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        }
+      },
+      "add": {
+        "title": "Создание оповещения",
+        "header": "Создание оповещения",
+        "breadcrumb": "Создание оповещения",
+        "fields": {
+          "id": "#",
+          "is_active": "Статус",
+          "template_id": "Шаблон оповещения",
+          "entity": "Событие",
+          "entity-enum": {
+            "ChangeUserPassword": "Восстановление пароля"
+          },
+          "event_type": "Триггер",
+          "event_type-enum": {
+            "created": "Создание"
+          },
+          "channel": "Канал",
+          "channel-enum": {
+            "mail": "Email"
+          }
+        }
+      }
+    },
+    "mediaLibrary": {
+      "breadcrumb": "Медиабиблиотека",
+      "field": {
+        "license_type": "Лицензия",
+        "license_type-enum": {
+          "rao_voice": "РАО/ВОИС",
+          "sparx": "SPARX",
+          "amurco": "AMURCO"
+        }
+      }
+    },
+    "mediaLibraryUpload": {
+      "breadcrumb": "Загрузка"
+    },
+    "mediaLibraryCheck": {
+      "breadcrumb": "Проверка"
+    },
+    "file": {
+      "metaTagFilledStatus": {
+        "notFilled": "Отсутствуют",
+        "requiredFilled": "Частично",
+        "fullFilled": "Все данные"
+      },
+      "field": {
+        "filename": "Имя файла",
+        "title": "Название",
+        "artist": "Исполнитель",
+        "album": "Альбом",
+        "year": "Год создания",
+        "creation_date": "Создан",
+        "genre": "Жанр",
+        "bpm": "Темп трека",
+        "isrc": "Международный стандартный номер аудио записи",
+        "lyricist": "Автор текста",
+        "composer": "Автор музыки",
+        "publisher": "Изготовитель фонограммы",
+        "language": "Язык исполнения",
+        "obscene": "Ненормативная лексика",
+        "license_type": "Тип лицензии",
+        "license_type-enum": {
+          "rao_voice": "РАО/ВОИС",
+          "sparx": "SPARX",
+          "amurco": "AMURCO"
+        }
+      }
+    },
+    "project_channel": {
+      "list": {
+        "title": "Список каналов",
+        "header": "Каналы",
+        "breadcrumb": "Каналы",
+        "headers": {
+          "name": "Название",
+          "is_active": "Статусы плееров",
+          "active-players": "Подключено",
+          "players": "Подключено"
+        }
+      },
+      "add": {
+        "title": "Создание канала",
+        "header": "Создание канала",
+        "breadcrumb": "Каналы"
+      },
+      "edit": {
+        "title": "Редактирование канала",
+        "header": "Редактирование канала",
+        "breadcrumb": "Каналы",
+        "button": {
+          "Save": "Сохранить"
+        },
+        "fields": {
+          "name": "Название",
+          "is_active": "Свойства расписания",
+          "enum": {
+            "is-active": {
+              "enabled": "Активный",
+              "disabled": "Неактивный"
+            }
+          }
+        }
+      }
+    }
+  }
+}

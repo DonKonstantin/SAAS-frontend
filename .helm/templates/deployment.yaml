@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/dockercfg
+metadata:
+  name: registrysecret
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "-5"
+data:
+  .dockercfg: {{ printf "{\"%s\": {\"auth\": \"%s\"}}" .Values.imageCredentials.registry (printf "%s:%s" .Values.imageCredentials.username .Values.imageCredentials.password | b64enc) | b64enc }}
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+      annotations:
+    spec:
+      imagePullSecrets:
+        - name: registrysecret
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Chart.Name }}
+              topologyKey: kubernetes.io/hostname
+      containers:
+      {{- include "app" . | indent 6 }}
+
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+      {{- include "nodeSelector" . | indent 6}}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}-service
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      name: web
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP

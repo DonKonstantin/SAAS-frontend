@@ -1,0 +1,18 @@
+.custom-active-cell {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 7px 0;
+  width: 94px;
+  text-align: center;
+  background: #E75555;
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 10px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin: -2px 0;
+
+  &.active {
+    background: #6F933D;
+  }
+}

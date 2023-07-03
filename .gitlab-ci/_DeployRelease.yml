@@ -1,0 +1,70 @@
+stages:
+  - deploy
+  - deploy_notify
+
+# Инициализация Werf
+.werf_init:
+  image: registry.werf.io/werf/werf:1.2-rock-solid
+  before_script:
+    - source $(werf ci-env gitlab --as-file)
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git config --global --add safe.directory '*'
+
+### Базовый скрипт деплоя на площадку
+.base_deploy:
+  stage: deploy
+  extends: .werf_init
+  script:
+    - cat $REGISTRY_CREDENTIALS >> .helm/values.yaml && printf "\n" >> .helm/values.yaml
+    - printf "%s\n" "$EVENT_CONFIG" >> .helm/values.yaml
+    - printf "%s\n" "$NODE_SELECTOR" >> .helm/values.yaml
+    - printf "%s" "$CLUSTER_CONFIG" > /tmp/.kube.config-$CI_JOB_ID
+    - .gitlab-ci/scripts/envToYaml >> .helm/values.yaml
+    - werf converge
+      --skip-build
+      --kube-config=/tmp/.kube.config-$CI_JOB_ID
+      --kube-context="$CLUSTER_CONTEXT"
+
+# Базовый скрипт отправки уведомления о деплое
+.deploy_notify: &deploy_notify
+  stage: deploy_notify
+  script:
+    - apk update
+    - apk add curl git
+    - sh .gitlab-ci/scripts/DeployNotify.sh $TYPE $TEXT https://$DOMAIN
+
+# Скрипт отправки нотификации об успешном деплое
+.deploy_success: &deploy_success
+  <<: *deploy_notify
+  variables:
+    TYPE: "✅"
+    TEXT: "Success"
+
+# Скрипт отправки нотификации об упавшем деплое
+.deploy_failed: &deploy_failed
+  <<: *deploy_notify
+  variables:
+    TYPE: "❌"
+    TEXT: "Failed"
+
+# Deploy приложения
+Deploy:
+  extends: .base_deploy
+  stage: deploy
+  environment:
+    name: $ENVIRONMENT
+
+
+# Уведомление об успешном деплое
+Deploy notify success:
+  <<: *deploy_success
+  environment:
+    name: $ENVIRONMENT
+  when: on_success
+
+# Уведомление об отвале деплоя
+Deploy notify failed:
+  <<: *deploy_failed
+  environment:
+    name: $ENVIRONMENT
+  when: on_failure

@@ -1,0 +1,59 @@
+{
+  "player-codes": {
+    "list": {
+      "title": "Коды плееров",
+      "header": "Коды плееров",
+      "headers": {
+        "code": "Код",
+        "is_active": "Статусы плееров"
+      }
+    },
+    "add": {
+      "title": "Создание кода плеера",
+      "header": "Создание кода плеера",
+      "isActive": {
+        "true": "Активный",
+        "false": "Неактивный"
+      },
+      "channel-selector": {
+        "no-channels": "Нет доступных каналов",
+        "select-all": "Все доступные"
+      },
+      "validation": {
+        "minimal-length": "Минимальная длина 4 символа"
+      }
+    },
+    "edit": {
+      "title": "Редактирование кода плеера",
+      "header": "Редактирование кода плеера"
+    },
+    "field-titles": {
+      "open_time": "Время открытия заведения",
+      "close_time": "Время закрытия заведения",
+      "reload_time": "Время технической перезагрузки плеера",
+      "code": "Код",
+      "is_active": "Статус",
+      "project_channels": "Каналы"
+    },
+    "button": {
+      "create-random-code": "СОЗДАТЬ ПРОИЗВОЛЬНО",
+      "create-code": "СОЗДАТЬ КОД",
+      "deactivate": "Деактивировать"
+    },
+    "tooltip": {
+      "checkCode": {
+        "success": "код не используется в системе",
+        "error": "код уже используется в системе"
+      },
+      "deactivate-button": "деактивировать код плеера",
+      "multiple-deactivate-button": "деактивировать коды плееров",
+      "nothing-to-deactivate": "среди выбранных кодов нет активных"
+    },
+    "notifications": {
+      "deactivate": {
+        "success": "Код успешно деактивирован",
+        "reject": "Код не был деактивирован"
+      }
+    }
+  }
+}

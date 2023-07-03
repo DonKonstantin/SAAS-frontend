@@ -1,0 +1,56 @@
+stages:
+  - build
+  - build_notify
+
+# Инициализация Werf
+.werf_init:
+  image: registry.werf.io/werf/werf:1.2-rock-solid
+  before_script:
+    - source $(werf ci-env gitlab --as-file)
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git config --global --add safe.directory '*'
+
+# Базовый скрипт отправки уведомления о сборке
+.build_notify: &build_notify
+  stage: build_notify
+  script:
+    - apk update
+    - apk add curl git
+    - sh .gitlab-ci/scripts/BuildNotify.sh $TYPE $TEXT
+
+# Скрипт отправки нотификации об успешной сборке
+.build_success: &build_success
+  <<: *build_notify
+  variables:
+    TYPE: "✅"
+    TEXT: "Success"
+
+# Скрипт отправки нотификации об упавшей сборке
+.build_failed: &build_failed
+  <<: *build_notify
+  variables:
+    TYPE: "❌"
+    TEXT: "Failed"
+
+# Сборка приложения
+Build:
+  extends: .werf_init
+  stage: build
+  environment:
+    name: $ENVIRONMENT
+  script:
+    - werf build --add-custom-tag=$CI_REF
+
+# Уведомление об успешной сборке
+Build notify success:
+  <<: *build_success
+  environment:
+    name: $ENVIRONMENT
+  when: on_success
+
+# Уведомление об отвале сборке
+Build notify failed:
+  <<: *build_failed
+  environment:
+    name: $ENVIRONMENT
+  when: on_failure

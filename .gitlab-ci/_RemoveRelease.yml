@@ -1,0 +1,67 @@
+stages:
+  - remove
+  - remove_notify
+
+# Инициализация Werf
+.werf_init:
+  image: registry.werf.io/werf/werf:1.2-rock-solid
+  before_script:
+    - source $(werf ci-env gitlab --as-file)
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git config --global --add safe.directory '*'
+
+# Базовый скрипт удаления раскатки из кластера
+.base_remove:
+  stage: remove
+  extends: .werf_init
+  script:
+    - cat $REGISTRY_CREDENTIALS >> .helm/values.yaml && printf "\n" >> .helm/values.yaml
+    - printf "%s" "$CLUSTER_CONFIG" > /tmp/.kube.config-$CI_JOB_ID
+    - werf dismiss
+      --with-namespace
+      --kube-config=/tmp/.kube.config-$CI_JOB_ID
+      --kube-context="$CLUSTER_CONTEXT"
+
+# Базовый скрипт отправки уведомления о деплое
+.remove_notify: &remove_notify
+  stage: remove_notify
+  script:
+    - apk update
+    - apk add curl git
+    - sh .gitlab-ci/scripts/RemoveReview.sh $TYPE $TEXT https://$DOMAIN
+
+# Скрипт отправки нотификации об успешном деплое
+.remove_success: &remove_success
+  <<: *remove_notify
+  variables:
+    TYPE: "✅"
+    TEXT: "Success"
+
+# Скрипт отправки нотификации об упавшем деплое
+.remove_failed: &remove_failed
+  <<: *remove_notify
+  variables:
+    TYPE: "❌"
+    TEXT: "Failed"
+
+# Удаление приложения из рабочей среды
+Remove:
+  extends: .base_remove
+  stage: remove
+  environment:
+    name: $ENVIRONMENT
+
+# Уведомление об успешном удалении
+Success:
+  <<: *remove_success
+  environment:
+    name: $ENVIRONMENT
+  when: on_success
+
+# Уведомление об отвале удаления
+Failed:
+  <<: *remove_failed
+  environment:
+    name: $ENVIRONMENT
+  when: on_failure
+

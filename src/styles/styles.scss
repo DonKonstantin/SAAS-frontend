@@ -1,0 +1,24 @@
+@import "mixins";
+@import "components";
+@import "layouts";
+@import "pages";
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes progress {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -70px 0;
+  }
+}

@@ -1,0 +1,7 @@
+.idea
+node_modules
+src/.next
+src/.env
+schema.graphql
+.vscode
+/src/nbproject/private/
