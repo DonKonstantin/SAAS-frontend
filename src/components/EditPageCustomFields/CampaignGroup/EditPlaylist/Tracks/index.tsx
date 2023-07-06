@@ -280,6 +280,7 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab, onSubmitCampaign }) => {
             limit={limit}
             offset={offset}
             rows={currentPlaylist?.files!}
+            isProject={!!playlist?.campaignPlaylist}
           />
         </Grid>
         <StyledPaginationGrid item xs={6}>
