@@ -12,6 +12,7 @@ import { styled } from "@mui/system";
 interface Props {
   row: CampaignPlayListFileType;
   isEditable: boolean;
+  isProject: boolean;
 }
 
 const StyledIconButton = styled(IconButton)({
@@ -23,7 +24,7 @@ const StyledIconButton = styled(IconButton)({
  * @param param0
  * @returns
  */
-const TrackRow: FC<Props> = ({ row, isEditable }) => {
+const TrackRow: FC<Props> = ({ row, isEditable, isProject }) => {
   const { moveTrack, removeTrack } =
     useCampaignPlaylistEditContext(distinctUntilChanged(() => true));
 
@@ -50,7 +51,7 @@ const TrackRow: FC<Props> = ({ row, isEditable }) => {
         <PlayAudioButton
           fileName={row.file.file_name}
           songName={row.file.title}
-          isProject={true}
+          isProject={isProject}
         />
       </TableCell>
       <TableCell>

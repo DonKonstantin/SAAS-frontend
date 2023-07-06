@@ -10,6 +10,7 @@ interface Props {
   rows: ProjectPlayListFile[] | CampaignPlayListFileType[];
   limit: number;
   offset: number;
+  isProject: boolean;
 };
 
 /**
@@ -23,6 +24,7 @@ const TracksTable: FC<Props> = props => {
     rows,
     limit,
     offset,
+    isProject,
   } = props;
 
   const preparedRows = rows
@@ -41,6 +43,7 @@ const TracksTable: FC<Props> = props => {
         <TableBodyComponent
           rows={preparedRows}
           isEditable={isEditable}
+          isProject={isProject}
         />
       </Table>
     </TableContainer>

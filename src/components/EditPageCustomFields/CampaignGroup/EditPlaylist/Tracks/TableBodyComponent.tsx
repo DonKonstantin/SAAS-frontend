@@ -8,6 +8,7 @@ import EmptyRow from "./EmptyRow";
 interface Props {
   isEditable: boolean;
   rows: ProjectPlayListFile[] | CampaignPlayListFileType[];
+  isProject: boolean;
 }
 
 /**
@@ -15,11 +16,11 @@ interface Props {
  * @param param0
  * @returns
  */
-const TableBodyComponent: FC<Props> = ({ rows, isEditable }) => {
+const TableBodyComponent: FC<Props> = ({ rows, ...props }) => {
   return (
     <TableBody>
       {!!rows.length && rows.map((row) => (
-        <TrackRow key={row.id} row={row} isEditable={isEditable} />
+        <TrackRow key={row.id} row={row} {...props} />
       ))}
       {!rows.length && <EmptyRow />}
     </TableBody>
