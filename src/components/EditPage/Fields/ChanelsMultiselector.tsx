@@ -1,17 +1,13 @@
-import React, { FC, memo } from "react";
+import React, {FC, memo,useState} from "react";
 import { distinctUntilChanged } from "rxjs";
 import { EditFieldProperties } from "settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
-import {
-  Select,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-  SelectChangeEvent,
-  Autocomplete,
-  TextField,
-  Box,
-} from "@mui/material";
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 
 /**
@@ -21,6 +17,8 @@ import { ProjectChannel } from "services/playerCodeService/interfaces";
  */
 const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
   const { fieldCode } = props;
+
+  const [selectedAll, setSelectedAll] = useState(false);
 
   const fieldData = useEntityEditField(
     fieldCode,
@@ -47,17 +45,19 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
     additionData,
   } = fieldData;
 
-  const currentValue: string[] = value as string[];
+  const [currentValue, setCurrentValue] = useState<any>(value);
+
+  let allOption = {value: 'All', name: t("player-codes.add.channel-selector.select-all")};
 
   const channels = additionData.project_channels;
 
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
-    const {
-      target: { value },
-    } = event;
+  const handleChange = (_, values) => {
+    const  value = values.map(item=>item.id? item.id: item.value);
 
     //@ts-ignore
-    if (value.some((val) => val === "All")) {
+    if (!selectedAll && value.find((val) => val === "All")) {
+      setSelectedAll(true);
+      setCurrentValue([allOption]);
       onChangeFieldValue(() =>
         value.length - 1 === channels.length
           ? []
@@ -66,6 +66,18 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
 
       return;
     }
+
+    if(selectedAll && !value.includes('All')) {
+      setSelectedAll(false);
+      setCurrentValue([]);
+      return;
+    }
+
+    if(selectedAll) {
+      setSelectedAll(false);
+    }
+
+    setCurrentValue(values.filter(item=> !item.value ||  item.value !== 'All'));
 
     onChangeFieldValue(() =>
       typeof value === "string" ? value.split(",") : value
@@ -76,82 +88,44 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
     return null;
   }
 
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+  const options = [allOption, ...channels];
+
   return (
-    // <Autocomplete
-    //   multiple
-    //   variant="standard"
-    //   value={currentValue}
-    //   options={channels}
-    //   onChange={handleChange}
-    //   error={!!validation}
-    //   renderValue={(selected) =>
-    //     currentValue.length === channels.length
-    //       ? t("player-codes.add.channel-selector.select-all")
-    //       : selected
-    //           .map(
-    //             (value) =>
-    //               channels.find((channel) => channel.id === value)?.name
-    //           )
-    //           .join(", ")
-    //   }
-    //   MenuProps={{
-    //     PaperProps: {
-    //       style: {
-    //         maxHeight: 400,
-    //         width: 250,
-    //       },
-    //     },
-    //   }}
-    //   sx={{
-    //     width: "100%",
-    //   }}
-    // >
-    //   {!channels.length && (
-    //     <MenuItem value={""} disabled>
-    //       <ListItemText
-    //         primary={t("player-codes.add.channel-selector.no-channels")}
-    //       />
-    //     </MenuItem>
-    //   )}
-    //   {!!channels.length && (
-    //     <MenuItem value={"All"}>
-    //       <Checkbox checked={currentValue.length === channels.length} />
-    //       <ListItemText
-    //         primary={t("player-codes.add.channel-selector.select-all")}
-    //       />
-    //     </MenuItem>
-    //   )}
-    //   {channels.map((channel) => (
-    //     <MenuItem key={channel.name} value={channel.id}>
-    //       <Checkbox
-    //         checked={!!currentValue.find((val) => val === channel.id)}
-    //       />
-    //       <ListItemText primary={channel.name} />
-    //     </MenuItem>
-    //   ))}
-    // </Autocomplete>
     <Box sx={{ alignSelf: 'flex-start', width: '100%' }}>
     <Autocomplete
         multiple
-        sx={{
-          width: '100%',
-        }}
-        renderTags={(value: readonly ProjectChannel[], getTagProps) =>
-          value.map((option: ProjectChannel) => option.name).join(",")
+        fullWidth
+        value={currentValue}
+        disabled={channels.length === 0}
+        onChange={handleChange}
+        renderTags={(value: readonly ProjectChannel[]) =>
+          value.map((option: ProjectChannel) => option.name).join(", ")
         }
         id="tags-outlined"
-        options={channels}
+        options={options}
         getOptionLabel={(option) => option.name}
-        defaultValue={[]}
-        filterSelectedOptions
+        disableCloseOnSelect
         renderInput={(params) => (
           <TextField
             {...params}
             fullWidth
-            label="filterSelectedOptions"
-            placeholder="Favorites"
             variant="standard"
+            error={!!validation}
           />
+        )}
+        renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selectedAll || selected}
+              />
+              {option.name}
+            </li>
         )}
       />
     </Box>
