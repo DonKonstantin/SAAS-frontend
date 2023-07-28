@@ -8,7 +8,11 @@ import {
   Checkbox,
   ListItemText,
   SelectChangeEvent,
+  Autocomplete,
+  TextField,
+  Box,
 } from "@mui/material";
+import { ProjectChannel } from "services/playerCodeService/interfaces";
 
 /**
  * Компонент мультиселпктора каналов
@@ -73,58 +77,84 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
   }
 
   return (
-    <Select
-      multiple
-      variant="standard"
-      value={currentValue}
-      onChange={handleChange}
-      error={!!validation}
-      renderValue={(selected) =>
-        currentValue.length === channels.length
-          ? t("player-codes.add.channel-selector.select-all")
-          : selected
-              .map(
-                (value) =>
-                  channels.find((channel) => channel.id === value)?.name
-              )
-              .join(", ")
-      }
-      MenuProps={{
-        PaperProps: {
-          style: {
-            maxHeight: 400,
-            width: 250,
-          },
-        },
-      }}
-      sx={{
-        width: "100%",
-      }}
-    >
-      {!channels.length && (
-        <MenuItem value={""} disabled>
-          <ListItemText
-            primary={t("player-codes.add.channel-selector.no-channels")}
+    // <Autocomplete
+    //   multiple
+    //   variant="standard"
+    //   value={currentValue}
+    //   options={channels}
+    //   onChange={handleChange}
+    //   error={!!validation}
+    //   renderValue={(selected) =>
+    //     currentValue.length === channels.length
+    //       ? t("player-codes.add.channel-selector.select-all")
+    //       : selected
+    //           .map(
+    //             (value) =>
+    //               channels.find((channel) => channel.id === value)?.name
+    //           )
+    //           .join(", ")
+    //   }
+    //   MenuProps={{
+    //     PaperProps: {
+    //       style: {
+    //         maxHeight: 400,
+    //         width: 250,
+    //       },
+    //     },
+    //   }}
+    //   sx={{
+    //     width: "100%",
+    //   }}
+    // >
+    //   {!channels.length && (
+    //     <MenuItem value={""} disabled>
+    //       <ListItemText
+    //         primary={t("player-codes.add.channel-selector.no-channels")}
+    //       />
+    //     </MenuItem>
+    //   )}
+    //   {!!channels.length && (
+    //     <MenuItem value={"All"}>
+    //       <Checkbox checked={currentValue.length === channels.length} />
+    //       <ListItemText
+    //         primary={t("player-codes.add.channel-selector.select-all")}
+    //       />
+    //     </MenuItem>
+    //   )}
+    //   {channels.map((channel) => (
+    //     <MenuItem key={channel.name} value={channel.id}>
+    //       <Checkbox
+    //         checked={!!currentValue.find((val) => val === channel.id)}
+    //       />
+    //       <ListItemText primary={channel.name} />
+    //     </MenuItem>
+    //   ))}
+    // </Autocomplete>
+    <Box sx={{ alignSelf: 'flex-start', width: '100%' }}>
+    <Autocomplete
+        multiple
+        sx={{
+          width: '100%',
+        }}
+        renderTags={(value: readonly ProjectChannel[], getTagProps) =>
+          value.map((option: ProjectChannel) => option.name).join(",")
+        }
+        id="tags-outlined"
+        options={channels}
+        getOptionLabel={(option) => option.name}
+        defaultValue={[]}
+        filterSelectedOptions
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            fullWidth
+            label="filterSelectedOptions"
+            placeholder="Favorites"
+            variant="standard"
           />
-        </MenuItem>
-      )}
-      {!!channels.length && (
-        <MenuItem value={"All"}>
-          <Checkbox checked={currentValue.length === channels.length} />
-          <ListItemText
-            primary={t("player-codes.add.channel-selector.select-all")}
-          />
-        </MenuItem>
-      )}
-      {channels.map((channel) => (
-        <MenuItem key={channel.name} value={channel.id}>
-          <Checkbox
-            checked={!!currentValue.find((val) => val === channel.id)}
-          />
-          <ListItemText primary={channel.name} />
-        </MenuItem>
-      ))}
-    </Select>
+        )}
+      />
+    </Box>
   );
 };
 
