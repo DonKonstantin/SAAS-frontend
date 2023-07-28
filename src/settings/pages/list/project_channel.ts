@@ -102,6 +102,4 @@ export class ProjectChannelListingConfiguration
       as: `/domain/${domain}/project/${project}/channel/add`,
     };
   };
-  hidePagination = true;
-
 }
