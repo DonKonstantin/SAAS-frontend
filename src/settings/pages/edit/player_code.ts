@@ -90,7 +90,7 @@ export class PlayerCodeEditPageConfig
                 checkResult
               );
 
-              return checkResult;
+              return checkResult.map(item=> item.is_active);
             } catch (error) {
               logger.Error("Edit player code addition data error: ", error);
 

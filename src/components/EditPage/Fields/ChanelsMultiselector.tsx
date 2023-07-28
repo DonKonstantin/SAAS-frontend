@@ -98,6 +98,7 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
     <Autocomplete
         multiple
         fullWidth
+        noOptionsText={t("player-codes.add.channel-selector.no-channels")}
         value={currentValue}
         disabled={channels.length === 0}
         onChange={handleChange}
