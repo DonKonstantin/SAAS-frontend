@@ -9,7 +9,12 @@ export interface PlayerCodeServiceInterface {
   /**
    * Получаем все доступные для проекта канала
    */
-  getChannels: (projectId: string) => Promise<ProjectChannel[]>;
+  getChannels: (projectId: string, isActive?: boolean) => Promise<ProjectChannel[]>;
+
+  /**
+   * Получаем кол-во каналов для проекта канала
+   */
+  checkCountChannels: (projectId: string, isActive: boolean) => Promise<number>;
 
   /**
    * Получаем каналы для кодов плееров в листинге

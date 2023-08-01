@@ -4,6 +4,8 @@ import { ProjectChannel } from "../interfaces";
 
 export type GetChannelsByProjectIDQueryParams = {
   projectId: string;
+  limit: number;
+  isActive?: boolean;
 };
 
 export type GetChannelsByProjectIDQueryResponse = {
@@ -19,14 +21,19 @@ export class GetChannelsByProjectIDQuery
   readonly query: any;
   readonly variables: GetChannelsByProjectIDQueryParams;
 
-  constructor(projectId: string) {
+  constructor(projectId: string, limit: number, isActive?: boolean) {
     this.variables = {
       projectId,
+      limit,
+      isActive,
     };
 
+    const queryActiveAttr = isActive === undefined ? '' : ', $isActive: Boolean';
+    const queryActiveParams = isActive === undefined ? '' : 'is_active: {_equals: $isActive}';
+
     this.query = gql(`
-      query __GET_CHANNELS__($projectId: ID){
-        channels: project_channel_list(where: {project_id: {_equals: $projectId}}, limit : 100){
+      query __GET_CHANNELS__($projectId: ID, $limit: Int${queryActiveAttr}){
+        channels: project_channel_list(where: {project_id: {_equals: $projectId} ${queryActiveParams}} limit: $limit){
           id
           is_active
           name
