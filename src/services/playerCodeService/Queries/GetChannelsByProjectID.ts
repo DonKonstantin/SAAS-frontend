@@ -34,6 +34,8 @@ export class GetChannelsByProjectIDQuery
     this.query = gql(`
       query __GET_CHANNELS__($projectId: ID, $limit: Int${queryActiveAttr}){
         channels: project_channel_list(where: {project_id: {_equals: $projectId} ${queryActiveParams}} limit: $limit){
+      query __GET_CHANNELS__($projectId: ID){
+        channels: project_channel_list(where: {project_id: {_equals: $projectId}}, limit : 100){
           id
           is_active
           name
