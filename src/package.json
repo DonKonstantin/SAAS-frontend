@@ -1,6 +1,6 @@
 {
   "name": "saas-crm",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "CRM для SaaS",
   "main": "index.js",
   "scripts": {
