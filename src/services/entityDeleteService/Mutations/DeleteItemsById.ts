@@ -20,8 +20,8 @@ export class DeleteItemsByIdMutation
     };
 
     this.query = gql`
-      mutation __DELETE_ENTITY__($ids: [String]) {
-        ${deleteSchema}_delete(where: {${code}: {_in: $ids}}) {
+      mutation __DELETE_ENTITY__ {
+        ${deleteSchema}_delete(where: {${code}: {_in: [${ids.join(",")}]}}) {
           affected_rows
         }
       }
