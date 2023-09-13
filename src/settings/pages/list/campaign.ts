@@ -1,7 +1,6 @@
 import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/list";
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
 import {ListFieldRow, ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
-// import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import {getCurrentState} from "../../../context/AuthorizationContext";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
