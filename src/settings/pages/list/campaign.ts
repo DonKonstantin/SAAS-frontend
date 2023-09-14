@@ -10,6 +10,7 @@ import {campaignListService} from "../../../services/campaignListService";
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import CampaignIsActiveCell from "components/ListPageCustom/CampaignIsActiveCell";
 import { CampaignsActions } from "components/ListPageCustom/CampaignsActions";
+import CampaignNameWithLinkCell from "components/ListPageCustom/CampaignNameWithLinkCell";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
   filter: FilterFieldsConfiguration<"campaign"> = {
@@ -46,7 +47,8 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         isEnabled: true,
         fieldType: {
           config: undefined,
-          type: "Simple"
+          type: "Simple",
+          customComponent: CampaignNameWithLinkCell,
         }
       },
       version: {
