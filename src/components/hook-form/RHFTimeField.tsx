@@ -12,22 +12,24 @@ import { timeConverter, timeConverterNumberForTime } from 'components/timeConver
 
 interface IProps {
   name: string;
-  day_num: number
-  timeValue: number
-  fieldType: "start" | "end"
-  disabled?: boolean
-  handleChangeTimeValue(day_num: number, dayTime: number, field: "start" | "end"): void
+  day_num: number;
+  timeValue: number;
+  fieldType: "start" | "end";
+  disabled?: boolean;
+  disableOpenPicker?: boolean;
+  handleChangeTimeValue(day_num: number, dayTime: number, field: "start" | "end"): void;
 }
 
 export default function RHFTimeField({
-                                       name,
-                                       day_num,
-                                       timeValue,
-                                       fieldType,
-                                       disabled,
-                                       handleChangeTimeValue,
-                                       ...other
-                                     }: IProps & TextFieldProps) {
+  name,
+  day_num,
+  timeValue,
+  fieldType,
+  disabled,
+  disableOpenPicker,
+  handleChangeTimeValue,
+  ...other
+}: IProps & TextFieldProps) {
   const { control } = useFormContext();
 
   const timeValueStart = dayjs(new Date()).format("YYYY-MM-DD") + "T" + timeConverterNumberForTime(timeValue);
@@ -43,6 +45,7 @@ export default function RHFTimeField({
             value={new Date(timeValueStart)}
             disabled={disabled}
             ampm={false}
+            disableOpenPicker={disableOpenPicker}
             onChange={(value: any) => handleChangeTimeValue(day_num, timeConverter(dayjs(value).format("HH:mm")), fieldType)}
             renderInput={(params) => (
               <TextField

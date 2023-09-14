@@ -4,12 +4,13 @@ import RHFTimeField from "../../../../hook-form/RHFTimeField";
 
 type Props = {
   day_num: number
-  nameFieldDays: string
-  arrayFieldIndex: number
-  days_start_minutes: number
-  days_stop_minutes: number
-  disabled?: boolean
-  handleChangeTimeValue(id: number, time: any, field: "start" | "end"): void
+  nameFieldDays: string;
+  arrayFieldIndex: number;
+  days_start_minutes: number;
+  days_stop_minutes: number;
+  disabled?: boolean;
+  disableOpenPicker?: boolean;
+  handleChangeTimeValue(id: number, time: any, field: "start" | "end"): void;
 }
 
 const TimePickerComponent: FC<Props> = (props) => {
@@ -21,7 +22,8 @@ const TimePickerComponent: FC<Props> = (props) => {
     days_start_minutes,
     days_stop_minutes,
     disabled,
-    handleChangeTimeValue
+    disableOpenPicker,
+    handleChangeTimeValue,
   } = props
 
   return (
@@ -34,6 +36,7 @@ const TimePickerComponent: FC<Props> = (props) => {
         fieldType="start"
         sx={{ maxWidth: "99px" }}
         disabled={disabled}
+        disableOpenPicker={disableOpenPicker}
       />
       <Box sx={{ maxWidth: "4px", width: "100%", alignSelf: "flex-start", mt: "3px" }}>-</Box>
       <RHFTimeField
@@ -44,6 +47,7 @@ const TimePickerComponent: FC<Props> = (props) => {
         fieldType="end"
         sx={{ maxWidth: "99px" }}
         disabled={disabled}
+        disableOpenPicker={disableOpenPicker}
       />
     </Box>
   )
