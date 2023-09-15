@@ -439,7 +439,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   | 'selectedChannels'
   | 'savedChannels'
 >> = combineLatest([
-  campaign$.pipe(tap((data) => console.log(data, "Yo"))),
+  campaign$,
   isLoading$,
   campaignListErrorText$,
   isInitialized$,
@@ -683,8 +683,6 @@ const writeCampaign: CampaignEditContextActionsTypes['writeCampaign'] = (campaig
  * Очищаем стрим с кампанией
  */
 const clearCampaign: CampaignEditContextActionsTypes['clearCampaign'] = () => {
-  console.log("Hey");
-  
   campaign$.next(undefined);
 };
 
