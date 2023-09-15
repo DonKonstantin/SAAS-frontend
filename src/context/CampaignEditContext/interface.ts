@@ -99,6 +99,11 @@ export interface CampaignEditContextActionsTypes {
    * @returns 
    */
   writeCampaign: (campaign: Campaign) => void;
+
+  /**
+   * Очищаем стрим с кампанией
+   */
+  clearCampaign: VoidFunction;
 };
 
 

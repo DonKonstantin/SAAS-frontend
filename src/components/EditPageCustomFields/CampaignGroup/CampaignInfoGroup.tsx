@@ -1,6 +1,6 @@
 import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
 import {Box, Button, Grid, Paper, Stack, Tab} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {LoadingButton, TabContext, TabList, TabPanel} from "@mui/lab";
 import {useTranslation} from "react-i18next";
 import {FormProvider} from "../../hook-form";
@@ -53,13 +53,17 @@ export enum daysName {
 export type FormValuesProps = CampaignInput
 
 // Компонент вывода группы создания компании
-const CampaignInfoGroup = () => {
-  const { playlist } = useCampaignPlaylistEditContext(
+const CampaignInfoGroup: FC<{ isNew: boolean }> = ({ isNew }) => {
+  const { playlist, clearContext } = useCampaignPlaylistEditContext(
     distinctUntilKeyChanged("playlist")
   );
 
   const { t } = useTranslation();
+
   const router = useRouter();
+
+  const [isCampaignNew, setIsCampaignNew] = useState<boolean>(false);
+
   const { domain, project } = getCurrentState();
 
   if (!domain || !project) {
@@ -76,6 +80,7 @@ const CampaignInfoGroup = () => {
     newAddedCampaignPlaylist,
     setSavedChannels,
     writeCampaign,
+    clearCampaign,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
@@ -86,8 +91,6 @@ const CampaignInfoGroup = () => {
           !xor(prev.selectedChannels, curr.selectedChannels).length
       )
     );
-
-  const { clearContext } = useCampaignPlaylistEditContext();
 
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
@@ -238,10 +241,16 @@ const CampaignInfoGroup = () => {
       try {
         const response = await campaignListService().storeCampaign(newData);
 
+        clearCampaign();
+
         if (asPathNestedRoutes && isNaN(parseInt(asPathNestedRoutes))) {
-          router.push(
-            `/domain/${domain}/project/${project}/campaign/edit/${response.id}`
-          );
+          router.push({
+            pathname: `/domain/${domain}/project/${project}/campaign/edit/${response.id}`,
+            query: {
+              isnew: 'true',
+            },
+          });
+
           return;
         }
 
@@ -357,7 +366,11 @@ const CampaignInfoGroup = () => {
 
       writeCampaign(campaign);
 
-      !successCreatedPlaylist && setCurrentActionTab("channels");
+      if (!!successCreatedPlaylist) {
+        return
+      }
+
+      campaign.campaign_type === "mute" ? setCurrentActionTab("channels") : setCurrentActionTab("content");
     } catch (error) {
       if (typeof error.message === "string") {
         messanger.dispatch({
@@ -405,6 +418,12 @@ const CampaignInfoGroup = () => {
 
     //@ts-ignore
     loadCampaign(router.query.entityId);
+
+    if (!isNew) {
+      return
+    }
+
+    setIsCampaignNew(true);
   }, [router.query.entityId]);
 
   // Устанавливаем данные в форму, когда получаем компанию
@@ -439,7 +458,11 @@ const CampaignInfoGroup = () => {
 
   //При закрытии редактирования компани очищяем контекст
   useEffect(() => {
-    return () => clearContext()
+    return () => {
+      clearCampaign();
+
+      clearContext();
+    };
   }, [])
 
   useEffect(() => {
@@ -474,7 +497,18 @@ const CampaignInfoGroup = () => {
       });
     })
 
-  }, [saveCampaign, campaign, playlist])
+  }, [saveCampaign, campaign, playlist]);
+
+  //  Эфект срабатывает если была создана новая кампания для роутинга между вкладками
+  useEffect(() => {
+    if (!isCampaignNew || !campaign) {
+      return
+    }
+
+    campaign.campaign_type === "mute" ? setCurrentActionTab("channels") : setCurrentActionTab("content");
+
+    setIsCampaignNew(false);
+  }, [campaign, isCampaignNew]);
 
   if (isInitialized) {
     return <LoadingBlocker/>;

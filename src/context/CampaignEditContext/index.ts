@@ -88,7 +88,6 @@ const loadCampaign$ = campaignId$.pipe(
   tap(() => campaignListErrorText$.next(undefined)),
   switchMap(async (campaignId) => {
     if (!campaignId) {
-
       return;
     }
 
@@ -440,7 +439,7 @@ const collectBus$: Observable<Pick<CampaignEditContextTypes,
   | 'selectedChannels'
   | 'savedChannels'
 >> = combineLatest([
-  campaign$,
+  campaign$.pipe(tap((data) => console.log(data, "Yo"))),
   isLoading$,
   campaignListErrorText$,
   isInitialized$,
@@ -680,6 +679,15 @@ const writeCampaign: CampaignEditContextActionsTypes['writeCampaign'] = (campaig
   toWriteCampaign$.next(campaign);
 };
 
+/**
+ * Очищаем стрим с кампанией
+ */
+const clearCampaign: CampaignEditContextActionsTypes['clearCampaign'] = () => {
+  console.log("Hey");
+  
+  campaign$.next(undefined);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
@@ -695,4 +703,5 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   setChannels,
   setSavedChannels,
   writeCampaign,
+  clearCampaign,
 };
