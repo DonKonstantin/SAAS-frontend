@@ -166,6 +166,7 @@ const DaysGroupPicker: FC<Props> = ({
               days_stop_minutes={daysData[0].days_stop_minutes}
               handleChangeTimeValue={handleChangeTimeValue}
               disabled={disabled}
+              disableOpenPicker={true}
             />
           ) : (
             <>
@@ -190,6 +191,7 @@ const DaysGroupPicker: FC<Props> = ({
                     days_stop_minutes={day.days_stop_minutes}
                     handleChangeTimeValue={handleChangeTimeValue}
                     disabled={disabled}
+                    disableOpenPicker={true}
                   />
                 </Stack>
               ))}
