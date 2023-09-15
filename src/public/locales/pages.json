@@ -425,7 +425,8 @@
                 "name": "Название канала",
                 "status": "Статус",
                 "players_count": "Подключено плееров"
-              }
+              },
+              "numberOfSelected": "выбран(о) {{selected}} канал(ов) из {{amount}}"
             }
           },
           "campaign_days_type": {

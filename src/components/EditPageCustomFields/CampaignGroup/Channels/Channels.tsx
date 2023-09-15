@@ -1,4 +1,4 @@
-import { Alert, Collapse, Grid } from "@mui/material";
+import { Alert, Collapse, Grid, Typography } from "@mui/material";
 import { useCampaignEditContext } from "context/CampaignEditContext/useCampaignEditContext";
 import { difference, xor } from "lodash";
 import React, { FC, memo, useEffect, useMemo, useState } from "react";
@@ -91,7 +91,17 @@ const Channels: FC = () => {
           isChannelsLoading={isChannelsLoading}
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={6} sx={{ pt: 1 }}>
+        <Typography>
+          {t('pages.campaign.edit.fields.channels.table.numberOfSelected', {
+            selected: checkedItems.length,
+            amount: rows.length,
+          })}
+        </Typography>
+      </Grid>
+
+      <Grid item xs={6}>
         <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent} />
       </Grid>
     </Grid>
