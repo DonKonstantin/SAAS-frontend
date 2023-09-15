@@ -1,5 +1,5 @@
 import { Table, TableContainer } from "@mui/material";
-import React, { FC, memo } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import { ProjectChannel } from "services/playerCodeService/interfaces";
 import { SortType } from "../types";
 import TableBodyComponent from "./TableBodyComponent";
@@ -8,11 +8,7 @@ import TableHeader from "./TableHeader";
 interface Props {
   rows: ProjectChannel[];
   checkedItems: string[];
-  sort: SortType;
-  limit: number;
-  offset: number;
   isChannelsLoading: boolean;
-  setSort: (sort: SortType) => void;
   onChangeCheckedItems: (checkedItems: string[]) => void;
 }
 
@@ -24,13 +20,53 @@ interface Props {
 const ChannelsTable: FC<Props> = ({
   rows,
   checkedItems,
-  sort,
-  limit,
-  offset,
   isChannelsLoading,
-  setSort,
   onChangeCheckedItems,
 }) => {
+  const [sort, setSort] = useState<SortType>({
+    column: "name",
+    direction: "asc",
+  });
+
+  const [sortedRows, setSortedRows] = useState<ProjectChannel[]>([]);
+
+  useEffect(() => {
+    let localRows: ProjectChannel[] = [];
+
+    if (sort.column === "name") {
+      localRows = rows.sort((a, b) => {
+        const aValue = a.name;
+        const bValue = b.name;
+
+        return bValue.localeCompare(aValue);
+      });
+    }
+
+    if (sort.column === "isActive") {
+      localRows = rows.sort((a, b) => {
+        const aValue = a.is_active;
+        const bValue = b.is_active;
+
+        return aValue === bValue ? 0 : aValue ? -1 : 1;
+      });
+    }
+
+    if (sort.column === "playersCount") {
+      localRows = rows.sort((a, b) => {
+        const aValue = a.players?.length!;
+        const bValue = b.players?.length!;
+
+        return aValue - bValue;
+      });
+    }
+
+    setSortedRows(sort.direction === "asc" ? localRows.reverse() : localRows);
+  }, [rows, sort, setSortedRows]);
+
+  useEffect(() => {
+    setSortedRows(rows);
+  }, [rows]);
+
   return (
     <TableContainer>
       <Table>
@@ -38,12 +74,13 @@ const ChannelsTable: FC<Props> = ({
           sort={sort}
           setSort={setSort}
           checkedItems={checkedItems}
-          rows={rows.slice(offset, offset + limit)}
+          rows={sortedRows}
           onChangeCheckedItems={onChangeCheckedItems}
         />
+        
         <TableBodyComponent
           checkedItems={checkedItems}
-          rows={rows.slice(offset, offset + limit)}
+          rows={sortedRows}
           isChannelsLoading={isChannelsLoading}
           onChangeCheckedItems={onChangeCheckedItems}
         />
