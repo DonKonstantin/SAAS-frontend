@@ -36,7 +36,7 @@ const CampaignIsActiveCell: FC<ListFieldProperties<SimpleValues>> = ({
   const endPeriod = new Date(row?.campaign_period_stop.value).getTime();
   const now = new Date().getTime();
 
-  const inPeriod = startPeriod - now < 0 && now - endPeriod < 0;
+  const inPeriod = startPeriod - now <= 0 && now - endPeriod >= 0;
 
   const status = !!channels && inPeriod;
 
