@@ -2,7 +2,7 @@ import React from "react";
 import {Schemas} from "../../../settings/schema";
 import {SimpleValues} from "./listValues/SimpleValues";
 import {RelationValue} from "./listValues/RelationValue";
-import {DedicatedSortAlgoType, ListLoadingParameters} from "./interfaces";
+import {ListLoadingParameters} from "./interfaces";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
 import {EnumValue} from "./listValues/EnumValue";
 import {SchemaValues} from "./listValues/SchemaValues";
@@ -88,7 +88,6 @@ export interface ListFieldConfiguration<T extends keyof Schemas, K extends keyof
     isHidden?: boolean   // Флаг отображения поля
     fieldType: FieldType<any>  // Тип поля
     isSortable?: boolean; //  Является ли поле сортируемым для полей типа не Simple
-    dedicatedSortType?: DedicatedSortAlgoType;  //  Тип специальной сортировки столбца
 }
 
 // Тип, описывающий значения строки листинга
