@@ -6,6 +6,7 @@ import {DedicatedSortAlgoType, ListLoadingParameters} from "./interfaces";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
 import {EnumValue} from "./listValues/EnumValue";
 import {SchemaValues} from "./listValues/SchemaValues";
+import { SortDirection } from "components/EditPageCustomFields/EditProjectPlaylist/FileList/List/ListHeader";
 
 // Свойства полей листинга сущностей
 export interface ListFieldProperties<T> {
@@ -108,15 +109,19 @@ export type ListResponse<T extends keyof Schemas> = {
     additionData: any
 }
 
+//  Тип сортировки списка. Мультиколоночный или по одной колонке
+export type ListOrderType = "single" | "multiple";
+
 // Параметры конфигурации листинга элементов
 export type FieldsList<T extends keyof Schemas> = { [P in keyof Schemas[T]['fields']]: ListFieldConfiguration<T, any> }
 
 export interface ListFieldsConfiguration<T extends keyof Schemas> {
-    fields: FieldsList<T>;                                             // Параметры отображения базовых полей сущности
-    actions?: React.ComponentType<{ item: ListFieldRow<T> }>;    // Компонент отображения действий над элеметом
-    rowHigher?: React.ComponentType<{ item: ListFieldRow<T> }>;  // Дополнительная строка данных выше текущей. Для вывода доп. информации
-    rowBelow?: React.ComponentType<{ item: ListFieldRow<T> }>;   // Дополнительная строка данных ниже текущей. Для вывода доп. информации
+    fields: FieldsList<T>;  // Параметры отображения базовых полей сущности
+    actions?: React.ComponentType<{ item: ListFieldRow<T> }>; // Компонент отображения действий над элеметом
+    rowHigher?: React.ComponentType<{ item: ListFieldRow<T> }>; // Дополнительная строка данных выше текущей. Для вывода доп. информации
+    rowBelow?: React.ComponentType<{ item: ListFieldRow<T> }>;  // Дополнительная строка данных ниже текущей. Для вывода доп. информации
     additionDataLoader?: (items: ListFieldRow<T>[], token?: string) => Promise<any>;  // Загрузчик дополнительных данных для отображения
-    defaultOrderDirection?: "asc" | "desc"; // Порядок сортировки по умолчанию
+    defaultOrderDirection?: SortDirection // Порядок сортировки по умолчанию
     defaultSortField?: string;  // Поле для сортировки по умолчанию
+    orderType?: ListOrderType;  //  тип сортировки колонок в таблице
 }
