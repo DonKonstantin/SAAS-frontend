@@ -63,6 +63,8 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         field: "campaign_priority",
         title: "pages.campaign.list.fields.campaign-priority",
         isEnabled: true,
+        isSortable: true,
+        dedicatedSortType: "campaign_list_priority",
         fieldType: {
           config: undefined,
           type: "Enum"

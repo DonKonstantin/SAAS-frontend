@@ -2,7 +2,7 @@ import React from "react";
 import {Schemas} from "../../../settings/schema";
 import {SimpleValues} from "./listValues/SimpleValues";
 import {RelationValue} from "./listValues/RelationValue";
-import {ListLoadingParameters} from "./interfaces";
+import {DedicatedSortAlgoType, ListLoadingParameters} from "./interfaces";
 import {ListPageConfiguration} from "../../../settings/pages/system/list";
 import {EnumValue} from "./listValues/EnumValue";
 import {SchemaValues} from "./listValues/SchemaValues";
@@ -86,6 +86,8 @@ export interface ListFieldConfiguration<T extends keyof Schemas, K extends keyof
     isEnabled: boolean  // Флаг отображения и загрузки данных для поля. Если выключен - данные для поля не получаются
     isHidden?: boolean   // Флаг отображения поля
     fieldType: FieldType<any>  // Тип поля
+    isSortable?: boolean; //  Является ли поле сортируемым для полей типа не Simple
+    dedicatedSortType?: DedicatedSortAlgoType;  //  Тип специальной сортировки столбца
 }
 
 // Тип, описывающий значения строки листинга
@@ -110,11 +112,11 @@ export type ListResponse<T extends keyof Schemas> = {
 export type FieldsList<T extends keyof Schemas> = { [P in keyof Schemas[T]['fields']]: ListFieldConfiguration<T, any> }
 
 export interface ListFieldsConfiguration<T extends keyof Schemas> {
-    fields: FieldsList<T>                                             // Параметры отображения базовых полей сущности
-    actions?: React.ComponentType<{ item: ListFieldRow<T> }>    // Компонент отображения действий над элеметом
-    rowHigher?: React.ComponentType<{ item: ListFieldRow<T> }>  // Дополнительная строка данных выше текущей. Для вывода доп. информации
-    rowBelow?: React.ComponentType<{ item: ListFieldRow<T> }>   // Дополнительная строка данных ниже текущей. Для вывода доп. информации
-    additionDataLoader?: (items: ListFieldRow<T>[], token?: string) => Promise<any>   // Загрузчик дополнительных данных для отображения
-    defaultOrderDirection?: "asc" | "desc" // Порядок сортировки по умолчанию
-    defaultSortField?: string// Поле для сортировки по умолчанию
+    fields: FieldsList<T>;                                             // Параметры отображения базовых полей сущности
+    actions?: React.ComponentType<{ item: ListFieldRow<T> }>;    // Компонент отображения действий над элеметом
+    rowHigher?: React.ComponentType<{ item: ListFieldRow<T> }>;  // Дополнительная строка данных выше текущей. Для вывода доп. информации
+    rowBelow?: React.ComponentType<{ item: ListFieldRow<T> }>;   // Дополнительная строка данных ниже текущей. Для вывода доп. информации
+    additionDataLoader?: (items: ListFieldRow<T>[], token?: string) => Promise<any>;  // Загрузчик дополнительных данных для отображения
+    defaultOrderDirection?: "asc" | "desc"; // Порядок сортировки по умолчанию
+    defaultSortField?: string;  // Поле для сортировки по умолчанию
 }

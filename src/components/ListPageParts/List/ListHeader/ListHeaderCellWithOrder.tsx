@@ -32,7 +32,9 @@ const ListHeaderCellWithOrder: FC<ListHeaderCellProps> = props => {
         width,
         padding,
         field,
-        title
+        title,
+        isSortable,
+        dedicatedSortType,
     } = configuration
 
     const usedOrder = order.find(o => o.by === field)

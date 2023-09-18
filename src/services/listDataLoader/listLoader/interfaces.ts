@@ -17,11 +17,15 @@ export interface ListLoadingParameters<T extends keyof Schemas> {
     order: OrderParameter<T>[]
 }
 
+//  Тип сортировки специальным способом
+export type DedicatedSortAlgoType = "campaign_list_priority";
+
 // Параметры сортировки
 export interface OrderParameter<T extends keyof Schemas> {
-    by: keyof Schemas[T]['fields']
-    direction: "desc" | "asc"
-    priority: number
+    by: keyof Schemas[T]['fields'];
+    direction: "desc" | "asc";
+    priority: number;
+    dedicatedSortAlgo?: DedicatedSortAlgoType;  //  Специальный способ сортировки колонки
 }
 
 /**
