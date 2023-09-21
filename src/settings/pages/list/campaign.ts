@@ -1,6 +1,6 @@
 import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/list";
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
-import {ListFieldRow, ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
+import {ListFieldRow, ListFieldsConfiguration, ListOrderType,} from "../../../services/listDataLoader/listLoader/types";
 import {getCurrentState} from "../../../context/AuthorizationContext";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
@@ -63,6 +63,7 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         field: "campaign_priority",
         title: "pages.campaign.list.fields.campaign-priority",
         isEnabled: true,
+        isSortable: true,
         fieldType: {
           config: undefined,
           type: "Enum"
@@ -154,4 +155,5 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
     }
   };
   action: React.ComponentType<ListHeaderProps> = CampaignsActions;
+  orderType: ListOrderType = "single" as ListOrderType;
 }

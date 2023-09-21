@@ -33,10 +33,10 @@ export class EntityListStoreLoader implements EntityListStoreLoaderInterfaces {
         additionFilter: { [T: string]: string },
     ): Promise<ListOfSchema<T>> {
         // @ts-ignore
-        const baseConfiguration: ListPageConfiguration<T> = this.configurationBuilder()[configuration.schema];
+        const baseConfiguration: ListSchemaConfiguration<T> = this.configurationBuilder()[configuration.schema];
 
         // @ts-ignore
-        const currentConfiguration: ListPageConfiguration<T> = this.configurationBuilder()[configuration.schema];
+        const currentConfiguration: ListSchemaConfiguration<T> = this.configurationBuilder()[configuration.schema];
 
         const {defaultSortField} = configuration.listFields;
         let firstField = defaultSortField && configuration.listFields.fields[defaultSortField] || undefined;
@@ -70,6 +70,7 @@ export class EntityListStoreLoader implements EntityListStoreLoaderInterfaces {
                 limit: baseConfiguration.elementsPerPage,
                 offset: 0,
                 order: baseOrder,
+                listOrderType: baseConfiguration.orderType || "multiple",
             },
             baseData: <BaseData<T>>{
                 filter: {},
