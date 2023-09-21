@@ -1,4 +1,4 @@
-import React, { FC, memo } from "react";
+import React, { FC } from "react";
 import { TableBody } from "@mui/material";
 import ChannelRow from "./ChannelRow";
 import {CampaignChannels, ProjectChannel} from "services/playerCodeService/interfaces";
@@ -27,6 +27,7 @@ const TableBodyComponent: FC<Props> = ({
       {isChannelsLoading && (
         <TableLoader colCount={4}/>
       )}
+
       {!isChannelsLoading && rows.map((row) => (
         <ChannelRow
           key={row.id}
@@ -40,4 +41,4 @@ const TableBodyComponent: FC<Props> = ({
   );
 };
 
-export default memo(TableBodyComponent);
+export default TableBodyComponent;
