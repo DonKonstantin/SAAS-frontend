@@ -502,10 +502,10 @@ export class Schemas {
         enum: {
           variants: {
             higher: "pages.campaign.list.fields.campaign-priority-enum.higher",
-            background: "pages.campaign.list.fields.campaign-priority-enum.background",
-            low: "pages.campaign.list.fields.campaign-priority-enum.low",
+            high: "pages.campaign.list.fields.campaign-priority-enum.high",
             normal: "pages.campaign.list.fields.campaign-priority-enum.normal",
-            high: "pages.campaign.list.fields.campaign-priority-enum.high"
+            low: "pages.campaign.list.fields.campaign-priority-enum.low",
+            background: "pages.campaign.list.fields.campaign-priority-enum.background",
           },
         },
       },
