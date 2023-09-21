@@ -53,7 +53,7 @@ export enum daysName {
 export type FormValuesProps = CampaignInput
 
 // Компонент вывода группы создания компании
-const CampaignInfoGroup: FC<{ isNew: boolean }> = ({ isNew }) => {
+const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
   const { playlist, clearContext } = useCampaignPlaylistEditContext(
     distinctUntilKeyChanged("playlist")
   );
