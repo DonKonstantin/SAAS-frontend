@@ -88,7 +88,6 @@ const loadCampaign$ = campaignId$.pipe(
   tap(() => campaignListErrorText$.next(undefined)),
   switchMap(async (campaignId) => {
     if (!campaignId) {
-
       return;
     }
 
@@ -680,6 +679,13 @@ const writeCampaign: CampaignEditContextActionsTypes['writeCampaign'] = (campaig
   toWriteCampaign$.next(campaign);
 };
 
+/**
+ * Очищаем стрим с кампанией
+ */
+const clearCampaign: CampaignEditContextActionsTypes['clearCampaign'] = () => {
+  campaign$.next(undefined);
+};
+
 export const campaignEditActions: CampaignEditContextActionsTypes = {
   loadCampaign,
   storeCampaignPlaylist,
@@ -695,4 +701,5 @@ export const campaignEditActions: CampaignEditContextActionsTypes = {
   setChannels,
   setSavedChannels,
   writeCampaign,
+  clearCampaign,
 };
