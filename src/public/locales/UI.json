@@ -97,6 +97,9 @@
             "index": "Коды плееров"
           },
           "project-playlists": "Плейлисты",
+          "project-clips": {
+            "index": "Ролики"
+          },
           "channel": "Каналы"
         }
       }

@@ -48,6 +48,13 @@ export interface CampaignListServiceInterface {
   publishCampaign: (
     campaignPublishInput: CampaignPublishQueryParams
   ) => Promise<boolean>;
+
+  /**
+   * Получаем сущьности кампаний проекта по его ID
+   * @param projectId
+   * @returns
+   */
+  getCampaignsByProjectId: (projectId: string) => Promise<Campaign[]>;
 }
 
 export type GetAvailableChannelsQueryQueryParams = {
@@ -105,8 +112,16 @@ export type GetCampaignByArrayIdResponse = {
 
 export interface GetCampaignsArrayByIdsQueryParams {
   campaignArrayId: string[];
-}
+};
 
 export interface GetCampaignsArrayByIdsResponse {
   campaigns: Campaign[];
-}
+};
+
+//  Типизация параметров запроса кампаний по ID проекта
+export type GetCampaignsByProjectIdParams = {
+  projectId: string;
+};
+export type GetCampaignsByProjectIdResponse = {
+  campaigns: Campaign[];
+};
