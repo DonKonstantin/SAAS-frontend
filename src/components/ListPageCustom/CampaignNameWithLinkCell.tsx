@@ -47,7 +47,7 @@ const CampaignNameWithLinkCell: FC<ListFieldProperties<SimpleValues>> = ({
 
   return (
     <TableCell className="list-table-cell" sx={{ textAlign: 'left' }}>
-      <Box sx={{ cursor: 'pointer' }} onClick={onClickHandler}>
+      <Box sx={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={onClickHandler}>
         {row?.columnValues.name.value}
       </Box>
     </TableCell>
