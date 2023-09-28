@@ -1,67 +1,92 @@
-import {FC, useEffect, useState} from "react";
-import {FilterFieldProperties} from "../../../services/listDataLoader/filterLoader/types";
+import React, { FC, useEffect, useState } from "react";
+import { FilterFieldProperties } from "../../../services/listDataLoader/filterLoader/types";
 import useFieldConfiguration from "./useFieldConfiguration";
-import {SimpleComponentValue} from "../../../services/listDataLoader/filterLoader/fieldValues/SimpleComponentValue";
-import {TextField} from "@mui/material";
+import { SimpleComponentValue } from "../../../services/listDataLoader/filterLoader/fieldValues/SimpleComponentValue";
+import { TextField } from "@mui/material";
+import { Subject, debounceTime } from "rxjs";
 
-// Компонент строкового поля фильтра
-const EqualsStringField: FC<FilterFieldProperties> = props => {
-    const {fieldCode} = props
-    const fieldConfig = useFieldConfiguration(fieldCode)
-    const [fieldValue, setFieldValue] = useState("")
+const valueStream$ = new Subject<string>();
 
-    useEffect(() => {
-        const valueData = fieldConfig?.value?.value as SimpleComponentValue<string | null>
-        if (!valueData || (valueData.value || "") === fieldValue) {
-            return
-        }
+/**
+ * Компонент строкового поля фильтра
+ * @param param0
+ * @returns
+ */
+const EqualsStringField: FC<FilterFieldProperties> = ({ fieldCode }) => {
+  const fieldConfig = useFieldConfiguration(fieldCode);
 
-        setFieldValue(valueData.value || "")
-    }, [fieldConfig?.value?.value])
+  const contextFieldValue = fieldConfig?.value?.value as SimpleComponentValue<string | null>;
 
-    useEffect(() => {
-        if (!fieldConfig) {
-            return
-        }
+  const [fieldValue, setFieldValue] = useState<string | undefined>("");
+  const [componentValue, setComponentValue] = useState<string>("");
 
-        const {value, onChangeFilterValues} = fieldConfig
-        const currentValue = value?.value as SimpleComponentValue<string | null>
+  useEffect(() => {
+    if (!contextFieldValue && !!fieldValue) {
+      return
+    }
 
-        if ((currentValue.value || "") === fieldValue) {
-            return
-        }
+    setFieldValue(contextFieldValue?.value || "");
+  }, [contextFieldValue]);
 
-        if (fieldValue.length === 0) {
-            return onChangeFilterValues(fieldCode, {...value, value: {value: null}} as any)
-        }
-
-        return onChangeFilterValues(fieldCode, {...value, value: {value: fieldValue}} as any)
-    }, [fieldValue])
-
+  useEffect(() => {
     if (!fieldConfig) {
-        return null
+      return
     }
 
-    const {t, fieldConfig: {title}, value} = fieldConfig
-    const translationKey = `entity-list.components.filter.fields.input`
+    const { value, onChangeFilterValues } = fieldConfig;
 
-    const currentValue = value?.value as SimpleComponentValue<string | null>
-    if (!currentValue) {
-        return null
+    const currentValue = value?.value as SimpleComponentValue<string | null>;
+
+    if ((currentValue.value || "") === fieldValue) {
+      return
     }
 
-    return (
-        <TextField
-            value={fieldValue}
-            label={t(title) as string}
-            fullWidth
-            variant="standard"
-            autoComplete={"off"}
-            placeholder={t(`${translationKey}.placeholder`)}
-            onChange={event => setFieldValue(event.target.value)}
-        />
-    )
-}
+    if (fieldValue?.length === 0) {
+      return onChangeFilterValues(fieldCode, { ...value, value: { value: null } } as any);
+    }
 
-// Экспортируем компонент
-export default EqualsStringField
+    return onChangeFilterValues(fieldCode, { ...value, value: { value: fieldValue } } as any);
+  }, [fieldValue]);
+
+  /**
+   * Эфекты для внедрения дебаунса в строку
+   */
+  useEffect(() => {
+    valueStream$.next(componentValue);
+  }, [componentValue]);
+  useEffect(() => {
+    const subscriber = valueStream$.pipe(
+      debounceTime(500),
+    ).subscribe(setFieldValue);
+
+    return () => subscriber.unsubscribe();
+  }, []);
+
+  if (!fieldConfig) {
+    return null;
+  }
+
+  const { t, fieldConfig: { title }, value } = fieldConfig;
+
+  const translationKey = `entity-list.components.filter.fields.input`;
+
+  const currentValue = value?.value as SimpleComponentValue<string | null>;
+
+  if (!currentValue) {
+    return null;
+  }
+
+  return (
+    <TextField
+      value={componentValue}
+      label={t(title) as string}
+      fullWidth
+      variant="standard"
+      autoComplete={"off"}
+      placeholder={t(`${translationKey}.placeholder`)}
+      onChange={event => setComponentValue(event.target.value)}
+    />
+  );
+};
+
+export default EqualsStringField;

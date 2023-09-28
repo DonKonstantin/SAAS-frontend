@@ -404,7 +404,7 @@ const setSchema: EntityListHocActions["setSchema"] = (
  * Шина ввода значений фильтра листинга
  */
 const setFilterValuesBus$ = setFilterValues$.pipe(
-  debounceTime(500),
+  debounceTime(1000),
   withLatestFrom(context$),
   map(([{ field, value }, { data }]) => ({
     field,
