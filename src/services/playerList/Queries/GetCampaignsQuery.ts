@@ -35,6 +35,7 @@ export class GetCampaignsQuery
         campaigns {
           channel {
             name
+            is_active
           }
           uploadingStatus
         }

@@ -8,7 +8,7 @@ import { FilterFieldsConfiguration } from "services/listDataLoader/filterLoader/
 import { ListFieldsConfiguration } from "services/listDataLoader/listLoader/types";
 import ListPageEditDeleteButtons from "components/ListPageEditDeleteButtons";
 import ActivePlayersProjectChannel from "components/ListPageCustom/ProjectChannel/ActivePlayersProjectChannel";
-import NameWithToggleCell from "../../../components/ListPageCustom/ProjectChannel/NameWithToggleCell";
+import NameWithToggleCell from "../../../components/ListPageCustom/ProjectPlayers/NameWithToggleCell";
 import ProjectChannelPlayers from "../../../components/ListPageCustom/ProjectChannel/ProjectChannelPlayers";
 import EmptyCell from "../../../components/ListPageCustom/EmptyCell";
 
@@ -80,6 +80,7 @@ export class ProjectChannelListingConfiguration
         },
       }
     },
+    
     actions: ListPageEditDeleteButtons,
     rowHigher: ProjectChannelPlayers,
     defaultSortField: "name",

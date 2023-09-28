@@ -15,10 +15,12 @@ import { loggerFactory } from "services/logger";
 import { Logger } from "services/logger/Logger";
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import EmptyActions from "components/ListPageCustom/EmptyActions";
-import PlayerStatusCell from "components/ListPageCustom/PlayerStatusCell";
 import PlayerChannelCell from "components/ListPageCustom/PlayerChannelCell";
-import PlayerUploadingStatus from "components/ListPageCustom/PlayerUploadingStatus";
-import PlayerLastUpdateCell from "components/ListPageCustom/PlayerLastUpdateCell";
+import PlayerUploadingStatus from "components/ListPageCustom/ProjectPlayers/PlayerUploadingStatus";
+import NameWithToggleCell from "components/ListPageCustom/ProjectPlayers/NameWithToggleCell";
+import PlayerLastUpdateCell from "components/ListPageCustom/ProjectPlayers/PlayerLastUpdateCell";
+import PlayerStatusCell from "components/ListPageCustom/ProjectPlayers/PlayerStatusCell";
+import ProjectPlayerCampigns from "components/ListPageCustom/ProjectPlayers/ProjectPlayerCampigns";
 
 /**
  * Конфигурация листинга плееров
@@ -62,6 +64,7 @@ export class PlayersListingConfiguration
         fieldType: {
           config: undefined,
           type: "Simple",
+          customComponent: NameWithToggleCell,
         },
       },
       is_active: {
@@ -118,6 +121,7 @@ export class PlayersListingConfiguration
       },
     },
     actions: ListPageEditDeleteButtons,
+    rowHigher: ProjectPlayerCampigns,
     additionDataLoader: async (listData: ListFieldRow<"player">[]) => {
       this.logger.Debug(listData, "listData");
       
