@@ -1,5 +1,5 @@
-import {ListCellsProps} from "../ListBody/ListCells";
-import {FC} from "react";
+import { ListCellsProps } from "../ListBody/ListCells";
+import React, { FC } from "react";
 import ListHeaderCellWithoutOrder from "./ListHeaderCellWithoutOrder";
 import ListHeaderCellWithOrder from "./ListHeaderCellWithOrder";
 
@@ -8,12 +8,13 @@ type ListHeaderCellProps = Omit<ListCellsProps<any>, "value" | "rowValues">
 
 // Компонент вывода ячейки заголовочной части таблицы
 const ListHeaderCell: FC<ListHeaderCellProps> = props => {
-    const {configuration: {fieldType: {type}}} = props
-    if (type === "Simple") {
-        return <ListHeaderCellWithOrder {...props} />
-    }
+  const { configuration: { fieldType: { type }, isSortable } } = props;
 
-    return <ListHeaderCellWithoutOrder {...props} />
+  if (type === "Simple" || !!isSortable) {
+    return <ListHeaderCellWithOrder {...props} />
+  }
+
+  return <ListHeaderCellWithoutOrder {...props} />
 }
 
 // Экспортируем компонент

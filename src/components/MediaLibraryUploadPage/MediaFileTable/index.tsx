@@ -18,7 +18,7 @@ const MediaFileTable: FC = () => {
     }
 
     return (
-        <TableContainer>
+        <TableContainer sx={{ mt: 2 }}>
             <Table>
                 <MediaFileTableHeader/>
                 <MediaFileTableBody/>

@@ -7,7 +7,7 @@ import EnumCell from "./EnumCell";
 
 // Свойства компонента
 export type ListCellsProps<T extends keyof ListFieldValueTypes = keyof ListFieldValueTypes> = ListFieldProperties<any> & {
-    fieldType: T
+    fieldType: T;
 }
 
 // Общий компонент вывода ячейки

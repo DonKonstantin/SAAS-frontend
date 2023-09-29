@@ -1,7 +1,6 @@
 import {EditPageLinkGenerator, ListPageConfiguration, PageUrl} from "../system/list";
 import {FilterFieldsConfiguration,} from "../../../services/listDataLoader/filterLoader/types";
-import {ListFieldRow, ListFieldsConfiguration,} from "../../../services/listDataLoader/listLoader/types";
-// import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
+import {ListFieldRow, ListFieldsConfiguration, ListOrderType,} from "../../../services/listDataLoader/listLoader/types";
 import {getCurrentState} from "../../../context/AuthorizationContext";
 import ListPageEditDeleteButtons from "../../../components/ListPageEditDeleteButtons";
 import CampaignDataField from "../../../components/ListPageCustom/CampaignDataField";
@@ -10,6 +9,7 @@ import {campaignListService} from "../../../services/campaignListService";
 import { ListHeaderProps } from "components/ListPageParts/TableCaption";
 import CampaignIsActiveCell from "components/ListPageCustom/CampaignIsActiveCell";
 import { CampaignsActions } from "components/ListPageCustom/CampaignsActions";
+import CampaignNameWithLinkCell from "components/ListPageCustom/CampaignNameWithLinkCell";
 
 export class CampaignListingConfiguration implements ListPageConfiguration<"campaign"> {
   filter: FilterFieldsConfiguration<"campaign"> = {
@@ -46,7 +46,8 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         isEnabled: true,
         fieldType: {
           config: undefined,
-          type: "Simple"
+          type: "Simple",
+          customComponent: CampaignNameWithLinkCell,
         }
       },
       version: {
@@ -64,6 +65,7 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
         field: "campaign_priority",
         title: "pages.campaign.list.fields.campaign-priority",
         isEnabled: true,
+        isSortable: true,
         fieldType: {
           config: undefined,
           type: "Enum"
@@ -155,4 +157,5 @@ export class CampaignListingConfiguration implements ListPageConfiguration<"camp
     }
   };
   action: React.ComponentType<ListHeaderProps> = CampaignsActions;
+  orderType: ListOrderType = "single" as ListOrderType;
 }

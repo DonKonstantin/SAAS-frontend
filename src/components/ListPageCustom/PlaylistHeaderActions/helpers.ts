@@ -1,11 +1,11 @@
-import {getCurrentState} from "context/AuthorizationContext";
-import {TFunction} from "react-i18next";
+import { getCurrentState } from "context/AuthorizationContext";
+import { TFunction } from "react-i18next";
 import mediaLibraryService from "services/MediaLibraryService";
-import {MediaFilesDoubles} from "services/MediaLibraryService/interface";
-import {notificationsDispatcher} from "services/notifications";
+import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
+import { notificationsDispatcher } from "services/notifications";
 import projectPlaylistService from "services/projectPlaylistService";
-import {ExportedPlaylistType} from "services/projectPlaylistService/interfaces";
-import {makeInputPlaylists} from "../../../services/projectPlaylistService/helpers";
+import { ExportedPlaylistType } from "services/projectPlaylistService/interfaces";
+import { makeInputPlaylists } from "../../../services/projectPlaylistService/helpers";
 
 export const checksFileExists = (
   fileList: ExportedPlaylistType
@@ -30,6 +30,7 @@ export const onDropHandler = async (
   const notifications = notificationsDispatcher();
 
   const dropedList = JSON.parse(await acceptedFiles[0].text());
+
   const { project } = getCurrentState();
 
   setDropedPlaylistList(dropedList);
@@ -37,21 +38,6 @@ export const onDropHandler = async (
   const checkResul = await checksFileExists(dropedList);
 
   if (!checkResul.filter((item) => !!item.doubles.length).length) {
-    notifications.dispatch({
-      message: t("project-playlists.notifications.export-playlist.no-files"),
-      type: "warning",
-    });
-
-    return;
-  }
-
-  const availableInStock = checkResul.filter((item) => !!item.doubles.length);
-
-  const noAvailableInStock = checkResul.filter((item) => !item.doubles.length);
-
-  setNotAvailables(noAvailableInStock.map((item) => item.fileName));
-
-  if (!availableInStock.length) {
     notifications.dispatch({
       message: t(
         "project-playlists.notifications.export-playlist.no-available-in-stock"
@@ -64,22 +50,34 @@ export const onDropHandler = async (
     return;
   }
 
+  const noAvailableInStock = checkResul.filter((item) => !item.doubles.length);
+
+  setNotAvailables(noAvailableInStock.map((item) => item.fileName));
 
   const existsFiles = checkResul.filter((item) => !!item.doubles.length);
 
   // Запрашиваем плейлисты по названию
-  const findCurrentsPlaylists = await projectPlaylistService().getPlaylistsByArrayName(Object.keys(dropedList), Number(project))
+  const findCurrentsPlaylists =
+    await projectPlaylistService().getPlaylistsByArrayName(
+      Object.keys(dropedList),
+      Number(project)
+    );
 
   // Создаем объекты плейлистов для создания
-  const getToCreatedPlaylists = Object.keys(dropedList).reduce((acc, current) => {
-    const findPlaylist = findCurrentsPlaylists.find(playlist => playlist.name === current)
+  const getToCreatedPlaylists = Object.keys(dropedList).reduce(
+    (acc, current) => {
+      const findPlaylist = findCurrentsPlaylists.find(
+        (playlist) => playlist.name === current
+      );
 
-    if (!findPlaylist) {
-      acc[current] = dropedList[current]
-    }
+      if (!findPlaylist) {
+        acc[current] = dropedList[current];
+      }
 
-    return acc
-  }, {})
+      return acc;
+    },
+    {}
+  );
 
   //Преобразовываем весь входящий JSON в плейлисты
   const getInputForPlaylist = makeInputPlaylists(
@@ -90,17 +88,18 @@ export const onDropHandler = async (
 
   // Создаем массив с объектами плейлистов для редактирования и добавляем к нему id
   const getToUpdatePlaylists = findCurrentsPlaylists
-    .map(playlist => {
+    .map((playlist) => {
+      let findPlaylistForUpdate = getInputForPlaylist.find(
+        (list) => list?.name === playlist.name
+      );
 
-    let findPlaylistForUpdate = getInputForPlaylist.find(list => list?.name === playlist.name)
+      if (findPlaylistForUpdate) {
+        return { ...findPlaylistForUpdate, id: Number(playlist.id) };
+      }
 
-    if (findPlaylistForUpdate) {
-      return  {...findPlaylistForUpdate, id: Number(playlist.id)}
-    }
-
-    return null
-  })
-    .filter(playlist => !!playlist)
+      return null;
+    })
+    .filter((playlist) => !!playlist);
 
   try {
     const newPlaylists = await projectPlaylistService().storePlaylist(
@@ -110,10 +109,12 @@ export const onDropHandler = async (
     );
 
     const updatedPlaylists = await Promise.all(
-      getToUpdatePlaylists.map(async playlist => projectPlaylistService().storePlaylistChanges(playlist!))
-    )
+      getToUpdatePlaylists.map(async (playlist) =>
+        projectPlaylistService().storePlaylistChanges(playlist!)
+      )
+    );
 
-    const responses = newPlaylists.length + updatedPlaylists.length
+    const responses = newPlaylists.length + updatedPlaylists.length;
 
     notifications.dispatch({
       message: t(
@@ -125,7 +126,7 @@ export const onDropHandler = async (
     });
 
     if (!noAvailableInStock.length) {
-      onCloseHandle()
+      onCloseHandle();
     }
 
     setShowResult(true);

@@ -1,89 +1,107 @@
-import React, {FC, useCallback} from "react";
-import {Typography} from "@mui/material";
+import React, { FC, useCallback, useState } from "react";
+import { Typography } from "@mui/material";
 import DropZoneArea from "../DropZoneArea";
 import * as mmb from "music-metadata-browser";
-import {IAudioMetadata} from "music-metadata-browser";
-import {MediaFileToUpload, useMediaLibraryUpload} from "./MediaFilesUploadContext";
+import { IAudioMetadata } from "music-metadata-browser";
+import { MediaFileToUpload, useMediaLibraryUpload } from "./MediaFilesUploadContext";
 import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
-import {LicenseType, MediaFile} from "../../services/MediaLibraryService/interface";
+import { LicenseType, MediaFile } from "../../services/MediaLibraryService/interface";
+import { DropZoneAreaLoadingBlocker } from "components/DropZoneAreaLoadingBlocker";
+import { styled } from "@mui/system";
 
-export const metadataToMediaInfo = (
-    metadata: IAudioMetadata,
+const metadataToMediaInfo = (
+  metadata: IAudioMetadata,
 ): Partial<MediaFile> => {
-    return {
-        album: metadata.common.album || "",
-        artist: metadata.common.artist || "",
-        bpm: metadata.common.bpm || "",
-        composer: metadata.common.composer || "",
-        genre: metadata.common.genre || "",
-        isrc: metadata.common.isrc || "",
-        language: metadata.common.language || "",
-        lyricist: metadata.common.lyricist || "",
-        // TODO: must get from not from default prop
-        publisher: metadata.common?.label?.join(", ") || "",
-        title: metadata.common.title || "",
-        year: metadata.common.year || 0,
-        duration: metadata.format.duration || 0,
-    } as Partial<MediaFile>;
-}
+  return {
+    album: metadata.common.album || "",
+    artist: metadata.common.artist || "",
+    bpm: metadata.common.bpm || "",
+    composer: metadata.common.composer || "",
+    genre: metadata.common.genre || "",
+    isrc: metadata.common.isrc || "",
+    language: metadata.common.language || "",
+    lyricist: metadata.common.lyricist || "",
+    // TODO: must get from not from default prop
+    publisher: metadata.common?.label?.join(", ") || "",
+    title: metadata.common.title || "",
+    year: metadata.common.year || 0,
+    duration: metadata.format.duration || 0,
+  } as Partial<MediaFile>;
+};
 
 const makeMediaFileInfo = async (
-    file: File,
-    licenseType: LicenseType
+  file: File,
+  licenseType: LicenseType
 ): Promise<MediaFileToUpload> => {
-    const metadata = await mmb.parseBlob(file, {skipPostHeaders: true})
-    return {
-        replace: false,
-        replaceId: "",
-        hasDoubles: false,
-        file,
-        mediaInfo: mediaFileFactory(
-            {
-                ...metadataToMediaInfo(metadata),
-                size: file.size,
-                origin_name: file.name
-            },
-            licenseType
-        )
-    };
-}
+  const metadata = await mmb.parseBlob(file, { skipPostHeaders: true });
 
+  return {
+    replace: false,
+    replaceId: "",
+    hasDoubles: false,
+    file,
+    mediaInfo: mediaFileFactory(
+      {
+        ...metadataToMediaInfo(metadata),
+        size: file.size,
+        origin_name: file.name
+      },
+      licenseType
+    ),
+  };
+};
+
+const StyledText = styled(Typography)({
+  opacity: 0.56,
+  fontSize: 12,
+  mb: 2,
+});
 
 const MediaUploadArea: FC = () => {
-    const {
-        addFilesToUpload,
-        licenseType
-    } = useMediaLibraryUpload();
+  const {
+    licenseType,
+    addFilesToUpload,
+  } = useMediaLibraryUpload();
 
-    const onDrop = useCallback(async (acceptedFiles: File[]) => {
-        // Do something with the files
-        if (acceptedFiles.length === 0) {
-            return
-        }
+  //  Флаг подготовки файлов к отображению в списке загружаемых
+  const [isPreparing, setIsPreparing] = useState<boolean>(false);
 
-        const newFiles = await Promise.all(
-            acceptedFiles
-                .map(file => makeMediaFileInfo(file, licenseType as LicenseType))
-        );
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) {
+      return
+    }
 
-        addFilesToUpload(newFiles);
-    }, [licenseType])
+    setIsPreparing(true);
 
-    return (
-        <>
-            <Typography color={"primary"} >
-                Загрузка файлов
-            </Typography>
-            <Typography variant={"subtitle1"} sx={{opacity: 0.56, fontSize: 12, mb: 2}}>
-                Переместите все файлы для загрузки в контейнер
-            </Typography>
-            <DropZoneArea
-                onDrop={onDrop}
-                accept={"audio/*"}
-                active={false}
-            />
-        </>
+    const newFiles = await Promise.all(
+      acceptedFiles
+        .map(file => makeMediaFileInfo(file, licenseType as LicenseType))
     );
-} 
+
+    addFilesToUpload(newFiles);
+
+    setIsPreparing(false);
+  }, [licenseType, setIsPreparing, addFilesToUpload, makeMediaFileInfo]);
+
+  return (
+    <>
+      <Typography color="primary" >
+        Загрузка файлов
+      </Typography>
+
+      <StyledText variant="subtitle1">
+        Переместите все файлы для загрузки в контейнер
+      </StyledText>
+
+      <DropZoneAreaLoadingBlocker isBlocked={isPreparing}>
+        <DropZoneArea
+          onDrop={onDrop}
+          accept={"audio/*"}
+          active={false}
+        />
+      </DropZoneAreaLoadingBlocker>
+    </>
+  );
+}
 
 export default MediaUploadArea;

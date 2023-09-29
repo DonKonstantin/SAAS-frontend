@@ -145,7 +145,7 @@ export class PlayerCodeListingConfiguration
       as: `/domain/${domain}/project/${project}/player-code/add`,
     };
   };
-  hidePagination = true;
+  hidePagination = false;
   action: React.ComponentType<ListHeaderProps> = PlayerCodeActions;
   customRow: FC<ListRowProps> = PlayerCodeRow;
 }

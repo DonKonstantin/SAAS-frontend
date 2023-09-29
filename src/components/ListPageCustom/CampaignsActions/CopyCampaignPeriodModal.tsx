@@ -104,8 +104,6 @@ const CopyCampaignPeriodModal: FC<Props> = (props) => {
             ...preparedCampaign,
             campaign_period_start: campaignPlaylistsPeriodStart,
             campaign_period_stop: campaignPlaylistsPeriodStop,
-            campaign_type: "mute",
-            channels: [],
             name: `${t("pages.campaign.copy-prefix")} ${campaign.name}`,
           });
         })
