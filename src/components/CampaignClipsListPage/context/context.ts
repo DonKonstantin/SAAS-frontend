@@ -149,7 +149,6 @@ export const tableRows$: Observable<ClipListItemType[]> = combineLatest([
 ]).pipe(
   debounceTime(100),
   map(([clips, pagination, rowsPerPage]) => ({ clips, pagination, rowsPerPage })),
-  tap(data => console.log(data, "Data")),
   map(({ clips, pagination, rowsPerPage }) => clips.slice(pagination, pagination + rowsPerPage)),
   shareReplay(1),
 );

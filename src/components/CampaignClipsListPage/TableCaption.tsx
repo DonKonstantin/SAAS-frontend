@@ -9,8 +9,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { auditTime } from "rxjs";
-import { useAuthorization } from "../../context/AuthorizationContext";
 import { ClipListItemType } from "./context/types";
 
 export type ListHeaderProps = {
@@ -35,12 +33,6 @@ const TableCaption: FC<ListHeaderProps> = (props) => {
 
   const { t } = useTranslation();
 
-  const { userInfo } = useAuthorization(auditTime(1000));
-
-  if (!userInfo) {
-    return null;
-  }
-
   return (
     <Grid container alignItems="center" spacing={1}>
       <Grid item sx={{ flex: "1 1 0" }}>
@@ -57,7 +49,7 @@ const TableCaption: FC<ListHeaderProps> = (props) => {
       <Grid item>
         <Tooltip
           title={
-            t(`campaign-clips-list.list.tooltip.delete-tooltip.group-remove`) as string
+            t("campaign-clips-list.list.tooltip.delete-tooltip.group-remove") as string
           }
         >
           <span>

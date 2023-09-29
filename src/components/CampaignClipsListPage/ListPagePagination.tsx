@@ -45,11 +45,7 @@ const ListPagePagination: FC<Props> = (props) => {
         </Trans>
       )}
       page={listPage}
-      onPageChange={(_, p) => {
-        console.log(p, "Page");
-        
-        onChangeListPage(p)
-      }}
+      onPageChange={(_, p) => onChangeListPage(p)}
       onRowsPerPageChange={event => onChangeLimit(parseInt(event.target.value, 10))}
     />
   );
