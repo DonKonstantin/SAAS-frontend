@@ -194,7 +194,7 @@ const removeClipsBus$ = removeClips$.pipe(
       }
 
       const playlistFiles: (ProjectPlayListFile | CampaignPlayListFileType)[] =
-        currentPlaylist.files.filter(file => clips.every(clip => clip.file.file_id !== file.file_id));
+        (currentPlaylist.files as any[]).filter(file => clips.every(clip => clip.file.file_id !== file.file_id));
 
       const playlist = { 
         files:
