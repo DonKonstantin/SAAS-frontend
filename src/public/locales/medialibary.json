@@ -1,0 +1,25 @@
+{
+  "medialibrary": {
+    "check": {
+      "header": "Проверка композиций",
+      "tooltip": {
+        "with-doubles-swith": "Добавить файлы дублей в плейлист",
+        "upload-button": "Скачать файл плейлиста в формате m3u",
+        "dump-button": "Вернуться к редактированию списка"
+      },
+      "button": {
+        "upload": "Выгрузить",
+        "dump": "Сбросить",
+        "check": "Проверить"
+      },
+      "label": {
+        "with-doubles-swith": "С дублями"
+      }
+    },
+    "upload": {
+      "alert": {
+        "select-license-type": "Для продолжения выберите тип лицензии"
+      }
+    }
+  }
+}

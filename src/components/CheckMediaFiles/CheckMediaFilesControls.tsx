@@ -1,55 +1,78 @@
-import {FC, useState} from "react";
-import {Button, FormControlLabel, Stack, Switch, Tooltip} from "@mui/material";
-import {useTranslation} from "react-i18next";
-import {useCheckMediaFilesContext} from "./CheckMediaFilesContext";
+import React, { FC, useState } from "react";
+import { Button, FormControlLabel, Switch, Tooltip } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { useCheckMediaFilesContext } from "./CheckMediaFilesContext";
+import { styled } from "@mui/system";
+
+const StyledWrapper = styled('div')({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  columnGap: 16,
+});
 
 const CheckMediaFilesControls: FC = () => {
-    const {t} = useTranslation();
-    const {
-        runCheck,
-        downloadPlaylist,
-        isChecked,
-        resetCheck,
-        isError,
-    } = useCheckMediaFilesContext();
-    const [allowedDoubles, setAllowedDoubles] = useState(false)
+  const { t } = useTranslation();
 
-    if (isChecked) {
-        return (
-            <Stack spacing={2} flexWrap={"wrap"} direction="row" justifyContent={"flex-end"}>
-                <Tooltip title={t(`Добавить файлы дублей в плейлист`) as string}>
-                <FormControlLabel
-                    label={"С дублями"}
-                    control={
-                        <Switch
-                            checked={allowedDoubles}
-                            onChange={event => setAllowedDoubles(event.target.checked)}
-                        />
+  const {
+    runCheck,
+    downloadPlaylist,
+    isChecked,
+    resetCheck,
+    isError,
+  } = useCheckMediaFilesContext();
+  
+  const [allowedDoubles, setAllowedDoubles] = useState(false)
 
-                    }
-                />
-                </Tooltip>
-                <Tooltip title={t(`Скачать файл плейлиста в формате m3u`) as string}>
-                    <Button
-                        variant={"outlined"}
-                        onClick={() => downloadPlaylist(allowedDoubles)}
-                            disabled={isError}
-                    >
-                        {t("Выгрузить")}
-                    </Button>
-                </Tooltip>
-                <Tooltip title={t(`Вернуться к редактированию списка`) as string} placement={"bottom-end"}>
-                    <Button variant={"outlined"} color="warning" onClick={() => resetCheck()}>{t("Сбросить")}</Button>
-                </Tooltip>
-            </Stack>
-        )
-    }
-
+  if (isChecked) {
     return (
-        <Stack spacing={2} flexWrap={"wrap"} direction="row" justifyContent={"flex-end"}>
-            <Button variant={"outlined"} onClick={() => runCheck()}>{t("Проверить")}</Button>
-        </Stack>
-    )
-}
+      <StyledWrapper>
+        <Tooltip title={t("medialibrary.check.tooltip.with-doubles-swith")}>
+          <FormControlLabel
+            label={t("medialibrary.check.label.with-doubles-swith")}
+            control={
+              <Switch
+                checked={allowedDoubles}
+                onChange={event => setAllowedDoubles(event.target.checked)}
+              />
+
+            }
+          />
+        </Tooltip>
+
+        <Tooltip title={t("medialibrary.check.tooltip.upload-button")}>
+          <Button
+            variant="outlined"
+            onClick={() => downloadPlaylist(allowedDoubles)}
+            disabled={isError}
+          >
+            {t("medialibrary.check.button.upload")}
+          </Button>
+        </Tooltip>
+
+        <Tooltip title={t("medialibrary.check.tooltip.dump-button")} placement="bottom-end">
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={resetCheck}
+          >
+            {t("medialibrary.check.button.dump")}
+          </Button>
+        </Tooltip>
+      </StyledWrapper>
+    );
+  };
+
+  return (
+    <StyledWrapper>
+      <Button
+        variant="outlined"
+        onClick={runCheck}
+      >
+        {t("medialibrary.check.button.check")}
+      </Button>
+    </StyledWrapper>
+  );
+};
 
 export default CheckMediaFilesControls;

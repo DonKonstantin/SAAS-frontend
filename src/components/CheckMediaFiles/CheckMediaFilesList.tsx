@@ -4,9 +4,179 @@ import CheckMediaFilesItem from "./CheckMediaFilesItem";
 import {Alert, Box, Skeleton, Stack} from "@mui/material";
 import CheckMediaFilesInput from "./CheckMediaFilesInput";
 import ConfirmDoubleDialog from "./ConfirmDoubleDialog";
+import { MediaFilesDoubles } from "services/MediaLibraryService/interface";
 
 const CheckMediaFilesList: FC = () => {
-    const {fileCheckResult, isChecked, isError, isCheckProgress, excludeFromDouble} = useCheckMediaFilesContext();
+    const {
+      // fileCheckResult,
+      isChecked,
+      isError,
+      isCheckProgress,
+      excludeFromDouble,
+    } = useCheckMediaFilesContext();
+
+    const fileCheckResult: MediaFilesDoubles[] = [
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+      {
+        fileName: "1",
+        doubles: []
+      },
+    ]
 
     const confirmNotDoubleHandler = useCallback(
         (fileName) => {

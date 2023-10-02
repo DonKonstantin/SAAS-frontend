@@ -9,6 +9,7 @@ import playerCodes from './player-codes.json';
 import projectPlaylist from './project-playlist.json';
 import reports from './reports.json';
 import editCampaignPlaylist from './edit-campaign-playlist.json';
+import medialibary from './medialibary.json';
 
 export const RU = {
   ...entityList,
@@ -23,6 +24,7 @@ export const RU = {
   ...projectPlaylist,
   ...reports,
   ...editCampaignPlaylist,
+  ...medialibary,
 };
 
 export default RU;
