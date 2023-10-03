@@ -4,6 +4,7 @@ import {CampaignPlaylistConnect, CampaignPlayListFileType} from 'services/campai
 import {fileService} from 'services/FileService';
 import {getCurrentState} from 'context/AuthorizationContext';
 import {daysName} from "../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
+import dayjs from 'dayjs';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
@@ -141,7 +142,7 @@ const moveTrackBus$ = moveTrack$.pipe(
     }
 
     // @ts-ignore
-    const sortingFile = playlistData.files.find(file => file.file_id === fileId);
+    const sortingFile = playlistData.files.filter(file => file.file_id === fileId)[0];
 
     if (direction === 'up' && sortingFile.sort === 1) {
       return playlist;
@@ -154,7 +155,7 @@ const moveTrackBus$ = moveTrack$.pipe(
     const adjacentFileSort = direction === 'up' ? sortingFile.sort - 1 : sortingFile.sort + 1;
 
     //@ts-ignore
-    const adjacentFile = playlistData!.files.find(file => file.sort === adjacentFileSort);
+    const adjacentFile = playlistData!.files.filter(file => file.sort === adjacentFileSort)[0];
 
     const newAdjacentFileSort = direction === 'up' ? adjacentFile.sort + 1 : adjacentFile.sort - 1;
 
@@ -259,11 +260,11 @@ export const InitCampaignEditContext = () => {
 
       const playlist = playlist$.getValue();
 
-      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!)
+      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!);
 
       const checkLastNumberForFinite = isFinite(lastSortNumber);
 
-      const finalLastSortNumber = checkLastNumberForFinite ? lastSortNumber : 0
+      const finalLastSortNumber = checkLastNumberForFinite ? lastSortNumber : 0;
 
       const preparedClips: CampaignPlayListFileType[] = clips.map((clip, index) => ({
         file: {
@@ -272,6 +273,7 @@ export const InitCampaignEditContext = () => {
           player_file_id: "",
           id: String(clip.id),
           project_id: project,
+          creation_date: dayjs().format("DD-MM-YYYY"),
         },
         file_id: String(clip.id),
         id: "",
@@ -287,7 +289,8 @@ export const InitCampaignEditContext = () => {
       const uploadedClips = uploadedClips$.getValue();
 
       uploadedClips$.next(uploadedClips.filter(clip => ids.some(id => id === clip)));
-      isLoading$.next(false)
+
+      isLoading$.next(false);
     }
   ));
 

@@ -52,10 +52,12 @@ export interface MediaFileClientInterface {
     /**
      * Load file from server
      * @param id
+     * @param isProject
      * @param config
      */
     Load(
         id: string,
+        isProject: boolean,
         config?: AxiosRequestConfig
     ): Promise<Blob>
 

@@ -26,13 +26,14 @@ export default class MediaFileClient implements MediaFileClientInterface {
      * @param fileName
      * @param config
      */
-    async Load(fileName: string, config: AxiosRequestConfig = {}): Promise<Blob> {
+    async Load(fileName: string, isProject: boolean = false, config: AxiosRequestConfig = {}): Promise<Blob> {
+
         try {
             this.logger.Debug("Load file from server", fileName);
             const headers = await this.getHeaders(config.headers || {});
 
             const {data: result} = await this.client.get<Blob>(
-                `/file/${fileName}`,
+                `/${isProject ? "project-files" : "file"}/${fileName}`,
                 {
                     ...config,
                     responseType: "blob",
