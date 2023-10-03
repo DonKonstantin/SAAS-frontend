@@ -144,6 +144,7 @@ export type ProjectFile = {
   project_id?: string;                                        // ID проекта
   title: string;                                              //  Название
   player_file_id: string;                                     // Идентификатор файла, отправляемый плееру
+  creation_date: string;                                      //  Дата добавления файла
 }
 
 //  Сущность дня расписания подключенного плейлиста кампании

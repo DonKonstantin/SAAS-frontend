@@ -17,6 +17,8 @@ import {
   GetCampaignByIdQueryResponse,
   GetCampaignsArrayByIdsQueryParams,
   GetCampaignsArrayByIdsResponse,
+  GetCampaignsByProjectIdParams,
+  GetCampaignsByProjectIdResponse,
   StoreCampaignMutationParams,
   StoreCampaignMutationResponse,
 } from "./interface";
@@ -28,6 +30,7 @@ import { CampaignPublish } from "./mutations/CampaignPublish";
 import { GetCampaignsByArrayId } from "./Queries/GetCampaignsByArrayId";
 import { GetCampaignsArrayByIdsQuery } from "./Queries/GetCampaignsArrayByIds";
 import { GetCampaignTimetableValidation } from "./Queries/GetCampaignTimetableValidation";
+import { GetCampaignsByProjectId } from "./Queries/GetCampaignsByProjectId";
 
 
 /**
@@ -233,5 +236,30 @@ export class CampaignListService implements CampaignListServiceInterface {
 
       throw Error(error);
     }
-  }
+  };
+
+  /**
+   * Получаем сущьности кампаний проекта по его ID
+   * @param projectId
+   * @returns
+   */
+  async getCampaignsByProjectId(projectId: string): Promise<Campaign[]> {
+    this.logger.Debug("Получаем сущьности кампаний проекта по его ID");
+    this.logger.Debug("ID текущего проекта: ", projectId);
+
+    try {
+      const { campaigns } = await this.client.Mutation<
+        GetCampaignsByProjectIdParams,
+        GetCampaignsByProjectIdResponse
+      >(new GetCampaignsByProjectId(projectId), {});
+
+      this.logger.Debug("Загруженные по ID проекта кампании: ", campaigns);
+
+      return campaigns;
+    } catch (error) {
+      this.logger.Debug("Ошибка при загрузке кампаний по ID проекта: ", error);
+
+      throw Error(error);
+    }
+  };
 }

@@ -1,0 +1,30 @@
+{
+  "campaign-clips-list": {
+    "list": {
+      "title": "Список роликов",
+      "header": "Название ролика",
+      "header-cells": {
+        "name": "Название трека",
+        "create-date": "Дата добавления"
+      },
+      "tooltip": {
+        "delete-tooltip": {
+          "removable": "Удалить ролик",
+          "group-remove": "Удалить ролики",
+          "blocked": "Ролик используется в активной кампании",
+          "blocked-as-last": "Ролик последний в плейлисте"
+        },
+        "download-tooltip": "Скачать ролик"
+      }
+    },
+    "error": {
+      "load-clip": "Не удалось загрузить ролик",
+      "remove-clip": "Не удалось удалить ролик",
+      "remove-clips": "Не удалось удалить {{name}}"
+    },
+    "success": {
+      "remove-clip": "Ролик успешно удален",
+      "remove-clips": "Успешно удалено {{amount}} ролика(ов)"
+    }
+  }
+}
