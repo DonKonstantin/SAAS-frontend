@@ -3,8 +3,11 @@ import {
   BehaviorSubject,
   debounceTime,
   distinctUntilChanged,
+  filter,
+  map,
   OperatorFunction,
   Subject,
+  withLatestFrom,
 } from "rxjs";
 import React, { useEffect, useState } from "react";
 import withBehaviourSubject from "../connectors/withBehaviourSubject";
@@ -114,6 +117,12 @@ const fullDataReloadCtx$ = new Subject<{
 const schemaChangeCtx$ = new Subject<{
   schema: keyof Schemas;
   additionFilter?: { [T: string]: string };
+}>();
+
+//  Пушим значение полей фильтра
+const setFilterValues$ = new Subject<{
+  field: string | number,
+  value: any,
 }>();
 
 // Контекст подписки на изменения данных, требующих перезагрузки
@@ -329,19 +338,9 @@ const onChangeFilterValues: EntityListHocActions["onChangeFilterValues"] = (
     return;
   }
 
-  dataChangeCtx$.next({
-    ...data,
-    currentData: {
-      ...data.currentData,
-      parameters: {
-        ...data.currentData.parameters,
-        offset: 0,
-        currentFilterValues: {
-          ...data.currentData.parameters.currentFilterValues,
-          [field]: value,
-        } as LoadedFilterValues<keyof Schemas>,
-      },
-    },
+  setFilterValues$.next({
+    field,
+    value,
   });
 };
 
@@ -402,11 +401,25 @@ const setSchema: EntityListHocActions["setSchema"] = (
 };
 
 /**
+ * Шина ввода значений фильтра листинга
+ */
+const setFilterValuesBus$ = setFilterValues$.pipe(
+  debounceTime(1000),
+  withLatestFrom(context$),
+  map(([{ field, value }, { data }]) => ({
+    field,
+    value,
+    data,
+  })),
+  filter(({ data }) => !!data),
+);
+
+/**
  * Инициализация подписок внутри контекста
  */
 const initializeSubscriptions = () => {
   // Подписываемся на запросы полной перезагрузки данных
-  const fullDataReloadSubscription = fullDataReloadCtx$
+  const subscriber = fullDataReloadCtx$
     .pipe(debounceTime(1000))
     .subscribe({
       next: async ({ schema, additionFilter = {} }) => {
@@ -529,11 +542,31 @@ const initializeSubscriptions = () => {
       },
     });
 
+  //  Подписка на шину изменения полей фильтра
+  subscriber.add(setFilterValuesBus$.subscribe({
+    next: ({ field, value, data }) => {
+      dataChangeCtx$.next({
+        ...data!,
+        currentData: {
+          ...data!.currentData,
+          parameters: {
+            ...data!.currentData.parameters,
+            offset: 0,
+            currentFilterValues: {
+              ...data!.currentData.parameters.currentFilterValues,
+              [field]: value,
+            } as LoadedFilterValues<keyof Schemas>,
+          },
+        },
+      });
+    },
+  }));
+
   return () => {
     schemaLoadSubscription.unsubscribe();
     schemaUpdateSubscription.unsubscribe();
     schemaStoreDataChangesSubscription.unsubscribe();
-    fullDataReloadSubscription.unsubscribe();
+    subscriber.unsubscribe();
   };
 };
 
