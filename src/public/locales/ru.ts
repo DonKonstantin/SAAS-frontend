@@ -9,7 +9,8 @@ import playerCodes from './player-codes.json';
 import projectPlaylist from './project-playlist.json';
 import reports from './reports.json';
 import editCampaignPlaylist from './edit-campaign-playlist.json';
-import campaignСlipsДist from './campaign-clips-list.json';
+import medialibary from './medialibary.json';
+import campaignClipsList from './campaign-clips-list.json';
 
 export const RU = {
   ...entityList,
@@ -24,7 +25,8 @@ export const RU = {
   ...projectPlaylist,
   ...reports,
   ...editCampaignPlaylist,
-  ...campaignСlipsДist,
+  ...medialibary,
+  ...campaignClipsList,
 };
 
 export default RU;

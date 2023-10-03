@@ -1,19 +1,19 @@
-import {distinctUntilChanged, distinctUntilKeyChanged} from "rxjs";
-import {Box, Button, Grid, Paper, Stack, Tab} from "@mui/material";
-import React, {FC, useEffect, useState} from "react";
-import {LoadingButton, TabContext, TabList, TabPanel} from "@mui/lab";
-import {useTranslation} from "react-i18next";
-import {FormProvider} from "../../hook-form";
-import {useForm} from "react-hook-form";
+import { distinctUntilChanged, distinctUntilKeyChanged } from "rxjs";
+import { Box, Button, Grid, Paper, Tab } from "@mui/material";
+import React, { FC, useEffect, useState } from "react";
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import { useTranslation } from "react-i18next";
+import { FormProvider } from "../../hook-form";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
-import {getCurrentState} from "../../../context/AuthorizationContext";
-import {useRouter} from "next/router";
-import {useCampaignPlaylistEditContext} from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { getCurrentState } from "../../../context/AuthorizationContext";
+import { useRouter } from "next/router";
+import { useCampaignPlaylistEditContext } from "context/CampaignPlaylistEditContext/useCampaignPlaylistEditContext";
 import CampaignPlaylistEditContextConnector
   from "context/CampaignPlaylistEditContext/CampaignPlaylistEditContextConnector";
-import {Channels} from "./Channels";
-import {campaignListService} from "../../../services/campaignListService";
+import { Channels } from "./Channels";
+import { campaignListService } from "../../../services/campaignListService";
 import {
   CampaignEndType,
   CampaignLowPriority,
@@ -23,16 +23,17 @@ import {
   CampaignPriority,
   CampaignType,
 } from "../../../services/projectPlaylistService/interfaces";
-import {CampaignDaysType, CampaignInput,} from "../../../services/campaignListService/types";
+import { CampaignDaysType, CampaignInput, } from "../../../services/campaignListService/types";
 import LoadingBlocker from "../../LoadingBlocker";
-import {useCampaignEditContext} from "../../../context/CampaignEditContext/useCampaignEditContext";
-import {isEqual, xor} from "lodash";
+import { useCampaignEditContext } from "../../../context/CampaignEditContext/useCampaignEditContext";
+import { isEqual, xor } from "lodash";
 import CampaignSchedule from "./CampaignSchedule/CampaignSchedule";
 import CampaignContent from "./CampaignContent/CampaignContent";
-import {EditPlaylist} from "./EditPlaylist";
+import { EditPlaylist } from "./EditPlaylist";
 import dayjs from "dayjs";
-import {notificationsDispatcher} from "services/notifications";
+import { notificationsDispatcher } from "services/notifications";
 import Breadcrumbs from "components/Breadcrumbs";
+import { styled } from "@mui/system";
 
 enum optionsForTabs {
   "schedule" = "schedule",
@@ -50,7 +51,16 @@ export enum daysName {
   "sunday" = "monday"
 }
 
-export type FormValuesProps = CampaignInput
+const StyledControlButtonsWrapper = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  position: 'sticky',
+  bottom: 0,
+  backgroundColor: theme.palette.common.white,
+}));
+
+export type FormValuesProps = CampaignInput;
 
 // Компонент вывода группы создания компании
 const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
@@ -94,7 +104,6 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
-
   const [saveCampaign, setSaveCampaign] = useState<boolean>(false);
 
   const addPlaylist = () => {
@@ -106,12 +115,14 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
   };
 
   const asPathWithoutQuery = router.asPath.split("?")[0];
+
   const asPathNestedRoutes = asPathWithoutQuery
     .split("/")
     .filter((v) => v.length > 0)
     .at(-1);
 
   let tabOptions = Object.keys(optionsForTabs);
+
   if (asPathNestedRoutes === "add") {
     tabOptions = tabOptions.slice(0, 1);
   }
@@ -205,27 +216,26 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
   const onSubmit = async (data?: FormValuesProps) => {
     if (Object.keys(errors).length) {
-      return;
+      return
     }
 
-    const campaignDaysType = getValues('campaign_days_type')
+    const campaignDaysType = getValues('campaign_days_type');
 
     //Блок создания кампании
     if (!router.query.entityId && data) {
-
       const days = data.days.map((day) => {
         if (campaignDaysType === 'daily') {
-          const getDayForTime = data.days[0]
+          const getDayForTime = data.days[0];
 
           return ({
             ...day,
             days_start_minutes: getDayForTime.days_start_minutes,
             days_stop_minutes: getDayForTime.days_stop_minutes,
             is_active: true,
-          })
+          });
         }
 
-        return day
+        return day;
       });
 
       delete data["version"];
@@ -235,8 +245,8 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         campaign_period_start: new Date(dayjs(data.campaign_period_start).format("YYYY-MM-DD")),
         campaign_period_stop: new Date(dayjs(data.campaign_period_stop).format("YYYY-MM-DD")),
         days,
-        project_id: project
-      }
+        project_id: project,
+      };
 
       try {
         const response = await campaignListService().storeCampaign(newData);
@@ -251,7 +261,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
             },
           });
 
-          return;
+          return
         }
 
         messanger.dispatch({
@@ -278,12 +288,12 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     }
 
     const playlistInput = campaign.playlists.map(playlist => {
-
       let projectOrCampaignPlaylistId;
+
       if (playlist.campaignPlaylistId) {
-        projectOrCampaignPlaylistId = { campaignPlaylistId: playlist.campaignPlaylistId }
+        projectOrCampaignPlaylistId = { campaignPlaylistId: playlist.campaignPlaylistId };
       } else {
-        projectOrCampaignPlaylistId = { projectPlaylistId: playlist.projectPlaylistId }
+        projectOrCampaignPlaylistId = { projectPlaylistId: playlist.projectPlaylistId };
       }
 
       return (
@@ -301,14 +311,14 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
           sortOrder: playlist.sortOrder,
           ...projectOrCampaignPlaylistId
         }
-      )
-    })
+      );
+    });
 
-    const getDaysFromForm = getValues('days')
+    const getDaysFromForm = getValues('days');
 
     const days = getDaysFromForm.map((day) => {
       if (campaignDaysType === 'daily') {
-        const getDayForTime = getDaysFromForm[0]
+        const getDayForTime = getDaysFromForm[0];
 
         return ({
           day_num: day.day_num,
@@ -316,12 +326,12 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
           days_stop_minutes: getDayForTime.days_stop_minutes,
           is_active: true,
           id: day.id
-        })
+        });
       }
 
-      delete day['campaign_id']
+      delete day['campaign_id'];
 
-      return day
+      return day;
     });
 
     const channels = campaign.channels.map(channel => {
@@ -335,17 +345,17 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     //  Если было взаимодействие со вкладкой каналов то берем каналы обработанные на этой вкладке
     const commonChannels = selectedChannels || channels;
 
-    setValue('days', days)
-    setValue('playlists', playlistInput)
-    setValue('channels', commonChannels)
-    const inputData = getValues()
+    setValue('days', days);
+    setValue('playlists', playlistInput);
+    setValue('channels', commonChannels);
+    const inputData = getValues();
 
     delete inputData["version"];
 
     let responseCampaignValidation;
 
     try {
-      responseCampaignValidation = await campaignListService().campaignValidation(inputData)
+      responseCampaignValidation = await campaignListService().campaignValidation(inputData);
     } catch (error) {
       if (typeof error.message === "string") {
         messanger.dispatch({
@@ -362,7 +372,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     try {
       const campaign = await campaignListService().storeCampaign(inputData);
 
-      setSavedChannels(campaign.channels.map(channel => ({...channel.channel, channel_id: channel.channel_id})));
+      setSavedChannels(campaign.channels.map(channel => ({ ...channel.channel, channel_id: channel.channel_id })));
 
       writeCampaign(campaign);
 
@@ -388,10 +398,11 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     }
 
     onSubmit().finally(() => {
-      newAddedCampaignPlaylist(false)
-      setSaveCampaign(false)
-    })
-  }, [campaign, successCreatedPlaylist])
+      newAddedCampaignPlaylist(false);
+
+      setSaveCampaign(false);
+    });
+  }, [campaign, successCreatedPlaylist]);
 
   // Устанавливает значения по умолчанию если Тип компании выбран "Mute"
   useEffect(() => {
@@ -429,12 +440,13 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
   // Устанавливаем данные в форму, когда получаем компанию
   useEffect(() => {
     if (!campaign || !router.query.entityId) {
-      return;
+      return
     }
 
     Object.entries(campaign).forEach(([key, value]) => {
       if (key === "days") {
-        const newDays = value.sort((a,b) => a.day_num - b.day_num)
+        const newDays = value.sort((a, b) => a.day_num - b.day_num);
+
         setValue(key as any, newDays);
 
         return
@@ -447,7 +459,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
   // Авто закрытие сообщений
   useEffect(() => {
     if (!campaignListErrorText) {
-      return;
+      return
     }
 
     messanger.dispatch({
@@ -463,7 +475,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
       clearContext();
     };
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!playlist || !campaign) {
@@ -495,7 +507,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         message: t("edit-campaign-playlist.success.store-campaign-playlist"),
         type: "success",
       });
-    })
+    });
 
   }, [saveCampaign, campaign, playlist]);
 
@@ -511,21 +523,21 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
   }, [campaign, isCampaignNew]);
 
   if (isInitialized) {
-    return <LoadingBlocker/>;
+    return <LoadingBlocker />;
   }
 
   return (
     <CampaignPlaylistEditContextConnector>
       <Box
-        sx={{pb: 3}}
+        sx={{ pb: 3 }}
         data-testid="editOrAddCampaignWrapper"
       >
-        <Breadcrumbs/>
+        <Breadcrumbs />
       </Box>
-        {!!playlist
-          ? <EditPlaylist onSubmitCampaign={addPlaylist}/>
-          :
-          <Grid item xs={12}>
+
+      {!!playlist
+        ? <EditPlaylist onSubmitCampaign={addPlaylist} />
+        : <Grid item xs={12}>
             <Box sx={{ width: "100%" }}>
               <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <TabContext value={currentActionTab}>
@@ -539,7 +551,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                   >
                     <TabList
                       onChange={changeCurrentTab}
-                      aria-label={"campaign-create"}
+                      aria-label="campaign-create"
                     >
                       {tabOptions.map((permission) => (
                         <Tab
@@ -551,61 +563,63 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
                       ))}
                     </TabList>
                   </Box>
+
                   <Paper sx={{ width: "100%", p: "30px 40px" }}>
                     <TabPanel
                       value={optionsForTabs.schedule}
                       key={optionsForTabs.schedule}
                       sx={{ p: 0 }}
                     >
-                      <CampaignSchedule watchTime={watchTime}/>
+                      <CampaignSchedule watchTime={watchTime} />
                     </TabPanel>
+
                     <TabPanel
                       value={optionsForTabs.content}
                       key={optionsForTabs.content}
                       sx={{ p: 0 }}
                     >
-                      <CampaignContent/>
+                      <CampaignContent />
                     </TabPanel>
+
                     <TabPanel
                       value={optionsForTabs.channels}
                       key={optionsForTabs.channels}
                       sx={{ p: 0 }}
                     >
-                      <Channels/>
+                      <Channels />
                     </TabPanel>
-                    <Stack direction="row" justifyContent="flex-end">
-                      {
-                        currentActionTab !== optionsForTabs.channels &&
-                        <>
-                          {asPathNestedRoutes === "add" && (
-                            <Button 
-                              disabled={isSubmitting} 
-                              variant="outlined" 
-                              color="secondary"
-                              sx={{ m: "18px 21px 18px 0" }}
-                              onClick={onCancelClickHandler}
-                            >
-                              {t("pages.campaign.add.buttons.cancel")}
-                            </Button>
-                          )}
-                          <LoadingButton
+
+                    {currentActionTab !== optionsForTabs.channels && (
+                      <StyledControlButtonsWrapper>
+                        {asPathNestedRoutes === "add" && (
+                          <Button
+                            disabled={isSubmitting}
                             variant="outlined"
-                            color="success"
-                            type="submit"
+                            color="secondary"
                             sx={{ m: "18px 21px 18px 0" }}
-                            loading={isSubmitting}
+                            onClick={onCancelClickHandler}
                           >
-                            {t("pages.campaign.add.buttons.save")}
-                          </LoadingButton>
-                        </>
-                      }
-                    </Stack>
+                            {t("pages.campaign.add.buttons.cancel")}
+                          </Button>
+                        )}
+
+                        <LoadingButton
+                          variant="outlined"
+                          color="success"
+                          type="submit"
+                          sx={{ m: "18px 21px 18px 0" }}
+                          loading={isSubmitting}
+                        >
+                          {t("pages.campaign.add.buttons.save")}
+                        </LoadingButton>
+                      </StyledControlButtonsWrapper>
+                    )}
                   </Paper>
                 </TabContext>
               </FormProvider>
             </Box>
           </Grid>
-        }
+      }
     </CampaignPlaylistEditContextConnector>
   );
 };
