@@ -11,10 +11,25 @@ import ListPagePagination from "./ListPagePagination";
 import DeleteDialog from "./DeleteDialog";
 import LoadingBlocker from "components/LoadingBlocker";
 import { ClipListItemType } from "./context/types";
+import { styled } from "@mui/system";
 
 interface Props {
   projectId: string;
 }
+
+const StyledFooterWrapper = styled('div')(({ theme }) => ({
+  padding: '8px 0px 8px',
+  width: '100%',
+  backgroundColor: theme.palette.common.white,
+  position: 'sticky',
+  bottom: 0,
+}));
+
+const StyledPaper = styled(Paper)({
+  width: '100%',
+  marginBottom: 16,
+  padding: '24px 24px 16px',
+});
 
 const headerCells: Omit<ListHeaderCellType, "setSort" | "sorted">[] = [
   {
@@ -141,7 +156,7 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
       </Box>
 
       <Box sx={{ width: '100%' }}>
-        <Paper sx={{ width: '100%', mb: 2, p: 3 }}>
+        <StyledPaper>
           <TableCaption
             checkedItems={selected}
             header={t("campaign-clips-list.list.header")}
@@ -159,7 +174,7 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
             onChangeCheckedItems={setSelected}
           />
 
-          <Box sx={{ pt: 1 }}>
+          <StyledFooterWrapper>
             <ListPagePagination
               listPage={pages}
               limit={limit}
@@ -167,8 +182,8 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
               onChangeListPage={onChangeListPage}
               onChangeLimit={onChangeLimit}
             />
-          </Box>
-        </Paper>
+          </StyledFooterWrapper>
+        </StyledPaper>
 
         <DeleteDialog
           isOpen={isDeleteDialogOpen}
