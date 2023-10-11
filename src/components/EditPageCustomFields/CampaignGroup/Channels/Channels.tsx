@@ -6,6 +6,18 @@ import { useTranslation } from "react-i18next";
 import { distinctUntilChanged } from "rxjs";
 import ActionButtons from "./ActionButtons";
 import ChannelsTable from "./ChannelsTable";
+import { styled } from "@mui/system";
+
+const StyledFooterGrid = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  minHeight: 72,
+  justifyContent: 'space-between',
+  position: 'sticky',
+  bottom: 0,
+  paddingBottom: 20,
+  backgroundColor: theme.palette.common.white,
+}));
 
 /**
  * Страница добавления каналов при редактировании кампании
@@ -76,7 +88,7 @@ const Channels: FC = () => {
   }, []);
 
   return (
-    <Grid container>
+    <Grid container sx={{ mb: -3.5 }}>
       <Grid item xs={12}>
         <Collapse in={error !== undefined}>
           <Alert severity="warning">{t(error || "")}</Alert>
@@ -92,18 +104,16 @@ const Channels: FC = () => {
         />
       </Grid>
 
-      <Grid item xs={6} sx={{ pt: 1 }}>
+      <StyledFooterGrid item xs={12}>
         <Typography>
           {t('pages.campaign.edit.fields.channels.table.numberOfSelected', {
             selected: checkedItems.length,
             amount: rows.length,
           })}
         </Typography>
-      </Grid>
 
-      <Grid item xs={6}>
         <ActionButtons checkedItems={checkedItems} isDifferent={isDifferent} />
-      </Grid>
+      </StyledFooterGrid>
     </Grid>
   );
 };

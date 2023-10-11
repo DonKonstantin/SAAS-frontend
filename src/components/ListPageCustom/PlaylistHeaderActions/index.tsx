@@ -31,7 +31,9 @@ const PlaylistHeaderActions: FC<ListHeaderProps> = () => {
       >
         {t("project-playlists.button.open-import-playlist")}
       </Button>
+      
       <Divider sx={{ width: "100%", mt: 2.75 }} />
+
       <Modal open={open} onClose={onCloseHandler}>
         <DragAndDropComponent onClose={onCloseHandler} />
       </Modal>

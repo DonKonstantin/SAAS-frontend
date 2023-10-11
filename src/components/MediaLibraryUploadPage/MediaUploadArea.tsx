@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import DropZoneArea from "../DropZoneArea";
 import * as mmb from "music-metadata-browser";
 import { IAudioMetadata } from "music-metadata-browser";
 import { MediaFileToUpload, useMediaLibraryUpload } from "./MediaFilesUploadContext";
 import mediaFileFactory from "../../services/MediaLibraryService/mediaFileFactory";
 import { LicenseType, MediaFile } from "../../services/MediaLibraryService/interface";
-import LoadingBlocker from "components/LoadingBlocker";
+import { DropZoneAreaLoadingBlocker } from "components/DropZoneAreaLoadingBlocker";
 import { styled } from "@mui/system";
 
 const metadataToMediaInfo = (
@@ -27,13 +27,14 @@ const metadataToMediaInfo = (
     year: metadata.common.year || 0,
     duration: metadata.format.duration || 0,
   } as Partial<MediaFile>;
-}
+};
 
 const makeMediaFileInfo = async (
   file: File,
   licenseType: LicenseType
 ): Promise<MediaFileToUpload> => {
-  const metadata = await mmb.parseBlob(file, { skipPostHeaders: true })
+  const metadata = await mmb.parseBlob(file, { skipPostHeaders: true });
+
   return {
     replace: false,
     replaceId: "",
@@ -46,29 +47,20 @@ const makeMediaFileInfo = async (
         origin_name: file.name
       },
       licenseType
-    )
+    ),
   };
-}
+};
 
-const StyledLoaderClickblocker = styled('div')(({ theme }) => ({
-  width: '100%',
-  height: '100%',
-  backgroundColor: theme.palette.grey[0],
-  opacity: 0.5,
-}));
-
-const StyledLoaderWrapper = styled('div')({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, 0)',
-  opacity: '1 !important',
+const StyledText = styled(Typography)({
+  opacity: 0.56,
+  fontSize: 12,
+  mb: 2,
 });
 
 const MediaUploadArea: FC = () => {
   const {
+    licenseType,
     addFilesToUpload,
-    licenseType
   } = useMediaLibraryUpload();
 
   //  Флаг подготовки файлов к отображению в списке загружаемых
@@ -93,31 +85,21 @@ const MediaUploadArea: FC = () => {
 
   return (
     <>
-      <Typography color={"primary"} >
+      <Typography color="primary" >
         Загрузка файлов
       </Typography>
 
-      <Typography variant={"subtitle1"} sx={{ opacity: 0.56, fontSize: 12, mb: 2 }}>
+      <StyledText variant="subtitle1">
         Переместите все файлы для загрузки в контейнер
-      </Typography>
+      </StyledText>
 
-      <Box sx={{ position: 'relative' }}>
-        {isPreparing && (
-          <Box sx={{ position: 'absolute', width: '100%', height: '100%' }}>
-            <StyledLoaderClickblocker/>
-            
-            <StyledLoaderWrapper>
-              <LoadingBlocker />
-            </StyledLoaderWrapper>
-          </Box>
-        )}
-
+      <DropZoneAreaLoadingBlocker isBlocked={isPreparing}>
         <DropZoneArea
           onDrop={onDrop}
           accept={"audio/*"}
           active={false}
         />
-      </Box>
+      </DropZoneAreaLoadingBlocker>
     </>
   );
 }

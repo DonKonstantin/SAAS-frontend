@@ -27,6 +27,7 @@ const nameAndTypeCompany = [
     name: "pages.campaign.add.fields.schedule.name",
     component: <RHFTextField
       name="name"
+      sx={{ width: "250%" }}
     />,
     size: { spacing: 4, xs: 2.5, sx: { mb: "16px" } }
   },
@@ -118,17 +119,21 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
             ]}
           sx={{ p: "0 9px" }}
         />
+
         {watchTime.campaign_play_type === "periodic" &&
             <Grid container alignItems="flex-start" spacing={2} sx={{ pt: "30px" }}>
                 <Grid item xs={1}>
                     <RHFTextField type='number' name='campaign_play_tracks_quantity'/>
                 </Grid>
+
                 <Grid item xs='auto' alignSelf='flex-end'>
                     Трека каждые:
                 </Grid>
+
                 <Grid item xs={1}>
                     <RHFTextField type='number' name='campaign_play_tracks_period_value'/>
                 </Grid>
+
                 <Grid item xs={1.5}>
                     <RHFDropDown name='campaign_play_tracks_period_type' options={
                       [
@@ -159,7 +164,6 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
 
   return (
     <Grid container>
-
       {
         nameAndTypeCompany.map(field => (
           <Grid container spacing={field.size.spacing} sx={field.size.sx} alignItems="center" key={field.name}>
@@ -193,9 +197,11 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
         <Grid item xs={2.5}>
           {t("pages.campaign.add.fields.schedule.campaign_period")}
         </Grid>
+
         <Grid item xs={1.8}>
           <RHFDateField name='campaign_period_start' inputFormat='дд/мм/гггг'/>
         </Grid>
+
         <Grid item xs={1.8}>
           <RHFDateField name='campaign_period_stop' inputFormat='дд/мм/гггг'/>
         </Grid>
@@ -210,8 +216,7 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
       </Grid>
 
     </Grid>
-
-  )
-}
+  );
+};
 
 export default memo(CampaignSchedule)
