@@ -28,8 +28,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
 
   const [publishLoading, setPublishLoading] = useState<boolean>(false);
   const [depublishLoading, setDepublishLoading] = useState<boolean>(false);
-  const [showCopyPeriodModal, setShowCopyPeriodModal] =
-    useState<boolean>(false);
+  const [showCopyPeriodModal, setShowCopyPeriodModal] = useState<boolean>(false);
 
   const { reloadedListingData, data } = useEntityList(
     distinctUntilKeyChanged("data")
@@ -46,6 +45,52 @@ const CampaignsActions: FC<ListHeaderProps> = ({
   );
 
   const channels = currentData.additionData.map((item) => item.channels);
+
+  const onCopyHandler = async () => {
+    try {
+      const campaigns = await campaignListService().getCampaignsArrayByIds(
+        selectedRows.map((row) => row.primaryKeyValue)
+      );
+
+      await Promise.all(
+        campaigns.map((campaign) => {
+          const preparedCampaign = prepareCampaignDataForStore(campaign);
+
+          return campaignListService().storeCampaign({
+            ...preparedCampaign,
+            name: `${t("pages.campaign.copy-prefix")} ${campaign.name}`,
+          });
+        })
+      )
+        .then(() => {
+          notifications.dispatch({
+            message: t(
+              `pages.campaign.notifications.campaign-copy.succeess.${
+                campaigns.length === 1 ? "single" : "multiple"
+              }`
+            ),
+            type: "success",
+          });
+
+          reloadedListingData();
+        })
+        .catch(() => {
+          notifications.dispatch({
+            message: t(
+              `pages.campaign.notifications.campaign-copy.reject.${
+                campaigns.length === 1 ? "single" : "multiple"
+              }`
+            ),
+            type: "error",
+          });
+        });
+    } catch (error) {
+      notifications.dispatch({
+        message: t(`pages.campaign.notifications.campaign-copy.error`),
+        type: "error",
+      });
+    }
+  };
 
   const onPublishHandler = async () => {
     setPublishLoading(true);
@@ -182,16 +227,19 @@ const CampaignsActions: FC<ListHeaderProps> = ({
         buttonTitle={t("pages.campaign.button.create")}
         disabled={publishLoading || depublishLoading}
       />
+
       <Tooltip title={t(buttonTooltip)}>
         <Button
           variant="outlined"
-          onClick={() => setShowCopyPeriodModal(true)}
+          onClick={onCopyHandler}
+          // onClick={() => setShowCopyPeriodModal(true)}
           disabled={!selectedRows.length || publishLoading || depublishLoading}
           data-testid="copyCampaignButton"
         >
           {t("pages.campaign.button.copy")}
         </Button>
       </Tooltip>
+
       <Tooltip title={publishLoading ? "" : t(buttonTooltip)}>
         <LoadingButton
           loading={publishLoading}
@@ -203,6 +251,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           {t("pages.campaign.button.publish")}
         </LoadingButton>
       </Tooltip>
+
       <Tooltip title={depublishLoading ? "" : t(buttonTooltip)}>
         <LoadingButton
           loading={depublishLoading}
@@ -215,6 +264,7 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           {t("pages.campaign.button.deselect")}
         </LoadingButton>
       </Tooltip>
+
       <Modal
         open={showCopyPeriodModal}
         onClose={() => setShowCopyPeriodModal(false)}

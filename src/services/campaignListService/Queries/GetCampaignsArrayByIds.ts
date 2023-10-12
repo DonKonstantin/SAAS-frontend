@@ -17,11 +17,10 @@ export class GetCampaignsArrayByIdsQuery
       campaignArrayId,
     };
 
-    this.query = gql`
-    ${FullProjectCampaign}
+    this.query = gql(`
     query __GET_CAMPAIGN_BY_IDS__($campaignArrayId: [ID]){
       campaigns: campaign_list(where: { id: { _in: $campaignArrayId } } )
       ${FullProjectCampaign}
-    }`;
+    }`);
   }
 }
