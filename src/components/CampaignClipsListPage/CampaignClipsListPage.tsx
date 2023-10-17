@@ -63,6 +63,16 @@ const headerCells: Omit<ListHeaderCellType, "setSort" | "sorted">[] = [
     },
   },
   {
+    name: 'campaignName',
+    title: 'campaign-clips-list.list.header-cells.campaign-name',
+    align: 'center',
+    isSortable: false,
+    sx: {
+      padding: 0,
+      width: 150,
+    },
+  },
+  {
     name: 'emptySpace',
     title: '',
     align: 'left',

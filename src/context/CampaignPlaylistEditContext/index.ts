@@ -1,10 +1,27 @@
-import {CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs} from './interface';
-import {BehaviorSubject, combineLatest, filter, interval, map, Observable, Subject, switchMap, tap} from "rxjs";
-import {CampaignPlaylistConnect, CampaignPlayListFileType} from 'services/campaignListService/types';
-import {fileService} from 'services/FileService';
-import {getCurrentState} from 'context/AuthorizationContext';
-import {daysName} from "../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
+import { CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs } from './interface';
+import {
+  BehaviorSubject,
+  combineLatest,
+  filter,
+  interval,
+  map,
+  Observable,
+  pairwise,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from "rxjs";
+import { CampaignPlaylistConnect, CampaignPlayListFileType } from 'services/campaignListService/types';
+import { fileService } from 'services/FileService';
+import { getCurrentState } from 'context/AuthorizationContext';
+import { daysName } from "../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
 import dayjs from 'dayjs';
+import projectListService from 'services/projectListService';
+import { ProjectMediaFile } from 'services/MediaLibraryService/interface';
+import { isEqual, uniqBy } from 'lodash';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
@@ -32,18 +49,49 @@ const uploadedClips$ = new BehaviorSubject<string[]>([]);
 const isLoading$ = new BehaviorSubject<boolean>(false);
 
 //  шина проверки доступности в графе выгруженных клипов
-const checkUploadedFilesBus$ = combineLatest([interval(5000), uploadedClips$]).pipe(
-  filter(incomingData => !!incomingData[1].length),
-  map(incomingData => incomingData[1]),
-  tap(() => isLoading$.next(true)),
-  switchMap(async uploadedClips => {
+const checkUploadedFilesBus$ = combineLatest([
+  uploadedClips$.pipe(
+    //  не инициируем загрузку если нет новых файлов
+    pairwise(),
+    filter(([prev, curr]) => !isEqual(prev, curr)),
+    map(values => values[1]),
+
+    //  показывем лоадет только если подгрузился новый файл
+    tap(() => isLoading$.next(true)),
+    startWith([]),
+  ),
+
+  //  проверяем файлы каждые 5 секунд
+  interval(5000),
+]).pipe(
+  // filter(incomingData => !!incomingData[1].length),
+  withLatestFrom(projectId$, playlist$),
+  //  если плэйлит не подгружен в контекст или у него нет собственного плэйлиста останавливаем стрим
+  filter(params => !!params[2]?.campaignPlaylist),
+  map(([[uploadedClips], projectId, playlist]) => ({
+    uploadedClips,
+    projectId,
+    playlist,
+  })),
+  switchMap(async ({ uploadedClips, projectId, playlist }) => {
     try {
-      return await fileService().getProjectFilesListByFileIds(uploadedClips);
+      let projectFiles: ProjectMediaFile[] = [];
+
+      //  проверка свободных файлов проекта если есть загруженные файлы
+      if (!!uploadedClips.length) {
+        projectFiles = await fileService().getProjectFilesListByFileIds(uploadedClips);
+      }
+      
+      //  подгрузка всех файлов кампаний кроме текущей
+      const campaigFiles = await projectListService().getCampaignsFiles(projectId, playlist!.id);
+
+      return [...projectFiles, ...campaigFiles];
     } catch (error) {
       throw error;
     }
   }),
   filter(files => !!files.length),
+  shareReplay(1),
 );
 
 //  шина добавления загруженного клипа в плейлист
@@ -254,13 +302,17 @@ export const InitCampaignEditContext = () => {
 
   subscriber.add(checkUploadedFilesBus$.subscribe(
     clips => {
-      const ids = clips.map(clip => String(clip.id));
+      const ids = new Set(clips.map(clip => String(clip.id)));
 
       const { project } = getCurrentState();
 
       const playlist = playlist$.getValue();
 
-      const lastSortNumber = Math.max(...playlist?.campaignPlaylist?.files.map(file => file.sort)!);
+      const campaignPlaylist = playlist?.campaignPlaylist;
+
+      const playlistFiles = !campaignPlaylist ? [0] : campaignPlaylist.files.map(file => file.sort);
+
+      const lastSortNumber = Math.max(...playlistFiles);
 
       const checkLastNumberForFinite = isFinite(lastSortNumber);
 
@@ -284,11 +336,13 @@ export const InitCampaignEditContext = () => {
 
       const loadedClips = loadedClips$.getValue();
 
-      loadedClips$.next([...loadedClips, ...preparedClips]);
+      const preparedLoadedClips = uniqBy([...loadedClips, ...preparedClips], "file_id");
+
+      loadedClips$.next(preparedLoadedClips);
 
       const uploadedClips = uploadedClips$.getValue();
 
-      uploadedClips$.next(uploadedClips.filter(clip => ids.some(id => id === clip)));
+      uploadedClips$.next(uploadedClips.filter(clip => ids.has(clip)));
 
       isLoading$.next(false);
     }

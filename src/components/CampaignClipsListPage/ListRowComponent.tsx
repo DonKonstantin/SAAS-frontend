@@ -31,8 +31,8 @@ const ListRowComponent: FC<Props> = (props) => {
   const {
     isActive,
     isLast,
-    isProject,
     file,
+    campaignName,
   } = row;
 
   const {
@@ -71,7 +71,7 @@ const ListRowComponent: FC<Props> = (props) => {
 
   //  Обработчик загрузки клипа
   const handleDownloadItems = () => {
-    downloadClip(file_name, origin_name, !isProject);
+    downloadClip(file_name, origin_name);
   };
 
   const isRemovable: boolean = !isActive || isLast;
@@ -104,13 +104,16 @@ const ListRowComponent: FC<Props> = (props) => {
         <PlayAudioButton
           fileName={file_name}
           songName={title}
-          isProject={!isProject}
+          isProject={false}
         />
       </TableCell>
 
       <TableCell>
-
         {dayjs(creation_date || last_change_date).format("DD.MM.YYYY")}
+      </TableCell>
+
+      <TableCell sx={{ textAlign: 'center' }}>
+        {campaignName}
       </TableCell>
 
       <TableCell />

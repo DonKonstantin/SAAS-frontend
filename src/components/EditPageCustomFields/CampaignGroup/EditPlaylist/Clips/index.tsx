@@ -33,8 +33,14 @@ const StyledButtonWrapper = styled('div')({
 const Clips: FC = () => {
   const { t } = useTranslation();
 
-  const { loadedClips, removeLoadedFile, addLoadedToPlaylist } = useCampaignPlaylistEditContext(distinctUntilKeyChanged("loadedClips"));
-
+  const {
+    loadedClips,
+    removeLoadedFile,
+    addLoadedToPlaylist,
+  } = useCampaignPlaylistEditContext(
+    distinctUntilKeyChanged("loadedClips"),
+  );
+  
   const [selected, setSelected] = useState<string[]>([]);
 
   const messanger = notificationsDispatcher();
@@ -59,15 +65,19 @@ const Clips: FC = () => {
   return (
     <>
       <DropDownBlock />
+
       <StyledHeaderWrapper>
         <Typography color="primary">
           {t("edit-campaign-playlist.table.header.clips-header")}
         </Typography>
+
         <IconButton onClick={onDeleteTrackHandler} disabled={!selected.length}>
           <DeleteIcon />
         </IconButton>
       </StyledHeaderWrapper>
+
       <TrackTable rows={loadedClips} selected={selected} setSelected={setSelected} />
+
       <StyledButtonWrapper>
         <Button
           variant="outlined"

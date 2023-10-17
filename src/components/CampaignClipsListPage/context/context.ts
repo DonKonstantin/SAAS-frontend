@@ -68,26 +68,20 @@ export const allCampaigns$: Observable<Campaign[]> = loadingProjectCampaignsBus$
  * Подготовленный масив роликов
  */
 const clips$ = allCampaigns$.pipe(
-  map(campaigns => campaigns.flatMap(campaign => campaign.playlists)),
+  map(campaigns => campaigns.flatMap(campaign => campaign.playlists.map(playlist => ({
+    playlist: playlist,
+    campaignName: campaign.name,
+  })))),
   map(playlists => {
-    const result: ClipListItemType[] = playlists.map(playlist => {
+    const result: ClipListItemType[] = playlists.map(({ playlist, campaignName }) => {
       const startPeriod = new Date(playlist.periodStart).getTime();
       const endPeriod = new Date(playlist.periodStop).getTime();
       const now: number = new Date().getTime();
   
       const isActive: boolean = startPeriod - now < 0 && now - endPeriod < 0;
 
-      const projectPlaylistsFiles: ProjectPlayListFile[] = playlist.projectPlaylist?.files || [];
       const campaignPlaylistsFiles: CampaignPlayListFileType[] = playlist.campaignPlaylist?.files || [];
 
-      const preparedProjectPlaylistsFiles: ClipListItemType[] = projectPlaylistsFiles.map(file => ({
-        isActive,
-        campaignId: playlist.campaignId,
-        playlistId: playlist.projectPlaylist?.id || "",
-        isProject: true,
-        file,
-        isLast: projectPlaylistsFiles.length === 1,
-      }));
       const preparedCampignsPlaylistsFiles: ClipListItemType[] = campaignPlaylistsFiles.map(file => ({
         isActive,
         campaignId: playlist.campaignId,
@@ -95,9 +89,10 @@ const clips$ = allCampaigns$.pipe(
         isProject: false,
         file,
         isLast: campaignPlaylistsFiles.length === 1,
+        campaignName,
       }));
 
-      return [...preparedProjectPlaylistsFiles, ...preparedCampignsPlaylistsFiles] as ClipListItemType[];
+      return preparedCampignsPlaylistsFiles as ClipListItemType[];
     }).flat(1);
 
     return result;
@@ -281,11 +276,11 @@ const removeClipsBus$ = removeClips$.pipe(
  * Шина загрузки ролика
  */
 const downloadClipBus$ = downloadClip$.pipe(
-  switchMap(async ({ fileName, isProject, title }) => {
+  switchMap(async ({ fileName, title }) => {
     try {
       const response = await mediaFileClient().Load(
         fileName,
-        isProject,
+        false,
       );
 
       const url = window.URL.createObjectURL(response);
@@ -417,8 +412,8 @@ const removeClips: CampaignClipsListPageContextActionsType['removeClips'] = (cli
 /**
  * Скачиваем ролик
  */
-const downloadClip: CampaignClipsListPageContextActionsType['downloadClip'] = (fileName, title, isProject) => {
-  downloadClip$.next({ fileName, isProject, title });
+const downloadClip: CampaignClipsListPageContextActionsType['downloadClip'] = (fileName, title) => {
+  downloadClip$.next({ fileName, title });
 };
 
 export const actions: CampaignClipsListPageContextActionsType = {
