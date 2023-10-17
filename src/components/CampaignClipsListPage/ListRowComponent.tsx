@@ -96,7 +96,7 @@ const ListRowComponent: FC<Props> = (props) => {
         onClick={onToggleItemCheckedState}
       />
 
-      <TableCell>
+      <TableCell sx={{ wordWrap: 'break-word' }}>
         {origin_name}
       </TableCell>
 
