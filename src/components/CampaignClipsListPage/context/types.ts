@@ -1,5 +1,4 @@
 import { CampaignPlayListFileType } from "services/campaignListService/types";
-import { ProjectPlayListFile } from "services/projectPlaylistService/interfaces";
 
 //  Типизация подготовлен6ного объекта ролика для листинга
 export interface ClipListItemType {
@@ -7,8 +6,9 @@ export interface ClipListItemType {
   campaignId: string;
   playlistId: string;
   isProject: boolean;
-  file: CampaignPlayListFileType | ProjectPlayListFile;
+  file: CampaignPlayListFileType;
   isLast: boolean;
+  campaignName: string;
 }
 
 //  Типизация объекта ошибки запроса
@@ -19,6 +19,5 @@ export type RequestErrorResponse = {
 //  Параметры шины загрузки роликов
 export type DownloadClipPropsType = {
   fileName: string;
-  isProject: boolean;
   title: string;
 };

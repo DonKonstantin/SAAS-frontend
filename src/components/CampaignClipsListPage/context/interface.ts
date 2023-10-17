@@ -49,8 +49,7 @@ export interface CampaignClipsListPageContextActionsType {
    * Скачиваем ролик
    * @param fileName
    * @param title
-   * @param isProject
    * @returns
    */
-  downloadClip: (fileName: string, title: string, isProject: boolean) => void;
+  downloadClip: (fileName: string, title: string) => void;
 }

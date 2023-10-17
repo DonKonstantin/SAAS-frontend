@@ -5,7 +5,8 @@
       "header": "Название ролика",
       "header-cells": {
         "name": "Название трека",
-        "create-date": "Дата добавления"
+        "create-date": "Дата добавления",
+        "campaign-name": "Название кампании"
       },
       "tooltip": {
         "delete-tooltip": {

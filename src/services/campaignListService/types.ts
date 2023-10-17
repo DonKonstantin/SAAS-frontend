@@ -99,7 +99,7 @@ export interface CampaignPlaylistConnect {
 export interface CampaignPlayList {
   campaign_id: string;                                        //  Идентификатор кампании, к которой относится плейлист
   duration: number;                                           // Общая длительность плейлиста
-  files: CampaignPlayListFileType[];                              //  Файлы, относящиеся к плейлисту
+  files: CampaignPlayListFileType[];                          //  Файлы, относящиеся к плейлисту
   id?: string;                                                //  ID сущности
   is_overall_volume: boolean;                                 // Флаг, что в плейлисте используется единая громкость мелодий
   name: string;                                               // Название плейлиста
