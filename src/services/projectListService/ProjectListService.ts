@@ -18,8 +18,8 @@ import { ProjectMediaFile } from "services/MediaLibraryService/interface";
  * Сервис списка проектов
  */
 class ProjectListService implements ProjectListServiceInterface {
-  readonly #client: GraphQLClient = graphQLClient();
-  readonly #logger: Logger = loggerFactory().make("Project list service");
+  readonly client: GraphQLClient = graphQLClient();
+  readonly logger: Logger = loggerFactory().make("Project list service");
 
   /**
    * Получаем список проектов по массиву ID
@@ -27,19 +27,19 @@ class ProjectListService implements ProjectListServiceInterface {
    * @returns
    */
   async getProjectsByIds(projectIds: string[]): Promise<ProjectData[]> {
-    this.#logger.Debug("Projects IDs: ", projectIds);
+    this.logger.Debug("Projects IDs: ", projectIds);
 
     try {
-      const { projects } = await this.#client.Query<
+      const { projects } = await this.client.Query<
         GetProjectsByIdsQueryRequest,
         GetProjectsByIdsQueryResnonce
       >(new GetProjectsByIdsQuery(projectIds), {});
 
-      this.#logger.Debug("Список проектов полученный с сервера: ", projects);
+      this.logger.Debug("Список проектов полученный с сервера: ", projects);
 
       return projects;
     } catch (error) {
-      this.#logger.Debug("Ошибка получения списка проектов: ", error);
+      this.logger.Debug("Ошибка получения списка проектов: ", error);
 
       throw Error(error);
     }
@@ -52,17 +52,17 @@ class ProjectListService implements ProjectListServiceInterface {
    * @returns
    */
   async getCampaignsFiles(projectId: string, playlistId: string | undefined): Promise<ProjectMediaFile[]> {
-    this.#logger.Debug("Получаем список кампаний проекта с плэйлистами собственных файлов");
-    this.#logger.Debug("Projects ID: ", projectId);
-    this.#logger.Debug("Playlist ID: ", playlistId);
+    this.logger.Debug("Получаем список кампаний проекта с плэйлистами собственных файлов");
+    this.logger.Debug("Projects ID: ", projectId);
+    this.logger.Debug("Playlist ID: ", playlistId);
 
     try {
-      const { campaigns } = await this.#client.Query<
+      const { campaigns } = await this.client.Query<
         GetCampaignsFilesRequest,
         GetCampaignsFilesResnonce
       >(new GetCampaignsFiles(projectId), {});
 
-      this.#logger.Debug("Список кампаний полученный с сервера: ", campaigns);
+      this.logger.Debug("Список кампаний полученный с сервера: ", campaigns);
 
       const files: ProjectMediaFile[] = campaigns
         //  подготавливаем общий список плейлистов кампаний
@@ -90,7 +90,7 @@ class ProjectListService implements ProjectListServiceInterface {
 
       return files;
     } catch (error) {
-      this.#logger.Debug("Ошибка получения списка кампаний: ", error);
+      this.logger.Debug("Ошибка получения списка кампаний: ", error);
 
       throw Error(error);
     }
