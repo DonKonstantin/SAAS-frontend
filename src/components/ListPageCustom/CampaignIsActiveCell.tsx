@@ -5,6 +5,7 @@ import { ListFieldProperties } from "../../services/listDataLoader/listLoader/ty
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { useEntityList } from "context/EntityListContext";
+import dayjs from "dayjs";
 
 /**
  * Компонент ячейки активности кампании
@@ -33,10 +34,10 @@ const CampaignIsActiveCell: FC<ListFieldProperties<SimpleValues>> = ({
   );
 
   const startPeriod = new Date(row?.campaign_period_start.value).getTime();
-  const endPeriod = new Date(row?.campaign_period_stop.value).getTime();
+  const endPeriod = new Date(dayjs(row?.campaign_period_stop.value).add(1, "day").format("YYYY-MM-DD")).getTime();
   const now = new Date().getTime();
 
-  const inPeriod = startPeriod - now <= 0 && now - endPeriod <= 0;
+  const inPeriod = startPeriod <= now && now <= endPeriod;
 
   const status = !!channels && inPeriod;
 
