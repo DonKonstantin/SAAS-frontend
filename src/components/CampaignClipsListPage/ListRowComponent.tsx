@@ -1,5 +1,5 @@
 import React, { FC, memo } from "react";
-import { TableRow, TableCell, Tooltip, IconButton } from "@mui/material";
+import { TableRow, TableCell, Tooltip, IconButton, Typography } from "@mui/material";
 import CheckBoxCell from "../List/CheckBoxCell";
 import { ClipListItemType } from "./context/types";
 import { isEqual } from "lodash";
@@ -86,7 +86,7 @@ const ListRowComponent: FC<Props> = (props) => {
     <TableRow
       hover
       tabIndex={-1}
-      sx={{ height: "56px" }}
+      sx={{ height: "56px", tableLayout: 'fixed' }}
       data-testid="listRow"
     >
       <CheckBoxCell
@@ -97,7 +97,9 @@ const ListRowComponent: FC<Props> = (props) => {
       />
 
       <TableCell>
-        {origin_name}
+        <Tooltip title={origin_name}>
+          <Typography noWrap>{origin_name}</Typography>
+        </Tooltip>
       </TableCell>
 
       <TableCell>
