@@ -37,6 +37,7 @@ export interface PlayerListServiceInterface {
 
 export interface Channel {
   name: string;
+  is_active: boolean;
 }
 
 export interface PlayerChannel {

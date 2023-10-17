@@ -35,7 +35,13 @@ export class PlayerListService implements PlayerListServiceInterface {
 
       this.logger.Debug("Ответ на запрос кампаний для листинга плееров: ", players);
 
-      return players;
+      //  Фильтруем неактивные каналы
+      const response = players.map(player => ({
+        ...player,
+        campaigns: player?.campaigns.filter(campaign => campaign.channel.is_active) || [],
+      }));
+
+      return response;
     } catch (error) {
       this.logger.Error("Ошибка запроса кампаний для листинга плееров: ", error);
 
