@@ -14,6 +14,7 @@ import PlaylistCampaignsCell from "components/ListPageCustom/PlaylistCampaignsCe
 import PlaylistHeaderActions from "components/ListPageCustom/PlaylistHeaderActions";
 import PlaylistActions from "components/ListPageCustom/PlaylistActions";
 import PlailistCampignsField from "components/ListPageParts/Filter/PlailistCampignsField";
+import CampaignDataField from "components/ListPageCustom/CampaignDataField";
 
 /**
  * Конфигурация листинга плейлистов
@@ -34,6 +35,18 @@ export class PlaylistListingConfiguration
       schema: "project_playlist",
       title: "project-playlists.list.filter.campaign",
       customComponent: PlailistCampignsField,
+    },
+    created_at: {
+      field: "created_at",
+      filterType: "DateTimeRange",
+      schema: "project_playlist",
+      title: "project-playlists.list.filter.created-at",
+    },
+    updated_at: {
+      field: "updated_at",
+      filterType: "DateTimeRange",
+      schema: "project_playlist",
+      title: "project-playlists.list.filter.updated-at",
     },
   };
   listFields: ListFieldsConfiguration<"project_playlist"> = {
@@ -57,6 +70,28 @@ export class PlaylistListingConfiguration
           config: undefined,
           type: "Simple",
           customComponent: PlaylistCampaignsCell,
+        },
+      },
+      created_at: {
+        field: "created_at",
+        title: "project-playlists.list.header.created-at",
+        isEnabled: true,
+        isHidden: false,
+        fieldType: {
+          config: undefined,
+          type: "Simple",
+          customComponent: CampaignDataField,
+        },
+      },
+      updated_at: {
+        field: "updated_at",
+        title: "project-playlists.list.header.updated-at",
+        isEnabled: true,
+        isHidden: false,
+        fieldType: {
+          config: undefined,
+          type: "Simple",
+          customComponent: CampaignDataField,
         },
       },
       duration: {
