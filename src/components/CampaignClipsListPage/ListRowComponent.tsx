@@ -106,7 +106,7 @@ const ListRowComponent: FC<Props> = (props) => {
         <PlayAudioButton
           fileName={file_name}
           songName={title}
-          isProject={false}
+          isProject={true}
         />
       </TableCell>
 
