@@ -4,7 +4,8 @@ import { ListFieldProperties } from "services/listDataLoader/listLoader/types";
 import { Typography, TableCell } from "@mui/material";
 import { distinctUntilChanged } from "rxjs";
 import { useEntityList } from "context/EntityListContext";
-import { isEqual } from "lodash";
+import {isEqual, uniqBy} from "lodash";
+import {PlayerDetails} from "../../services/playerList/interfaces";
 
 /**
  * Компонет ячейки имени канала для листинга плееров
@@ -26,7 +27,7 @@ const PlayerChannelCell: FC<ListFieldProperties<SimpleValues>> = ({
 
   const playerId = rowValues.id.value;
   
-  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
+  const campaigns = uniqBy(additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns, 'channel.name') as unknown as PlayerDetails["campaigns"];
 
   return (
     <TableCell

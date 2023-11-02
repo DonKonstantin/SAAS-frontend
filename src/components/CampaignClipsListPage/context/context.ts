@@ -280,7 +280,7 @@ const downloadClipBus$ = downloadClip$.pipe(
     try {
       const response = await mediaFileClient().Load(
         fileName,
-        false,
+        true,
       );
 
       const url = window.URL.createObjectURL(response);
