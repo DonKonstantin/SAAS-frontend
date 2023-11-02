@@ -96,7 +96,7 @@ const ListRowComponent: FC<Props> = (props) => {
         onClick={onToggleItemCheckedState}
       />
 
-      <TableCell>
+      <TableCell sx={{ wordWrap: 'break-word' }}>
         <Tooltip title={origin_name}>
           <Typography noWrap>{origin_name}</Typography>
         </Tooltip>
