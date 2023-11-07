@@ -27,7 +27,6 @@ const nameAndTypeCompany = [
     name: "pages.campaign.add.fields.schedule.name",
     component: <RHFTextField
       name="name"
-      sx={{ width: "250%" }}
     />,
     size: { spacing: 4, xs: 2.5, sx: { mb: "16px" } }
   },
@@ -162,16 +161,25 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
     simpleCompanyOptions = simpleCompanyOptions.filter(field => field.name !== "pages.campaign.add.fields.schedule.campaign_low_priority_end_type")
   }
 
+  console.log(nameAndTypeCompany, "nameAndTypeCompany");
+  
+
   return (
     <Grid container>
       {
         nameAndTypeCompany.map(field => (
-          <Grid container spacing={field.size.spacing} sx={field.size.sx} alignItems="center" key={field.name}>
+          <Grid
+            container
+            spacing={field.size.spacing}
+            sx={field.size.sx}
+            alignItems="center"
+            key={field.name}
+          >
             <Grid item xs={field.size.xs}>
               {t(field.name)}
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12 - field.size.xs}>
               {field.component}
             </Grid>
           </Grid>
