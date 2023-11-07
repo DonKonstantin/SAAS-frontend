@@ -352,23 +352,6 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
     delete inputData["version"];
 
-    let responseCampaignValidation;
-
-    try {
-      responseCampaignValidation = await campaignListService().campaignValidation(inputData);
-    } catch (error) {
-      if (typeof error.message === "string") {
-        messanger.dispatch({
-          message: t("pages.campaign.edit.errors.notifications.playlistPeriod"),
-          type: "error",
-        });
-      }
-    }
-
-    if (!responseCampaignValidation) {
-      return
-    }
-
     try {
       const campaign = await campaignListService().storeCampaign(inputData);
 
