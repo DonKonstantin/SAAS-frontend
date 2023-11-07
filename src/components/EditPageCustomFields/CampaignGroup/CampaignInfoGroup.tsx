@@ -265,7 +265,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
         }
 
         messanger.dispatch({
-          message: t("pages.campaign.edit.successMessages.updateName", {
+          message: t("pages.campaign.add.successMessages.successfullyAdded", {
             name: data.name,
           }),
           type: "success",
@@ -376,11 +376,18 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
 
       writeCampaign(campaign);
 
-      if (!!successCreatedPlaylist) {
-        return
-      }
+      messanger.dispatch({
+        message: t("pages.campaign.edit.successMessages.updateName", {
+          name: campaign.name,
+        }),
+        type: "success",
+      });
 
-      campaign.campaign_type === "mute" ? setCurrentActionTab("channels") : setCurrentActionTab("content");
+      if (!!successCreatedPlaylist) {
+        campaign.campaign_type === "mute" ? setCurrentActionTab("channels") : setCurrentActionTab("content");
+      } else {
+        currentActionTab === "content" && setCurrentActionTab("channels");
+      }
     } catch (error) {
       if (typeof error.message === "string") {
         messanger.dispatch({
