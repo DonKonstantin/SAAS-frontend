@@ -161,9 +161,6 @@ const CampaignSchedule: FC<Props> = ({ watchTime }) => {
     simpleCompanyOptions = simpleCompanyOptions.filter(field => field.name !== "pages.campaign.add.fields.schedule.campaign_low_priority_end_type")
   }
 
-  console.log(nameAndTypeCompany, "nameAndTypeCompany");
-  
-
   return (
     <Grid container>
       {
