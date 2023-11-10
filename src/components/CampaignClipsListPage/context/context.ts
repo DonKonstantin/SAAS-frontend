@@ -207,7 +207,7 @@ export const sortedClips$ = combineLatest([
   clips$,
   sortStream$,
 ]).pipe(
-  map(([clips, sortParams]) => ({ clips, sortParams })),
+  map(([clips, sortParams]) => ({ clips: clips as CampaignPlayListFileType[], sortParams })),
   map(({ clips, sortParams }) => clips.sort((a, b) => {
     const aValue = sortParams.column === 'name'
       ? a.file.origin_name
