@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { GraphQLQuery } from "services/graphQLClient/GraphQLClient";
-import { GetFilesListByFileIdsQueryParams } from "../interfaces";
+import { GetFilesListByFileIdsQueryParams } from "../types";
 
 /**
  * Запрос получениясписка файлов по масиву ID

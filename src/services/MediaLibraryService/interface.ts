@@ -51,6 +51,7 @@ export type ProjectMediaFile = {
     project_id?: number
     title: string
     player_file_id: number
+    isFreeProjectFile?: boolean;                                //  This flag need to set is it free proect file
 }
 
 /**

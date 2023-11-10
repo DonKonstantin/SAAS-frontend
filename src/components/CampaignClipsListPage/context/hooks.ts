@@ -10,9 +10,8 @@ import {
   tablePage$,
   tableRows$,
 } from './context';
-import { ClipListItemType } from './types';
 import { SortType } from 'components/EditPageCustomFields/CampaignGroup/Channels/types';
-import { Campaign } from 'services/campaignListService/types';
+import { Campaign, CampaignPlayListFileType } from 'services/campaignListService/types';
 
 /**
  * Хук для доступа к контексту листинга роликов кампании
@@ -61,7 +60,7 @@ const useIsLocalLoading = () => {
 
 //  Строки таблицы
 const useTableRows = () => {
-  const [tableRows, setTableRows] = useState<ClipListItemType[]>([]);
+  const [tableRows, setTableRows] = useState<CampaignPlayListFileType[]>([]);
 
   useEffect(() => {
     const subscription = tableRows$

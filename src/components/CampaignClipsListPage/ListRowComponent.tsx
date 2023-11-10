@@ -1,19 +1,19 @@
 import React, { FC, memo } from "react";
 import { TableRow, TableCell, Tooltip, IconButton, Typography } from "@mui/material";
 import CheckBoxCell from "../List/CheckBoxCell";
-import { ClipListItemType } from "./context/types";
-import { isEqual } from "lodash";
 import PlayAudioButton from "components/AudioPlayeContainer/PlayAudioButton";
 import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import useCampaignClipsListPage from "./context/hooks";
+import { CampaignPlayListFileType } from "services/campaignListService/types";
+import { isEqual } from "lodash";
 
 type Props = {
-  row: ClipListItemType;
-  checkedItems: ClipListItemType[];
-  setChecked: (checkedItems: ClipListItemType[]) => void;
+  row: CampaignPlayListFileType;
+  checkedItems: CampaignPlayListFileType[];
+  setChecked: (checkedItems: CampaignPlayListFileType[]) => void;
 };
 
 /**
@@ -29,19 +29,10 @@ const ListRowComponent: FC<Props> = (props) => {
   } = props;
 
   const {
-    isActive,
-    isLast,
     file,
+    isFreeProjectFile,
     campaignName,
   } = row;
-
-  const {
-    file_name,
-    origin_name,
-    title,
-    last_change_date,
-    creation_date,
-  } = file.file;
 
   const { t } = useTranslation();
 
@@ -52,7 +43,19 @@ const ListRowComponent: FC<Props> = (props) => {
     },
   } = useCampaignClipsListPage();
 
-  const isChecked: boolean = !!checkedItems.find(item => isEqual(item, row));
+  if (!file) {
+    return null;
+  }
+
+  const {
+    file_name,
+    origin_name,
+    title,
+    last_change_date,
+    creation_date,
+  } = file;
+
+  const isChecked: boolean = !!isFreeProjectFile && !!checkedItems.find(item => isEqual(item, row));
 
   const onToggleItemCheckedState = () => {
     if (isChecked) {
@@ -61,12 +64,12 @@ const ListRowComponent: FC<Props> = (props) => {
       return
     }
 
-    setChecked([...checkedItems, row]);
+    setChecked([...checkedItems, row!]);
   };
 
   //  Обработчик удаления клипа
   const handleDeleteItems = async () => {
-    removeClips([row]);
+    removeClips([row.file.id!]);
   };
 
   //  Обработчик загрузки клипа
@@ -74,13 +77,8 @@ const ListRowComponent: FC<Props> = (props) => {
     downloadClip(file_name, origin_name);
   };
 
-  const isRemovable: boolean = !isActive || isLast;
-
   const removeButtonTooltip: string =
-    t(`campaign-clips-list.list.tooltip.delete-tooltip.${!isRemovable ? "removable" : isLast ? "blocked-as-last" : "blocked"}`);
-
-  const tooltipOnDisabledCheckbox: string =
-    t(`campaign-clips-list.list.tooltip.delete-tooltip.${isLast ? "blocked-as-last" : "blocked"}`);
+    t(`campaign-clips-list.list.tooltip.delete-tooltip.${isFreeProjectFile ? "removable" : "blocked"}`);
 
   return (
     <TableRow
@@ -90,9 +88,9 @@ const ListRowComponent: FC<Props> = (props) => {
       data-testid="listRow"
     >
       <CheckBoxCell
-        disabled={isRemovable}
+        disabled={!isFreeProjectFile}
         checked={isChecked}
-        tooltipOnDisabled={tooltipOnDisabledCheckbox}
+        tooltipOnDisabled={t("campaign-clips-list.list.tooltip.delete-tooltip.blocked")}
         onClick={onToggleItemCheckedState}
       />
 
@@ -115,7 +113,7 @@ const ListRowComponent: FC<Props> = (props) => {
       </TableCell>
 
       <TableCell sx={{ textAlign: 'center' }}>
-        {campaignName}
+        {campaignName || ""}
       </TableCell>
 
       <TableCell />
@@ -140,7 +138,7 @@ const ListRowComponent: FC<Props> = (props) => {
             <IconButton
               size="small"
               sx={{ mr: 2 }}
-              disabled={isRemovable}
+              disabled={!isFreeProjectFile}
               onClick={handleDeleteItems}
               data-testid="rowDeleteButton"
             >

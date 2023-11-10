@@ -9,8 +9,6 @@ import { notificationsDispatcher } from "services/notifications";
 import { campaignListService } from "services/campaignListService";
 import { LoadingButton } from "@mui/lab";
 import { prepareCampaignDataForStore } from "./helpers";
-import Modal from "@mui/material/Modal";
-import CopyCampaignPeriodModal from "./CopyCampaignPeriodModal";
 import Button from "@mui/material/Button";
 
 /**
@@ -28,7 +26,6 @@ const CampaignsActions: FC<ListHeaderProps> = ({
 
   const [publishLoading, setPublishLoading] = useState<boolean>(false);
   const [depublishLoading, setDepublishLoading] = useState<boolean>(false);
-  const [showCopyPeriodModal, setShowCopyPeriodModal] = useState<boolean>(false);
 
   const { reloadedListingData, data } = useEntityList(
     distinctUntilKeyChanged("data")
@@ -232,7 +229,6 @@ const CampaignsActions: FC<ListHeaderProps> = ({
         <Button
           variant="outlined"
           onClick={onCopyHandler}
-          // onClick={() => setShowCopyPeriodModal(true)}
           disabled={!selectedRows.length || publishLoading || depublishLoading}
           data-testid="copyCampaignButton"
         >
@@ -264,17 +260,6 @@ const CampaignsActions: FC<ListHeaderProps> = ({
           {t("pages.campaign.button.deselect")}
         </LoadingButton>
       </Tooltip>
-
-      <Modal
-        open={showCopyPeriodModal}
-        onClose={() => setShowCopyPeriodModal(false)}
-      >
-        <CopyCampaignPeriodModal
-          selectedCampaigns={selectedRows}
-          onClose={() => setShowCopyPeriodModal(false)}
-          reloadedListingData={reloadedListingData}
-        />
-      </Modal>
     </Stack>
   );
 };

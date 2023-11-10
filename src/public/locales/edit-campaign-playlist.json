@@ -39,7 +39,17 @@
         "clips-header": "Загруженные"
       },
       "empty-uploaded-track-row": "Нет загруженных треков",
-      "empty-track-row": "В плэйлисте еще нет треков"
+      "empty-track-row": "В плэйлисте еще нет треков",
+      "tooltip": {
+        "remove": {
+          "single": {
+            "disable": "Ролик используется"
+          },
+          "selected": {
+            "disable": "Среди выбраных есть используемый"
+          }
+        }
+      }
     },
     "error": {
       "required": "Поле обязательно к заполнению",

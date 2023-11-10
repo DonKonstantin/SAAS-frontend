@@ -2,8 +2,8 @@ import { CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTyp
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   filter,
-  interval,
   map,
   Observable,
   pairwise,
@@ -12,6 +12,7 @@ import {
   Subject,
   switchMap,
   tap,
+  timer,
   withLatestFrom,
 } from "rxjs";
 import { CampaignPlaylistConnect, CampaignPlayListFileType } from 'services/campaignListService/types';
@@ -25,7 +26,6 @@ import { isEqual, uniqBy } from 'lodash';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
-  // availableTabs: Tabs[] = [Tabs.tracks, Tabs.clips];
   availableTabs: Tabs[] = [Tabs.tracks, Tabs.clips];
   isEdit: boolean = false;
   projectId: string = "";
@@ -48,6 +48,25 @@ const addLoadedToPlaylist$ = new Subject<string[]>();
 const uploadedClips$ = new BehaviorSubject<string[]>([]);
 const isLoading$ = new BehaviorSubject<boolean>(false);
 
+//  Stream for fire removing not used in playlists project files by file IDs bus
+const removeClips$ = new Subject<string[]>();
+
+/**
+ * Removing not used in playlists project files by file IDs bus
+ */
+const removeClipsBus$ = removeClips$.pipe(
+  debounceTime(10),
+  tap(() => isLoading$.next(true)),
+  switchMap(async fileIds => {
+    try {
+      return await fileService().deleteProjectFilesByFileIds(fileIds);
+    } catch {
+      return 0;
+    }
+  }),
+  shareReplay(1),
+);
+
 //  шина проверки доступности в графе выгруженных клипов
 const checkUploadedFilesBus$ = combineLatest([
   uploadedClips$.pipe(
@@ -61,36 +80,44 @@ const checkUploadedFilesBus$ = combineLatest([
     startWith([]),
   ),
 
+  //  reloading clips after removing some clips from the server
+  removeClipsBus$.pipe(
+    //  reloading clips only if some clips was removed
+    filter(result => !!result),
+    startWith(0),
+  ),
+
   //  проверяем файлы каждые 5 секунд
-  interval(5000),
+  timer(0, 5000),
 ]).pipe(
-  // filter(incomingData => !!incomingData[1].length),
+  debounceTime(10),
   withLatestFrom(projectId$, playlist$),
   //  если плэйлит не подгружен в контекст или у него нет собственного плэйлиста останавливаем стрим
   filter(params => !!params[2]?.campaignPlaylist),
-  map(([[uploadedClips], projectId, playlist]) => ({
-    uploadedClips,
-    projectId,
-    playlist,
+  map((props) => ({
+    projectId: props[1],
+    playlist: props[2],
   })),
-  switchMap(async ({ uploadedClips, projectId, playlist }) => {
+  switchMap(async ({ projectId, playlist }) => {
     try {
       let projectFiles: ProjectMediaFile[] = [];
 
-      //  проверка свободных файлов проекта если есть загруженные файлы
-      if (!!uploadedClips.length) {
-        projectFiles = await fileService().getProjectFilesListByFileIds(uploadedClips);
-      }
+      //  проверка свободных файлов проекта
+      projectFiles = await fileService().getProjectFilesByProjectId(projectId);
       
       //  подгрузка всех файлов кампаний кроме текущей
       const campaigFiles = await projectListService().getCampaignsFiles(projectId, playlist!.id);
 
-      return [...projectFiles, ...campaigFiles];
+      //  Filter campaign files from project files to protect removing them from server
+      const filteredProjectFiles = projectFiles
+        .filter(file => campaigFiles.every(cFile => file.file_name !== cFile.file_name));        
+
+      return [...filteredProjectFiles, ...campaigFiles];
     } catch (error) {
       throw error;
     }
   }),
-  filter(files => !!files.length),
+  filter(files => !!files[0]?.origin_name?.length),
   shareReplay(1),
 );
 
@@ -242,7 +269,8 @@ const collectBus$: Observable<Pick<CampaignPlaylistEditContextTypes,
   | 'projectId'
   | 'loadedClips'
   | 'uploadedClips'
-  | 'isLoading'>> = combineLatest([
+  | 'isLoading'
+>> = combineLatest([
   playlist$,
   availableTabs$,
   isEdit$,
@@ -332,11 +360,10 @@ export const InitCampaignEditContext = () => {
         playlist_id: "",
         sort: finalLastSortNumber + index + 1,
         volume: 100,
+        isFreeProjectFile: !!clip.isFreeProjectFile,
       }));
 
-      const loadedClips = loadedClips$.getValue();
-
-      const preparedLoadedClips = uniqBy([...loadedClips, ...preparedClips], "file_id");
+      const preparedLoadedClips = uniqBy(preparedClips, "file_id");
 
       loadedClips$.next(preparedLoadedClips);
 
@@ -347,6 +374,11 @@ export const InitCampaignEditContext = () => {
       isLoading$.next(false);
     }
   ));
+
+  /**
+   * Removing not used in playlists project files by file names bus
+   */
+  subscriber.add(removeClipsBus$.subscribe());
 
   return () => subscriber.unsubscribe();
 };
@@ -496,6 +528,14 @@ const setIsLoading: CampaignPlaylistEditContextActionsTypes['setIsLoading'] = is
   isLoading$.next(isLoading);
 };
 
+/**
+ * Remove not using in playlists project files by file names
+ * @param fileNames
+ */
+const removeClips: CampaignPlaylistEditContextActionsTypes['removeClips'] = fileNames => {
+  removeClips$.next(fileNames);
+};
+
 export const campaignEditActions: CampaignPlaylistEditContextActionsTypes = {
   setPlaylist,
   clearContext,
@@ -504,6 +544,7 @@ export const campaignEditActions: CampaignPlaylistEditContextActionsTypes = {
   setIsEditable,
   moveTrack,
   removeTrack,
+  removeClips,
   setProjectId,
   removeLoadedFile,
   addLoadedToPlaylist,

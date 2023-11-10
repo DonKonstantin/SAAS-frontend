@@ -24,7 +24,7 @@ const PlayerSubRow: FC<Props> = ({ row }) => {
     <TableRow sx={{ height: '55px' }}>
       <TableCell width={48}/>
 
-      <TableCell>{row.channel.name}</TableCell>
+      <TableCell>{row.campaign.name}</TableCell>
 
       <TableCell sx={{ textAlign: "right", pr: 10 }}>{percent}</TableCell>
     </TableRow>

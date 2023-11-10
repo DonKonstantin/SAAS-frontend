@@ -1,5 +1,4 @@
 import { SortType } from "components/EditPageCustomFields/CampaignGroup/Channels/types";
-import { ClipListItemType } from "./types";
 
 /**
  * Интерфейс функций контекста листинга роликов проекта
@@ -10,7 +9,7 @@ export interface CampaignClipsListPageContextActionsType {
    * @param id
    * @returns
    */
-  setProjctId: (id: string) => void;
+  setProjctId: (id: string | null) => void;
 
   /**
    * Записываем параметры сортировки таблицы
@@ -43,7 +42,7 @@ export interface CampaignClipsListPageContextActionsType {
    * @param clips
    * @returns
    */
-  removeClips: (clips: ClipListItemType[]) => void;
+  removeClips: (clips: string[]) => void;
 
   /**
    * Скачиваем ролик

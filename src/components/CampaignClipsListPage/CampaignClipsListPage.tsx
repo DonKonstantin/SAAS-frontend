@@ -10,8 +10,9 @@ import TableCaption from "./TableCaption";
 import ListPagePagination from "./ListPagePagination";
 import DeleteDialog from "./DeleteDialog";
 import LoadingBlocker from "components/LoadingBlocker";
-import { ClipListItemType } from "./context/types";
 import { styled } from "@mui/system";
+import { CampaignPlayListFileType } from "services/campaignListService/types";
+import { xor } from "lodash";
 
 interface Props {
   projectId: string;
@@ -128,13 +129,13 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
   const limit = usePageLimit();
   const clipsCount = useClipsCount();
 
-  const [selected, setSelected] = useState<ClipListItemType[]>([]);
+  const [selected, setSelected] = useState<CampaignPlayListFileType[]>([]);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
 
   const onRemoveGroupeHandler = async () => {
     setIsDeleteDialogOpen(false);
 
-    removeClips(selected);
+    removeClips(selected.map(file => file.id!));
 
     setSelected([]);
   };
@@ -149,11 +150,28 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
 
   useEffect(() => {
     setProjctId(projectId);
+
+    return () => setProjctId(null);
   }, []);
 
   if (isLoading) {
     return <LoadingBlocker />;
   }
+
+  //  Handle drop selected if there are files from playlists
+  const setSelectedHandler = (selectedItems: CampaignPlayListFileType[]) => {
+    const filesIds: CampaignPlayListFileType[] = selectedItems
+      .filter(file => !!file.isFreeProjectFile);
+
+    if (!xor(filesIds.map(item => Number(item.file_id)), selected.map(item => Number(item.file_id))).length)
+    {
+      setSelected([]);
+
+      return
+    }
+
+    setSelected(filesIds);
+  };
 
   return (
     <>
@@ -181,7 +199,7 @@ const CampaignClipsListPage: FC<Props> = ({ projectId }) => {
             sort={sortParams}
             rowCellsComponent={ListRowComponent}
             setSort={setSortParams}
-            onChangeCheckedItems={setSelected}
+            onChangeCheckedItems={setSelectedHandler}
           />
 
           <StyledFooterWrapper>

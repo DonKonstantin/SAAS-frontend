@@ -2,6 +2,7 @@ import {
   Button,
   IconButton,
   Typography,
+  Tooltip,
 } from "@mui/material";
 import React, { FC, memo, useState } from "react";
 import DropDownBlock from "./DropDownBlock";
@@ -35,7 +36,7 @@ const Clips: FC = () => {
 
   const {
     loadedClips,
-    removeLoadedFile,
+    removeClips,
     addLoadedToPlaylist,
   } = useCampaignPlaylistEditContext(
     distinctUntilKeyChanged("loadedClips"),
@@ -46,7 +47,7 @@ const Clips: FC = () => {
   const messanger = notificationsDispatcher();
 
   const onDeleteTrackHandler = () => {
-    removeLoadedFile(selected);
+    removeClips(selected);
 
     setSelected([]);
   };
@@ -62,6 +63,15 @@ const Clips: FC = () => {
     setSelected([]);
   };
 
+  const isRemoveButtonDisabled: boolean = loadedClips
+    .filter(clip => selected.some(sClip => clip.file_id === sClip))
+    .some(filteredClip => !filteredClip.isFreeProjectFile);
+  
+
+  const removeTooltipText: string = !isRemoveButtonDisabled
+    ? ""
+    : t("edit-campaign-playlist.table.tooltip.remove.selected.disable");
+
   return (
     <>
       <DropDownBlock />
@@ -71,9 +81,13 @@ const Clips: FC = () => {
           {t("edit-campaign-playlist.table.header.clips-header")}
         </Typography>
 
-        <IconButton onClick={onDeleteTrackHandler} disabled={!selected.length}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title={removeTooltipText}>
+          <div>
+            <IconButton onClick={onDeleteTrackHandler} disabled={!selected.length || isRemoveButtonDisabled}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        </Tooltip>
       </StyledHeaderWrapper>
 
       <TrackTable rows={loadedClips} selected={selected} setSelected={setSelected} />

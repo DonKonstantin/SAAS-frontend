@@ -23,10 +23,10 @@ const ListBody: FC<Props> = (props) => {
 
   return (
     <TableBody>
-      {rows.map(row => (
+      {rows.map((row, index) => (
         <RowCellsComponent
           row={row}
-          key={row.id}
+          key={row.id + index}
           checkedItems={checkedItems}
           setChecked={onChangeCheckedItems}
         />

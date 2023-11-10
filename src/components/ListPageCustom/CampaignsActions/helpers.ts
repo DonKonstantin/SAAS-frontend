@@ -1,11 +1,6 @@
 import { Campaign, CampaignInput } from "services/campaignListService/types";
 
 export const prepareCampaignDataForStore = (campaign: Campaign): CampaignInput => {
-  const channels = campaign.channels.map((channel) => ({
-    id: Number(channel.id),
-    channel_id: Number(channel.channel_id),
-  }));
-
   const playlists = campaign.playlists.map((playlist) => ({
     projectPlaylistId: playlist.projectPlaylistId,
     playCounter: playlist.playCounter,
@@ -53,7 +48,7 @@ export const prepareCampaignDataForStore = (campaign: Campaign): CampaignInput =
     campaign_play_type: campaign.campaign_play_type,
     campaign_priority: campaign.campaign_priority,
     campaign_type: campaign.campaign_type,
-    channels,
+    channels: [],
     days: campaign.days.map((day) => ({
       day_num: day.day_num,
       is_active: day.is_active,
