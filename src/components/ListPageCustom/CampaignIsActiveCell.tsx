@@ -29,7 +29,7 @@ const CampaignIsActiveCell: FC<ListFieldProperties<SimpleValues>> = ({
 
   const row = rows.find((r) => r.primaryKeyValue === value.value)?.columnValues;
 
-  const channels = additionData.find(
+  const channels = additionData?.find(
     el => el.channels[0]?.campaign_id === value.value
   );
 
