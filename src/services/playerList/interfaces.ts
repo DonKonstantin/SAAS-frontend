@@ -41,7 +41,13 @@ export interface Channel {
 }
 
 export interface PlayerChannel {
-  channel: Channel;
+  channel: {
+    is_active: boolean;
+    name: string;
+  };
+  campaign: {
+    name: string;
+  };
   uploadingStatus: number;
 }
 

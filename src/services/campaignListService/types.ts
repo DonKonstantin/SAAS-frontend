@@ -127,8 +127,10 @@ export interface CampaignPlayListFileType {
   file_id: string;                                            //  Идентификатор файла из библиотеки проекта
   id?: string;                                                //  ID сущности
   playlist_id: string;                                        //  Идентификатор плейлиста, к которому относится файл
-  sort: number;                                               // Порядок сортировки
-  volume: number;                                             // Громкость звука файла в плейлисте
+  sort: number;                                               //  Порядок сортировки
+  volume: number;                                             //  Громкость звука файла в плейлисте
+  isFreeProjectFile?: boolean;                                //  This flag need to set is it free proect file
+  campaignName?: string;                                      //  Campaign name where file is used
 }
 
 //  Сущность файла проекта

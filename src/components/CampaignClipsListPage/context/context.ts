@@ -7,27 +7,26 @@ import {
   filter,
   map,
   merge,
+  pairwise,
   shareReplay,
   startWith,
   switchMap,
   tap,
-  withLatestFrom,
+  timer,
 } from "rxjs";
 import { CampaignClipsListPageContextActionsType } from "./interface";
 import { campaignListService } from "services/campaignListService";
-import { ClipListItemType, DownloadClipPropsType, RequestErrorResponse } from "./types";
-import { ProjectPlayListFile } from "services/projectPlaylistService/interfaces";
-import { Campaign, CampaignPlayList, CampaignPlayListFileType, CampaignPlaylistConnect, Project_PlayList } from "services/campaignListService/types";
+import { DownloadClipPropsType, RequestErrorResponse } from "./types";
+import { Campaign, CampaignPlayListFileType } from "services/campaignListService/types";
 import { SortType } from "components/EditPageCustomFields/CampaignGroup/Channels/types";
-import { groupBy, isNull } from "lodash";
-import projectPlaylistService from "services/projectPlaylistService";
-import campaignPlaylistService from "services/campaignPlaylistService";
 import { notificationsDispatcher } from "services/notifications";
 import i18n from "i18n";
-import { getCurrentState } from "context/AuthorizationContext";
 import mediaFileClient from "services/MediaFileClient";
+import { fileService } from "services/FileService";
+import { ProjectMediaFile } from "services/MediaLibraryService/interface";
+import { isNull, xor } from "lodash";
 
-const productId$ = new Subject<string>();
+const projectId$ = new Subject<string | null>();
 const reloadListData$ = new Subject<void>();
 export const sortStream$ = new BehaviorSubject<SortType>({
   column: 'name',
@@ -36,19 +35,28 @@ export const sortStream$ = new BehaviorSubject<SortType>({
 export const tablePage$ = new BehaviorSubject<number>(0);
 export const rowsPerPage$ = new BehaviorSubject<number>(10);
 
-const removeClips$ = new Subject<ClipListItemType[]>();
+const removeClips$ = new Subject<string[]>();
 const downloadClip$ = new Subject<DownloadClipPropsType>();
+
+const loadListDataProps$ = combineLatest([
+  projectId$.pipe(startWith(null)),
+
+  timer(0, 5000),
+
+  reloadListData$.pipe(startWith(undefined)),
+]).pipe(
+  debounceTime(10),
+  filter(([projectId]) => !isNull(projectId)),
+  map(([projectId]) => projectId),
+);
 
 /**
  * Шина загрузки кампаний
  */
-const loadingProjectCampaignsBus$ = combineLatest([
-  productId$,
-  reloadListData$.pipe(startWith(undefined)),
-]).pipe(
-  switchMap(async ([projectId]) => {
+const loadingProjectCampaignsBus$ = loadListDataProps$.pipe(
+  switchMap(async projectId => {
     try {
-      return await campaignListService().getCampaignsByProjectId(projectId);
+      return await campaignListService().getCampaignsByProjectId(projectId!);
     } catch (errorObject) {
       return { error: String(errorObject) } as RequestErrorResponse;
     }
@@ -67,37 +75,129 @@ export const allCampaigns$: Observable<Campaign[]> = loadingProjectCampaignsBus$
 /**
  * Подготовленный масив роликов
  */
-const clips$ = allCampaigns$.pipe(
+const campaignsClips$ = allCampaigns$.pipe(
   map(campaigns => campaigns.flatMap(campaign => campaign.playlists.map(playlist => ({
     playlist: playlist,
     campaignName: campaign.name,
   })))),
   map(playlists => {
-    const result: ClipListItemType[] = playlists.map(({ playlist, campaignName }) => {
-      const startPeriod = new Date(playlist.periodStart).getTime();
-      const endPeriod = new Date(playlist.periodStop).getTime();
-      const now: number = new Date().getTime();
-  
-      const isActive: boolean = startPeriod - now < 0 && now - endPeriod < 0;
-
-      const campaignPlaylistsFiles: CampaignPlayListFileType[] = playlist.campaignPlaylist?.files || [];
-
-      const preparedCampignsPlaylistsFiles: ClipListItemType[] = campaignPlaylistsFiles.map(file => ({
-        isActive,
-        campaignId: playlist.campaignId,
-        playlistId: playlist.campaignPlaylist?.id || "",
-        isProject: false,
-        file,
-        isLast: campaignPlaylistsFiles.length === 1,
+    const result: CampaignPlayListFileType[] = playlists.map(({ playlist, campaignName }) => {
+      const campaignPlaylistsFiles: CampaignPlayListFileType[] = playlist.campaignPlaylist?.files
+      .map(file => ({
+        file: file.file,
+        file_id: file.file_id,
+        id: file.id,
+        playlist_id: file.playlist_id,
+        sort: file.sort,
+        volume: file.volume,
+        isFreeProjectFile: false,
         campaignName,
-      }));
+      })) || [];
 
-      return preparedCampignsPlaylistsFiles as ClipListItemType[];
+      return campaignPlaylistsFiles as CampaignPlayListFileType[];
     }).flat(1);
 
     return result;
   }),
   shareReplay(1),
+);
+
+/**
+ * Removing not used in playlists project files by file IDs bus
+ */
+const removeClipsBus$ = removeClips$.pipe(
+  debounceTime(10),
+  switchMap(async fileIds => {
+    try {
+      return await fileService().deleteProjectFilesByFileIds(fileIds);
+    } catch {
+      return 0;
+    }
+  }),
+  tap(result => {
+    if (!!result) {
+      return
+    }
+
+    notificationsDispatcher().dispatch({
+      message: i18n.t("campaign-clips-list.error.remove-clips"),
+      type: "error",
+    });
+  }),
+  tap((result) => {
+    if (!result) {
+      return
+    }
+
+    notificationsDispatcher().dispatch({
+      message: result === 1
+        ? i18n.t("campaign-clips-list.success.remove-clip")
+        : i18n.t("campaign-clips-list.success.remove-clips", { amount: result }),
+      type: "success",
+    });
+  }),
+  shareReplay(1),
+);
+
+/**
+ * Bus for loading free project files
+ */
+const loadProjectFilesBus$ = combineLatest([
+  loadListDataProps$,
+  removeClipsBus$.pipe(
+    filter(result => !!result),
+    startWith(undefined),
+  ),
+]).pipe(
+  map(([loadListDataProps]) => loadListDataProps),
+  switchMap(async projectId => {
+    try {
+      return await fileService().getProjectFilesByProjectId(projectId!);
+    } catch (errorObject) {
+      return { error: String(errorObject) } as RequestErrorResponse;
+    }
+  }),
+  shareReplay(1),
+);
+
+/**
+ * Loaded project files
+ */
+const loadedProjectFiles$: Observable<CampaignPlayListFileType[]> = loadProjectFilesBus$.pipe(
+  filter(response => !(response as RequestErrorResponse)?.error && !!response),
+  map(response => response as ProjectMediaFile[]),
+  map(files => files.map(file => ({
+    file: file as any,
+    file_id: file.id || "0",
+    id: file.id,
+    playlist_id: "",
+    sort: 0,
+    volume: 0,
+    isFreeProjectFile: true,
+  })) as CampaignPlayListFileType[]),
+);
+
+/**
+ * Combine clips from the project files and from campaigns
+ */
+const clips$ = combineLatest([
+  loadedProjectFiles$,
+  campaignsClips$,
+]).pipe(
+  map(([projectFiles, campaignsClips]) => {
+    //  Filter campaign files from project files to protect removing them from server
+    const filteredProjectFiles = projectFiles
+    .filter(file => campaignsClips.every(cFile => file.file.file_name !== cFile.file.file_name));
+
+    return [...campaignsClips, ...filteredProjectFiles] as CampaignPlayListFileType[];
+  }),
+  filter(clips => !!clips),
+  startWith([]),
+  pairwise(),
+  filter(([prev, curr]) =>
+    !xor(prev.map(item => Number(item.file_id)), curr.map(item => Number(item.file_id))).length
+  ),
+  map(values => values[1]),
 );
 
 /**
@@ -107,14 +207,14 @@ export const sortedClips$ = combineLatest([
   clips$,
   sortStream$,
 ]).pipe(
-  map(([clips, sortParams]) => ({ clips, sortParams })),
+  map(([clips, sortParams]) => ({ clips: clips as CampaignPlayListFileType[], sortParams })),
   map(({ clips, sortParams }) => clips.sort((a, b) => {
     const aValue = sortParams.column === 'name'
-      ? a.file.file.origin_name
-      : new Date(a.file.file.creation_date || a.file.file.last_change_date).getTime();
+      ? a.file.origin_name
+      : new Date(a.file.creation_date || a.file.last_change_date).getTime();
     const bValue = sortParams.column === 'name'
-      ? b.file.file.origin_name
-      : new Date(b.file.file.creation_date || b.file.file.last_change_date).getTime();
+      ? b.file.origin_name
+      : new Date(b.file.creation_date || b.file.last_change_date).getTime();
 
     if (sortParams.direction === "asc") {
       return sortParams.column === 'name' 
@@ -133,7 +233,7 @@ export const sortedClips$ = combineLatest([
 /**
  * Строки таблицы для отрисовки
  */
-export const tableRows$: Observable<ClipListItemType[]> = combineLatest([
+export const tableRows$: Observable<CampaignPlayListFileType[]> = combineLatest([
   sortedClips$,
   merge(
     sortStream$.pipe(map(() => 0)),
@@ -144,132 +244,8 @@ export const tableRows$: Observable<ClipListItemType[]> = combineLatest([
 ]).pipe(
   debounceTime(100),
   map(([clips, pagination, rowsPerPage]) => ({ clips, pagination, rowsPerPage })),
-  map(({ clips, pagination, rowsPerPage }) => clips.slice(pagination, pagination + rowsPerPage)),
+  map(({ clips, pagination, rowsPerPage }) => clips.slice(pagination * rowsPerPage, (pagination + 1) * rowsPerPage)),
   shareReplay(1),
-);
-
-/**
- * Шина удаления роликов
- */
-const removeClipsBus$ = removeClips$.pipe(
-  withLatestFrom(allCampaigns$),
-  map(([removeingClips, campaigns]) => {
-    const { project } = getCurrentState();
-
-    return {
-      removeingClips,
-      campaigns,
-      projectId: Number(project),
-    };
-  }),
-  map(({ removeingClips, campaigns, projectId }) => {
-    const groupedClips = groupBy(removeingClips, clip => clip.playlistId);
-
-    const result = Object.entries(groupedClips).map(([playlistId, clips]) => {
-      const campaign: Campaign | undefined = campaigns.find(camp => camp.id === clips[0].campaignId);
-
-      if (!campaign) {
-        return null;
-      }
-      
-      const campaignPlaylist: CampaignPlaylistConnect | undefined =
-        campaign.playlists
-          .find(playlist => playlist[clips[0].isProject ? "projectPlaylist" : "campaignPlaylist"]?.id === playlistId);
-    
-      if (!campaignPlaylist) {
-        return null;
-      }
-
-      const currentPlaylist: Project_PlayList | CampaignPlayList | undefined =
-        campaignPlaylist[clips[0].isProject ? "projectPlaylist" : "campaignPlaylist"];
-
-      if (!currentPlaylist) {
-        return null;
-      }
-
-      const playlistFiles: (ProjectPlayListFile | CampaignPlayListFileType)[] =
-        (currentPlaylist.files as any[]).filter(file => clips.every(clip => clip.file.file_id !== file.file_id));
-
-      const playlist = { 
-        files:
-          playlistFiles.map((file) => ({
-            id: Number(file.id),
-            fileId: Number(file.file_id),
-            volume: file.volume,
-            sort: file.sort,
-          })),
-        projectId,
-        name: currentPlaylist.name,
-        isOverallVolume: currentPlaylist.is_overall_volume,
-        overallVolume: currentPlaylist.overall_volume,
-        campaignId: Number(clips[0].campaignId),
-        id: Number(playlistId),
-      };
-
-      if (!!clips[0].isProject) {
-        //@ts-ignore
-        delete playlist["campaignId"]
-      }
-
-      return {
-        playlist,
-        clipNames: clips.map(clip => clip.file.file.origin_name),
-        isProject: clips[0].isProject,
-      };
-    });
-
-    return result;
-  }),
-  map(items => items.filter(item => !isNull(item))),
-  switchMap(async (items) => {
-    let successI: number = 0;
-    const rejectedArray: string[] = [];
-
-    for (const playlist of items) {
-      const removeMethod = playlist?.isProject 
-        ? projectPlaylistService
-        : campaignPlaylistService;
-
-      try {
-        await removeMethod()[playlist?.isProject ? "storePlaylistChanges" : "storeCampaignPlaylist"](playlist!.playlist);
-
-        successI += playlist!.clipNames.length;
-      } catch (error) {
-        rejectedArray.push(...playlist!.clipNames);
-      }
-    }
-
-    return {
-      successI,
-      rejectedArray,
-    };
-  }),
-  tap(({ rejectedArray }) => {
-    if (!rejectedArray.length) {
-      return
-    }
-
-    for (let clipName of rejectedArray) {
-      notificationsDispatcher().dispatch({
-        message: i18n.t("campaign-clips-list.error.remove-clips", { name: clipName } ),
-        type: "error",
-      });
-    }
-  }),
-  tap(({ successI }) => {
-    if (!successI) {
-      return
-    }
-
-    notificationsDispatcher().dispatch({
-      message: successI === 1
-        ? i18n.t("campaign-clips-list.success.remove-clip")
-        : i18n.t("campaign-clips-list.success.remove-clips", { amount: successI }),
-      type: "success",
-    });
-
-    reloadListData();
-  }),
 );
 
 /**
@@ -314,13 +290,13 @@ const downloadClipBus$ = downloadClip$.pipe(
 export const isLoading$ = combineLatest([
   //  Загрузка кампаний проекта
   merge(
-    productId$.pipe(map(() => ({ loadingProjectCampaigns: true }))),
+    projectId$.pipe(map(() => ({ loadingProjectCampaigns: true }))),
     loadingProjectCampaignsBus$.pipe(map(() => ({ loadingProjectCampaigns: false }))),
   ).pipe(startWith({ loadingProjectCampaigns: false })),
 
   //  Подготовка строк таблицы
   merge(
-    loadingProjectCampaignsBus$.pipe(map(() => ({ prepareRows: true }))),
+    projectId$.pipe(map(() => ({ prepareRows: true }))),
     clips$.pipe(map(() => ({ prepareRows: false }))),
   ).pipe(startWith({ prepareRows: false })),
 ]).pipe(
@@ -334,15 +310,12 @@ export const isLoading$ = combineLatest([
 export const isLocalLoading$: Observable<boolean> = combineLatest([
   //  Обработка сортировки строк таблицы
   merge(
-    clips$.pipe(map(() => ({ sortRows: true }))),
     sortStream$.pipe(map(() => ({ sortRows: true }))),
     sortedClips$.pipe(map(() => ({ sortRows: false }))),
   ).pipe(startWith({ sortRows: false })),
 
   //  Обработка пагинации таблицы
   merge(
-    sortedClips$.pipe(map(() => ({ paginateRows: true }))),
-    sortStream$.pipe(map(() => ({ paginateRows: true }))),
     rowsPerPage$.pipe(map(() => ({ paginateRows: true }))),
     tableRows$.pipe(map(() => ({ paginateRows: false }))),
   ).pipe(startWith({ paginateRows: false })),
@@ -368,7 +341,7 @@ export const isLocalLoading$: Observable<boolean> = combineLatest([
  * @param projctId
  */
 const setProjctId: CampaignClipsListPageContextActionsType['setProjctId'] = projctId => {
-  productId$.next(projctId);
+  projectId$.next(projctId);
 };
 
 /**

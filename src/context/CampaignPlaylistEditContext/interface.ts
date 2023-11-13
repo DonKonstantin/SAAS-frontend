@@ -47,6 +47,12 @@ export interface CampaignPlaylistEditContextActionsTypes {
   removeTrack: (fileId: string) => void;
 
   /**
+   * Remove not used in playlists project files by file names
+   * @param fileId
+   */
+  removeClips: (fileNames: string[]) => void;
+
+  /**
    * Записывает значение projectId
    */
   setProjectId: (projectId: string) => void;

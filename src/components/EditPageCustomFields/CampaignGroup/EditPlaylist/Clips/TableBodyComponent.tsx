@@ -1,4 +1,4 @@
-import React, { FC, memo } from "react";
+import React, { FC } from "react";
 import { CampaignPlayListFileType } from "services/campaignListService/types";
 import { TableBody } from "@mui/material";
 import ClipsTableRow from "./ClipsTableRow";
@@ -21,7 +21,7 @@ const TableBodyComponent: FC<Props> = ({ rows, selected, setSelected }) => {
       {!!rows.length &&
         rows.map((row) => (
           <ClipsTableRow
-            key={row.id}
+            key={row.file.file_name}
             row={row}
             selected={selected}
             setSelected={setSelected}
@@ -32,4 +32,4 @@ const TableBodyComponent: FC<Props> = ({ rows, selected, setSelected }) => {
   );
 };
 
-export default memo(TableBodyComponent);
+export default TableBodyComponent;

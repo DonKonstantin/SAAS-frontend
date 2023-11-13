@@ -15,20 +15,16 @@ export interface FileServiceInterface {
    * @param fileIds
    */
   getProjectFilesListByFileIds(fileIds: string[]): Promise<ProjectMediaFile[]>;
-}
 
-export interface GetFilesListByFileIdsQueryParams {
-  fileIds: string[];
-}
+  /**
+   * Get project files by project id
+   * @param projectsId
+   */
+  getProjectFilesByProjectId(projectsId: string): Promise<ProjectMediaFile[]>;
 
-export interface GetFilesListByFileIdsQueryResponse {
-  files: MediaFile[];
-}
-
-export interface GetProjectFilesListByFileIdsQueryParams {
-  fileIds: string[];
-}
-
-export interface GetProjectFilesListByFileIdsQueryResponse {
-  result: ProjectMediaFile[];
+  /**
+   * Delete project files by file IDs
+   * @param fileIds
+   */
+  deleteProjectFilesByFileIds(fileIds: string[]): Promise<number>;
 }

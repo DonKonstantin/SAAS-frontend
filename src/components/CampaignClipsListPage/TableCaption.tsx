@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from "react-i18next";
-import { ClipListItemType } from "./context/types";
+import { CampaignPlayListFileType } from "services/campaignListService/types";
 
 export type ListHeaderProps = {
-  checkedItems: ClipListItemType[];
+  checkedItems: CampaignPlayListFileType[];
   isLoading: boolean;
   header: string;
   onRemoveGroupe: VoidFunction;

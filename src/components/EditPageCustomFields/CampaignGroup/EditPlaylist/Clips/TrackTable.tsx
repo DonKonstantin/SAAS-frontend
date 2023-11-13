@@ -1,4 +1,4 @@
-import React, { FC, memo, useState } from "react";
+import React, { FC, useState } from "react";
 import { Table, TableContainer } from "@mui/material";
 import TableHeader from "./TableHeader";
 import TableBodyComponent from "./TableBodyComponent";
@@ -30,6 +30,7 @@ const TrackTable: FC<Props> = ({ rows, selected, setSelected }) => {
           sort={sort}
           setSort={setSort}
         />
+
         <TableBodyComponent
           rows={rows}
           selected={selected}
@@ -40,4 +41,4 @@ const TrackTable: FC<Props> = ({ rows, selected, setSelected }) => {
   );
 };
 
-export default memo(TrackTable);
+export default TrackTable;

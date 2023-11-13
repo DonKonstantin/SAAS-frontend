@@ -34,8 +34,11 @@ export class GetCampaignsQuery
         id
         campaigns {
           channel {
-            name
             is_active
+            name
+          }
+          campaign {
+            name
           }
           uploadingStatus
         }
