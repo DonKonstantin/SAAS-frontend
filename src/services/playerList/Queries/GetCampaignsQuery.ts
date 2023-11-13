@@ -35,6 +35,7 @@ export class GetCampaignsQuery
         campaigns {
           channel {
             is_active
+            name
           }
           campaign {
             name

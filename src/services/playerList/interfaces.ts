@@ -43,6 +43,7 @@ export interface Channel {
 export interface PlayerChannel {
   channel: {
     is_active: boolean;
+    name: string;
   };
   campaign: {
     name: string;
