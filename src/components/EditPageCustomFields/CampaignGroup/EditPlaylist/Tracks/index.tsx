@@ -139,11 +139,11 @@ const Tracks: FC<Props> = ({ storePlaylist, setTab, onSubmitCampaign }) => {
     try {
       let preparedToStorePlaylist: CampaignPlayListInput = {
         files:
-          playlist[playlistType]?.files.map((file) => ({
+          playlist[playlistType]?.files.map((file, index) => ({
             id: Number(file.id),
             fileId: Number(file.file_id),
             volume: file.volume,
-            sort: file.sort,
+            sort: index + 1,
           })) || [],
         projectId: Number(projectId),
         name: formData.name,

@@ -103,7 +103,12 @@ const checkUploadedFilesBus$ = combineLatest([
       let projectFiles: ProjectMediaFile[] = [];
 
       //  проверка свободных файлов проекта
-      projectFiles = await fileService().getProjectFilesByProjectId(projectId);
+      projectFiles = await fileService().getProjectFilesByProjectId(
+          projectId,
+          1000,
+          0,
+          {}
+        );
       
       //  подгрузка всех файлов кампаний кроме текущей
       const campaigFiles = await projectListService().getCampaignsFiles(projectId, playlist!.id);
@@ -116,6 +121,16 @@ const checkUploadedFilesBus$ = combineLatest([
     } catch (error) {
       throw error;
     }
+  }),
+  //  removing from loaded files list almost exists in playlist
+  withLatestFrom(playlist$),
+  map(([loadedClips, playlist]) => {
+    const playlistFiles = [...playlist?.campaignPlaylist?.files || [], ...playlist?.projectPlaylist?.files || []];
+
+    const filteredClips: ProjectMediaFile[] = loadedClips
+      .filter(loadedClip => playlistFiles.every(projectFile => projectFile.file.file_name !== loadedClip.file_name));
+
+    return filteredClips;
   }),
   filter(files => !!files[0]?.origin_name?.length),
   shareReplay(1),
