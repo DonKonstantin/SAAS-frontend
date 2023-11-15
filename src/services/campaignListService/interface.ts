@@ -2,7 +2,7 @@ import {
   CampaignChannels,
   ProjectChannel,
 } from "services/playerCodeService/interfaces";
-import { Campaign, CampaignInput } from "./types";
+import { Campaign, CampaignInput, CampaignPlayListFileType } from "./types";
 
 export interface CampaignListServiceInterface {
   /**
@@ -55,6 +55,13 @@ export interface CampaignListServiceInterface {
    * @returns
    */
   getCampaignsByProjectId: (projectId: string) => Promise<Campaign[]>;
+
+  /**
+   * Getting campaign playlists files by campaign project ID
+   * @param projectId
+   * @returns
+   */
+  getCampaignsPlaylistsByProjectId: (projectId: string) => Promise<CampaignFileWithCampaignName[]>;
 }
 
 export type GetAvailableChannelsQueryQueryParams = {
@@ -124,4 +131,22 @@ export type GetCampaignsByProjectIdParams = {
 };
 export type GetCampaignsByProjectIdResponse = {
   campaigns: Campaign[];
+};
+
+export type GetCampaignsPlaylistsByProjectIdParams = {
+  projectId: string;
+};
+export type GetCampaignsPlaylistsByProjectIdResponse = {
+  campaigns: {
+    name: string;
+    playlists: {
+      campaignPlaylist?: {
+        files: CampaignPlayListFileType[];
+      };
+    }[];
+  }[];
+};
+export type CampaignFileWithCampaignName = {
+  campaignName: string;
+  files: CampaignPlayListFileType[];
 };

@@ -17,7 +17,7 @@ import {
 import { CampaignClipsListPageContextActionsType } from "./interface";
 import { campaignListService } from "services/campaignListService";
 import { DownloadClipPropsType, RequestErrorResponse } from "./types";
-import { Campaign, CampaignPlayListFileType } from "services/campaignListService/types";
+import { CampaignPlayListFileType } from "services/campaignListService/types";
 import { SortType } from "components/EditPageCustomFields/CampaignGroup/Channels/types";
 import { notificationsDispatcher } from "services/notifications";
 import i18n from "i18n";
@@ -25,11 +25,12 @@ import mediaFileClient from "services/MediaFileClient";
 import { fileService } from "services/FileService";
 import { ProjectMediaFile } from "services/MediaLibraryService/interface";
 import { isNull, xor } from "lodash";
+import { CampaignFileWithCampaignName } from "services/campaignListService/interface";
 
 const projectId$ = new Subject<string | null>();
 const reloadListData$ = new Subject<void>();
 export const sortStream$ = new BehaviorSubject<SortType>({
-  column: 'name',
+  column: 'origin_name',
   direction: 'asc',
 });
 export const tablePage$ = new BehaviorSubject<number>(0);
@@ -47,16 +48,20 @@ const loadListDataProps$ = combineLatest([
 ]).pipe(
   debounceTime(10),
   filter(([projectId]) => !isNull(projectId)),
-  map(([projectId]) => projectId),
+  map(([projectId, rowsPerPage, tablePage]) => ({
+    projectId,
+    rowsPerPage,
+    tablePage,
+  })),
 );
 
 /**
  * Шина загрузки кампаний
  */
 const loadingProjectCampaignsBus$ = loadListDataProps$.pipe(
-  switchMap(async projectId => {
+  switchMap(async ({ projectId }) => {
     try {
-      return await campaignListService().getCampaignsByProjectId(projectId!);
+      return await campaignListService().getCampaignsPlaylistsByProjectId(projectId!);
     } catch (errorObject) {
       return { error: String(errorObject) } as RequestErrorResponse;
     }
@@ -67,22 +72,18 @@ const loadingProjectCampaignsBus$ = loadListDataProps$.pipe(
 /**
  * Загруженные кампании
  */
-export const allCampaigns$: Observable<Campaign[]> = loadingProjectCampaignsBus$.pipe(
+const loadedCampaignsClips$: Observable<CampaignFileWithCampaignName[]> = loadingProjectCampaignsBus$.pipe(
   filter(response => !(response as RequestErrorResponse)?.error && !!response),
-  map(response => response as Campaign[]),
+  map(response => response as CampaignFileWithCampaignName[]),
 );
 
 /**
  * Подготовленный масив роликов
  */
-const campaignsClips$ = allCampaigns$.pipe(
-  map(campaigns => campaigns.flatMap(campaign => campaign.playlists.map(playlist => ({
-    playlist: playlist,
-    campaignName: campaign.name,
-  })))),
+const campaignsClips$ = loadedCampaignsClips$.pipe(
   map(playlists => {
-    const result: CampaignPlayListFileType[] = playlists.map(({ playlist, campaignName }) => {
-      const campaignPlaylistsFiles: CampaignPlayListFileType[] = playlist.campaignPlaylist?.files
+    const result: CampaignPlayListFileType[] = playlists.map(({ files, campaignName }) => {
+      const campaignPlaylistsFiles: CampaignPlayListFileType[] = files
       .map(file => ({
         file: file.file,
         file_id: file.file_id,
@@ -92,7 +93,7 @@ const campaignsClips$ = allCampaigns$.pipe(
         volume: file.volume,
         isFreeProjectFile: false,
         campaignName,
-      })) || [];
+      }));
 
       return campaignPlaylistsFiles as CampaignPlayListFileType[];
     }).flat(1);
@@ -140,19 +141,62 @@ const removeClipsBus$ = removeClips$.pipe(
 );
 
 /**
+ * The bus for aggregate project files list
+ */
+const loadProjectListAggregationBus$ = loadListDataProps$.pipe(
+  switchMap(async ({ projectId }) => {
+    try {
+      const [{ count }] = await fileService().getProjectFilesByProjectIdAggregate(projectId!);
+      
+      return count;
+    } catch (errorObject) {
+      return { error: String(errorObject) } as RequestErrorResponse;
+    }
+  }),
+  shareReplay(1),
+);
+
+/**
+ * Loaded project files list aggregation
+ */
+export const loadedProjectListAggregation$: Observable<number> = loadProjectListAggregationBus$.pipe(
+  filter(response => !(response as RequestErrorResponse)?.error && !!response),
+  map(response => response as number),
+);
+
+/**
  * Bus for loading free project files
  */
 const loadProjectFilesBus$ = combineLatest([
   loadListDataProps$,
+  
+  rowsPerPage$,
+
+  tablePage$,
+
+  sortStream$,
+
   removeClipsBus$.pipe(
     filter(result => !!result),
     startWith(undefined),
   ),
 ]).pipe(
-  map(([loadListDataProps]) => loadListDataProps),
-  switchMap(async projectId => {
+  debounceTime(10),
+  map(([{ projectId }, rowsPerPage, tablePage, sort]) => ({ projectId, rowsPerPage, tablePage, sort })),
+  switchMap(async ({ projectId, rowsPerPage, tablePage, sort }) => {
+    const offset: number = tablePage * rowsPerPage;
+
     try {
-      return await fileService().getProjectFilesByProjectId(projectId!);
+      return await fileService().getProjectFilesByProjectId(
+        projectId!,
+        rowsPerPage,
+        offset,
+        [{
+          direction: sort.direction,
+          priority: 1,
+          by: sort.column,
+        }]
+      );
     } catch (errorObject) {
       return { error: String(errorObject) } as RequestErrorResponse;
     }
@@ -180,70 +224,33 @@ const loadedProjectFiles$: Observable<CampaignPlayListFileType[]> = loadProjectF
 /**
  * Combine clips from the project files and from campaigns
  */
-const clips$ = combineLatest([
+export const clips$ = combineLatest([
   loadedProjectFiles$,
   campaignsClips$,
 ]).pipe(
   map(([projectFiles, campaignsClips]) => {
     //  Filter campaign files from project files to protect removing them from server
     const filteredProjectFiles = projectFiles
-    .filter(file => campaignsClips.every(cFile => file.file.file_name !== cFile.file.file_name));
+    .map(file => {
+      const campaignName = campaignsClips
+        .filter(clip => file.file.file_name === clip.file.file_name)
+        .map(file => file.campaignName)
+        .join(", ");
 
-    return [...campaignsClips, ...filteredProjectFiles] as CampaignPlayListFileType[];
+      return {
+        ...file,
+        isFreeProjectFile: campaignsClips.every(cFile => file.file.file_name !== cFile.file.file_name),
+        campaignName,
+      };
+    });
+
+    return [...filteredProjectFiles] as CampaignPlayListFileType[];
   }),
   filter(clips => !!clips),
   startWith([]),
   pairwise(),
   filter(([prev, curr]) => !!xor(prev.map(item => Number(item.file_id)), curr.map(item => Number(item.file_id))).length),
   map(values => values[1]),
-);
-
-/**
- * Сортировка строк таблицы
- */
-export const sortedClips$ = combineLatest([
-  clips$,
-  sortStream$,
-]).pipe(
-  map(([clips, sortParams]) => ({ clips: clips as CampaignPlayListFileType[], sortParams })),
-  map(({ clips, sortParams }) => clips.sort((a, b) => {
-    const aValue = sortParams.column === 'name'
-      ? a.file.origin_name
-      : new Date(a.file.creation_date || a.file.last_change_date).getTime();
-    const bValue = sortParams.column === 'name'
-      ? b.file.origin_name
-      : new Date(b.file.creation_date || b.file.last_change_date).getTime();
-
-    if (sortParams.direction === "asc") {
-      return sortParams.column === 'name' 
-        ? (bValue as string).localeCompare(aValue as string) 
-        : Number(bValue) - Number(aValue);
-    }
-
-    return sortParams.column === 'name' 
-        ? (aValue as string).localeCompare(bValue as string) 
-        : Number(aValue) - Number(bValue);
-  })),
-  shareReplay(1),
-  tap(() => tablePage$.next(0)),
-);
-
-/**
- * Строки таблицы для отрисовки
- */
-export const tableRows$: Observable<CampaignPlayListFileType[]> = combineLatest([
-  sortedClips$,
-  merge(
-    sortStream$.pipe(map(() => 0)),
-    rowsPerPage$.pipe(map(() => 0)),
-    tablePage$,
-  ),
-  rowsPerPage$,
-]).pipe(
-  debounceTime(100),
-  map(([clips, pagination, rowsPerPage]) => ({ clips, pagination, rowsPerPage })),
-  map(({ clips, pagination, rowsPerPage }) => clips.slice(pagination * rowsPerPage, (pagination + 1) * rowsPerPage)),
-  shareReplay(1),
 );
 
 /**
@@ -309,13 +316,13 @@ export const isLocalLoading$: Observable<boolean> = combineLatest([
   //  Обработка сортировки строк таблицы
   merge(
     sortStream$.pipe(map(() => ({ sortRows: true }))),
-    sortedClips$.pipe(map(() => ({ sortRows: false }))),
+    loadProjectFilesBus$.pipe(map(() => ({ sortRows: false }))),
   ).pipe(startWith({ sortRows: false })),
 
   //  Обработка пагинации таблицы
   merge(
     rowsPerPage$.pipe(map(() => ({ paginateRows: true }))),
-    tableRows$.pipe(map(() => ({ paginateRows: false }))),
+    loadProjectFilesBus$.pipe(map(() => ({ paginateRows: false }))),
   ).pipe(startWith({ paginateRows: false })),
 
   //  Удаление файлов с сервера

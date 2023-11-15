@@ -19,9 +19,13 @@ import {
   GetProjectFilesListByFileIdsQueryResponse,
   GetProjectFilesListByProjectIdQueryParams,
   GetProjectFilesListByProjectIdQueryResponse,
+  ProjectFileListAggregation,
+  ProjectFilesListByProjectIdAggregateQueryParams,
+  ProjectFilesListByProjectIdAggregateQueryResponse,
 } from "./types";
 import GetProjectFilesListByProjectIdQuery from "./Queries/getProjectFilesListByProjectIdQuery";
 import DeleteProjectFilesByFileNames from "./Mutations/deleteProjectFileByFileIds";
+import GetProjectFilesListByProjectIdAggregateQuery from "./Queries/getProjectFilesListByProjectIdAggregateQuery";
 
 /**
  * Сервис работы с фалами
@@ -104,15 +108,28 @@ export class FileService implements FileServiceInterface {
    * Get project files by project id
    * @param projectsId
    */
-  async getProjectFilesByProjectId(projectsId: string): Promise<ProjectMediaFile[]> {
+  async getProjectFilesByProjectId(
+    projectsId: string,
+    limit: number,
+    page: number,
+    sort: any,
+  ): Promise<ProjectMediaFile[]> {
     this.logger.Debug("Get project files by project id");
     this.logger.Debug("Project ID: ", projectsId);
+    this.logger.Debug("Limit: ", limit);
+    this.logger.Debug("Page: ", page);
+    this.logger.Debug("Sort: ", sort);
 
     try {
       const response = await this.client.Query<
         GetProjectFilesListByProjectIdQueryParams,
         GetProjectFilesListByProjectIdQueryResponse
-      >(new GetProjectFilesListByProjectIdQuery(projectsId), {});
+      >(new GetProjectFilesListByProjectIdQuery(
+        projectsId,
+        limit,
+        page,
+        sort,
+      ), {});
       this.logger.Debug(" Get project files by project id response: ", response);
 
       //  Mark file as project file loaded by project ID
@@ -134,10 +151,37 @@ export class FileService implements FileServiceInterface {
   };
 
   /**
+   * Aggregate project files list by project id
+   * @param projectsId
+   */
+  async getProjectFilesByProjectIdAggregate(projectsId: string): Promise<ProjectFileListAggregation[]> {
+    this.logger.Debug("Aggregate project files list by project id");
+    this.logger.Debug("Project ID: ", projectsId);
+
+    try {
+      const response = await this.client.Query<
+        ProjectFilesListByProjectIdAggregateQueryParams,
+        ProjectFilesListByProjectIdAggregateQueryResponse
+      >(new GetProjectFilesListByProjectIdAggregateQuery(projectsId), {});
+      this.logger.Debug("Aggregate project files list by project id response: ", response);
+
+      return response.result;
+    } catch (error) {
+      this.logger.Error("Aggregate project files list by project id error: ", error);
+
+      if (!error.errors) {
+        throw error;
+      }
+
+      throw error.errors;
+    }
+  };
+
+  /**
    * Delete project files by file IDs
    * @param fileNames
    */
-  async deleteProjectFilesByFileIds(fileIds: string[]): Promise<number> {
+  async deleteProjectFilesByFileIds(fileIds: string[],): Promise<number> {
     this.logger.Debug("Delete project files by file IDs");
     this.logger.Debug("Files IDs: ", fileIds);
 

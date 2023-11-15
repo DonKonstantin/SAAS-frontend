@@ -16,10 +16,27 @@ export interface GetProjectFilesListByFileIdsQueryResponse {
 
 export interface GetProjectFilesListByProjectIdQueryParams {
   projectId: string;
+  limit: number;
+  offset: number;
+  order: any;
 }
 export interface GetProjectFilesListByProjectIdQueryResponse {
   result: ProjectMediaFile[];
 }
+
+export interface ProjectFilesListByProjectIdAggregateQueryParams {
+  projectId: string;
+}
+export interface ProjectFilesListByProjectIdAggregateQueryResponse {
+  result: {
+    count: number;
+  }[];
+}
+
+//  Response type for get project files list method
+export type ProjectFileListAggregation = {
+  count:  number;
+};
 
 export interface DeleteProjectFileByFileIdsParams {
   ids: string[];
