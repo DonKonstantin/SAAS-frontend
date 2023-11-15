@@ -139,6 +139,7 @@ export type GetCampaignsPlaylistsByProjectIdParams = {
 export type GetCampaignsPlaylistsByProjectIdResponse = {
   campaigns: {
     name: string;
+    id: string;
     playlists: {
       campaignPlaylist?: {
         files: CampaignPlayListFileType[];
@@ -148,5 +149,6 @@ export type GetCampaignsPlaylistsByProjectIdResponse = {
 };
 export type CampaignFileWithCampaignName = {
   campaignName: string;
+  campaignId: string;
   files: CampaignPlayListFileType[];
 };

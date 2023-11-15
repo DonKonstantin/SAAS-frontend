@@ -20,6 +20,7 @@ export class GetCampaignsPlaylistsByProjectId
     query __GET_CAMPAIGNS_PLAYLISTS_BY_PROJECT_ID__($projectId: ID){
       campaigns: campaign_list(where: { project_id: { _equals: $projectId } } ) {
         name
+        id
         playlists {
           campaignPlaylist {
             files {
