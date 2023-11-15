@@ -194,9 +194,7 @@ const clips$ = combineLatest([
   filter(clips => !!clips),
   startWith([]),
   pairwise(),
-  filter(([prev, curr]) =>
-    !xor(prev.map(item => Number(item.file_id)), curr.map(item => Number(item.file_id))).length
-  ),
+  filter(([prev, curr]) => !!xor(prev.map(item => Number(item.file_id)), curr.map(item => Number(item.file_id))).length),
   map(values => values[1]),
 );
 
