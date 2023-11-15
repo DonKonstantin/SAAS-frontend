@@ -20,9 +20,9 @@ import { fileService } from 'services/FileService';
 import { getCurrentState } from 'context/AuthorizationContext';
 import { daysName } from "../../components/EditPageCustomFields/CampaignGroup/CampaignInfoGroup";
 import dayjs from 'dayjs';
-import projectListService from 'services/projectListService';
 import { ProjectMediaFile } from 'services/MediaLibraryService/interface';
 import { isEqual, uniqBy } from 'lodash';
+import { campaignListService } from 'services/campaignListService';
 
 class DefaultContextData implements CampaignPlaylistEditContextTypes {
   playlist: CampaignPlaylistConnect | undefined = undefined;
@@ -111,7 +111,15 @@ const checkUploadedFilesBus$ = combineLatest([
         );
       
       //  подгрузка всех файлов кампаний кроме текущей
-      const campaigFiles = await projectListService().getCampaignsFiles(projectId, playlist!.id);
+      const campaigFilesResponse = await campaignListService().getCampaignsPlaylistsByProjectId(projectId,);
+
+      const campaigFiles = campaigFilesResponse
+        .filter(campaign => campaign.campaignId !== playlist?.campaignId)
+        .flatMap(filteredCampaign => filteredCampaign.files)
+        .map(file => ({
+          ...file.file,
+          player_file_id: Number(file.file.player_file_id || "0")
+        }) as ProjectMediaFile);
 
       //  Filter campaign files from project files to protect removing them from server
       const filteredProjectFiles = projectFiles

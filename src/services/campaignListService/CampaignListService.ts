@@ -291,6 +291,7 @@ export class CampaignListService implements CampaignListServiceInterface {
 
         return {
           campaignName: campaign.name,
+          campaignId: campaign.id,
           files,
         };
       })
