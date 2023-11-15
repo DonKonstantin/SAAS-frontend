@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import {
   actions,
-  allCampaigns$,
   isLoading$,
   isLocalLoading$,
   rowsPerPage$,
   sortStream$,
-  sortedClips$,
+  clips$,
   tablePage$,
-  tableRows$,
+  loadedProjectListAggregation$,
+  // tableRows$,
 } from './context';
 import { SortType } from 'components/EditPageCustomFields/CampaignGroup/Channels/types';
-import { Campaign, CampaignPlayListFileType } from 'services/campaignListService/types';
+import { CampaignPlayListFileType } from 'services/campaignListService/types';
 
 /**
  * Хук для доступа к контексту листинга роликов кампании
@@ -24,7 +24,6 @@ const useCampaignClipsListPage = () => ({
   useIsLocalLoading,
   useTableRows,
   useSort,
-  useCampaigns,
   usePages,
   usePageLimit,
   useClipsCount,
@@ -63,7 +62,7 @@ const useTableRows = () => {
   const [tableRows, setTableRows] = useState<CampaignPlayListFileType[]>([]);
 
   useEffect(() => {
-    const subscription = tableRows$
+    const subscription = clips$
       .subscribe(setTableRows);
     
     return () => subscription.unsubscribe();
@@ -87,20 +86,6 @@ const useSort = () => {
   }, []);
 
   return sort;
-};
-
-//  Загруженные кампании
-const useCampaigns = () => {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-
-  useEffect(() => {
-    const subscription = allCampaigns$
-      .subscribe(setCampaigns);
-    
-    return () => subscription.unsubscribe();
-  }, []);
-
-  return campaigns;
 };
 
 //  Изменение страницы листинга
@@ -136,8 +121,8 @@ const useClipsCount = () => {
   const [limit, setLimit] = useState<number>(0);
 
   useEffect(() => {
-    const subscription = sortedClips$
-      .subscribe(clips => setLimit(clips.length));
+    const subscription = loadedProjectListAggregation$
+      .subscribe(count => setLimit(count));
     
     return () => subscription.unsubscribe();
   }, []);

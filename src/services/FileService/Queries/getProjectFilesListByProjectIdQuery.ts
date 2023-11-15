@@ -10,11 +10,31 @@ class GetProjectFilesListByProjectIdQuery
   readonly query: any;
   readonly variables: GetProjectFilesListByProjectIdQueryParams;
 
-  constructor(projectId: string) {
-    this.variables = { projectId };
+  constructor(
+    projectId: string,
+    limit: number,
+    offset: number,
+    order: any,
+  ) {
+    this.variables = {
+      projectId,
+      limit,
+      offset,
+      order,
+    };
     this.query = gql`
-      query __GET_PROJECT_FILES_BY_PROJECT_ID__($projectId: ID) {
-        result: project_file_list(where: { project_id: { _equals: $projectId } }, limit: 1000) {
+      query __GET_PROJECT_FILES_BY_PROJECT_ID__(
+        $projectId: ID,
+        $limit: Int,
+        $offset: Int,
+        $order: [project_file_order_parameters_object],
+      ) {
+        result: project_file_list(
+          where: { project_id: { _equals: $projectId } },
+          limit: $limit,
+          offset: $offset,
+          order: $order,
+        ) {
           composer
           duration
           file_name

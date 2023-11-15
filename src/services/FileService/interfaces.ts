@@ -2,6 +2,7 @@ import {
   MediaFile,
   ProjectMediaFile,
 } from "services/MediaLibraryService/interface";
+import { ProjectFileListAggregation } from "./types";
 
 export interface FileServiceInterface {
   /**
@@ -20,7 +21,18 @@ export interface FileServiceInterface {
    * Get project files by project id
    * @param projectsId
    */
-  getProjectFilesByProjectId(projectsId: string): Promise<ProjectMediaFile[]>;
+  getProjectFilesByProjectId(
+    projectsId: string,
+    limit: number,
+    page: number,
+    sort: any,
+  ): Promise<ProjectMediaFile[]>;
+
+  /**
+   * Aggregate project files list by project id
+   * @param projectsId
+   */
+  getProjectFilesByProjectIdAggregate(projectsId: string): Promise<ProjectFileListAggregation[]>;
 
   /**
    * Delete project files by file IDs

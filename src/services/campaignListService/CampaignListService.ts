@@ -6,6 +6,7 @@ import {
   ProjectChannel,
 } from "services/playerCodeService/interfaces";
 import {
+  CampaignFileWithCampaignName,
   CampaignListServiceInterface,
   CampaignPublishQueryParams,
   CampaignPublishQueryResponse,
@@ -19,6 +20,8 @@ import {
   GetCampaignsArrayByIdsResponse,
   GetCampaignsByProjectIdParams,
   GetCampaignsByProjectIdResponse,
+  GetCampaignsPlaylistsByProjectIdParams,
+  GetCampaignsPlaylistsByProjectIdResponse,
   StoreCampaignMutationParams,
   StoreCampaignMutationResponse,
 } from "./interface";
@@ -31,6 +34,7 @@ import { GetCampaignsByArrayId } from "./Queries/GetCampaignsByArrayId";
 import { GetCampaignsArrayByIdsQuery } from "./Queries/GetCampaignsArrayByIds";
 import { GetCampaignTimetableValidation } from "./Queries/GetCampaignTimetableValidation";
 import { GetCampaignsByProjectId } from "./Queries/GetCampaignsByProjectId";
+import { GetCampaignsPlaylistsByProjectId } from "./Queries/GetCampaignsPlaylistsByProjectId";
 
 
 /**
@@ -258,6 +262,42 @@ export class CampaignListService implements CampaignListServiceInterface {
       return campaigns;
     } catch (error) {
       this.logger.Debug("Ошибка при загрузке кампаний по ID проекта: ", error);
+
+      throw Error(error);
+    }
+  };
+
+  /**
+   * Getting campaign playlists files by campaign project ID
+   * @param projectId
+   * @returns
+   */
+  async getCampaignsPlaylistsByProjectId(projectId: string): Promise<CampaignFileWithCampaignName[]> {
+    this.logger.Debug("Getting campaign playlists files by campaign project ID");
+    this.logger.Debug("Project ID: ", projectId);
+
+    try {
+      const { campaigns } = await this.client.Mutation<
+        GetCampaignsPlaylistsByProjectIdParams,
+        GetCampaignsPlaylistsByProjectIdResponse
+      >(new GetCampaignsPlaylistsByProjectId(projectId), {});
+
+      this.logger.Debug("Getting campaign playlists files by campaign project ID response: ", campaigns);
+
+      const preparedFiles = campaigns.flatMap(campaign => {
+        const playlists = campaign.playlists;
+
+        const files = playlists.flatMap(playlist => playlist.campaignPlaylist?.files || []);
+
+        return {
+          campaignName: campaign.name,
+          files,
+        };
+      })
+
+      return preparedFiles;
+    } catch (error) {
+      this.logger.Debug("Getting campaign playlists files by campaign project ID error: ", error);
 
       throw Error(error);
     }
