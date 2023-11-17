@@ -3,12 +3,12 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import React, { FC } from "react";
 import { ListFieldProperties } from "../../../services/listDataLoader/listLoader/types";
 import { SimpleValues } from "../../../services/listDataLoader/listLoader/listValues/SimpleValues";
-import { setOpenRows, useOpenRows } from "./openSubrowContext";
 import { useEntityList } from "context/EntityListContext";
 import { PlayerDetails } from "services/playerList/interfaces";
+import { setOpenRows, useOpenRows } from "./OpenDetailStream$";
 
 /**
- * Компонент ячейки названия канала с кнопкой открытия подстрок для листинга каналов на странице проекта
+ * Компонент ячейки названия плеера с кнопкой открытия подстрок для листинга плееров на странице проекта
  * @param props
  * @returns
  */
