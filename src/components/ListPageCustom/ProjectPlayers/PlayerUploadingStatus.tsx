@@ -26,7 +26,7 @@ const PlayerUploadingStatus: FC<ListFieldProperties<SimpleValues>> = ({
 
   const playerId = rowValues.id.value;
 
-  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns;
+  const campaigns = additionData.campaigns.filter((data) => data.id === playerId)[0]?.campaigns || [];
 
   const campaignsUploadingStatusSammary: number = campaigns
     .reduce((acc: number, item) => acc + item.uploadingStatus, 0);
