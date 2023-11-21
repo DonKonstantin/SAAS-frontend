@@ -1,4 +1,4 @@
-import { Collapse, Table, TableCell, TableRow } from "@mui/material";
+import { Collapse, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import React, { FC } from "react";
 import { useOpenRows } from "./OpenDetailStream$";
 import PlayerCodeSubRow from "./PlayerCodeSubRow";
@@ -23,9 +23,11 @@ const ProjectChannelPlayers: FC<Props> = ({ item }) => {
       <TableCell sx={{ p: 0, border: 0 }} colSpan={5}>
         <Collapse in={open}>
           <Table>
-            {players.map((subRow) => (
-              <PlayerCodeSubRow row={subRow} key={subRow.id} />
-            ))}
+            <TableBody>
+              {players.map((subRow) => (
+                <PlayerCodeSubRow row={subRow} key={subRow.id} />
+              ))}
+            </TableBody>
           </Table>
         </Collapse>
       </TableCell>

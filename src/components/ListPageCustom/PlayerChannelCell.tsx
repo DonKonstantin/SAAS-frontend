@@ -27,7 +27,7 @@ const PlayerChannelCell: FC<ListFieldProperties<SimpleValues>> = ({
 
   const playerId = rowValues.id.value;
   
-  const campaigns = uniqBy(additionData.campaigns.filter((data) => data.id === playerId)[0].campaigns, 'channel.name') as unknown as PlayerDetails["campaigns"];
+  const campaigns = uniqBy(additionData.campaigns.filter((data) => data.id === playerId)[0]?.campaigns || [], 'channel.name') as unknown as PlayerDetails["campaigns"];
 
   return (
     <TableCell

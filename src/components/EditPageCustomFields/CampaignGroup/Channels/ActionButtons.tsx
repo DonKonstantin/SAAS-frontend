@@ -55,13 +55,14 @@ const ActionButtons: FC<Props> = ({ checkedItems, isDifferent }) => {
     
     try {
       await campaignListService().publishCampaign(campaignPublishData);
+      
       messanger.dispatch({
         message: t("edit-campaign-playlist.success.publish-campaign"),
         type: "success",
       });
     } catch (error) {
       messanger.dispatch({
-        message: error,
+        message: error.message.split(":").slice(-1)[0],
         type: "error",
       });
     }

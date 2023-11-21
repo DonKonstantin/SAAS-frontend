@@ -91,6 +91,7 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
     setSavedChannels,
     writeCampaign,
     clearCampaign,
+    setChannels,
   } =
     useCampaignEditContext(
       distinctUntilChanged(
@@ -98,10 +99,11 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
           prev.isInitialized === curr.isInitialized &&
           prev.successCreatedPlaylist === curr.successCreatedPlaylist &&
           isEqual(prev.campaign, curr.campaign) &&
-          !xor(prev.selectedChannels, curr.selectedChannels).length
+          !xor(prev.selectedChannels, curr.selectedChannels).length &&
+          prev.campaignListErrorText === curr.campaignListErrorText
       )
     );
-
+    
   //Выбор контетной табы
   const [currentActionTab, setCurrentActionTab] = useState<string>("schedule");
   const [saveCampaign, setSaveCampaign] = useState<boolean>(false);
@@ -464,6 +466,8 @@ const CampaignInfoGroup: FC<{ isNew?: boolean }> = ({ isNew = false }) => {
       clearCampaign();
 
       clearContext();
+
+      setChannels([]);
     };
   }, []);
 

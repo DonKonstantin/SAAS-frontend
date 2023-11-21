@@ -226,39 +226,45 @@ const CampaignsActions: FC<ListHeaderProps> = ({
       />
 
       <Tooltip title={t(buttonTooltip)}>
-        <Button
-          variant="outlined"
-          onClick={onCopyHandler}
-          disabled={!selectedRows.length || publishLoading || depublishLoading}
-          data-testid="copyCampaignButton"
-        >
-          {t("pages.campaign.button.copy")}
-        </Button>
+        <div>
+          <Button
+            variant="outlined"
+            onClick={onCopyHandler}
+            disabled={!selectedRows.length || publishLoading || depublishLoading}
+            data-testid="copyCampaignButton"
+          >
+            {t("pages.campaign.button.copy")}
+          </Button>
+        </div>
       </Tooltip>
 
       <Tooltip title={publishLoading ? "" : t(buttonTooltip)}>
-        <LoadingButton
-          loading={publishLoading}
-          variant="outlined"
-          onClick={onPublishHandler}
-          disabled={!selectedRows.length || depublishLoading}
-          data-testid="publishCampaignButton"
-        >
-          {t("pages.campaign.button.publish")}
-        </LoadingButton>
+        <div>
+          <LoadingButton
+            loading={publishLoading}
+            variant="outlined"
+            onClick={onPublishHandler}
+            disabled={!selectedRows.length || depublishLoading}
+            data-testid="publishCampaignButton"
+          >
+            {t("pages.campaign.button.publish")}
+          </LoadingButton>
+        </div>
       </Tooltip>
 
       <Tooltip title={depublishLoading ? "" : t(buttonTooltip)}>
-        <LoadingButton
-          loading={depublishLoading}
-          variant="outlined"
-          color="error"
-          onClick={onDepublishHandler}
-          disabled={!selectedRows.length || publishLoading}
-          data-testid="deselectCampaignButton"
-        >
-          {t("pages.campaign.button.deselect")}
-        </LoadingButton>
+        <div>
+          <LoadingButton
+            loading={depublishLoading}
+            variant="outlined"
+            color="error"
+            onClick={onDepublishHandler}
+            disabled={!selectedRows.length || publishLoading}
+            data-testid="deselectCampaignButton"
+          >
+            {t("pages.campaign.button.deselect")}
+          </LoadingButton>
+        </div>
       </Tooltip>
     </Stack>
   );

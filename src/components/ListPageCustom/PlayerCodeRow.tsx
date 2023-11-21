@@ -19,6 +19,7 @@ import {
   TableRow,
   Table,
   Tooltip,
+  TableBody,
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { useEntityList } from "context/EntityListContext";
@@ -114,9 +115,11 @@ const PlayerCodeRow: FC<ListRowProps> = (props) => {
         <TableCell sx={{ p: 0, border: 0 }} colSpan={4}>
           <Collapse in={open}>
             <Table>
-              {subRowsData.map((subRow) => (
-                <PlayerCodeSubRow row={subRow} />
-              ))}
+              <TableBody>
+                {subRowsData.map((subRow, index) => (
+                  <PlayerCodeSubRow row={subRow} key={subRow.name + index}/>
+                ))}
+              </TableBody>
             </Table>
           </Collapse>
         </TableCell>

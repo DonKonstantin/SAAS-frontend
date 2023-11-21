@@ -72,7 +72,7 @@ const ExportPage: FC<Props> = ({}) => {
         <StyledGridItem item xs={8}>
           <TypeSelector />
         </StyledGridItem>
-        <StyledSecondRowGridItem xs={4}>
+        <StyledSecondRowGridItem item xs={4}>
           <StyledFieldHeader>{t("reports.field.date")}</StyledFieldHeader>
         </StyledSecondRowGridItem>
         <StyledSecondRowGridItem item xs={8} sx={{ columnGap: 1.75 }}>
