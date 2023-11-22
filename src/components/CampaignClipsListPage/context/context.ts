@@ -4,6 +4,7 @@ import {
   Subject,
   combineLatest,
   debounceTime,
+  delay,
   filter,
   map,
   merge,
@@ -12,7 +13,6 @@ import {
   startWith,
   switchMap,
   tap,
-  timer,
 } from "rxjs";
 import { CampaignClipsListPageContextActionsType } from "./interface";
 import { campaignListService } from "services/campaignListService";
@@ -42,16 +42,14 @@ const downloadClip$ = new Subject<DownloadClipPropsType>();
 const loadListDataProps$ = combineLatest([
   projectId$.pipe(startWith(null)),
 
-  timer(0, 5000),
+  // timer(0, 5000),
 
   reloadListData$.pipe(startWith(undefined)),
 ]).pipe(
   debounceTime(10),
   filter(([projectId]) => !isNull(projectId)),
-  map(([projectId, rowsPerPage, tablePage]) => ({
+  map(([projectId]) => ({
     projectId,
-    rowsPerPage,
-    tablePage,
   })),
 );
 
@@ -224,7 +222,7 @@ const loadedProjectFiles$: Observable<CampaignPlayListFileType[]> = loadProjectF
 /**
  * Combine clips from the project files and from campaigns
  */
-export const clips$ = combineLatest([
+const prepareClips$ = combineLatest([
   loadedProjectFiles$,
   campaignsClips$,
 ]).pipe(
@@ -246,11 +244,27 @@ export const clips$ = combineLatest([
 
     return [...filteredProjectFiles] as CampaignPlayListFileType[];
   }),
+  startWith([]),
+  shareReplay(1),
+);
+
+/**
+ * Filter block for clips
+ */
+export const clips$ = prepareClips$.pipe(
   filter(clips => !!clips),
   startWith([]),
   pairwise(),
   filter(([prev, curr]) => !!xor(prev.map(item => Number(item.file_id)), curr.map(item => Number(item.file_id))).length),
   map(values => values[1]),
+);
+
+/**
+ * Delay before starts reloading clips
+ */
+const fireGettingClipsStreams$ = clips$.pipe(
+  delay(5000),
+  tap(() => reloadListData$.next()),
 );
 
 /**
@@ -302,8 +316,13 @@ export const isLoading$ = combineLatest([
   //  Подготовка строк таблицы
   merge(
     projectId$.pipe(map(() => ({ prepareRows: true }))),
-    clips$.pipe(map(() => ({ prepareRows: false }))),
+    prepareClips$.pipe(map(() => ({ prepareRows: false }))),
   ).pipe(startWith({ prepareRows: false })),
+
+  //  Fire reload stream
+  fireGettingClipsStreams$.pipe(
+    map(() => ({ fireGettingClipsStreams: false })),
+  ).pipe(startWith({ fireGettingClipsStreams: false })),
 ]).pipe(
   map(response => response.map(el => Object.values(el)).some(value => !!value[0])),
   shareReplay(1),
