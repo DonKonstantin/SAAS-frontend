@@ -1,8 +1,13 @@
-import { CampaignPlaylistEditContextActionsTypes, CampaignPlaylistEditContextTypes, Tabs } from './interface';
+import {
+  CampaignPlaylistEditContextActionsTypes,
+  CampaignPlaylistEditContextTypes,
+  Tabs,
+} from './interface';
 import {
   BehaviorSubject,
   combineLatest,
   debounceTime,
+  delay,
   filter,
   map,
   Observable,
@@ -12,7 +17,6 @@ import {
   Subject,
   switchMap,
   tap,
-  timer,
   withLatestFrom,
 } from "rxjs";
 import { CampaignPlaylistConnect, CampaignPlayListFileType } from 'services/campaignListService/types';
@@ -87,16 +91,22 @@ const checkUploadedFilesBus$ = combineLatest([
     startWith(0),
   ),
 
-  //  проверяем файлы каждые 5 секунд
-  timer(0, 5000),
+  //  checking files 5 seconds after get previous response
+  loadedClips$.pipe(
+    delay(5000),
+    startWith(undefined),
+  ),
+
+  //  fire the bus
+  playlist$.pipe(startWith(undefined)),
 ]).pipe(
   debounceTime(10),
-  withLatestFrom(projectId$, playlist$),
+  withLatestFrom(projectId$),
   //  если плэйлит не подгружен в контекст или у него нет собственного плэйлиста останавливаем стрим
-  filter(params => !!params[2]?.campaignPlaylist),
-  map((props) => ({
-    projectId: props[1],
-    playlist: props[2],
+  filter(([params]) => !!params[3]?.campaignPlaylist),
+  map(([params, projectId]) => ({
+    projectId,
+    playlist: params[3],
   })),
   switchMap(async ({ projectId, playlist }) => {
     try {
