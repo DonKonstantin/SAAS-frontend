@@ -258,5 +258,11 @@ export class AvailableFilterFieldFieldTypes implements FilterFieldToFieldType {
     "CampaignDay!": AvailableFilterField[] = [
 
     ];
+    "CampaignChannel!": AvailableFilterField[] = [
+
+    ];
+    "CampaignPlaylistConnect!": AvailableFilterField[] = [
+
+    ];
     Schema: AvailableFilterField[] = []
 }
