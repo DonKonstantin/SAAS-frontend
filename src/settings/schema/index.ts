@@ -480,21 +480,114 @@ export class Schemas {
   // Параметры схемы сущности Компании
   campaign: Schema = {
     fields: {
-      id: {
-        type: "ID",
-        isPrimaryKey: true,
-        isArray: false,
-      },
-      name: {
-        type: "String!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      version: {
+      //  Дни недели (начало общее) мин.
+      campaign_all_days_start_minutes: {
         type: "Int!",
         isPrimaryKey: false,
         isArray: false,
       },
+      //  Дни недели (окончание общее) мин.
+      campaign_all_days_stop_minutes: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Дни недели
+      campaign_days_type: {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            daily: "pages.campaign.edit.fields.campaign_days_type.daily",
+            daysOfTheWeek: "pages.campaign.edit.fields.campaign_days_type.daysOfTheWeek"
+          },
+        },
+      },
+      //  После окончания (Режим работы после окончания)
+      campaign_end_type: {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_end_type.break"
+          },
+        },
+      },
+      //  Кампании с меньшим приоритетом
+      campaign_low_priority_end_type: {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            finish: "pages.campaign.edit.fields.campaign_low_priority_end_type.finish",
+            break: "pages.campaign.edit.fields.campaign_low_priority_end_type.break"
+          },
+        },
+      },
+      //  Период кампании (начало)
+      campaign_period_start: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Период кампании (окончание)
+      campaign_period_stop: {
+        type: "DateTime!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      campaign_play_order: {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            byOrder: "pages.campaign.edit.fields.campaign_play_order.by_order",
+            mix: "pages.campaign.edit.fields.campaign_play_order.mix"
+          },
+        },
+      },
+      //  Тип времени для периодического воспроизведения
+      campaign_play_tracks_period_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            hours: "pages.campaign.edit.fields.campaign_play_tracks_period_type.hours",
+            minutes: "pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes"
+          },
+        },
+      },
+      //  Количество времени для периодического воспроизведения
+      campaign_play_tracks_period_value: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Количество треков для периодического воспроизведения
+      campaign_play_tracks_quantity: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Воспроизведение
+      campaign_play_type : {
+        type: "Enum!",
+        isPrimaryKey: false,
+        isArray: false,
+        enum: {
+          variants: {
+            periodic: "pages.campaign.edit.fields.campaign_play_type.periodic",
+            continuous: "pages.campaign.edit.fields.campaign_play_type.continuous"
+          },
+        },
+      },
+      //  Приоритет - приоритет кампании
       campaign_priority : {
         type: "Enum!",
         isPrimaryKey: false,
@@ -509,21 +602,7 @@ export class Schemas {
           },
         },
       },
-      campaign_period_start: {
-        type: "DateTime!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      campaign_period_stop: {
-        type: "DateTime!",
-        isPrimaryKey: false,
-        isArray: false,
-      },
-      days: {
-        type: "CampaignDay!",
-        isPrimaryKey: false,
-        isArray: true,
-      },
+      //  Тип кампании
       campaign_type : {
         type: "Enum!",
         isPrimaryKey: false,
@@ -535,60 +614,63 @@ export class Schemas {
           },
         },
       },
-      campaign_end_type : {
-        type: "Enum!",
+      //  Каналы, подключенные к кампании
+      channels: {
+        type: "CampaignChannel!",
         isPrimaryKey: false,
-        isArray: false,
-        enum: {
-          variants: {
-            finish: "pages.campaign.edit.fields.campaign_end_type.finish",
-            break: "pages.campaign.edit.fields.campaign_end_type.break"
-          },
-        },
+        isArray: true,
       },
-      campaign_low_priority_end_type : {
-        type: "Enum!",
+      //  Дни расписания кампании
+      days: {
+        type: "CampaignDay!",
         isPrimaryKey: false,
-        isArray: false,
-        enum: {
-          variants: {
-            finish: "pages.campaign.edit.fields.campaign_low_priority_end_type.finish",
-            break: "pages.campaign.edit.fields.campaign_low_priority_end_type.break"
-          },
-        },
+        isArray: true,
       },
-      campaign_play_type : {
-        type: "Enum!",
-        isPrimaryKey: false,
+      //  ID сущности
+      id: {
+        type: "ID",
+        isPrimaryKey: true,
         isArray: false,
-        enum: {
-          variants: {
-            periodic: "pages.campaign.edit.fields.campaign_play_type.periodic",
-            continuous: "pages.campaign.edit.fields.campaign_play_type.continuous"
-          },
-        },
       },
-      campaign_play_tracks_period_type : {
-        type: "Enum!",
+      //  Флаг активности кампании. true когда соблюдены условия
+      is_active: {
+        type: "Boolean",
         isPrimaryKey: false,
         isArray: false,
-        enum: {
-          variants: {
-            hours: "pages.campaign.edit.fields.campaign_play_tracks_period_type.hours",
-            minutes: "pages.campaign.edit.fields.campaign_play_tracks_period_type.minutes"
-          },
-        },
       },
-      campaign_days_type : {
-        type: "Enum!",
+      /**
+       * Флаг опубликованности кампании.
+       * Устанавливается автоматичиски в значение true в момент публикации кампании,
+       * в false в момент внесения изменения в настройки кампании.
+       */
+      is_published: {
+        type: "Boolean",
         isPrimaryKey: false,
         isArray: false,
-        enum: {
-          variants: {
-            daily: "pages.campaign.edit.fields.campaign_days_type.daily",
-            daysOfTheWeek: "pages.campaign.edit.fields.campaign_days_type.daysOfTheWeek"
-          },
-        },
+      },
+      //  Название кампании
+      name: {
+        type: "String!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Плейлисты, подключенные к кампании
+      playlists: {
+        type: "CampaignPlaylistConnect!",
+        isPrimaryKey: false,
+        isArray: true,
+      },
+      //  
+      project_id: {
+        type: "ID!",
+        isPrimaryKey: false,
+        isArray: false,
+      },
+      //  Версия кампании
+      version: {
+        type: "Int!",
+        isPrimaryKey: false,
+        isArray: false,
       },
     },
     isChangeable: true,
@@ -695,6 +777,8 @@ export type FieldType =
   | "NullableID"
   | "Player_Code!"
   | "CampaignDay!"
+  | "CampaignChannel!"
+  | "CampaignPlaylistConnect!"
   ;
 
 export class SchemaField {

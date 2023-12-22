@@ -1,52 +1,35 @@
 import React, { FC } from "react";
 import { SimpleValues } from "../../services/listDataLoader/listLoader/listValues/SimpleValues";
-import { TableCell } from "@mui/material";
-import { ListFieldProperties } from "../../services/listDataLoader/listLoader/types";
+import TableCell from "@mui/material/TableCell";
+import type { ListFieldProperties } from "../../services/listDataLoader/listLoader/types";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import { useEntityList } from "context/EntityListContext";
-import dayjs from "dayjs";
+import columnDirection from "components/ListPageParts/List/helpers/columnDirection";
 
 /**
  * Компонент ячейки активности кампании
  * @param props
  * @returns
  */
-const CampaignIsActiveCell: FC<ListFieldProperties<SimpleValues>> = ({
-  value,
-}) => {
+const CampaignIsActiveCell: FC<ListFieldProperties<SimpleValues>> = props => {
+  const { schema, configuration, value } = props;
+  
+  const {
+    align = columnDirection(schema, configuration),
+    width,
+    padding
+  } = configuration;
+
   const { t } = useTranslation();
 
-  const { data } = useEntityList();
-
-  if (!data) {
-    return null;
-  }
-
-  const {
-    currentData: { additionData, rows },
-  } = data;
-
-  const row = rows.find((r) => r.primaryKeyValue === value.value)?.columnValues;
-
-  const channels = additionData?.find(
-    el => el.channels[0]?.campaign_id === value.value
-  );
-
-  const startPeriod = new Date(row?.campaign_period_start.value).getTime();
-  const endPeriod = new Date(dayjs(row?.campaign_period_stop.value).add(1, "day").format("YYYY-MM-DD")).getTime();
-  const now = new Date().getTime();
-
-  const inPeriod = startPeriod <= now && now <= endPeriod;
-
-  const status = !!channels && inPeriod;
+  const status = value.value;
 
   return (
-    <TableCell className="list-table-cell" sx={{ textAlign: 'center' }}>
+    <TableCell className="list-table-cell" padding={padding} style={{ width: width }} align={align}>
       <span className={clsx("custom-active-cell", { active: !!status })}>
         {t(
           `pages.users.list.fields.active-status.${
-            !!status ? "active" : "inactive"
+            !!value.value ? "active" : "inactive"
           }`
         )}
       </span>

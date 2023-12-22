@@ -301,7 +301,8 @@
           "version": "Последняя версия",
           "campaign-priority": "Приоритет",
           "campaign-period-start": "Начало",
-          "campaign-period-stop": "Конец"
+          "campaign-period-stop": "Конец",
+          "is_active": "Статус активности"
         }
       },
       "add": {
@@ -351,6 +352,10 @@
           "channels": "Каналы"
         },
         "fields": {
+          "campaign_play_order": {
+            "by_order": "Подряд",
+            "mix": "Перемешать"
+          },
           "schedule": {
             "campaign-priority-enum": {
               "priority-enum-error": "Необходимо выбрать хотя бы один приоритет"
