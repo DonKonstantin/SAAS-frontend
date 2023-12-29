@@ -1,4 +1,4 @@
-import React, {FC, memo,useState} from "react";
+import React, { FC, memo, useState } from "react";
 import { distinctUntilChanged } from "rxjs";
 import { EditFieldProperties } from "settings/pages/system/edit";
 import useEntityEditField from "./useEntityEditField";
@@ -25,7 +25,7 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
     distinctUntilChanged((previous, current) => {
       return (
         previous?.entityData?.values[fieldCode] ===
-          current?.entityData?.values[fieldCode] &&
+        current?.entityData?.values[fieldCode] &&
         previous?.validation[fieldCode] === current?.validation[fieldCode]
       );
     })
@@ -45,14 +45,27 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
     additionData,
   } = fieldData;
 
-  const [currentValue, setCurrentValue] = useState<any>(value);
+  const defaultValue = (value as string[]).map(item => {
+    const existsChannel = additionData.project_channels.find(channel => channel.id === item);
 
-  let allOption = {value: 'All', name: t("player-codes.add.channel-selector.select-all")};
+    if (!existsChannel) {
+      return {
+        id: item,
+        name: `id: ${item}`,
+      };
+    }
+
+    return existsChannel;
+  });
+
+  const [currentValue, setCurrentValue] = useState<any>(defaultValue);
+
+  let allOption = { value: 'All', name: t("player-codes.add.channel-selector.select-all") };
 
   const channels = additionData.project_channels;
 
   const handleChange = (_, values) => {
-    const  value = values.map(item=>item.id? item.id: item.value);
+    const value = values.map(item => item.id ? item.id : item.value);
 
     //@ts-ignore
     if (!selectedAll && value.find((val) => val === "All")) {
@@ -67,17 +80,17 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
       return;
     }
 
-    if(selectedAll && !value.includes('All')) {
+    if (selectedAll && !value.includes('All')) {
       setSelectedAll(false);
       setCurrentValue([]);
       return;
     }
 
-    if(selectedAll) {
+    if (selectedAll) {
       setSelectedAll(false);
     }
 
-    setCurrentValue(values.filter(item=> !item.value ||  item.value !== 'All'));
+    setCurrentValue(values.filter(item => !item.value || item.value !== 'All'));
 
     onChangeFieldValue(() =>
       typeof value === "string" ? value.split(",") : value
@@ -95,16 +108,14 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
 
   return (
     <Box sx={{ alignSelf: 'flex-start', width: '100%' }}>
-    <Autocomplete
+      <Autocomplete
         multiple
         fullWidth
         noOptionsText={t("player-codes.add.channel-selector.no-channels")}
         value={currentValue}
         disabled={channels.length === 0}
         onChange={handleChange}
-        renderTags={(value: readonly ProjectChannel[]) =>
-          value.map((option: ProjectChannel) => option.name).join(", ")
-        }
+        renderTags={(value: readonly ProjectChannel[]) => value.map((option: ProjectChannel) => option.name).join(", ")}
         id="tags-outlined"
         options={options}
         getOptionLabel={(option) => option.name}
@@ -118,15 +129,15 @@ const ChanelsMultiselector: FC<EditFieldProperties> = (props) => {
           />
         )}
         renderOption={(props, option, { selected }) => (
-            <li {...props}>
-              <Checkbox
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  style={{ marginRight: 8 }}
-                  checked={selectedAll || selected}
-              />
-              {option.name}
-            </li>
+          <li {...props}>
+            <Checkbox
+              icon={icon}
+              checkedIcon={checkedIcon}
+              style={{ marginRight: 8 }}
+              checked={selectedAll || selected}
+            />
+            {option.name}
+          </li>
         )}
       />
     </Box>
